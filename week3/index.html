@@ -23,6 +23,10 @@
   .wotw-banner a { color: #fef8f4; font-size: 0.95rem; font-weight: 700; text-decoration: none; }
   .wotw-banner a:hover { text-decoration: underline; }
 
+  .cultural-banner { background-color: #005a72; padding: 0.9rem 2rem; text-align: center; }
+  .cultural-banner a { color: #fef8f4; font-size: 0.95rem; font-weight: 700; text-decoration: none; }
+  .cultural-banner a:hover { text-decoration: underline; }
+
   .main { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
   .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
 
@@ -97,7 +101,7 @@
   .notify-bar.show { display: block; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; }
 
   a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
-  .challenge-submit:focus-visible, .wotw-banner a:focus-visible { outline: 3px solid #007291; }
+  .challenge-submit:focus-visible, .wotw-banner a:focus-visible, .cultural-banner a:focus-visible { outline: 3px solid #007291; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
   .teacher-link { color: #d8d0c8; font-size: 0.72rem; text-decoration: none; margin-left: 1rem; }
   .teacher-link:hover { color: #888; }
@@ -181,8 +185,6 @@
     <div class="b6a-preview"><span class="b6a-badge" id="b6a-cust-badge" style="--b6a-size:96px;"></span></div>
     <p class="b6a-cust-initials" id="b6a-cust-initials">&nbsp;</p>
     <button class="b6a-switch" id="b6a-switch">Switch student</button>
-    <p class="b6a-cust-label">Your creature</p>
-    <div class="b6a-creature-row" id="b6a-creature-row"></div>
     <div id="b6a-slots"></div>
     <p class="b6a-empty" id="b6a-empty" style="display:none;">Do an activity this week to unlock things to wear.</p>
   </div>
@@ -214,15 +216,11 @@
   <a href="optimise-explorer.html">Word of the Week — <strong>Optimise</strong> →</a>
 </div>
 
-<main class="main">
+<div class="cultural-banner">
+  <a href="pack-your-bag.html">Cultural Calendar — <strong>Refugee</strong> · Pack Your Bag 🎒 →</a>
+</div>
 
-<!-- ============================================================
-  BASE 6 - WEEK 3 DAY TILES (paste-in snippet)
-  Paste this whole block into week 3 index.html inside <main class="main">,
-  just above the "This week's subjects" section label.
-  Self-contained: brings its own styles and script, prefixed b6- so
-  nothing clashes with your existing classes.
-============================================================ -->
+<main class="main">
 
 <style>
   .b6-day-section { margin-bottom: 2.5rem; }
@@ -309,8 +307,6 @@
     }
   });
 
-  // Quiet progress dots: only appear once a student has marked
-  // something as done on that day's page. No empty dots, no demand.
   document.querySelectorAll('.b6-tile-dots').forEach(function (el) {
     const day = el.getAttribute('data-day');
     const total = parseInt(el.getAttribute('data-total'), 10);
@@ -324,7 +320,6 @@
     el.innerHTML = dots;
   });
 
-  // Hello in the hero, if we know who this is
   try {
     const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
     if (profile && profile.initials) {
@@ -335,8 +330,6 @@
   } catch (e) { /* no profile yet */ }
 })();
 </script>
-
-<!-- ============ END DAY TILES SNIPPET ============ -->
 
   <p class="section-label">This week's subjects</p>
   <div class="subjects-grid">
@@ -478,13 +471,11 @@
 </footer>
 
 <script>
-// ── Config ──────────────────────────────────────────────
 const THIS_WEEK = 3;
 const TOTAL_WEEKS = 7;
 const STORE_KEY = 'base6_stamps';
 const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
 
-// Week themes for stamp card
 const WEEK_THEMES = {
   1: { emoji: '🌱', label: 'Wk 1' },
   2: { emoji: '🏆', label: 'Wk 2' },
@@ -495,15 +486,13 @@ const WEEK_THEMES = {
   7: { emoji: '🎓', label: 'Wk 7' },
 };
 
-// ── Storage ─────────────────────────────────────────────
 function loadStamps() {
   try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { return {}; }
 }
 function saveStamps(stamps) {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(stamps)); } catch(e) {} 
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(stamps)); } catch(e) {}
 }
 
-// ── Render stamp row ────────────────────────────────────
 function renderStampRow() {
   const stamps = loadStamps();
   const row = document.getElementById('stamp-row');
@@ -523,7 +512,6 @@ function renderStampRow() {
   }
 }
 
-// ── Check if this week already done ─────────────────────
 function checkAlreadyDone() {
   const stamps = loadStamps();
   if(stamps[THIS_WEEK]) {
@@ -538,7 +526,6 @@ function showDoneState(answer, name) {
   document.getElementById('done-preview').textContent = '"' + answer + '"';
 }
 
-// ── Submit ───────────────────────────────────────────────
 function submitChallenge() {
   const name = document.getElementById('c-name').value.trim();
   const answer = document.getElementById('c-answer').value.trim();
@@ -563,7 +550,6 @@ function submitChallenge() {
     return;
   }
 
-  // Save stamp
   const stamps = loadStamps();
   stamps[THIS_WEEK] = {
     name,
@@ -573,16 +559,11 @@ function submitChallenge() {
   };
   saveStamps(stamps);
 
-  // Remember who this is, so day pages can say hello
   try { localStorage.setItem('base6Profile', JSON.stringify({ initials: name })); } catch(e) {}
 
-  // Update stamp row
   renderStampRow();
-
-  // Show done state
   showDoneState(answer, name);
 
-  // Email teacher
   const subject = encodeURIComponent('Base 6 · Week ' + THIS_WEEK + ' Challenge — ' + name);
   const body = encodeURIComponent(
     'BASE 6 · WEEKLY CHALLENGE RESPONSE\n\n' +
@@ -596,11 +577,9 @@ function submitChallenge() {
   window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + subject + '&body=' + body, '_blank');
 }
 
-// ── Init ─────────────────────────────────────────────────
 renderStampRow();
 checkAlreadyDone();
 
-// Prefill initials if we already know them
 try {
   const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
   if (profile && profile.initials) {
@@ -608,7 +587,6 @@ try {
   }
 } catch(e) {}
 
-// ── Hidden stamp reset (triple-click footer) ─────────────
 let resetClicks = 0, resetTimer = null;
 function handleResetClick() {
   resetClicks++;
@@ -626,14 +604,10 @@ function handleResetClick() {
 }
 </script>
 
-
-
 <script>
-// ===== BASE 6 AVATAR + COSMETICS =====
 (function () {
   var STUDENTS = ['LW','AP','LS','LC','HK'];
   var CREATURES = ['\uD83E\uDD8A','\uD83D\uDC22','\uD83E\uDD89','\uD83D\uDC19','\uD83E\uDD8B','\uD83D\uDC31','\uD83D\uDC27','\uD83E\uDD81','\uD83D\uDC38','\uD83D\uDC3C'];
-  // Predictable unlock order. The Nth item unlocks at N activities done this week.
   var ITEMS = [
     { id:'glasses', slot:'eyes',  emoji:'\uD83D\uDC53', label:'Glasses' },
     { id:'cap',     slot:'head',  emoji:'\uD83E\uDDE2', label:'Cap' },
@@ -705,7 +679,6 @@ function handleResetClick() {
     } else { chip.style.display = 'none'; }
   }
 
-  // ---- toast ----
   var toastTimer = null;
   function showToast(msg){
     var t = document.getElementById('b6a-toast');
@@ -727,7 +700,6 @@ function handleResetClick() {
     }
   }
 
-  // ---- picker ----
   var pickOverlay = document.getElementById('b6a-pick');
   function openPicker(step){ buildPickerOnce(); showStep(step || 1); pickOverlay.style.display = 'flex'; }
   function closePicker(){ pickOverlay.style.display = 'none'; }
@@ -761,7 +733,6 @@ function handleResetClick() {
     closePicker();
   });
 
-  // ---- customiser ----
   var custOverlay = document.getElementById('b6a-cust');
   function openCust(){ buildCust(); custOverlay.style.display = 'flex'; }
   function closeCust(){ custOverlay.style.display = 'none'; }
@@ -805,7 +776,6 @@ function handleResetClick() {
 
   document.getElementById('b6a-chip').addEventListener('click', function(){ if (getProfile()) openCust(); else openPicker(1); });
 
-  // ---- init ----
   var asked = (function(){ try { return localStorage.getItem('base6ProfileAsked'); } catch(e){ return null; } })();
   if (document.getElementById('hero-greeting') && !getProfile() && !asked){ openPicker(1); }
   refreshAll();
