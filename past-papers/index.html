@@ -23,7 +23,6 @@
 
   .intro-note { font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 2rem; max-width: 640px; }
 
-  /* quick jump */
   .jump-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
   .jump-chip { font-size: 0.9rem; font-weight: 700; text-decoration: none; padding: 0.45rem 1rem; border-radius: 999px; border: 2px solid; background: #fff; transition: background 0.15s, color 0.15s; }
   .jump-maths { color: #007291; border-color: #007291; }
@@ -31,7 +30,6 @@
   .jump-english { color: #ef7724; border-color: #ef7724; }
   .jump-english:hover { background: #ef7724; color: #fff; }
 
-  /* subject block */
   .subject-section { margin-bottom: 3rem; scroll-margin-top: 1rem; }
   .subject-head { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid #e8e0d8; }
   .subject-emoji { font-size: 1.6rem; }
@@ -53,6 +51,7 @@
   .paper-tile .pt-top { display: flex; align-items: center; gap: 0.5rem; }
   .paper-tile .pt-icon { font-size: 1.3rem; }
   .paper-tile .pt-type { font-size: 1rem; font-weight: 700; color: var(--accent, #007291); }
+  .paper-tile .pt-meta { font-size: 0.78rem; color: #888; margin-top: 0.1rem; }
   .paper-tile .pt-open { font-size: 0.82rem; font-weight: 700; color: var(--accent, #007291); margin-top: 0.2rem; }
 
   .paper-tile.soon {
@@ -64,7 +63,6 @@
   .paper-tile.soon .pt-soon { font-size: 0.8rem; font-weight: 700; color: #b0a89f; margin-top: 0.2rem; }
 
   a:focus-visible, .jump-chip:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
-  .paper-tile.card-maths:focus-visible, .jump-maths:focus-visible { outline-color: #007291; }
 
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
@@ -95,17 +93,9 @@
 
 </main>
 
-<footer>
-  Base 6 · Chilton Bridge School
-</footer>
+<footer>Base 6 · Chilton Bridge School</footer>
 
 <script>
-/* ============================================================
-   PAST PAPERS CATALOGUE — edit this list to add papers.
-   To switch a paper from "Adding soon" to live, just put its
-   filename into the empty   file: ''   below. Leave blank for
-   papers not built yet. Paths are relative to this page.
-   ============================================================ */
 const SUBJECTS = [
   {
     key: 'maths', name: 'Maths', emoji: '🔢',
@@ -150,8 +140,8 @@ const SUBJECTS = [
         { type: 'Writing', icon: '✍️', file: 'fs_english_entry3_writing_pp1.html' },
       ]},
       { name: 'Entry Level 2', tag: 'Entry Level', papers: [
-        { type: 'Reading', icon: '📖', file: '' },
-        { type: 'Writing', icon: '✍️', file: '' },
+        { type: 'Reading', icon: '📖', meta: 'Paper 8 · 20 marks · 45 min', file: 'e2-reading-paper8.html' },
+        { type: 'Writing', icon: '✍️', meta: 'Paper 4 · 35 marks · 50 min', file: 'e2-writing-paper4.html' },
       ]},
       { name: 'Entry Level 1', tag: 'Entry Level', papers: [
         { type: 'Reading', icon: '📖', file: '' },
@@ -161,7 +151,7 @@ const SUBJECTS = [
   }
 ];
 
-function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 function renderCatalogue(){
   const root = document.getElementById('catalogue');
@@ -187,6 +177,7 @@ function renderCatalogue(){
         if (p.file) {
           html += `<a class="paper-tile" href="${encodeURI(p.file)}" style="--accent:${sub.accent}">
                      <div class="pt-top"><span class="pt-icon" aria-hidden="true">${p.icon}</span><span class="pt-type">${esc(p.type)}</span></div>
+                     ${p.meta ? `<span class="pt-meta">${esc(p.meta)}</span>` : ''}
                      <span class="pt-open">Open paper →</span>
                    </a>`;
         } else {
@@ -205,7 +196,6 @@ function renderCatalogue(){
   root.innerHTML = html;
 }
 
-/* gentle greeting if this device already knows the student */
 (function(){
   try {
     const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
