@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E2 Reading Paper 8 · Functional Skills English</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cream: #fef8f4; --teal: #007291; --teal-dark: #005a72; --orange: #ef7724;
+  --orange-light: #fff3eb; --dark: #1a1a1a; --muted: #555; --green: #2e8b57;
+  --green-light: #eaf7f0; --line: #e0d8d0; --white: #ffffff;
+  --purple: #7a3fa8; --purple-light: #f5eeff;
+}
+body { font-family: 'Atkinson Hyperlegible', sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; font-size: 17px; line-height: 1.6; }
+
+/* ── HEADER ── */
+.site-header { background: var(--teal); padding: 1.25rem 2rem; }
+.site-header .qualifier { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 0.25rem; }
+.site-header h1 { font-size: 1.5rem; font-weight: 700; color: white; }
+.site-header .meta { font-size: 0.88rem; color: rgba(255,255,255,0.8); margin-top: 0.25rem; }
+.back-bar { background: var(--teal-dark); padding: 0.5rem 2rem; }
+.back-link { color: rgba(255,255,255,0.85); font-size: 0.85rem; font-weight: 700; text-decoration: none; }
+
+/* ── INFO STRIP ── */
+.info-strip { background: white; border-bottom: 2px solid var(--line); padding: 0.75rem 2rem; display: flex; gap: 2rem; flex-wrap: wrap; }
+.info-item { font-size: 0.82rem; color: var(--muted); }
+.info-item strong { color: var(--dark); font-weight: 700; }
+.info-item.highlight { color: var(--teal); }
+
+/* ── PROGRESS ── */
+.progress-bar { background: white; border-bottom: 2px solid var(--line); padding: 0.6rem 1.5rem; position: sticky; top: 0; z-index: 50; }
+.progress-inner { max-width: 860px; margin: 0 auto; }
+.prog-row { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+.prog-track { height: 7px; background: var(--line); border-radius: 999px; overflow: hidden; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--orange)); border-radius: 999px; transition: width 350ms ease; }
+
+/* ── MAIN ── */
+.main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+
+/* ── TEXT SECTION HEADERS ── */
+.text-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; margin-top: 2rem; }
+.text-header:first-child { margin-top: 0; }
+.text-badge { background: var(--purple); color: white; font-size: 0.78rem; font-weight: 700; padding: 3px 12px; border-radius: 999px; }
+.text-header h2 { font-size: 1rem; font-weight: 700; color: var(--purple); }
+
+/* ── SOURCE TEXTS ── */
+.source-text { background: white; border: 2px solid #d8b8f8; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.source-text h3 { font-size: 1.25rem; font-weight: 700; color: var(--dark); text-align: center; margin-bottom: 1rem; }
+.source-text p { font-size: 0.95rem; line-height: 1.7; margin-bottom: 0.75rem; color: var(--dark); }
+.source-text .bullet-list { list-style: disc; padding-left: 1.25rem; margin: 0.5rem 0 0.75rem; }
+.source-text .bullet-list li { font-size: 0.95rem; margin-bottom: 0.3rem; }
+.source-text .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem; background: #f7f4f0; border-radius: 10px; padding: 1rem; }
+.two-col .col p { font-size: 0.88rem; line-height: 1.6; color: var(--muted); }
+.email-mockup { border: 2px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: 0.5rem; }
+.email-header-box { background: #f0f0f0; }
+.email-field-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
+.email-field-row:last-child { border-bottom: none; }
+.email-field-lbl { font-weight: 700; color: var(--muted); min-width: 65px; font-size: 0.82rem; }
+.email-body-text { padding: 1rem; font-size: 0.95rem; line-height: 1.7; color: var(--dark); }
+.email-body-text p { margin-bottom: 0.75rem; }
+.email-body-text p:last-child { margin-bottom: 0; }
+
+/* ── QUESTION CARDS ── */
+.q-card { background: white; border: 2px solid var(--line); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; transition: border-color 0.2s; }
+.q-card.answered { border-color: var(--green); }
+.q-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.85rem; }
+.q-num { background: var(--teal); color: white; font-size: 0.78rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; flex-shrink: 0; }
+.q-marks { font-size: 0.78rem; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+.q-text { font-size: 1rem; font-weight: 700; color: var(--dark); line-height: 1.5; margin-bottom: 0.65rem; }
+.q-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.75rem; font-style: italic; }
+.answered-tick { color: var(--green); font-size: 1rem; flex-shrink: 0; opacity: 0; transition: opacity 0.2s; }
+.q-card.answered .answered-tick { opacity: 1; }
+
+/* ── MCQ OPTIONS (tick-box style) ── */
+.mcq-options { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+.mcq-opt { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1rem; border: 2px solid var(--line); border-radius: 10px; cursor: pointer; font-size: 0.95rem; background: white; transition: all 0.15s; }
+.mcq-opt:hover { border-color: var(--teal); }
+.mcq-opt.selected { border-color: var(--teal); background: #e3f1f5; }
+.mcq-opt.correct { border-color: var(--green); background: var(--green-light); }
+.mcq-opt.wrong { border-color: #c0392b; background: #fdf0ee; }
+.tick-box { width: 20px; height: 20px; border: 2px solid var(--line); border-radius: 4px; flex-shrink: 0; display: grid; place-items: center; transition: all 0.15s; font-size: 0.8rem; font-weight: 700; }
+.mcq-opt.selected .tick-box { border-color: var(--teal); background: var(--teal); color: white; }
+.mcq-opt.correct .tick-box { border-color: var(--green); background: var(--green); color: white; }
+.mcq-opt.wrong .tick-box { border-color: #c0392b; background: #c0392b; color: white; }
+.opt-letter { font-weight: 700; color: var(--muted); min-width: 20px; font-size: 0.9rem; }
+.mcq-opt.selected .opt-letter, .mcq-opt.correct .opt-letter { color: var(--teal-dark); }
+.feedback-line { font-size: 0.8rem; margin-top: 0.5rem; padding: 0.4rem 0.75rem; border-radius: 8px; display: none; }
+.feedback-line.correct { background: var(--green-light); color: var(--green); display: block; }
+.feedback-line.wrong { background: #fdf0ee; color: #c0392b; display: block; }
+
+/* ── WRITE-IN ── */
+textarea { width: 100%; padding: 0.75rem; border: 2px solid var(--line); border-radius: 10px; font-family: inherit; font-size: 0.95rem; color: var(--dark); background: var(--cream); resize: vertical; line-height: 1.65; }
+textarea:focus { outline: none; border-color: var(--teal); }
+.numbered-inputs { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.25rem; }
+.numbered-row { display: flex; align-items: center; gap: 0.75rem; }
+.num-lbl { font-weight: 700; color: var(--muted); min-width: 20px; font-size: 0.9rem; }
+.text-input { flex: 1; padding: 0.55rem 0.85rem; border: 2px solid var(--line); border-radius: 10px; font-family: inherit; font-size: 0.95rem; background: var(--cream); color: var(--dark); }
+.text-input:focus { outline: none; border-color: var(--teal); }
+
+/* ── QUOTE BOX ── */
+.quote-box { background: var(--orange-light); border-left: 4px solid var(--orange); border-radius: 0 10px 10px 0; padding: 0.75rem 1rem; margin-bottom: 0.75rem; font-size: 0.95rem; font-style: italic; color: var(--dark); }
+
+/* ── SECTION DIVIDER ── */
+.section-divider { display: flex; align-items: center; gap: 1rem; margin: 2rem 0 1.5rem; }
+.section-divider .divider-line { flex: 1; height: 2px; background: var(--line); }
+.section-divider .divider-label { font-size: 0.82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+
+/* ── SUBMIT ── */
+.submit-card { background: white; border: 2px solid var(--line); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; text-align: center; }
+.submit-card h2 { font-size: 1.1rem; font-weight: 700; color: var(--teal); margin-bottom: 0.5rem; }
+.submit-card p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1rem; line-height: 1.55; }
+.btn-primary { background: var(--teal); color: white; padding: 0.8rem 2rem; border-radius: 10px; border: none; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.15s, transform 0.15s; }
+.btn-primary:hover { background: var(--teal-dark); transform: translateY(-2px); }
+.success-msg { background: var(--green-light); border: 2px solid var(--green); border-radius: 10px; padding: 0.9rem; color: var(--green); font-weight: 700; margin-top: 1rem; display: none; }
+
+/* ── EXPORT BAR ── */
+.export-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--teal); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: center; gap: 1rem; z-index: 100; flex-wrap: wrap; }
+.export-bar span { font-size: 0.88rem; font-weight: 700; color: rgba(255,255,255,0.85); }
+.btn-export { background: var(--orange); color: white; padding: 0.55rem 1.4rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+.btn-export:hover { background: #c05a10; }
+
+@media(max-width:600px){
+  .two-col { grid-template-columns: 1fr; }
+  .info-strip { gap: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="qualifier">Pearson Edexcel Functional Skills English</p>
+  <h1>Entry 2 Reading — Paper 8</h1>
+  <p class="meta">Valid September 2021 to August 2022 &nbsp;·&nbsp; 45 minutes &nbsp;·&nbsp; 20 marks total</p>
+</header>
+<div class="back-bar"><a class="back-link" href="../index.html">← Back to Week 3</a></div>
+
+<div class="info-strip">
+  <div class="info-item"><strong>Instructions:</strong> Answer ALL questions. Tick the correct box for multiple-choice questions.</div>
+  <div class="info-item info-highlight"><strong>✓ You may use a dictionary</strong> for this paper.</div>
+  <div class="info-item"><strong>Marks:</strong> 20 total — questions worth 1–3 marks each.</div>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="prog-row"><span>Progress</span><span id="progText">0 of 16 questions answered</span></div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<main class="main">
+
+  <!-- ═══════════ TEXT A ═══════════ -->
+  <div class="text-header">
+    <span class="text-badge">Text A</span>
+    <h2>Read Text A and answer Questions 1 to 6</h2>
+  </div>
+
+  <div class="source-text">
+    <h3>Careers Fair</h3>
+    <p>The Careers Fair will be at the Town Hall on 1 March. The fair will start at 10 am and finish at 2 pm. It is a great opportunity to find a new job.</p>
+    <p>You can learn about work positions at local companies and talk to members of staff.</p>
+    <p>You can get help with:</p>
+    <ul class="bullet-list">
+      <li>applying for jobs</li>
+      <li>interview skills</li>
+      <li>CV writing.</li>
+    </ul>
+    <p>There is free parking in the Town Hall car park.</p>
+    <div class="two-col">
+      <div class="col"><p>There will be a speech by business owner Karen Jones at 11 am.</p></div>
+      <div class="col"><p>There will be free tea and coffee. You will be able to buy snacks and cakes.</p></div>
+    </div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="q-card" id="card-q1">
+    <div class="q-header">
+      <span class="q-num">Question 1</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">The Careers Fair will be at the:</div>
+    <textarea id="q1" rows="2" placeholder="Write your answer here..." oninput="checkWrite('q1','card-q1')"></textarea>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-card" id="card-q2">
+    <div class="q-header">
+      <span class="q-num">Question 2</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">What time will the fair end?</div>
+    <div class="mcq-options" id="mcq-q2">
+      <div class="mcq-opt" onclick="selectMCQ('q2',0,3)"><div class="tick-box"></div><span class="opt-letter">A</span><span>10 am</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q2',1,3)"><div class="tick-box"></div><span class="opt-letter">B</span><span>11 am</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q2',2,3)"><div class="tick-box"></div><span class="opt-letter">C</span><span>1 pm</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q2',3,3)"><div class="tick-box"></div><span class="opt-letter">D</span><span>2 pm</span></div>
+    </div>
+    <div class="feedback-line" id="fb-q2"></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-card" id="card-q3">
+    <div class="q-header">
+      <span class="q-num">Question 3</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">You may use a dictionary to answer this question.</div>
+    <div class="quote-box">"It is a great opportunity"</div>
+    <div class="q-text">The word <strong>opportunity</strong> means:</div>
+    <div class="mcq-options" id="mcq-q3">
+      <div class="mcq-opt" onclick="selectMCQ('q3',0,1)"><div class="tick-box"></div><span class="opt-letter">A</span><span>expense</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q3',1,1)"><div class="tick-box"></div><span class="opt-letter">B</span><span>chance</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q3',2,1)"><div class="tick-box"></div><span class="opt-letter">C</span><span>problem</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q3',3,1)"><div class="tick-box"></div><span class="opt-letter">D</span><span>feeling</span></div>
+    </div>
+    <div class="feedback-line" id="fb-q3"></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-card" id="card-q4">
+    <div class="q-header">
+      <span class="q-num">Question 4</span>
+      <span class="q-marks">2 marks</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">Name two things you can get help with at the Careers Fair.</div>
+    <div class="numbered-inputs">
+      <div class="numbered-row"><span class="num-lbl">1</span><input class="text-input" type="text" id="q4-1" placeholder="First thing..." oninput="checkNumbered('q4','card-q4',2)"></div>
+      <div class="numbered-row"><span class="num-lbl">2</span><input class="text-input" type="text" id="q4-2" placeholder="Second thing..." oninput="checkNumbered('q4','card-q4',2)"></div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-card" id="card-q5">
+    <div class="q-header">
+      <span class="q-num">Question 5</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">Who will give a speech at the Careers Fair?</div>
+    <textarea id="q5" rows="2" placeholder="Write your answer here..." oninput="checkWrite('q5','card-q5')"></textarea>
+  </div>
+
+  <!-- Q6 -->
+  <div class="q-card" id="card-q6">
+    <div class="q-header">
+      <span class="q-num">Question 6</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">What do you have to pay for at the Careers Fair?</div>
+    <div class="mcq-options" id="mcq-q6">
+      <div class="mcq-opt" onclick="selectMCQ('q6',0,0)"><div class="tick-box"></div><span class="opt-letter">A</span><span>cakes</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q6',1,0)"><div class="tick-box"></div><span class="opt-letter">B</span><span>parking</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q6',2,0)"><div class="tick-box"></div><span class="opt-letter">C</span><span>coffee</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q6',3,0)"><div class="tick-box"></div><span class="opt-letter">D</span><span>tea</span></div>
+    </div>
+    <div class="feedback-line" id="fb-q6"></div>
+  </div>
+
+  <!-- ═══════════ TEXT B ═══════════ -->
+  <div class="section-divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Text B</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="text-header">
+    <span class="text-badge">Text B</span>
+    <h2>Read Text B and answer Questions 7 to 11</h2>
+  </div>
+
+  <div class="source-text">
+    <div class="email-mockup">
+      <div class="email-header-box">
+        <div class="email-field-row"><span class="email-field-lbl">From:</span><span>dina@mailbox.biz</span></div>
+        <div class="email-field-row"><span class="email-field-lbl">To:</span><span>karim@mailbox.biz</span></div>
+        <div class="email-field-row"><span class="email-field-lbl">Subject:</span><span>Running</span></div>
+      </div>
+      <div class="email-body-text">
+        <p>Hi Karim</p>
+        <p>I thought I'd email you about my new hobby. I have started running because I want to improve my fitness. I go running six days a week and run one mile. I want to double this to two miles a day in the future.</p>
+        <p>At first I found running very difficult. I got out of breath and my legs would hurt. It's getting better now though.</p>
+        <p>Everybody should go running because it's good for health and quite cheap. All I had to buy were three running tops, some shorts and a pair of trainers. I also bought an app for my phone so that I can measure my progress.</p>
+        <p>Look forward to seeing you soon.</p>
+        <p>Dina</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="q-card" id="card-q7">
+    <div class="q-header">
+      <span class="q-num">Question 7</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">Why did Dina start running?</div>
+    <textarea id="q7" rows="2" placeholder="Write your answer here..." oninput="checkWrite('q7','card-q7')"></textarea>
+  </div>
+
+  <!-- Q8 -->
+  <div class="q-card" id="card-q8">
+    <div class="q-header">
+      <span class="q-num">Question 8</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">How many days a week does Dina run?</div>
+    <div class="mcq-options" id="mcq-q8">
+      <div class="mcq-opt" onclick="selectMCQ('q8',0,3)"><div class="tick-box"></div><span class="opt-letter">A</span><span>one</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q8',1,3)"><div class="tick-box"></div><span class="opt-letter">B</span><span>two</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q8',2,3)"><div class="tick-box"></div><span class="opt-letter">C</span><span>three</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q8',3,3)"><div class="tick-box"></div><span class="opt-letter">D</span><span>six</span></div>
+    </div>
+    <div class="feedback-line" id="fb-q8"></div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="q-card" id="card-q9">
+    <div class="q-header">
+      <span class="q-num">Question 9</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">Name one reason why Dina found running hard at first.</div>
+    <textarea id="q9" rows="2" placeholder="Write your answer here..." oninput="checkWrite('q9','card-q9')"></textarea>
+  </div>
+
+  <!-- Q10 -->
+  <div class="q-card" id="card-q10">
+    <div class="q-header">
+      <span class="q-num">Question 10</span>
+      <span class="q-marks">3 marks</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">List three things Dina has bought.</div>
+    <div class="numbered-inputs">
+      <div class="numbered-row"><span class="num-lbl">1</span><input class="text-input" type="text" id="q10-1" placeholder="First item..." oninput="checkNumbered('q10','card-q10',3)"></div>
+      <div class="numbered-row"><span class="num-lbl">2</span><input class="text-input" type="text" id="q10-2" placeholder="Second item..." oninput="checkNumbered('q10','card-q10',3)"></div>
+      <div class="numbered-row"><span class="num-lbl">3</span><input class="text-input" type="text" id="q10-3" placeholder="Third item..." oninput="checkNumbered('q10','card-q10',3)"></div>
+    </div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="q-card" id="card-q11">
+    <div class="q-header">
+      <span class="q-num">Question 11</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">Read the sentence below.</div>
+    <div class="quote-box">Running is good <strong>excercise</strong>.</div>
+    <div class="q-text">The word <em>excercise</em> is spelled wrongly. Use your dictionary to find the correct spelling. It is:</div>
+    <div class="mcq-options" id="mcq-q11">
+      <div class="mcq-opt" onclick="selectMCQ('q11',0,1)"><div class="tick-box"></div><span class="opt-letter">A</span><span>exersise</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q11',1,1)"><div class="tick-box"></div><span class="opt-letter">B</span><span>exercise</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q11',2,1)"><div class="tick-box"></div><span class="opt-letter">C</span><span>exarcise</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q11',3,1)"><div class="tick-box"></div><span class="opt-letter">D</span><span>exarsise</span></div>
+    </div>
+    <div class="feedback-line" id="fb-q11"></div>
+  </div>
+
+  <!-- ═══════════ TEXT C ═══════════ -->
+  <div class="section-divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Text C</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="text-header">
+    <span class="text-badge">Text C</span>
+    <h2>Read Text C and answer Questions 12 to 16</h2>
+  </div>
+
+  <div class="source-text">
+    <h3>How to save money on food shopping</h3>
+    <p>This guide will help you to spend less when you buy food.</p>
+    <p>The first step is to plan your meals. After this, you should make a list of what you need. This will help you:</p>
+    <ul class="bullet-list">
+      <li>save money by only buying food you need</li>
+      <li>waste less food</li>
+      <li>save time if you are busy.</li>
+    </ul>
+    <p>It is an excellent idea to check online for special deals before going shopping. You can also use online stores to save on travel costs.</p>
+    <p>Don't do all your shopping in supermarkets or in shops. You can often save money by buying fruit and vegetables in markets.</p>
+  </div>
+
+  <!-- Q12 -->
+  <div class="q-card" id="card-q12">
+    <div class="q-header">
+      <span class="q-num">Question 12</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">What should you do first?</div>
+    <textarea id="q12" rows="2" placeholder="Write your answer here..." oninput="checkWrite('q12','card-q12')"></textarea>
+  </div>
+
+  <!-- Q13 -->
+  <div class="q-card" id="card-q13">
+    <div class="q-header">
+      <span class="q-num">Question 13</span>
+      <span class="q-marks">2 marks</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">Name two reasons why you should make a list before going shopping.</div>
+    <div class="numbered-inputs">
+      <div class="numbered-row"><span class="num-lbl">1</span><input class="text-input" type="text" id="q13-1" placeholder="First reason..." oninput="checkNumbered('q13','card-q13',2)"></div>
+      <div class="numbered-row"><span class="num-lbl">2</span><input class="text-input" type="text" id="q13-2" placeholder="Second reason..." oninput="checkNumbered('q13','card-q13',2)"></div>
+    </div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="q-card" id="card-q14">
+    <div class="q-header">
+      <span class="q-num">Question 14</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">You may use a dictionary to answer this question.</div>
+    <div class="quote-box">"It is an excellent idea"</div>
+    <div class="q-text">The word <strong>excellent</strong> means:</div>
+    <div class="mcq-options" id="mcq-q14">
+      <div class="mcq-opt" onclick="selectMCQ('q14',0,3)"><div class="tick-box"></div><span class="opt-letter">A</span><span>boring</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q14',1,3)"><div class="tick-box"></div><span class="opt-letter">B</span><span>very bad</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q14',2,3)"><div class="tick-box"></div><span class="opt-letter">C</span><span>different</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q14',3,3)"><div class="tick-box"></div><span class="opt-letter">D</span><span>very good</span></div>
+    </div>
+    <div class="feedback-line" id="fb-q14"></div>
+  </div>
+
+  <!-- Q15 -->
+  <div class="q-card" id="card-q15">
+    <div class="q-header">
+      <span class="q-num">Question 15</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">How can you save money on travel costs?</div>
+    <textarea id="q15" rows="2" placeholder="Write your answer here..." oninput="checkWrite('q15','card-q15')"></textarea>
+  </div>
+
+  <!-- Q16 -->
+  <div class="q-card" id="card-q16">
+    <div class="q-header">
+      <span class="q-num">Question 16</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">Where can you often save money on fruit and vegetables?</div>
+    <div class="mcq-options" id="mcq-q16">
+      <div class="mcq-opt" onclick="selectMCQ('q16',0,2)"><div class="tick-box"></div><span class="opt-letter">A</span><span>supermarkets</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q16',1,2)"><div class="tick-box"></div><span class="opt-letter">B</span><span>shops</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q16',2,2)"><div class="tick-box"></div><span class="opt-letter">C</span><span>markets</span></div>
+      <div class="mcq-opt" onclick="selectMCQ('q16',3,2)"><div class="tick-box"></div><span class="opt-letter">D</span><span>online stores</span></div>
+    </div>
+    <div class="feedback-line" id="fb-q16"></div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-card">
+    <h2>📧 Send your answers to Jay</h2>
+    <p>This will open a Gmail draft with all your answers. For multiple-choice questions it will also show whether you chose correctly. Send when you are ready.</p>
+    <button class="btn-primary" onclick="submitPaper()">Send answers to Jay</button>
+    <div class="success-msg" id="successMsg">✅ Gmail opened — check your draft and send it.</div>
+  </div>
+
+</main>
+
+<div class="export-bar">
+  <span>Ready to submit?</span>
+  <button class="btn-export" onclick="submitPaper()">📧 Send to Jay</button>
+</div>
+
+<script>
+// ── STATE ─────────────────────────────────────────────────
+const TOTAL_Q = 16;
+const answered = new Set();
+const mcqState = {};
+
+// ── MCQ ───────────────────────────────────────────────────
+function selectMCQ(qid, chosen, correct) {
+  const container = document.getElementById('mcq-' + qid);
+  const opts = container.querySelectorAll('.mcq-opt');
+  opts.forEach((opt, i) => {
+    opt.classList.remove('selected','correct','wrong');
+    const tick = opt.querySelector('.tick-box');
+    tick.textContent = '';
+    if(i === correct) { opt.classList.add('correct'); tick.textContent = '✓'; }
+    else if(i === chosen && chosen !== correct) { opt.classList.add('wrong'); tick.textContent = '✗'; }
+  });
+  mcqState[qid] = { chosen, correct };
+  const fb = document.getElementById('fb-' + qid);
+  if(fb) {
+    if(chosen === correct) {
+      fb.className = 'feedback-line correct';
+      fb.textContent = '✓ Correct';
+    } else {
+      const letters = ['A','B','C','D'];
+      fb.className = 'feedback-line wrong';
+      fb.textContent = `✗ The correct answer is ${letters[correct]}.`;
+    }
+  }
+  document.getElementById('card-' + qid).classList.add('answered');
+  answered.add(qid);
+  updateProgress();
+}
+
+// ── WRITE-IN ──────────────────────────────────────────────
+function checkWrite(id, cardId) {
+  const val = document.getElementById(id).value.trim();
+  const card = document.getElementById(cardId);
+  if(val.length > 0) { card.classList.add('answered'); answered.add(id); }
+  else { card.classList.remove('answered'); answered.delete(id); }
+  updateProgress();
+}
+
+function checkNumbered(prefix, cardId, count) {
+  let filled = 0;
+  for(let i=1; i<=count; i++) {
+    const el = document.getElementById(prefix + '-' + i);
+    if(el && el.value.trim().length > 0) filled++;
+  }
+  const card = document.getElementById(cardId);
+  if(filled > 0) { card.classList.add('answered'); answered.add(prefix); }
+  else { card.classList.remove('answered'); answered.delete(prefix); }
+  updateProgress();
+}
+
+// ── PROGRESS ──────────────────────────────────────────────
+function updateProgress() {
+  const n = answered.size;
+  document.getElementById('progFill').style.width = (n/TOTAL_Q*100) + '%';
+  document.getElementById('progText').textContent = n + ' of ' + TOTAL_Q + ' questions answered';
+}
+
+// ── SUBMIT ────────────────────────────────────────────────
+function submitPaper() {
+  const now = new Date().toLocaleDateString('en-GB', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const val = id => { const el = document.getElementById(id); return el ? el.value.trim() || '(blank)' : '(blank)'; };
+  const mcqLine = (qid, opts) => {
+    const s = mcqState[qid];
+    if(!s) return '(not answered)';
+    const letters = ['A','B','C','D'];
+    const mark = s.chosen === s.correct ? '✓' : '✗';
+    return `${mark} ${letters[s.chosen]}: ${opts[s.chosen]}${s.chosen !== s.correct ? ` (correct: ${letters[s.correct]}: ${opts[s.correct]})` : ''}`;
+  };
+
+  let body = `E2 Reading Paper 8 — ${now}\n\n`;
+  body += `━━━ TEXT A — CAREERS FAIR ━━━\n`;
+  body += `Q1: ${val('q1')}\n`;
+  body += `Q2: ${mcqLine('q2',['10 am','11 am','1 pm','2 pm'])}\n`;
+  body += `Q3 (opportunity): ${mcqLine('q3',['expense','chance','problem','feeling'])}\n`;
+  body += `Q4:\n  1. ${val('q4-1')}\n  2. ${val('q4-2')}\n`;
+  body += `Q5: ${val('q5')}\n`;
+  body += `Q6: ${mcqLine('q6',['cakes','parking','coffee','tea'])}\n\n`;
+  body += `━━━ TEXT B — RUNNING EMAIL ━━━\n`;
+  body += `Q7: ${val('q7')}\n`;
+  body += `Q8: ${mcqLine('q8',['one','two','three','six'])}\n`;
+  body += `Q9: ${val('q9')}\n`;
+  body += `Q10:\n  1. ${val('q10-1')}\n  2. ${val('q10-2')}\n  3. ${val('q10-3')}\n`;
+  body += `Q11 (exercise spelling): ${mcqLine('q11',['exersise','exercise','exarcise','exarsise'])}\n\n`;
+  body += `━━━ TEXT C — SAVING MONEY ON FOOD ━━━\n`;
+  body += `Q12: ${val('q12')}\n`;
+  body += `Q13:\n  1. ${val('q13-1')}\n  2. ${val('q13-2')}\n`;
+  body += `Q14 (excellent): ${mcqLine('q14',['boring','very bad','different','very good'])}\n`;
+  body += `Q15: ${val('q15')}\n`;
+  body += `Q16: ${mcqLine('q16',['supermarkets','shops','markets','online stores'])}\n`;
+
+  const gmail = 'https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=' + encodeURIComponent('E2 Reading Paper 8 — ' + now) + '&body=' + encodeURIComponent(body);
+  window.open(gmail, '_blank');
+  document.getElementById('successMsg').style.display = 'block';
+}
+</script>
+</body>
+</html>

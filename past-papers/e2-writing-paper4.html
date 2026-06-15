@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E2 Writing Paper 4 · Functional Skills English</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cream: #fef8f4; --teal: #007291; --teal-dark: #005a72; --orange: #ef7724;
+  --orange-light: #fff3eb; --dark: #1a1a1a; --muted: #555; --green: #2e8b57;
+  --green-light: #eaf7f0; --line: #e0d8d0; --white: #ffffff;
+}
+body { font-family: 'Atkinson Hyperlegible', sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; font-size: 17px; line-height: 1.6; }
+
+/* ── HEADER ── */
+.site-header { background: var(--teal); padding: 1.25rem 2rem; }
+.site-header .qualifier { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 0.25rem; }
+.site-header h1 { font-size: 1.5rem; font-weight: 700; color: white; }
+.site-header .meta { font-size: 0.88rem; color: rgba(255,255,255,0.8); margin-top: 0.25rem; }
+.back-bar { background: var(--teal-dark); padding: 0.5rem 2rem; }
+.back-link { color: rgba(255,255,255,0.85); font-size: 0.85rem; font-weight: 700; text-decoration: none; }
+
+/* ── INFO STRIP ── */
+.info-strip { background: white; border-bottom: 2px solid var(--line); padding: 0.75rem 2rem; display: flex; gap: 2rem; flex-wrap: wrap; }
+.info-item { font-size: 0.82rem; color: var(--muted); }
+.info-item strong { color: var(--dark); font-weight: 700; }
+
+/* ── PROGRESS ── */
+.progress-bar { background: white; border-bottom: 2px solid var(--line); padding: 0.6rem 1.5rem; position: sticky; top: 0; z-index: 50; }
+.progress-inner { max-width: 800px; margin: 0 auto; }
+.prog-row { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+.prog-track { height: 7px; background: var(--line); border-radius: 999px; overflow: hidden; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--orange)); border-radius: 999px; transition: width 350ms ease; }
+
+/* ── MAIN ── */
+.main { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+
+/* ── QUESTION CARDS ── */
+.q-card { background: white; border: 2px solid var(--line); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; transition: border-color 0.2s; }
+.q-card.answered { border-color: var(--green); }
+.q-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.q-num { background: var(--teal); color: white; font-size: 0.78rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; flex-shrink: 0; }
+.q-marks { font-size: 0.78rem; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+.q-text { font-size: 1rem; font-weight: 700; color: var(--dark); line-height: 1.5; margin-bottom: 0.75rem; }
+.q-instruction { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.9rem; line-height: 1.55; }
+.answered-tick { color: var(--green); font-size: 1rem; flex-shrink: 0; opacity: 0; transition: opacity 0.2s; }
+.q-card.answered .answered-tick { opacity: 1; }
+
+/* ── ALPHA ORDER ── */
+.alpha-inputs { display: flex; flex-direction: column; gap: 0.5rem; }
+.alpha-row { display: flex; align-items: center; gap: 0.75rem; }
+.alpha-num { font-size: 0.85rem; font-weight: 700; color: var(--muted); min-width: 18px; }
+.alpha-input { flex: 1; padding: 0.55rem 0.85rem; border: 2px solid var(--line); border-radius: 10px; font-family: inherit; font-size: 1rem; background: var(--cream); color: var(--dark); }
+.alpha-input:focus { outline: none; border-color: var(--teal); }
+
+/* ── PLURAL TABLE ── */
+.plural-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.plural-table th { background: var(--teal); color: white; padding: 0.6rem 0.9rem; font-weight: 700; text-align: left; }
+.plural-table td { padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--line); }
+.plural-table td:first-child { font-weight: 700; }
+.plural-input { width: 100%; padding: 0.45rem 0.7rem; border: 2px solid var(--line); border-radius: 8px; font-family: inherit; font-size: 0.95rem; background: var(--cream); }
+.plural-input:focus { outline: none; border-color: var(--teal); }
+
+/* ── REWRITE ── */
+.sentence-box { background: var(--orange-light); border: 1.5px solid #fcd8bc; border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 0.5rem; font-size: 0.95rem; }
+.sentence-label { font-size: 0.75rem; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.25rem; }
+
+/* ── FORM SECTION ── */
+.form-section { background: #f7f4f0; border: 1.5px solid var(--line); border-radius: 12px; padding: 1.1rem 1.2rem; margin-bottom: 1rem; }
+.form-section h3 { font-size: 0.88rem; font-weight: 700; color: var(--teal); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.field-row { display: grid; grid-template-columns: 160px 1fr; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; }
+.field-label { font-size: 0.88rem; font-weight: 700; color: var(--dark); }
+.field-input { padding: 0.5rem 0.75rem; border: 2px solid var(--line); border-radius: 8px; font-family: inherit; font-size: 0.9rem; background: white; }
+.field-input:focus { outline: none; border-color: var(--teal); }
+
+/* ── EMAIL MOCKUP ── */
+.email-mockup { border: 2px solid var(--line); border-radius: 12px; overflow: hidden; margin-bottom: 0.75rem; }
+.email-header { background: #f0f0f0; border-bottom: 1px solid var(--line); }
+.email-field { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.75rem; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
+.email-field:last-child { border-bottom: none; }
+.email-field-label { font-weight: 700; color: var(--muted); min-width: 60px; font-size: 0.82rem; }
+.email-field-val { color: var(--dark); }
+.email-body { padding: 0.75rem; }
+
+/* ── TEXT AREAS ── */
+textarea { width: 100%; padding: 0.75rem; border: 2px solid var(--line); border-radius: 10px; font-family: inherit; font-size: 0.95rem; color: var(--dark); background: var(--cream); resize: vertical; line-height: 1.65; }
+textarea:focus { outline: none; border-color: var(--teal); }
+.char-hint { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+
+/* ── SPELLING MCQ ── */
+.mcq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem; }
+.mcq-opt { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.85rem; border: 2px solid var(--line); border-radius: 10px; cursor: pointer; transition: border-color 0.15s, background 0.15s; font-size: 0.95rem; background: white; }
+.mcq-opt:hover { border-color: var(--teal); }
+.mcq-opt.selected { border-color: var(--teal); background: #e3f1f5; }
+.mcq-opt.correct { border-color: var(--green); background: var(--green-light); }
+.mcq-opt.wrong { border-color: #c0392b; background: #fdf0ee; }
+.mcq-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); flex-shrink: 0; display: grid; place-items: center; transition: all 0.15s; }
+.mcq-opt.selected .mcq-radio, .mcq-opt.correct .mcq-radio { border-color: var(--teal); background: var(--teal); }
+.mcq-opt.wrong .mcq-radio { border-color: #c0392b; background: #c0392b; }
+.mcq-radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: white; opacity: 0; }
+.mcq-opt.selected .mcq-radio::after, .mcq-opt.correct .mcq-radio::after, .mcq-opt.wrong .mcq-radio::after { opacity: 1; }
+.mcq-sentence { font-size: 0.92rem; color: var(--muted); margin-bottom: 0.5rem; }
+.mcq-sentence strong { color: var(--dark); }
+.q6-item { background: #fafaf8; border: 1.5px solid var(--line); border-radius: 12px; padding: 1rem; margin-bottom: 0.75rem; }
+.q6-item:last-child { margin-bottom: 0; }
+.q6-label { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+
+/* ── BULLETS ── */
+.bullet-list { list-style: disc; padding-left: 1.25rem; margin: 0.5rem 0; }
+.bullet-list li { margin-bottom: 0.3rem; font-size: 0.9rem; color: var(--muted); }
+
+/* ── SUBMIT ── */
+.submit-card { background: white; border: 2px solid var(--line); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; text-align: center; }
+.submit-card h2 { font-size: 1.1rem; font-weight: 700; color: var(--teal); margin-bottom: 0.5rem; }
+.submit-card p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1rem; line-height: 1.55; }
+.btn { display: inline-block; padding: 0.8rem 2rem; border-radius: 10px; border: none; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, background 0.15s; }
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: var(--teal); color: white; }
+.btn-primary:hover { background: var(--teal-dark); }
+.success-msg { background: var(--green-light); border: 2px solid var(--green); border-radius: 10px; padding: 0.9rem; color: var(--green); font-weight: 700; margin-top: 1rem; display: none; }
+
+/* ── EXPORT BAR ── */
+.export-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--teal); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: center; gap: 1rem; z-index: 100; flex-wrap: wrap; }
+.export-bar span { font-size: 0.88rem; font-weight: 700; color: rgba(255,255,255,0.85); }
+.btn-export { background: var(--orange); color: white; padding: 0.55rem 1.4rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+.btn-export:hover { background: #c05a10; }
+
+@media(max-width:600px){
+  .mcq-grid { grid-template-columns: 1fr; }
+  .field-row { grid-template-columns: 1fr; }
+  .info-strip { gap: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="qualifier">Pearson Edexcel Functional Skills English</p>
+  <h1>Entry 2 Writing — Paper 4</h1>
+  <p class="meta">Valid September 2021 to August 2022 &nbsp;·&nbsp; 50 minutes &nbsp;·&nbsp; 35 marks total</p>
+</header>
+<div class="back-bar"><a class="back-link" href="../index.html">← Back to Week 3</a></div>
+
+<div class="info-strip">
+  <div class="info-item"><strong>Instructions:</strong> Use blue or black ink. Write in complete sentences.</div>
+  <div class="info-item"><strong>Note:</strong> Dictionaries are not allowed for this paper.</div>
+  <div class="info-item"><strong>Advice:</strong> Check your work at the end.</div>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="prog-row"><span>Progress</span><span id="progText">0 of 6 questions answered</span></div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<main class="main">
+
+  <!-- Q1 — ALPHABETICAL ORDER -->
+  <div class="q-card" id="card-q1">
+    <div class="q-header">
+      <span class="q-num">Question 1</span>
+      <span class="q-marks">1 mark</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">Write the words in the box in alphabetical order.</div>
+    <div class="form-section" style="text-align:center; font-size:1.1rem; font-weight:700; letter-spacing:0.05em; color:var(--teal);">
+      still &nbsp;&nbsp; seven &nbsp;&nbsp; school &nbsp;&nbsp; small
+    </div>
+    <div class="alpha-inputs">
+      <div class="alpha-row"><span class="alpha-num">1</span><input class="alpha-input" type="text" placeholder="first word..." oninput="checkQ1()" data-q1="1"></div>
+      <div class="alpha-row"><span class="alpha-num">2</span><input class="alpha-input" type="text" placeholder="second word..." oninput="checkQ1()" data-q1="2"></div>
+      <div class="alpha-row"><span class="alpha-num">3</span><input class="alpha-input" type="text" placeholder="third word..." oninput="checkQ1()" data-q1="3"></div>
+      <div class="alpha-row"><span class="alpha-num">4</span><input class="alpha-input" type="text" placeholder="fourth word..." oninput="checkQ1()" data-q1="4"></div>
+    </div>
+  </div>
+
+  <!-- Q2 — PLURALS -->
+  <div class="q-card" id="card-q2">
+    <div class="q-header">
+      <span class="q-num">Question 2</span>
+      <span class="q-marks">2 marks</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">Write the following words as plurals.</div>
+    <table class="plural-table">
+      <thead><tr><th>Singular</th><th>Plural</th></tr></thead>
+      <tbody>
+        <tr><td>watch</td><td><input class="plural-input" type="text" id="plural-watch" placeholder="plural of watch..." oninput="checkQ2()"></td></tr>
+        <tr><td>apple</td><td><input class="plural-input" type="text" id="plural-apple" placeholder="plural of apple..." oninput="checkQ2()"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Q3 — CAPITALISATION -->
+  <div class="q-card" id="card-q3">
+    <div class="q-header">
+      <span class="q-num">Question 3</span>
+      <span class="q-marks">2 marks</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">Rewrite the sentences. Use capital letters, full stops or question marks where you need to.</div>
+    <div class="q-instruction">Write the corrected sentence in the box below each one.</div>
+
+    <div style="margin-bottom:0.75rem;">
+      <div class="sentence-box">
+        <div class="sentence-label">Original (a)</div>
+        What time does the bus come
+      </div>
+      <textarea id="q3a" rows="2" placeholder="Rewrite sentence (a) correctly..." oninput="checkQ3()"></textarea>
+    </div>
+
+    <div>
+      <div class="sentence-box">
+        <div class="sentence-label">Original (b)</div>
+        Rafa is from spain.
+      </div>
+      <textarea id="q3b" rows="2" placeholder="Rewrite sentence (b) correctly..." oninput="checkQ3()"></textarea>
+    </div>
+  </div>
+
+  <!-- Q4 — CLUB CARD FORM -->
+  <div class="q-card" id="card-q4">
+    <div class="q-header">
+      <span class="q-num">Question 4</span>
+      <span class="q-marks">9 marks</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">You want to apply for a supermarket club card. Fill in the form.</div>
+
+    <div class="form-section">
+      <h3>Supermarket Club Card</h3>
+      <div class="field-row"><label class="field-label">Full name</label><input class="field-input" type="text" id="q4-name" placeholder="Your full name" oninput="checkQ4()"></div>
+      <div class="field-row"><label class="field-label">House / flat number</label><input class="field-input" type="text" id="q4-house" placeholder="House or flat number" oninput="checkQ4()"></div>
+      <div class="field-row"><label class="field-label">Street</label><input class="field-input" type="text" id="q4-street" placeholder="Street name" oninput="checkQ4()"></div>
+      <div class="field-row"><label class="field-label">Town</label><input class="field-input" type="text" id="q4-town" placeholder="Town" oninput="checkQ4()"></div>
+      <div class="field-row"><label class="field-label">Postcode</label><input class="field-input" type="text" id="q4-postcode" placeholder="Postcode" oninput="checkQ4()"></div>
+      <div class="field-row"><label class="field-label">Email</label><input class="field-input" type="text" id="q4-email" placeholder="Email address" oninput="checkQ4()"></div>
+    </div>
+
+    <div class="q-instruction">Please write four sentences to tell us:
+      <ul class="bullet-list">
+        <li>how often you shop at the supermarket</li>
+        <li>how many people you do the shopping for</li>
+        <li>what food you buy at the supermarket</li>
+        <li>what other things you buy at the supermarket</li>
+      </ul>
+    </div>
+    <textarea id="q4-sentences" rows="6" placeholder="Write your four sentences here..." oninput="checkQ4()"></textarea>
+    <div class="char-hint">Aim for four clear sentences, one for each bullet point above.</div>
+  </div>
+
+  <!-- Q5 — EMAIL -->
+  <div class="q-card" id="card-q5">
+    <div class="q-header">
+      <span class="q-num">Question 5</span>
+      <span class="q-marks">11 marks</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">Write an email to your friend about what you did last weekend.</div>
+    <div class="q-instruction">Write four sentences to tell your friend:
+      <ul class="bullet-list">
+        <li>where you went</li>
+        <li>who was with you</li>
+        <li>what you did</li>
+        <li>what you liked about the weekend</li>
+      </ul>
+    </div>
+    <div class="q-instruction" style="background:var(--orange-light);border:1.5px solid #fcd8bc;border-radius:10px;padding:0.75rem 1rem;color:var(--dark);margin-bottom:1rem;">
+      You must include <strong>at least two compound sentences</strong> using joining words (and, so, but, or).<br>
+      You must use <strong>at least one adjective</strong>.<br>
+      You must use <strong>at least one linking word</strong> (first, also, then, next).
+    </div>
+
+    <div class="email-mockup">
+      <div class="email-header">
+        <div class="email-field"><span class="email-field-label">From:</span><span class="email-field-val">you@mailbox.biz</span></div>
+        <div class="email-field"><span class="email-field-label">To:</span><span class="email-field-val">yourfriend@mailbox.biz</span></div>
+        <div class="email-field"><span class="email-field-label">Subject:</span><span class="email-field-val">Last weekend</span></div>
+      </div>
+      <div class="email-body">
+        <textarea id="q5-email" rows="10" placeholder="Write your email here..." oninput="checkQ5()"></textarea>
+      </div>
+    </div>
+    <div class="char-hint">Remember: two compound sentences, one adjective, one linking word.</div>
+  </div>
+
+  <!-- Q6 — SPELLING MCQ -->
+  <div class="q-card" id="card-q6">
+    <div class="q-header">
+      <span class="q-num">Question 6</span>
+      <span class="q-marks">10 marks</span>
+      <span class="answered-tick">✓</span>
+    </div>
+    <div class="q-text">Choose the correct word to complete each sentence. Tap the correct spelling.</div>
+    <div class="q-instruction" style="margin-bottom:1rem;">The first one has been done for you as an example (subject).</div>
+
+    <!-- Q6 items -->
+    <div id="q6-container"></div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-card">
+    <h2>📧 Send your answers to Jay</h2>
+    <p>This will open a Gmail draft with all your answers. Send it when you are ready. You can send before the paper is finished too.</p>
+    <button class="btn btn-primary" onclick="submitPaper()">Send answers to Jay</button>
+    <div class="success-msg" id="successMsg">✅ Gmail opened — check your draft and send it.</div>
+  </div>
+
+</main>
+
+<div class="export-bar">
+  <span>Ready to submit?</span>
+  <button class="btn-export" onclick="submitPaper()">📧 Send to Jay</button>
+</div>
+
+<script>
+// ── Q6 DATA ───────────────────────────────────────────────
+const Q6_ITEMS = [
+  { id:'q6a', sentence:'Stan is ______ today.', options:['fourty','forty','fortey','fourtey'], correct:1 },
+  { id:'q6b', sentence:"Careful not to ______ my phone.", options:['break','braik','brayk','breke'], correct:0 },
+  { id:'q6c', sentence:'I have ______ class this morning.', options:['wun','one','wone','onne'], correct:1 },
+  { id:'q6d', sentence:'He is ______ late for work.', options:['orlways','alweys','always','awlways'], correct:2 },
+  { id:'q6e', sentence:'What ______ is he from?', options:['country','kountry','kountary','countree'], correct:0 },
+  { id:'q6f', sentence:'Is there much ______ ?', options:['intrest','interest','inturest','interes'], correct:1 },
+  { id:'q6g', sentence:'It is a very ______ book.', options:['straynge','streinge','strange','streynge'], correct:2 },
+  { id:'q6h', sentence:'The walls look a bit ______ in the new flat.', options:['bair','bare','baer','bayr'], correct:1 },
+  { id:'q6i', sentence:'Rumi is the same ______ as me.', options:['hight','height','hieght','hiyht'], correct:1 },
+  { id:'q6j', sentence:'He was ______ of what to say.', options:['unshore','unnsur','unsure','unshure'], correct:2 },
+];
+
+const q6Answers = {};
+
+function buildQ6() {
+  const container = document.getElementById('q6-container');
+  Q6_ITEMS.forEach((item, idx) => {
+    const letter = String.fromCharCode(97 + idx);
+    const div = document.createElement('div');
+    div.className = 'q6-item';
+    div.innerHTML = `
+      <div class="q6-label">Part (${letter})</div>
+      <div class="mcq-sentence">${item.sentence.replace('______','<strong>______</strong>')}</div>
+      <div class="mcq-grid" id="mcq-${item.id}">
+        ${item.options.map((opt, i) => `
+          <div class="mcq-opt" onclick="selectQ6('${item.id}', ${i}, ${item.correct})" id="opt-${item.id}-${i}">
+            <div class="mcq-radio"></div>
+            <span>${opt}</span>
+          </div>`).join('')}
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function selectQ6(id, chosen, correct) {
+  // Clear previous
+  for(let i=0;i<4;i++) {
+    const el = document.getElementById(`opt-${id}-${i}`);
+    if(el) el.classList.remove('selected','correct','wrong');
+  }
+  const chosenEl = document.getElementById(`opt-${id}-${chosen}`);
+  if(chosen === correct) {
+    chosenEl.classList.add('correct');
+  } else {
+    chosenEl.classList.add('wrong');
+    const correctEl = document.getElementById(`opt-${id}-${correct}`);
+    if(correctEl) correctEl.classList.add('correct');
+  }
+  q6Answers[id] = { chosen, correct, text: Q6_ITEMS.find(i=>i.id===id).options[chosen] };
+  checkQ6();
+}
+
+function checkQ6() {
+  const answered = Object.keys(q6Answers).length;
+  const card = document.getElementById('card-q6');
+  if(answered >= Q6_ITEMS.length) card.classList.add('answered');
+  updateProgress();
+}
+
+// ── PROGRESS ──────────────────────────────────────────────
+const TOTAL_Q = 6;
+let answered = new Set();
+
+function markAnswered(q) { answered.add(q); updateProgress(); }
+
+function updateProgress() {
+  const n = answered.size;
+  document.getElementById('progFill').style.width = (n/TOTAL_Q*100) + '%';
+  document.getElementById('progText').textContent = n + ' of ' + TOTAL_Q + ' questions answered';
+}
+
+// ── INDIVIDUAL QUESTION CHECKS ────────────────────────────
+function checkQ1() {
+  const vals = document.querySelectorAll('[data-q1]');
+  const filled = Array.from(vals).some(v=>v.value.trim().length > 0);
+  if(filled){ document.getElementById('card-q1').classList.add('answered'); markAnswered('q1'); }
+}
+function checkQ2() {
+  const w = document.getElementById('plural-watch').value.trim();
+  const a = document.getElementById('plural-apple').value.trim();
+  if(w||a){ document.getElementById('card-q2').classList.add('answered'); markAnswered('q2'); }
+}
+function checkQ3() {
+  const a = document.getElementById('q3a').value.trim();
+  const b = document.getElementById('q3b').value.trim();
+  if(a||b){ document.getElementById('card-q3').classList.add('answered'); markAnswered('q3'); }
+}
+function checkQ4() {
+  const name = document.getElementById('q4-name').value.trim();
+  const sents = document.getElementById('q4-sentences').value.trim();
+  if(name||sents){ document.getElementById('card-q4').classList.add('answered'); markAnswered('q4'); }
+}
+function checkQ5() {
+  const email = document.getElementById('q5-email').value.trim();
+  if(email.length > 10){ document.getElementById('card-q5').classList.add('answered'); markAnswered('q5'); }
+}
+
+// ── SUBMIT ────────────────────────────────────────────────
+function submitPaper() {
+  const now = new Date().toLocaleDateString('en-GB', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const val = id => (document.getElementById(id)||{}).value || '(blank)';
+  const alphaVals = Array.from(document.querySelectorAll('[data-q1]')).map((el,i)=>`  ${i+1}. ${el.value||'(blank)'}`).join('\n');
+
+  const q6Lines = Q6_ITEMS.map((item,idx)=>{
+    const letter = String.fromCharCode(97+idx);
+    const ans = q6Answers[item.id];
+    if(!ans) return `  (${letter}) — not answered`;
+    const mark = ans.chosen===ans.correct ? '✓' : '✗';
+    return `  (${letter}) ${mark} answered: "${ans.text}" — correct: "${item.options[ans.correct]}"`;
+  }).join('\n');
+
+  let body = `E2 Writing Paper 4 — ${now}\n\n`;
+  body += `━━━ Q1: ALPHABETICAL ORDER ━━━\n${alphaVals}\n\n`;
+  body += `━━━ Q2: PLURALS ━━━\n  watch → ${val('plural-watch')}\n  apple → ${val('plural-apple')}\n\n`;
+  body += `━━━ Q3: REWRITE SENTENCES ━━━\n  (a) ${val('q3a')}\n  (b) ${val('q3b')}\n\n`;
+  body += `━━━ Q4: CLUB CARD FORM ━━━\n`;
+  body += `  Name: ${val('q4-name')}\n  House: ${val('q4-house')}\n  Street: ${val('q4-street')}\n  Town: ${val('q4-town')}\n  Postcode: ${val('q4-postcode')}\n  Email: ${val('q4-email')}\n`;
+  body += `  Sentences:\n${val('q4-sentences')}\n\n`;
+  body += `━━━ Q5: EMAIL (Last Weekend) ━━━\n${val('q5-email')}\n\n`;
+  body += `━━━ Q6: SPELLING (10 marks) ━━━\n${q6Lines}\n`;
+
+  const gmail = 'https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=' + encodeURIComponent('E2 Writing Paper 4 — ' + now) + '&body=' + encodeURIComponent(body);
+  window.open(gmail, '_blank');
+  document.getElementById('successMsg').style.display = 'block';
+}
+
+// ── INIT ──────────────────────────────────────────────────
+buildQ6();
+</script>
+</body>
+</html>
