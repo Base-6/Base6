@@ -3,262 +3,758 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AP's Space · Base 6</title>
+<title>AP's SYP Plan · Base 6</title>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root { --accent: #7a3fa8; --accent-light: #f5eeff; --cream: #fef8f4; --dark: #1a1a1a; --muted: #555; --green: #2e8b57; --green-light: #eaf7f0; --orange: #ef7724; --orange-light: #fff3eb; --gold: #b8860b; --gold-light: #fff8e1; }
-  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: var(--cream); color: var(--dark); min-height: 100vh; }
-  #lockScreen { position: fixed; inset: 0; background: var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; padding: 2rem; text-align: center; }
-  #lockScreen h1 { font-size: 2rem; font-weight: 700; color: white; margin-bottom: 0.5rem; }
-  #lockScreen p { font-size: 1rem; color: rgba(255,255,255,0.85); margin-bottom: 2rem; line-height: 1.5; }
-  #lockScreen .lock-icon { font-size: 3.5rem; margin-bottom: 1rem; }
-  #passwordInput { padding: 0.75rem 1.25rem; border-radius: 12px; border: 3px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.15); color: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.2rem; font-weight: 700; text-align: center; width: 100%; max-width: 280px; margin-bottom: 1rem; }
-  #passwordInput::placeholder { color: rgba(255,255,255,0.5); }
-  #passwordInput:focus { outline: none; border-color: white; background: rgba(255,255,255,0.25); }
-  #unlockBtn { padding: 0.75rem 2rem; background: white; color: var(--accent); border: none; border-radius: 12px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
-  #lockError { color: white; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 700; margin-top: 0.75rem; display: none; }
-  #mainContent { display: none; }
-  .site-header { background: linear-gradient(135deg, #7a3fa8, #5a2a88); padding: 1.5rem 2rem; text-align: center; }
-  .site-header .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #d8b8f8; margin-bottom: 0.4rem; }
-  .site-header h1 { font-size: 1.8rem; font-weight: 700; color: white; }
-  .site-header p { font-size: 0.9rem; color: rgba(255,255,255,0.85); margin-top: 0.4rem; }
-  .back-bar { background: rgba(0,0,0,0.2); padding: 0.6rem 2rem; }
-  .back-link { color: rgba(255,255,255,0.85); font-size: 0.85rem; font-weight: 700; text-decoration: none; }
-  .main { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-  .section-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 2px solid var(--accent-light); }
-  .section-card h2 { font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; }
-  .section-card.orange { border-color: #fcd8bc; }
-  .section-card.orange h2 { color: var(--orange); }
-  .section-card.gold { border-color: #f0d080; }
-  .section-card.gold h2 { color: var(--gold); }
-  .section-card.green { border-color: #a9dfbf; }
-  .section-card.green h2 { color: var(--green); }
-  label { display: block; font-size: 0.88rem; font-weight: 700; color: var(--dark); margin-bottom: 0.4rem; margin-top: 0.9rem; }
-  label:first-of-type { margin-top: 0; }
-  textarea, input[type=text] { width: 100%; padding: 0.75rem; border: 2px solid #e0d8d0; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; color: var(--dark); background: var(--cream); line-height: 1.6; resize: vertical; min-height: 70px; }
-  input[type=text] { min-height: unset; }
-  textarea:focus, input:focus { outline: none; border-color: var(--accent); }
-  .hint-text { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.4; font-style: italic; }
-  .mood-grid { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.4rem; }
-  .mood-btn { padding: 0.5rem 0.9rem; border-radius: 20px; border: 2px solid #e0d8d0; background: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; color: var(--dark); }
-  .mood-btn.selected { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --accent: #7a3fa8; --accent-light: #f5eeff; --cream: #fef8f4;
+  --dark: #1a1a1a; --muted: #555; --green: #2e8b57; --green-light: #eaf7f0;
+  --orange: #ef7724; --orange-light: #fff3eb; --gold: #b8860b; --gold-light: #fff8e1;
+  --teal: #007291; --teal-light: #e3f1f5; --red: #c0392b; --red-light: #fdf0ee;
+}
+body { font-family: 'Atkinson Hyperlegible', sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; }
 
-  .rate-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; padding: 0.6rem 0.7rem; border-radius: 10px; background: #faf8fc; margin-bottom: 0.5rem; }
-  .rate-text { flex: 1; min-width: 150px; font-size: 0.92rem; font-weight: 700; }
-  .rate-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.05rem; padding: 0.35rem 0.7rem; border-radius: 10px; border: 2px solid #e0d8d0; background: white; cursor: pointer; }
-  .rate-btn.on { border-color: var(--accent); background: var(--accent-light); }
+/* ── LOCK ── */
+#lockScreen { position: fixed; inset: 0; background: var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; padding: 2rem; text-align: center; }
+#lockScreen h1 { font-size: 2rem; font-weight: 700; color: white; margin-bottom: 0.5rem; }
+#lockScreen p { font-size: 1rem; color: rgba(255,255,255,0.85); margin-bottom: 2rem; line-height: 1.5; }
+.lock-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+#passwordInput { padding: 0.75rem 1.25rem; border-radius: 12px; border: 3px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.15); color: white; font-family: inherit; font-size: 1.2rem; font-weight: 700; text-align: center; width: 100%; max-width: 280px; margin-bottom: 1rem; }
+#passwordInput::placeholder { color: rgba(255,255,255,0.5); }
+#passwordInput:focus { outline: none; border-color: white; background: rgba(255,255,255,0.25); }
+#unlockBtn { padding: 0.75rem 2rem; background: white; color: var(--accent); border: none; border-radius: 12px; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; }
+#lockError { color: white; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 700; margin-top: 0.75rem; display: none; }
+#mainContent { display: none; }
 
-  .mission { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.9rem 1rem; border-radius: 12px; background: #fafaf8; border: 2px solid #e0d8d0; margin-bottom: 0.6rem; cursor: pointer; transition: all 0.15s; user-select: none; }
-  .mission:hover { border-color: #d8b8f8; }
-  .mission.done { background: var(--green-light); border-color: var(--green); }
-  .mission .m-icon { font-size: 1.4rem; flex-shrink: 0; }
-  .mission .m-text { font-size: 0.9rem; font-weight: 700; line-height: 1.45; }
-  .mission .m-sub { font-size: 0.78rem; font-weight: 400; color: var(--muted); display: block; margin-top: 2px; }
-  .mission.done .m-text { color: var(--green); }
+/* ── HEADER ── */
+.site-header { background: linear-gradient(135deg, #7a3fa8, #5a2a88); padding: 1.5rem 2rem; text-align: center; }
+.site-header .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #d8b8f8; margin-bottom: 0.4rem; }
+.site-header h1 { font-size: 1.8rem; font-weight: 700; color: white; }
+.site-header p { font-size: 0.9rem; color: rgba(255,255,255,0.85); margin-top: 0.4rem; }
+.back-bar { background: rgba(0,0,0,0.2); padding: 0.6rem 2rem; }
+.back-link { color: rgba(255,255,255,0.85); font-size: 0.85rem; font-weight: 700; text-decoration: none; }
 
-  .crew-card { background: linear-gradient(135deg, #1a1a2e, #2d2d4e); border-radius: 14px; padding: 1.4rem; color: white; margin-top: 0.5rem; }
-  .crew-card h3 { font-size: 1.05rem; margin-bottom: 0.5rem; color: #f0b9a8; }
-  .crew-card p { font-size: 0.88rem; line-height: 1.65; color: #ccc; margin-bottom: 0.75rem; }
-  .crew-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .crew-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; padding: 0.5rem 1rem; border-radius: 20px; border: 2px solid #555; background: transparent; color: #ddd; cursor: pointer; }
-  .crew-btn.on { border-color: #f0b9a8; background: rgba(240,185,168,0.15); color: #f0b9a8; }
+/* ── PROGRESS BAR (sticky under header) ── */
+.progress-sticky { background: white; border-bottom: 2px solid #e8e0d8; padding: 0.65rem 1.5rem; }
+.progress-inner { max-width: 700px; margin: 0 auto; }
+.progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: var(--muted); margin-bottom: 0.4rem; }
+.progress-track { height: 8px; background: #e8e0d8; border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--orange)); border-radius: 999px; transition: width 400ms ease; }
 
-  .btn { display: inline-block; padding: 0.75rem 1.75rem; border-radius: 10px; border: none; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s; }
-  .btn:hover { transform: translateY(-2px); }
-  .btn-primary { background: var(--accent); color: white; }
-  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; justify-content: center; }
-  .success-msg { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 1rem; color: var(--green); font-weight: 700; margin-top: 1rem; display: none; }
-  .info-banner { border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.9rem; line-height: 1.6; }
-  .info-banner .ib-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
-  .export-bar { background: var(--accent-light); border-top: 2px solid #d8b8f8; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
-  .export-bar span { font-size: 0.85rem; font-weight: 700; color: var(--accent); }
-  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+/* ── TABS ── */
+.tab-bar { background: white; border-bottom: 2px solid #e8e0d8; position: sticky; top: 0; z-index: 50; }
+.tab-bar-inner { max-width: 700px; margin: 0 auto; display: flex; overflow-x: auto; scrollbar-width: none; }
+.tab-bar-inner::-webkit-scrollbar { display: none; }
+.tab-btn { flex-shrink: 0; padding: 0.85rem 1.1rem; font-family: inherit; font-size: 0.88rem; font-weight: 700; color: var(--muted); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; white-space: nowrap; transition: color 0.15s, border-color 0.15s; margin-bottom: -2px; }
+.tab-btn:hover { color: var(--accent); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── TAB PANELS ── */
+.tab-panel { display: none; max-width: 700px; margin: 0 auto; padding: 1.75rem 1.5rem 4rem; }
+.tab-panel.active { display: block; }
+
+/* ── CARDS ── */
+.card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border: 2px solid var(--accent-light); }
+.card h2 { font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.9rem; }
+.card.orange { border-color: #fcd8bc; } .card.orange h2 { color: var(--orange); }
+.card.gold { border-color: #f0d080; } .card.gold h2 { color: var(--gold); }
+.card.green { border-color: #a9dfbf; } .card.green h2 { color: var(--green); }
+.card.teal { border-color: #b2d8e4; } .card.teal h2 { color: var(--teal); }
+.card.red { border-color: #f5b8b0; } .card.red h2 { color: var(--red); }
+
+label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 0.4rem; margin-top: 1rem; }
+label:first-of-type { margin-top: 0; }
+textarea, input[type=text] { width: 100%; padding: 0.75rem; border: 2px solid #e0d8d0; border-radius: 10px; font-family: inherit; font-size: 0.95rem; color: var(--dark); background: var(--cream); line-height: 1.6; resize: vertical; min-height: 72px; }
+input[type=text] { min-height: unset; }
+textarea:focus, input:focus { outline: none; border-color: var(--accent); }
+.hint { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.4; }
+.body-text { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin-bottom: 0.9rem; }
+
+/* ── INFO BOX ── */
+.info-box { border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem; font-size: 0.88rem; line-height: 1.65; background: var(--teal-light); border: 1.5px solid #b2d8e4; color: #00516a; }
+.info-box strong { font-weight: 700; }
+.info-box a { color: var(--teal); }
+
+/* ── CONTACT CARD ── */
+.contact-card { background: linear-gradient(135deg, #1a1a2e, #2d2d4e); border-radius: 14px; padding: 1.4rem; color: white; margin-top: 0.75rem; }
+.contact-card h3 { font-size: 1rem; margin-bottom: 0.75rem; color: #d8b8f8; font-weight: 700; }
+.contact-row { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.5rem; font-size: 0.88rem; line-height: 1.5; }
+.contact-row .ci { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.contact-row a { color: #a8d8f0; text-decoration: none; word-break: break-all; }
+.contact-row a:hover { text-decoration: underline; }
+.contact-row span { color: #ccc; }
+
+/* ── STEPS ── */
+.step { display: flex; align-items: flex-start; gap: 0.9rem; padding: 0.9rem 1rem; border-radius: 12px; background: #fafaf8; border: 2px solid #e0d8d0; margin-bottom: 0.6rem; cursor: pointer; user-select: none; transition: border-color 0.15s, background 0.15s; }
+.step:hover { border-color: #d8b8f8; }
+.step.done { background: var(--green-light); border-color: var(--green); }
+.step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-size: 0.82rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; transition: background 0.15s, color 0.15s; }
+.step.done .step-num { background: var(--green); color: white; }
+.step-body { flex: 1; }
+.step-title { font-size: 0.92rem; font-weight: 700; line-height: 1.4; }
+.step.done .step-title { color: var(--green); }
+.step-sub { font-size: 0.78rem; color: var(--muted); display: block; margin-top: 3px; line-height: 1.4; }
+.step.done .step-sub { color: #3a7a5a; }
+.step-tick { font-size: 1.1rem; flex-shrink: 0; opacity: 0; transition: opacity 0.15s; align-self: center; }
+.step.done .step-tick { opacity: 1; }
+
+.stage-header { display: flex; align-items: center; gap: 0.7rem; margin: 1.4rem 0 0.7rem; }
+.stage-header:first-child { margin-top: 0; }
+.stage-pill { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 3px 10px; border-radius: 999px; flex-shrink: 0; }
+.stage-pill.now { background: var(--orange-light); color: var(--orange); border: 1.5px solid #fcd8bc; }
+.stage-pill.soon { background: var(--accent-light); color: var(--accent); border: 1.5px solid #d8b8f8; }
+.stage-pill.later { background: var(--teal-light); color: var(--teal); border: 1.5px solid #b2d8e4; }
+.stage-lbl { font-size: 0.92rem; font-weight: 700; }
+
+/* ── CHIP GRIDS (tap-to-select) ── */
+.chip-grid { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.chip { padding: 0.45rem 0.9rem; border-radius: 20px; border: 2px solid #e0d8d0; background: white; font-family: inherit; font-size: 0.88rem; font-weight: 700; cursor: pointer; color: var(--dark); transition: border-color 0.15s, background 0.15s, color 0.15s; }
+.chip:hover { border-color: #d8b8f8; }
+.chip.sel { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+.chip.sel-orange { border-color: var(--orange); background: var(--orange-light); color: var(--orange); }
+.chip.sel-green { border-color: var(--green); background: var(--green-light); color: var(--green); }
+
+/* ── SCALE ── */
+.scale-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+.scale-lbl { font-size: 0.78rem; color: var(--muted); flex-shrink: 0; }
+.scale-btns { display: flex; gap: 0.4rem; }
+.scale-btn { width: 38px; height: 38px; border-radius: 10px; border: 2px solid #e0d8d0; background: white; font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer; color: var(--muted); transition: all 0.15s; }
+.scale-btn.sel { border-color: var(--accent); background: var(--accent); color: white; }
+
+/* ── MANIFESTO BUILDER ── */
+.manifesto-preview { background: var(--gold-light); border: 2px solid #f0d080; border-radius: 14px; padding: 1.2rem 1.4rem; margin-top: 1rem; font-size: 0.92rem; line-height: 1.7; color: var(--dark); min-height: 80px; }
+.manifesto-preview .mp-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 0.5rem; }
+
+/* ── SEND BUTTON ── */
+.btn { display: inline-block; padding: 0.75rem 1.75rem; border-radius: 10px; border: none; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s; }
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: var(--accent); color: white; }
+.btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.success-msg { background: var(--green-light); border: 2px solid var(--green); border-radius: 12px; padding: 1rem; color: var(--green); font-weight: 700; margin-top: 1rem; display: none; }
+
+/* ── EXPORT BAR ── */
+.export-bar { background: var(--accent-light); border-top: 2px solid #d8b8f8; padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+.export-bar span { font-size: 0.85rem; font-weight: 700; color: var(--accent); }
+footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
 </style>
 </head>
 <body>
+
+<!-- ── LOCK ── -->
 <div id="lockScreen">
-  <div class="lock-icon">🎮</div>
-  <h1>AP's Space</h1>
-  <p>Your page. No catch.<br>Enter your password to open it.</p>
-  <input type="password" id="passwordInput" placeholder="Your password..." autocomplete="off" onkeydown="if(event.key==='Enter') tryUnlock()" />
+  <div class="lock-icon">🏛️</div>
+  <h1>AP's SYP Plan</h1>
+  <p>Your Somerset Youth Parliament planning page.<br>Enter your password to open it.</p>
+  <input type="password" id="passwordInput" placeholder="Your password..." autocomplete="off" onkeydown="if(event.key==='Enter')tryUnlock()"/>
   <button id="unlockBtn" onclick="tryUnlock()">Unlock →</button>
   <div id="lockError">That password doesn't match — try again.</div>
 </div>
+
 <div id="mainContent">
   <header class="site-header">
     <p class="tag">Week 3 · Project</p>
-    <h1>🎮 AP's Space</h1>
-    <p>Everything here is optional. Taps beat typing. Five minutes counts.</p>
+    <h1>🏛️ AP's SYP Plan</h1>
+    <p>Your route into Somerset Youth Parliament — tap, write, send.</p>
   </header>
   <div class="back-bar"><a class="back-link" href="../index.html">← Back to Week 3</a></div>
-  <main class="main">
 
-    <div class="section-card">
-      <h2>😊 Quick Check In</h2>
-      <label>Today is...</label>
-      <div class="mood-grid" id="moodGrid">
-        <button class="mood-btn" onclick="selectMood(this)">😄 Good</button>
-        <button class="mood-btn" onclick="selectMood(this)">😐 Fine</button>
-        <button class="mood-btn" onclick="selectMood(this)">😑 Meh</button>
-        <button class="mood-btn" onclick="selectMood(this)">😔 Rubbish</button>
-        <button class="mood-btn" onclick="selectMood(this)">😴 Tired</button>
-        <button class="mood-btn" onclick="selectMood(this)">🫠 Bored</button>
-      </div>
-      <p class="hint-text" style="margin-top:0.6rem;">Honest answers only — "bored" is a completely valid answer and nobody gets a lecture for it.</p>
+  <!-- PROGRESS -->
+  <div class="progress-sticky">
+    <div class="progress-inner">
+      <div class="progress-label"><span>Steps ticked off</span><span id="progressText">0 of 10</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <div class="tab-bar-inner">
+      <button class="tab-btn active" onclick="switchTab('why')">💬 Why I want this</button>
+      <button class="tab-btn" onclick="switchTab('what')">🏛️ What is SYP</button>
+      <button class="tab-btn" onclick="switchTab('plan')">✅ The Plan</button>
+      <button class="tab-btn" onclick="switchTab('campaign')">🎯 My Campaign</button>
+      <button class="tab-btn" onclick="switchTab('notes')">📝 Notes</button>
+      <button class="tab-btn" onclick="switchTab('send')">📬 Send to Jay</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 1 — WHY I WANT THIS
+  ══════════════════════════════════════ -->
+  <div class="tab-panel active" id="tab-why">
+
+    <div class="card orange">
+      <h2>💬 In my own words</h2>
+      <p class="body-text">No right answer here. This is just for you — and for Jay to understand what's driving this choice.</p>
+      <label>Why do I actually want to join Somerset Youth Parliament?</label>
+      <textarea id="whyJoin" placeholder="e.g. I want to actually be able to change things, not just talk about them. / I think young people's opinions get ignored and I want to do something about that. / I have an idea for something that needs to change in Yeovil..."></textarea>
+
+      <label>What do I want to be different — in Yeovil, Somerset, or the country — because of what I do?</label>
+      <textarea id="whatChange" placeholder="e.g. I want young people to have more say in decisions that affect them. / I want better transport options in Yeovil so we're not stuck. / I want schools to take mental health more seriously..."></textarea>
+
+      <label>Has anything happened — at school, in Yeovil, online, anywhere — that made me feel like something needed to change?</label>
+      <textarea id="moment" placeholder="e.g. There was a time when... / I noticed that... / It annoyed me when..."></textarea>
     </div>
 
-    <div class="section-card orange">
-      <h2>🔥 Rate Stuff (zero writing required)</h2>
-      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:1rem; line-height:1.6;">Quick taps. Your honest ratings actually tell Jay more about what you'd enjoy than any form ever could.</p>
-      <div id="rateContainer"></div>
+    <div class="card">
+      <h2>🎙️ Quick-fire — tap the ones that feel true</h2>
+      <p class="body-text">These are reasons people get into youth politics. Tap any that apply to you — more than one is fine, none is fine too.</p>
+      <div class="chip-grid" id="reasonChips">
+        <button class="chip" onclick="toggleChip(this,'reasons')">I want my voice to actually count</button>
+        <button class="chip" onclick="toggleChip(this,'reasons')">I'm good at arguing my point</button>
+        <button class="chip" onclick="toggleChip(this,'reasons')">I want to do something that matters</button>
+        <button class="chip" onclick="toggleChip(this,'reasons')">I'm fed up with things staying the same</button>
+        <button class="chip" onclick="toggleChip(this,'reasons')">I like the idea of speaking to real politicians</button>
+        <button class="chip" onclick="toggleChip(this,'reasons')">I want to meet other people who think seriously about things</button>
+        <button class="chip" onclick="toggleChip(this,'reasons')">There's a specific issue I care about</button>
+        <button class="chip" onclick="toggleChip(this,'reasons')">I want to build skills for later</button>
+        <button class="chip" onclick="toggleChip(this,'reasons')">Nobody else seems to be doing anything about it</button>
+        <button class="chip" onclick="toggleChip(this,'reasons')">I want to go to the House of Commons debate</button>
+      </div>
     </div>
 
-    <div class="section-card gold">
-      <h2>⚡ Five-Minute Missions</h2>
-      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:1rem; line-height:1.6;">Pick ONE. Or none. Each takes about five minutes, and any of them secretly counts as project work. Tap when done.</p>
-      <div class="mission" onclick="toggleMission(this)" data-key="m1">
-        <span class="m-icon">📸</span>
-        <span class="m-text">Take one photo of something interesting today<span class="m-sub">Weird, cool, ugly, funny — anything that made you look twice.</span></span>
-      </div>
-      <div class="mission" onclick="toggleMission(this)" data-key="m2">
-        <span class="m-icon">🗑️</span>
-        <span class="m-text">Find the worst-designed thing in school<span class="m-sub">A sign, a door, a rule, anything. Bonus points for explaining why it's terrible.</span></span>
-      </div>
-      <div class="mission" onclick="toggleMission(this)" data-key="m3">
-        <span class="m-icon">🎵</span>
-        <span class="m-text">Pick the song that matches today<span class="m-sub">Just decide which one. That's the whole mission.</span></span>
-      </div>
-      <div class="mission" onclick="toggleMission(this)" data-key="m4">
-        <span class="m-icon">🎮</span>
-        <span class="m-text">Review something — a game, a video, a snack<span class="m-sub">One sentence, or just a score out of 10. Critics are basically professional opinion-havers.</span></span>
-      </div>
-      <div class="mission" onclick="toggleMission(this)" data-key="m5">
-        <span class="m-icon">🎬</span>
-        <span class="m-text">Watch 5 minutes of someone else's project happening<span class="m-sub">No joining required. Just watch. Lurking is allowed.</span></span>
-      </div>
-      <label style="margin-top:1rem;">If a mission produced anything (a photo, a verdict, a song) — drop it here. Optional.</label>
-      <textarea id="missionNotes" placeholder="Worst-designed thing: ... / Today's song: ... / Score: ..."></textarea>
-    </div>
+    <div class="card gold">
+      <h2>⚡ The honest version</h2>
+      <p class="body-text">Sometimes what drives people is not the polished answer. The honest version is usually the more powerful one.</p>
 
-    <div class="section-card">
-      <h2>🎬 The Crew Option</h2>
-      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:0.75rem; line-height:1.6;">Not everyone wants to run their own project — and on a real film set, most people don't. They're crew. There's a film being made in this class right now, and it needs people.</p>
-      <div class="crew-card">
-        <h3>📦 BOX-MAN: DELIVERY OF JUSTICE is hiring</h3>
-        <p>LW's improvised superhero film needs crew. No planning, no forms, no pitch — you just show up and do the job. Open roles:</p>
-        <div class="crew-options" id="crewOptions">
-          <button class="crew-btn" onclick="toggleCrew(this)">🎥 Camera operator</button>
-          <button class="crew-btn" onclick="toggleCrew(this)">📸 Behind-the-scenes photographer</button>
-          <button class="crew-btn" onclick="toggleCrew(this)">🎭 Actor (villain? civilian?)</button>
-          <button class="crew-btn" onclick="toggleCrew(this)">✂️ Editor</button>
-          <button class="crew-btn" onclick="toggleCrew(this)">🎵 Music / sound picker</button>
-          <button class="crew-btn" onclick="toggleCrew(this)">🤔 Maybe — tell me more</button>
+      <label>What actually frustrates me about how things work for young people right now?</label>
+      <textarea id="frustration" placeholder="e.g. Adults make decisions about things they don't understand. / Nobody asks us. / Everything changes except the stuff that affects young people..."></textarea>
+
+      <label>If I could say one thing directly to Somerset Council — right now, no filter — what would it be?</label>
+      <textarea id="oneThingSomerset" placeholder="e.g. You need to actually listen when young people say something matters. / Sort out..."></textarea>
+
+      <label>How confident do I feel about speaking up in a room full of people right now?</label>
+      <div style="margin-top:0.4rem;">
+        <div class="scale-row">
+          <span class="scale-lbl">Not at all</span>
+          <div class="scale-btns" id="confidenceScale">
+            <button class="scale-btn" onclick="selectScale('confidence',1,this)">1</button>
+            <button class="scale-btn" onclick="selectScale('confidence',2,this)">2</button>
+            <button class="scale-btn" onclick="selectScale('confidence',3,this)">3</button>
+            <button class="scale-btn" onclick="selectScale('confidence',4,this)">4</button>
+            <button class="scale-btn" onclick="selectScale('confidence',5,this)">5</button>
+          </div>
+          <span class="scale-lbl">Very confident</span>
         </div>
-        <p style="margin-top:0.75rem; margin-bottom:0;">Tap anything that's even slightly interesting. Tapping is not signing a contract.</p>
+        <p class="hint">SYP is explicitly for building confidence — wherever you start is fine.</p>
+      </div>
+
+      <label>What would make me feel more ready to do this?</label>
+      <textarea id="readiness" placeholder="e.g. Practice talking in front of people. / Understanding how voting works. / Just knowing someone else in SYP first..."></textarea>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 2 — WHAT IS SYP
+  ══════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-what">
+
+    <div class="card teal">
+      <h2>🏛️ What is Somerset Youth Parliament?</h2>
+      <div class="info-box">
+        <strong>Somerset Youth Parliament (SYP)</strong> is run by <strong>Somerset Council</strong>. It has two parts:
+        <br><br>
+        <strong>Members of Youth Parliament (MYPs)</strong> — 3 elected reps, one for each area of Somerset. They represent Somerset at the national <strong>UK Youth Parliament</strong>, including an annual debate in the <strong>House of Commons</strong>. The most recent MYPs (Blake, Eva and Luca) were elected in late 2025 and started in April 2026.
+        <br><br>
+        <strong>The Advisory Group</strong> — open all year to anyone aged 10–25 who lives, works or studies in Somerset. No election needed. AP can join this right now.
+        <br><br>
+        Yeovil is in the <strong>South Somerset and Mendip</strong> area — that's AP's constituency for the MYP election.
       </div>
     </div>
 
-    <div class="section-card green">
-      <h2>🃏 The Anti-Project</h2>
-      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:0.75rem; line-height:1.6;">Forget "projects". If you could make, do, break, collect, review, or film literally anything — with no presentation at the end, no write-up, nothing — what would it be?</p>
-      <textarea id="antiProject" placeholder="Honestly? I'd..."></textarea>
-      <p class="hint-text">Whatever goes in this box, Jay's job is to find a way to make it count. That's the deal.</p>
+    <div class="card">
+      <h2>🗳️ How the MYP election works</h2>
+      <p class="body-text">It is a <strong>self-nomination election</strong> — any young person aged 11–17 in Somerset can put themselves forward. A teacher does not have to do it for you.</p>
+      <p class="body-text">Nominations open every <strong>September</strong> (in 2025 the deadline was 3 November). Voting then runs through schools, colleges and youth clubs across Somerset during <strong>November–December</strong>. In the 2025 election, over 1,600 young people voted across 11 schools.</p>
+      <p class="body-text">All candidates are invited to a <strong>candidates' development day</strong> — a full Saturday of workshops on campaigning and public speaking. Even if you don't win, you get a certificate and an invitation to join the Advisory Group.</p>
+      <p class="body-text">The <strong>next election</strong> is expected around <strong>November–December 2027</strong>. AP would be 15–16 and comfortably within the eligible age range.</p>
     </div>
 
-    <div class="section-card">
-      <h2>📬 One Tap to Finish</h2>
-      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:0.5rem; line-height:1.6;">Send whatever you did (or didn't do) to Jay. Even an empty page with a mood is a real answer.</p>
-      <div class="btn-row" style="margin-top:0.75rem;">
+    <div class="card gold">
+      <h2>📅 What the role actually involves</h2>
+      <p class="body-text">Monthly meetings (online or face-to-face, sometimes at County Hall in Taunton). Consultations, grant decisions, recruitment panels, public speaking, campaign design. MYPs also attend national UK Youth Parliament events — including sitting in the House of Commons for the annual debate.</p>
+      <p class="body-text">The Advisory Group has the same meetings but without the election commitment — it's a good way to build up experience before standing.</p>
+      <p class="body-text">The role is voluntary and unpaid. Travel to Taunton (about 40 minutes from Yeovil) is sometimes needed for in-person events.</p>
+    </div>
+
+    <div class="card">
+      <h2>🔗 Useful links</h2>
+      <div class="contact-card">
+        <h3>📬 Team contact</h3>
+        <div class="contact-row"><span class="ci">👩</span><span>Kate Darlington, Engagement and Participation Officer</span></div>
+        <div class="contact-row"><span class="ci">📧</span><a href="mailto:youthparliament@somerset.gov.uk">youthparliament@somerset.gov.uk</a></div>
+        <div class="contact-row"><span class="ci">📧</span><a href="mailto:kate.darlington@somerset.gov.uk">kate.darlington@somerset.gov.uk</a></div>
+        <div class="contact-row"><span class="ci">📞</span><span>07964 699595</span></div>
+        <div class="contact-row"><span class="ci">🌐</span><a href="https://somersetyouthparliament.org.uk" target="_blank" rel="noopener">somersetyouthparliament.org.uk</a></div>
+        <div class="contact-row"><span class="ci">📸</span><span>@somerset_youth_parliament on Instagram</span></div>
+        <div class="contact-row"><span class="ci">🗳️</span><a href="https://service.somerset.gov.uk/join-somerset-youth-parliament" target="_blank" rel="noopener">Join the Advisory Group (form)</a></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 3 — THE PLAN
+  ══════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-plan">
+
+    <div class="card gold">
+      <h2>✅ Ten steps — tap each one when done</h2>
+      <p class="body-text">Three stages. Tap a step to mark it done. Saves on this device.</p>
+
+      <div class="stage-header">
+        <span class="stage-pill now">Stage 1 — Do this now</span>
+        <span class="stage-lbl">Join the Advisory Group</span>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)" data-key="s1">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Explore the SYP website</div>
+          <span class="step-sub">somersetyouthparliament.org.uk — read About Us, Meet the Group and Our Campaigns. Find out what Blake, Eva and Luca are working on.</span>
+        </div>
+        <span class="step-tick">✓</span>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)" data-key="s2">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Fill in the Advisory Group application</div>
+          <span class="step-sub">service.somerset.gov.uk/join-somerset-youth-parliament — open all year, no election needed. This is the fastest way in.</span>
+        </div>
+        <span class="step-tick">✓</span>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)" data-key="s3">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Send an introductory email to the team</div>
+          <span class="step-sub">Email youthparliament@somerset.gov.uk — say you are 14, Yeovil-based, just applied to the Advisory Group, and want to know when the next election is. Ask Jay to help draft it if useful.</span>
+        </div>
+        <span class="step-tick">✓</span>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)" data-key="s4">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Follow SYP on Instagram</div>
+          <span class="step-sub">@somerset_youth_parliament — meeting dates, events and election announcements all go here first.</span>
+        </div>
+        <span class="step-tick">✓</span>
+      </div>
+
+      <div class="stage-header">
+        <span class="stage-pill soon">Stage 2 — Build up (2026–2027)</span>
+        <span class="stage-lbl">Get experience</span>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)" data-key="s5">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Attend your first Advisory Group meeting</div>
+          <span class="step-sub">Monthly, online or in person (sometimes County Hall, Taunton). Being there — even quietly — is real project evidence.</span>
+        </div>
+        <span class="step-tick">✓</span>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)" data-key="s6">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-title">Lock in a campaign theme</div>
+          <span class="step-sub">Use the Campaign tab to build this. You need something you'd genuinely fight for — not just a good-sounding topic.</span>
+        </div>
+        <span class="step-tick">✓</span>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)" data-key="s7">
+        <div class="step-num">7</div>
+        <div class="step-body">
+          <div class="step-title">Keep attending through 2026–2027</div>
+          <span class="step-sub">Consultations, grant panels, workshops, public speaking practice. The more active you are, the stronger a candidate you become.</span>
+        </div>
+        <span class="step-tick">✓</span>
+      </div>
+
+      <div class="stage-header">
+        <span class="stage-pill later">Stage 3 — The election (~Nov–Dec 2027)</span>
+        <span class="stage-lbl">Stand as MYP</span>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)" data-key="s8">
+        <div class="step-num">8</div>
+        <div class="step-body">
+          <div class="step-title">Watch for nomination links in September 2027</div>
+          <span class="step-sub">They open every September on somersetyouthparliament.org.uk/elections. In 2025 the deadline was 3 November. Set a reminder.</span>
+        </div>
+        <span class="step-tick">✓</span>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)" data-key="s9">
+        <div class="step-num">9</div>
+        <div class="step-body">
+          <div class="step-title">Self-nominate and write your manifesto</div>
+          <span class="step-sub">Any 11–17 year old in Somerset can put themselves forward — no teacher needed. Your manifesto sets out your campaign pledges.</span>
+        </div>
+        <span class="step-tick">✓</span>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)" data-key="s10">
+        <div class="step-num">10</div>
+        <div class="step-body">
+          <div class="step-title">Campaign — voting runs through schools in Dec 2027</div>
+          <span class="step-sub">All schools, colleges and youth clubs in South Somerset and Mendip vote. Attend the candidates' development day. Even unsuccessful candidates get a certificate.</span>
+        </div>
+        <span class="step-tick">✓</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 4 — MY CAMPAIGN
+  ══════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-campaign">
+
+    <div class="card orange">
+      <h2>🎯 What would I actually fight for?</h2>
+      <p class="body-text">Every MYP runs a campaign on something they genuinely care about. Past Somerset campaigns have covered mental health, financial literacy, social media, sport and the environment. The best ones are personal — something you've actually experienced or noticed.</p>
+
+      <label>Tap any topics that matter to you</label>
+      <div class="chip-grid" id="campaignChips">
+        <button class="chip" onclick="toggleChip(this,'campaign')">🧠 Mental health in schools</button>
+        <button class="chip" onclick="toggleChip(this,'campaign')">📱 Online safety / social media</button>
+        <button class="chip" onclick="toggleChip(this,'campaign')">💷 Money and financial skills</button>
+        <button class="chip" onclick="toggleChip(this,'campaign')">🌍 Climate and environment</button>
+        <button class="chip" onclick="toggleChip(this,'campaign')">🚌 Transport for young people</button>
+        <button class="chip" onclick="toggleChip(this,'campaign')">⚽ Sport and activities</button>
+        <button class="chip" onclick="toggleChip(this,'campaign')">🎮 Gaming and digital life</button>
+        <button class="chip" onclick="toggleChip(this,'campaign')">🏳️‍🌈 Inclusion and equality</button>
+        <button class="chip" onclick="toggleChip(this,'campaign')">🎓 SEND and neurodiversity</button>
+        <button class="chip" onclick="toggleChip(this,'campaign')">🏘️ Things to do locally (Yeovil)</button>
+        <button class="chip" onclick="toggleChip(this,'campaign')">🏫 How schools are run</button>
+        <button class="chip" onclick="toggleChip(this,'campaign')">🗳️ Young people having a vote</button>
+      </div>
+
+      <label>In one sentence — what is my campaign about?</label>
+      <input type="text" id="campaignSentence" placeholder="e.g. I want young people in Somerset to have real transport options so we're not stuck." />
+      <p class="hint">Don't worry about making this perfect — it just needs to feel true.</p>
+
+      <label>Why does this particular thing matter to me personally?</label>
+      <textarea id="campaignWhy" placeholder="e.g. I've felt it myself when... / I know people who have been affected by... / I've noticed that in Yeovil..."></textarea>
+
+      <label>What would actually change if my campaign worked?</label>
+      <textarea id="campaignOutcome" placeholder="e.g. Young people could get to work and social things without relying on parents. / Schools would have to listen to what students say about..."></textarea>
+    </div>
+
+    <div class="card">
+      <h2>🗣️ Draft manifesto</h2>
+      <p class="body-text">A manifesto is just a statement of what you'd do and why. This one builds from what you've typed above — tap to fill it in and edit it here.</p>
+      <label>Your name / area</label>
+      <input type="text" id="manifestoName" placeholder="e.g. AP, South Somerset and Mendip" />
+      <label>Your campaign pledge — what you commit to doing</label>
+      <textarea id="manifestoPledge" placeholder="e.g. I will push Somerset Council to extend the bus network to areas where young people actually live and work. / I will campaign for..."></textarea>
+      <label>Why you (not someone else)</label>
+      <textarea id="manifestoWhy" placeholder="e.g. I'm from Yeovil and I've lived this. I know what it's like to be cut off from opportunities because of where you live and how old you are."></textarea>
+
+      <div class="manifesto-preview" id="manifestoPreview">
+        <div class="mp-label">📄 Your manifesto so far</div>
+        <div id="manifestoText" style="color:var(--muted);font-size:0.85rem;">Fill in the fields above and your manifesto will appear here.</div>
+      </div>
+    </div>
+
+    <div class="card green">
+      <h2>💪 Am I ready for this?</h2>
+      <p class="body-text">Honest self-assessment. These are things you can build — none of them need to be perfect now.</p>
+
+      <label>How strongly do I feel about my campaign issue?</label>
+      <div class="scale-row">
+        <span class="scale-lbl">Not really</span>
+        <div class="scale-btns" id="passionScale">
+          <button class="scale-btn" onclick="selectScale('passion',1,this)">1</button>
+          <button class="scale-btn" onclick="selectScale('passion',2,this)">2</button>
+          <button class="scale-btn" onclick="selectScale('passion',3,this)">3</button>
+          <button class="scale-btn" onclick="selectScale('passion',4,this)">4</button>
+          <button class="scale-btn" onclick="selectScale('passion',5,this)">5</button>
+        </div>
+        <span class="scale-lbl">Really strongly</span>
+      </div>
+
+      <label>How ready do I feel to talk about this in public?</label>
+      <div class="scale-row">
+        <span class="scale-lbl">Not ready</span>
+        <div class="scale-btns" id="speakingScale">
+          <button class="scale-btn" onclick="selectScale('speaking',1,this)">1</button>
+          <button class="scale-btn" onclick="selectScale('speaking',2,this)">2</button>
+          <button class="scale-btn" onclick="selectScale('speaking',3,this)">3</button>
+          <button class="scale-btn" onclick="selectScale('speaking',4,this)">4</button>
+          <button class="scale-btn" onclick="selectScale('speaking',5,this)">5</button>
+        </div>
+        <span class="scale-lbl">Ready now</span>
+      </div>
+
+      <label>What is the thing I most want to get better at between now and the election?</label>
+      <textarea id="getGoodAt" placeholder="e.g. Speaking without a script. / Understanding how council decisions actually get made. / Being confident when people push back on my ideas..."></textarea>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 5 — NOTES
+  ══════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-notes">
+
+    <div class="card">
+      <h2>📝 Meeting notes</h2>
+      <p class="body-text">Date, what happened, who was there, anything that surprised you. Good project evidence.</p>
+      <textarea id="meetingNotes" rows="6" placeholder="e.g. Advisory Group — 14 July 2026 — met online, about 12 people. Talked about the Make Your Mark ballot results. Kate ran it. Someone from Taunton talked about their mental health campaign..."></textarea>
+    </div>
+
+    <div class="card teal">
+      <h2>📬 Email log</h2>
+      <p class="body-text">Keep a record of emails sent and replies received — this is proper primary source evidence for a project.</p>
+      <textarea id="emailLog" placeholder="e.g. 16 June 2026 — emailed youthparliament@somerset.gov.uk introducing myself&#10;17 June 2026 — reply from Kate, she said the next election would be announced in September 2027..."></textarea>
+    </div>
+
+    <div class="card gold">
+      <h2>💡 Questions I want to find out</h2>
+      <textarea id="questions" placeholder="e.g. How many people are usually in the Advisory Group? / Do I need a teacher to support my nomination? / Can Jay come to a meeting with me?"></textarea>
+    </div>
+
+    <div class="card orange">
+      <h2>🔦 Things I've noticed or learned</h2>
+      <p class="body-text">Research findings, things that changed how you think about the topic, facts that surprised you.</p>
+      <textarea id="learned" placeholder="e.g. I didn't know Somerset Youth Parliament had been going since before I was born. / The 2025 election had 1,600 voters — that's more than I expected. / I found out the current MYP Blake is campaigning on financial literacy, which I also care about..."></textarea>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 6 — SEND TO JAY
+  ══════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-send">
+
+    <div class="card green">
+      <h2>📬 Send a project update to Jay</h2>
+      <p class="body-text">This pulls together everything you've typed across all the tabs — reasons, steps done, campaign ideas, notes — and opens a Gmail draft. Send it whenever you feel like it. Even one thing filled in is worth sending.</p>
+      <div class="btn-row">
         <button class="btn btn-primary" onclick="submitForm()">📧 Send to Jay</button>
       </div>
-      <div class="success-msg" id="successMsg">✅ Sent. That's it — you're done.</div>
+      <div class="success-msg" id="successMsg">✅ Sent. Jay will see your progress and thoughts.</div>
     </div>
 
-  </main>
-  <div class="export-bar">
-    <span>Done for today?</span>
-    <button onclick="submitForm()" style="padding:0.6rem 1.25rem;background:var(--accent);color:white;border:none;border-radius:10px;font-family:'Atkinson Hyperlegible',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;">📧 Send to Jay</button>
+    <div class="card">
+      <h2>💬 Anything else for Jay right now?</h2>
+      <p class="body-text">Quick message, question, something you want to talk about. Optional.</p>
+      <textarea id="extraMessage" placeholder="e.g. Can you help me draft the introductory email? / I want to talk about whether this is actually right for me. / I've got a question about the campaign theme..."></textarea>
+    </div>
+
   </div>
-  <footer>Base 6 · Chilton Bridge School · Week 3 Project</footer>
+
+  <div class="export-bar">
+    <span>Ready to share?</span>
+    <button onclick="submitForm()" style="padding:0.6rem 1.25rem;background:var(--accent);color:white;border:none;border-radius:10px;font-family:inherit;font-size:0.9rem;font-weight:700;cursor:pointer;">📧 Send to Jay</button>
+  </div>
+  <footer>Base 6 · Chilton Bridge School · Week 3 Project · AP's SYP Plan</footer>
 </div>
+
 <script>
-  const PASSWORD = 'ap';
-  let mood = '';
+const PASSWORD = 'ap';
+const TOTAL_STEPS = 10;
+const scales = {};
 
-  const RATE_ITEMS = [
-    'Making videos', 'Taking photos', 'Editing (cutting clips, adding music)',
-    'Being IN front of a camera', 'Being BEHIND a camera', 'Gaming content (reviews, clips, streams)',
-    'Music — finding it, mixing it, rating it', 'Building or making physical things'
-  ];
-  let ratings = {};
-  try { ratings = JSON.parse(localStorage.getItem('ap_ratings') || '{}'); } catch(e) {}
-
-  function tryUnlock() {
-    if (document.getElementById('passwordInput').value.trim().toLowerCase() === PASSWORD) {
-      document.getElementById('lockScreen').style.display = 'none';
-      document.getElementById('mainContent').style.display = 'block';
-      renderRatings(); loadMissions();
-    } else {
-      document.getElementById('lockError').style.display = 'block';
-      document.getElementById('passwordInput').value = '';
-    }
+// ── UNLOCK ────────────────────────────────────────────────
+function tryUnlock() {
+  if (document.getElementById('passwordInput').value.trim().toLowerCase() === PASSWORD) {
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    loadAll();
+  } else {
+    document.getElementById('lockError').style.display = 'block';
+    document.getElementById('passwordInput').value = '';
   }
-  function selectMood(btn) { document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); mood = btn.textContent; }
+}
 
-  function renderRatings() {
-    const c = document.getElementById('rateContainer');
-    c.innerHTML = '';
-    RATE_ITEMS.forEach((item, i) => {
-      const picked = ratings[i];
-      c.innerHTML += '<div class="rate-row"><span class="rate-text">' + item + '</span>' +
-        '<button class="rate-btn' + (picked==='fire'?' on':'') + '" onclick="rate(' + i + ',\'fire\')">🔥</button>' +
-        '<button class="rate-btn' + (picked==='ok'?' on':'') + '" onclick="rate(' + i + ',\'ok\')">🆗</button>' +
-        '<button class="rate-btn' + (picked==='bin'?' on':'') + '" onclick="rate(' + i + ',\'bin\')">🗑️</button></div>';
+// ── TABS ──────────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── STEPS ─────────────────────────────────────────────────
+function toggleStep(el) {
+  el.classList.toggle('done');
+  saveSteps();
+  updateProgress();
+}
+function saveSteps() {
+  const state = {};
+  document.querySelectorAll('.step').forEach(s => { state[s.dataset.key] = s.classList.contains('done'); });
+  try { localStorage.setItem('ap_syp_steps', JSON.stringify(state)); } catch(e) {}
+}
+function loadSteps() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('ap_syp_steps') || '{}');
+    document.querySelectorAll('.step').forEach(s => { if (saved[s.dataset.key]) s.classList.add('done'); });
+  } catch(e) {}
+}
+function updateProgress() {
+  const done = document.querySelectorAll('.step.done').length;
+  const pct = Math.round((done / TOTAL_STEPS) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = done + ' of ' + TOTAL_STEPS;
+}
+
+// ── CHIPS ─────────────────────────────────────────────────
+function toggleChip(btn, group) {
+  btn.classList.toggle('sel');
+  saveChips(group);
+}
+function saveChips(group) {
+  const sel = Array.from(document.querySelectorAll(`#${group}Chips .chip.sel`)).map(b => b.textContent.trim());
+  try { localStorage.setItem('ap_syp_chips_' + group, JSON.stringify(sel)); } catch(e) {}
+}
+function loadChips(group) {
+  try {
+    const saved = JSON.parse(localStorage.getItem('ap_syp_chips_' + group) || '[]');
+    document.querySelectorAll(`#${group}Chips .chip`).forEach(btn => {
+      if (saved.includes(btn.textContent.trim())) btn.classList.add('sel');
     });
-  }
-  function rate(i, v) {
-    ratings[i] = v;
-    try { localStorage.setItem('ap_ratings', JSON.stringify(ratings)); } catch(e) {}
-    renderRatings();
-  }
+  } catch(e) {}
+}
 
-  function toggleMission(el) {
-    el.classList.toggle('done');
-    saveMissions();
-  }
-  function saveMissions() {
-    const state = {};
-    document.querySelectorAll('.mission').forEach(m => { state[m.dataset.key] = m.classList.contains('done'); });
-    try { localStorage.setItem('ap_missions', JSON.stringify(state)); } catch(e) {}
-  }
-  function loadMissions() {
+// ── SCALES ────────────────────────────────────────────────
+function selectScale(name, val, btn) {
+  scales[name] = val;
+  document.querySelectorAll(`#${name}Scale .scale-btn`).forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  try { localStorage.setItem('ap_syp_scale_' + name, val); } catch(e) {}
+}
+function loadScales() {
+  ['confidence','passion','speaking'].forEach(name => {
     try {
-      const saved = JSON.parse(localStorage.getItem('ap_missions') || '{}');
-      document.querySelectorAll('.mission').forEach(m => { if (saved[m.dataset.key]) m.classList.add('done'); });
+      const val = localStorage.getItem('ap_syp_scale_' + name);
+      if (val) {
+        scales[name] = parseInt(val);
+        const btns = document.querySelectorAll(`#${name}Scale .scale-btn`);
+        if (btns[val-1]) btns[val-1].classList.add('sel');
+      }
     } catch(e) {}
+  });
+}
+
+// ── TEXT FIELDS ───────────────────────────────────────────
+const TEXT_FIELDS = [
+  'whyJoin','whatChange','moment','frustration','oneThingSomerset','readiness',
+  'campaignSentence','campaignWhy','campaignOutcome',
+  'manifestoName','manifestoPledge','manifestoWhy','getGoodAt',
+  'meetingNotes','emailLog','questions','learned','extraMessage'
+];
+function saveField(id) {
+  try { localStorage.setItem('ap_syp_field_' + id, document.getElementById(id).value); } catch(e) {}
+}
+function loadFields() {
+  TEXT_FIELDS.forEach(id => {
+    try {
+      const saved = localStorage.getItem('ap_syp_field_' + id);
+      if (saved !== null) document.getElementById(id).value = saved;
+    } catch(e) {}
+  });
+}
+function attachFieldListeners() {
+  TEXT_FIELDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', () => {
+        saveField(id);
+        if (['manifestoName','manifestoPledge','manifestoWhy'].includes(id)) updateManifesto();
+      });
+    }
+  });
+}
+
+// ── MANIFESTO PREVIEW ─────────────────────────────────────
+function updateManifesto() {
+  const name = document.getElementById('manifestoName').value.trim();
+  const pledge = document.getElementById('manifestoPledge').value.trim();
+  const why = document.getElementById('manifestoWhy').value.trim();
+  const el = document.getElementById('manifestoText');
+  if (!name && !pledge && !why) {
+    el.style.color = 'var(--muted)';
+    el.textContent = 'Fill in the fields above and your manifesto will appear here.';
+    return;
   }
-  function toggleCrew(btn) { btn.classList.toggle('on'); }
+  el.style.color = 'var(--dark)';
+  el.innerHTML = (name ? `<strong>${name}</strong><br><br>` : '') +
+    (pledge ? `${pledge}<br><br>` : '') +
+    (why ? `${why}` : '');
+}
 
-  function submitForm() {
-    const now = new Date().toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    const RATE_LABELS = { fire: '🔥', ok: '🆗', bin: '🗑️' };
-    const rateText = RATE_ITEMS.map((item, i) => (RATE_LABELS[ratings[i]] || '—') + ' ' + item).join('\n');
-    const missions = Array.from(document.querySelectorAll('.mission')).filter(m => m.classList.contains('done')).map(m => '✅ ' + m.querySelector('.m-text').childNodes[0].textContent.trim()).join('\n') || '(none ticked — that\'s fine)';
-    const crew = Array.from(document.querySelectorAll('.crew-btn.on')).map(b => b.textContent.trim()).join(', ') || '(nothing tapped)';
-    const val = id => (document.getElementById(id)||{}).value || '(empty)';
+// ── LOAD ALL ──────────────────────────────────────────────
+function loadAll() {
+  loadSteps();
+  loadChips('reasons');
+  loadChips('campaign');
+  loadScales();
+  loadFields();
+  attachFieldListeners();
+  updateProgress();
+  updateManifesto();
+}
 
-    let body = `AP — Week 3 — ${now}\n\n`;
-    body += `MOOD: ${mood || 'Not selected'}\n\n`;
-    body += `━━━ RATINGS ━━━\n${rateText}\n\n`;
-    body += `━━━ MISSIONS DONE ━━━\n${missions}\nMISSION NOTES: ${val('missionNotes')}\n\n`;
-    body += `━━━ BOX-MAN CREW INTEREST ━━━\n${crew}\n\n`;
-    body += `━━━ THE ANTI-PROJECT ━━━\n${val('antiProject')}`;
+// ── SUBMIT ────────────────────────────────────────────────
+function submitForm() {
+  const now = new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  const STEP_LABELS = {
+    s1:'Explored the SYP website', s2:'Applied to Advisory Group', s3:'Sent intro email',
+    s4:'Followed on Instagram', s5:'First meeting attended', s6:'Campaign theme decided',
+    s7:'Kept attending through 2026–27', s8:'Nomination links watched (Sep 2027)',
+    s9:'Self-nominated and wrote manifesto', s10:'Campaigned — election Dec 2027'
+  };
+  const steps = Array.from(document.querySelectorAll('.step.done')).map(s => '✅ ' + STEP_LABELS[s.dataset.key]).join('\n') || '(none yet)';
+  const reasons = Array.from(document.querySelectorAll('#reasonChips .chip.sel')).map(b => b.textContent.trim()).join(', ') || '(none tapped)';
+  const campaign = Array.from(document.querySelectorAll('#campaignChips .chip.sel')).map(b => b.textContent.trim()).join(', ') || '(none tapped)';
+  const val = id => document.getElementById(id).value.trim() || '(empty)';
+  const scaleVal = name => scales[name] ? scales[name] + '/5' : '(not set)';
 
-    const gmail = 'https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=' + encodeURIComponent('AP — Week 3 — ' + now) + '&body=' + encodeURIComponent(body);
-    window.open(gmail, '_blank');
-    document.getElementById('successMsg').style.display = 'block';
-  }
+  let body = `AP — Somerset Youth Parliament Plan — ${now}\n\n`;
+  body += `━━━ WHY I WANT THIS ━━━\n`;
+  body += `Why I want to join: ${val('whyJoin')}\n\n`;
+  body += `What I want to change: ${val('whatChange')}\n\n`;
+  body += `A moment that made me want to do something: ${val('moment')}\n\n`;
+  body += `Reasons I ticked: ${reasons}\n\n`;
+  body += `What frustrates me: ${val('frustration')}\n\n`;
+  body += `What I'd say to Somerset Council: ${val('oneThingSomerset')}\n\n`;
+  body += `Confidence speaking up: ${scaleVal('confidence')}\n`;
+  body += `What would make me feel more ready: ${val('readiness')}\n\n`;
+  body += `━━━ PROGRESS ━━━\n${steps}\n\n`;
+  body += `━━━ CAMPAIGN ━━━\n`;
+  body += `Topics I tapped: ${campaign}\n`;
+  body += `In one sentence: ${val('campaignSentence')}\n`;
+  body += `Why this matters to me: ${val('campaignWhy')}\n`;
+  body += `What would change if it worked: ${val('campaignOutcome')}\n`;
+  body += `How strongly I feel (passion): ${scaleVal('passion')}\n`;
+  body += `How ready to speak publicly: ${scaleVal('speaking')}\n`;
+  body += `What I want to get better at: ${val('getGoodAt')}\n\n`;
+  body += `━━━ DRAFT MANIFESTO ━━━\n`;
+  body += `Name/area: ${val('manifestoName')}\n`;
+  body += `Pledge: ${val('manifestoPledge')}\n`;
+  body += `Why me: ${val('manifestoWhy')}\n\n`;
+  body += `━━━ NOTES ━━━\n`;
+  body += `Meetings: ${val('meetingNotes')}\n\n`;
+  body += `Email log: ${val('emailLog')}\n\n`;
+  body += `Questions: ${val('questions')}\n\n`;
+  body += `Things learned: ${val('learned')}\n\n`;
+  body += `Message for Jay: ${val('extraMessage')}`;
+
+  const gmail = 'https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=' + encodeURIComponent('AP — SYP Plan — ' + now) + '&body=' + encodeURIComponent(body);
+  window.open(gmail, '_blank');
+  document.getElementById('successMsg').style.display = 'block';
+}
 </script>
 </body>
 </html>
