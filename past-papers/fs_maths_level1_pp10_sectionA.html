@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FS Maths Level 1 Past Paper 10 - Section A</title>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        background-color: #fef8f4;
+        color: #333;
+        font-family: 'Atkinson Hyperlegible', Arial, sans-serif;
+        padding: 20px;
+        line-height: 1.6;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    header {
+        background-color: #007291;
+        color: #fef8f4;
+        padding: 30px 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    header h1 { font-size: 28px; margin-bottom: 10px; }
+    header p { font-size: 16px; opacity: 0.95; }
+    .paper-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 30px;
+        font-size: 14px;
+    }
+    .info-box {
+        background-color: #e8f4f8;
+        padding: 15px;
+        border-left: 4px solid #ef7724;
+        border-radius: 4px;
+    }
+    .info-box strong { display: block; color: #007291; margin-bottom: 5px; }
+    .instructions {
+        background-color: #f0f8ff;
+        border-left: 4px solid #007291;
+        padding: 15px;
+        margin-bottom: 25px;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .question-block {
+        background-color: white;
+        border: 2px solid #007291;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 25px;
+    }
+    .question-number { font-size: 20px; font-weight: 700; color: #007291; margin-bottom: 15px; }
+    .question-text { font-size: 16px; margin-bottom: 18px; line-height: 1.7; }
+    .subquestion { margin-left: 20px; margin-bottom: 20px; }
+    .subquestion-label { font-weight: 700; color: #007291; margin-bottom: 10px; }
+    .marks { color: #ef7724; font-weight: 700; font-size: 14px; display: inline-block; margin-left: 10px; }
+    .input-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 8px; font-weight: 700; color: #333; }
+    input[type="text"], input[type="number"], textarea, select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 4px;
+        font-family: 'Atkinson Hyperlegible', Arial, sans-serif;
+        font-size: 16px;
+        background-color: #fafafa;
+    }
+    textarea { min-height: 110px; resize: vertical; }
+    input[type="text"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+        outline: none;
+        border-color: #007291;
+        background-color: white;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background-color: #f9f9f9;
+    }
+    th, td { border: 1px solid #ddd; padding: 12px; text-align: center; vertical-align: middle; }
+    th { background-color: #007291; color: white; font-weight: 700; }
+    td input { padding: 8px; width: 100%; }
+    .small-table { max-width: 650px; margin-left: auto; margin-right: auto; }
+    .diagram {
+        background-color: #f0f0f0;
+        border: 2px solid #ccc;
+        padding: 18px;
+        margin: 20px 0;
+        border-radius: 4px;
+        text-align: center;
+    }
+    .diagram-label { font-weight: 700; margin-bottom: 12px; color: #333; }
+    .exact-diagram { max-width: 100%; height: auto; background: white; border: 1px solid #ddd; }
+    .survey-box, .offer-box {
+        background-color: #f0f8ff;
+        border: 2px solid #007291;
+        border-radius: 4px;
+        padding: 15px;
+        margin: 18px auto;
+        text-align: center;
+        max-width: 520px;
+    }
+    .answer-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .check-row {
+        display: grid;
+        grid-template-columns: 34px 1fr;
+        gap: 10px;
+        align-items: start;
+        margin-top: 10px;
+    }
+    .check-icon {
+        border: 2px solid #333;
+        width: 24px;
+        height: 24px;
+        line-height: 18px;
+        text-align: center;
+        font-size: 26px;
+        font-weight: 700;
+        background: #fff;
+    }
+    .total-marks {
+        background-color: #fff3cd;
+        border-left: 4px solid #ef7724;
+        padding: 15px;
+        margin-bottom: 30px;
+        border-radius: 4px;
+        font-weight: 700;
+    }
+    .submit-section {
+        background-color: #e8f4f8;
+        padding: 25px;
+        border-radius: 8px;
+        margin-top: 40px;
+        text-align: center;
+    }
+    .submit-button {
+        background-color: #007291;
+        color: white;
+        padding: 15px 40px;
+        font-size: 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: 'Atkinson Hyperlegible', Arial, sans-serif;
+        font-weight: 700;
+        transition: background-color 0.3s;
+    }
+    .submit-button:hover { background-color: #005a74; }
+    .unit-field { display: flex; gap: 8px; align-items: center; }
+    .unit-field input { flex: 1; }
+    .unit-field span { min-width: 48px; text-align: left; font-weight: 700; }
+    .note { font-size: 14px; color: #555; margin-top: -8px; margin-bottom: 12px; }
+    @media (max-width: 650px) {
+        .paper-info, .answer-row { grid-template-columns: 1fr; }
+        .subquestion { margin-left: 0; }
+        .question-block { padding: 18px; }
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Functional Skills Mathematics Level 1</h1>
+            <p>Past Paper 10 - Section A (Non-Calculator)</p>
+        </header>
+        <div class="paper-info">
+            <div class="info-box"><strong>Time: 25 minutes</strong>Paper Reference: PMAT1/N10</div>
+            <div class="info-box"><strong>Total Marks: 14</strong>You must show your working</div>
+        </div>
+        <div class="instructions">
+            Answer all questions. Type your answers into the boxes provided and show clearly how you get your answers. Calculators may not be used. Take the value of π to be 3.14. Diagrams are not accurately drawn, unless otherwise indicated.
+        </div>
+        <form id="assessmentForm">
+            <div class="question-block">
+                <div class="question-number">Question 1</div>
+                <p class="question-text">Samira reads the results of a holiday survey.</p>
+                <div class="survey-box">
+                    <p>We asked <strong>860</strong> people about their holidays.</p>
+                    <p><strong>15%</strong> of these people said that Greece was their favourite holiday destination.</p>
+                </div>
+                <p class="question-text">Samira thinks that more than 100 people said that Greece was their favourite holiday destination.</p>
+                <p class="subquestion-label">Is she correct? <span class="marks">(3 marks)</span></p>
+                <p class="question-text">You must show your working.</p>
+                <div class="input-group">
+                    <label for="q1_working">Your working and answer:</label>
+                    <textarea id="q1_working" name="q1_working" placeholder="Show your working and state Yes or No"></textarea>
+                </div>
+                <p style="margin-top: 20px; color: #ef7724; font-weight: 700;">Total for Question 1 is 3 marks</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 2</div>
+                <p class="question-text">Norbert is a doctor.</p>
+                <p class="question-text">He starts his first shift of the week on Monday at 8 pm. The shift lasts 12 hours.</p>
+                <p class="question-text">Norbert then has 30 hours off work. He then starts his second shift of the week.</p>
+                <p class="subquestion-label">Work out the day and time Norbert starts his second shift of the week. <span class="marks">(3 marks)</span></p>
+                <div class="input-group">
+                    <label for="q2_working">Working:</label>
+                    <textarea id="q2_working" name="q2_working" placeholder="Show your working here"></textarea>
+                </div>
+                <div class="answer-row">
+                    <div class="input-group">
+                        <label for="q2_day">Day:</label>
+                        <input type="text" id="q2_day" name="q2_day" placeholder="e.g. Tuesday">
+                    </div>
+                    <div class="input-group">
+                        <label for="q2_time">Time:</label>
+                        <input type="text" id="q2_time" name="q2_time" placeholder="e.g. 10 pm">
+                    </div>
+                </div>
+                <p style="margin-top: 20px; color: #ef7724; font-weight: 700;">Total for Question 2 is 3 marks</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 3</div>
+                <p class="question-text">Here are some numbers.</p>
+                <p class="question-text" style="text-align:center; font-weight:700; letter-spacing: 10px;">147 116 213 394 178 312</p>
+                <div class="subquestion">
+                    <div class="subquestion-label">(a) Work out the range of these numbers. <span class="marks">(2 marks)</span></div>
+                    <div class="input-group">
+                        <label for="q3a_working">Working:</label>
+                        <textarea id="q3a_working" name="q3a_working" placeholder="Show your working here"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="q3a_answer">Answer:</label>
+                        <input type="text" id="q3a_answer" name="q3a_answer">
+                    </div>
+                </div>
+                <div class="subquestion">
+                    <div class="subquestion-label">(b) Round 4.749 to 1 decimal place. <span class="marks">(1 mark)</span></div>
+                    <div class="input-group">
+                        <label for="q3b_answer">Answer:</label>
+                        <input type="text" id="q3b_answer" name="q3b_answer">
+                    </div>
+                </div>
+                <div class="subquestion">
+                    <div class="subquestion-label">(c) Convert 0.9 kilogram into grams. <span class="marks">(1 mark)</span></div>
+                    <div class="input-group">
+                        <label for="q3c_answer">Answer:</label>
+                        <div class="unit-field"><input type="text" id="q3c_answer" name="q3c_answer"><span>grams</span></div>
+                    </div>
+                </div>
+                <p style="margin-top: 20px; color: #ef7724; font-weight: 700;">Total for Question 3 is 4 marks</p>
+            </div>
+
+            <div class="question-block">
+                <div class="question-number">Question 4</div>
+                <p class="question-text">Zac is a hotel manager.</p>
+                <p class="question-text">He knows that 3 out of every 5 guests usually order room service on a Saturday.</p>
+                <p class="question-text">There are 624 guests staying at the hotel this Saturday.</p>
+                <div class="subquestion">
+                    <div class="subquestion-label">(a) Use estimation to work out the number of guests Zac expects to order room service this Saturday. <span class="marks">(3 marks)</span></div>
+                    <p class="question-text">You must show your working.</p>
+                    <div class="input-group">
+                        <label for="q4a_working">Working:</label>
+                        <textarea id="q4a_working" name="q4a_working" placeholder="Show your estimation here"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="q4a_answer">Answer:</label>
+                        <div class="unit-field"><input type="text" id="q4a_answer" name="q4a_answer"><span>guests</span></div>
+                    </div>
+                </div>
+                <div class="check-row">
+                    <div class="check-icon">✓</div>
+                    <div class="subquestion">
+                        <div class="subquestion-label">(b) Use a reverse calculation to show a check of your answer. <span class="marks">(1 mark)</span></div>
+                        <div class="input-group">
+                            <label for="q4b_check">Your check:</label>
+                            <textarea id="q4b_check" name="q4b_check" placeholder="Show your reverse calculation"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <p style="margin-top: 20px; color: #ef7724; font-weight: 700;">Total for Question 4 is 4 marks</p>
+            </div>
+
+            <div class="total-marks">TOTAL FOR SECTION A IS 14 MARKS</div>
+            
+            <div class="submit-section">
+                <p style="margin-bottom: 20px; font-size: 16px;">When you have finished, add your teacher's name below and click to send your answers.</p>
+                <div style="max-width: 420px; margin: 0 auto 20px; text-align: left;">
+                    <div class="input-group">
+                        <label for="studentName">Your name:</label>
+                        <input type="text" id="studentName" name="studentName" placeholder="Type your name">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherFirst">Teacher's first name:</label>
+                        <input type="text" id="teacherFirst" name="teacherFirst" placeholder="e.g. Jay" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="teacherLast">Teacher's last name:</label>
+                        <input type="text" id="teacherLast" name="teacherLast" placeholder="e.g. Raine" autocomplete="off">
+                    </div>
+                    <p id="emailPreview" style="font-size: 14px; color: #007291; font-weight: 700; margin: 4px 0 0;"></p>
+                    <p id="submitNote" style="display:none; color:#c0392b; font-weight:700; margin: 8px 0 0;"></p>
+                </div>
+                <button type="button" class="submit-button" onclick="submitForm()">Submit Your Answers</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        const SCHOOL_DOMAIN = 'chiltonbridgeschool.co.uk';
+        const PAPER_TITLE = "Functional Skills Mathematics Level 1 Past Paper 10 - Section A (Non-Calculator)";
+        const EMAIL_SUBJECT_PREFIX = "FS Maths Level 1 PP10 Section A";
+        const MAX_QUESTION = 4;
+
+        function cleanNamePart(s) {
+            return s.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+        }
+
+        function buildTeacherEmail() {
+            const first = cleanNamePart(document.getElementById('teacherFirst').value);
+            const last = cleanNamePart(document.getElementById('teacherLast').value);
+            if (!first || !last) return '';
+            return first + '.' + last + '@' + SCHOOL_DOMAIN;
+        }
+
+        function updateEmailPreview() {
+            const email = buildTeacherEmail();
+            document.getElementById('emailPreview').textContent = email ? 'This will send to: ' + email : '';
+        }
+
+        function labelFor(field) {
+            const group = field.closest('.input-group');
+            if (group) {
+                const label = group.querySelector('label');
+                if (label) return label.textContent.replace(/\s+/g, ' ').trim();
+            }
+            return field.name;
+        }
+
+        function submitForm() {
+            const form = document.getElementById('assessmentForm');
+            const formData = new FormData(form);
+            const studentName = document.getElementById('studentName').value.trim();
+            const note = document.getElementById('submitNote');
+            const teacherEmail = buildTeacherEmail();
+
+            if (!teacherEmail) {
+                note.textContent = "Please add your teacher's first and last name first.";
+                note.style.display = 'block';
+                document.getElementById('teacherFirst').focus();
+                return;
+            }
+            note.style.display = 'none';
+
+            try {
+                localStorage.setItem('base6TeacherFirst', document.getElementById('teacherFirst').value.trim());
+                localStorage.setItem('base6TeacherLast', document.getElementById('teacherLast').value.trim());
+            } catch(e) {}
+
+            let emailBody = PAPER_TITLE.toUpperCase() + "\n\n";
+            emailBody += "Student: " + (studentName || '[Name not given]') + "\n\n";
+            emailBody += "===== STUDENT ANSWERS =====\n\n";
+
+            for (let i = 1; i <= MAX_QUESTION; i++) {
+                const fields = Array.from(form.querySelectorAll(`[name^="q${i}"]`));
+                if (!fields.length) continue;
+                emailBody += `QUESTION ${i}\n`;
+                fields.forEach(field => {
+                    const value = formData.get(field.name) || '[Not answered]';
+                    emailBody += `${labelFor(field)} ${value}\n`;
+                });
+                emailBody += "\n";
+            }
+
+            emailBody += "===== END OF ANSWERS =====\n";
+            const subject = EMAIL_SUBJECT_PREFIX + (studentName ? " - " + studentName : "");
+            const gmailUrl = "https://mail.google.com/mail/?ui=2&fs=1&to=" + encodeURIComponent(teacherEmail) + "&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(emailBody);
+            window.open(gmailUrl, '_blank');
+        }
+
+        (function() {
+            try {
+                const f = localStorage.getItem('base6TeacherFirst');
+                const l = localStorage.getItem('base6TeacherLast');
+                if (f) document.getElementById('teacherFirst').value = f;
+                if (l) document.getElementById('teacherLast').value = l;
+            } catch(e) {}
+            document.getElementById('teacherFirst').addEventListener('input', updateEmailPreview);
+            document.getElementById('teacherLast').addEventListener('input', updateEmailPreview);
+            updateEmailPreview();
+        })();
+    </script>
+
+</body>
+</html>
