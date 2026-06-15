@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FS English Level 2 Writing · Practice 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#fef8f4;--teal:#007291;--teal-dark:#005a72;--orange:#ef7724;
+  --orange-light:#fff3eb;--dark:#1a1a1a;--muted:#555;--green:#2e8b57;
+  --green-light:#eaf7f0;--line:#e0d8d0;
+}
+body{font-family:'Atkinson Hyperlegible',sans-serif;background:var(--cream);color:var(--dark);min-height:100vh;font-size:17px;line-height:1.6;}
+
+.site-header{background:var(--teal);padding:1.25rem 2rem;}
+.site-header .qualifier{font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:0.25rem;}
+.site-header h1{font-size:1.5rem;font-weight:700;color:white;}
+.site-header .meta{font-size:0.88rem;color:rgba(255,255,255,0.8);margin-top:0.25rem;}
+.back-bar{background:var(--teal-dark);padding:0.5rem 2rem;}
+.back-link{color:rgba(255,255,255,0.85);font-size:0.85rem;font-weight:700;text-decoration:none;}
+
+.info-strip{background:white;border-bottom:2px solid var(--line);padding:0.75rem 2rem;display:flex;gap:2rem;flex-wrap:wrap;}
+.info-item{font-size:0.82rem;color:var(--muted);}
+.info-item strong{color:var(--dark);font-weight:700;}
+.info-item.warn{color:#c0392b;font-weight:700;}
+
+.prog-bar{background:white;border-bottom:2px solid var(--line);padding:0.6rem 1.5rem;position:sticky;top:0;z-index:50;}
+.prog-inner{max-width:800px;margin:0 auto;}
+.prog-row{display:flex;justify-content:space-between;font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.prog-track{height:7px;background:var(--line);border-radius:999px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--orange));border-radius:999px;transition:width 350ms ease;}
+
+.main{max-width:800px;margin:0 auto;padding:2rem 1.5rem 5rem;}
+
+.task-card{background:white;border:2px solid var(--line);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;}
+.task-card.answered{border-color:var(--green);}
+.task-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.1rem;}
+.task-badge{background:var(--orange);color:white;font-size:0.85rem;font-weight:700;padding:5px 14px;border-radius:999px;}
+.task-marks{font-size:0.85rem;font-weight:700;color:var(--muted);}
+.answered-tick{color:var(--green);font-size:1rem;opacity:0;transition:opacity 0.2s;}
+.task-card.answered .answered-tick{opacity:1;}
+
+.info-box{background:#f7f4f0;border:1.5px solid var(--line);border-radius:12px;padding:1.1rem 1.2rem;margin-bottom:1rem;font-size:0.92rem;line-height:1.65;color:var(--dark);}
+.info-box p{margin-bottom:0.4rem;}
+.info-box p:last-child{margin-bottom:0;}
+
+.task-text{font-size:1rem;font-weight:700;margin-bottom:0.65rem;}
+.bullet-list{list-style:disc;padding-left:1.25rem;margin:0.5rem 0 0.75rem;}
+.bullet-list li{font-size:0.9rem;margin-bottom:0.3rem;line-height:1.6;color:var(--muted);}
+.word-target{background:var(--orange-light);border:1.5px solid #fcd8bc;border-radius:10px;padding:0.6rem 1rem;font-size:0.9rem;font-weight:700;color:var(--dark);margin-bottom:1rem;}
+
+/* email/form mockups */
+.email-mockup{border:2px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:0.75rem;}
+.email-hdr{background:#f0f0f0;border-bottom:1px solid var(--line);}
+.email-row{display:flex;align-items:center;gap:0.5rem;padding:0.4rem 0.75rem;border-bottom:1px solid var(--line);font-size:0.88rem;}
+.email-row:last-child{border-bottom:none;}
+.email-lbl{font-weight:700;color:var(--muted);min-width:65px;font-size:0.82rem;}
+.email-val{color:var(--dark);}
+.email-body{padding:0.75rem;}
+
+.browser-mockup{border:2px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:0.75rem;}
+.browser-bar{background:#e8e8e8;padding:0.4rem 0.75rem;display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid var(--line);}
+.browser-url{font-size:0.82rem;color:var(--muted);font-family:monospace;}
+.browser-title{font-size:0.9rem;font-weight:700;color:var(--dark);padding:0.6rem 0.75rem;border-bottom:1px solid var(--line);}
+.browser-body{padding:0.75rem;}
+
+/* textarea */
+textarea{width:100%;padding:0.75rem;border:2px solid var(--line);border-radius:10px;font-family:inherit;font-size:0.95rem;color:var(--dark);background:var(--cream);resize:vertical;line-height:1.7;}
+textarea:focus{outline:none;border-color:var(--teal);}
+.word-count{font-size:0.78rem;color:var(--muted);margin-top:0.3rem;text-align:right;}
+.word-count.low{color:var(--orange);}
+.word-count.good{color:var(--green);}
+
+/* planning space */
+.plan-box{background:#faf6f2;border:1.5px dashed var(--line);border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;}
+.plan-label{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:0.4rem;}
+
+/* submit */
+.submit-card{background:white;border:2px solid var(--line);border-radius:16px;padding:1.5rem;text-align:center;}
+.submit-card h2{font-size:1.1rem;font-weight:700;color:var(--teal);margin-bottom:0.5rem;}
+.submit-card p{font-size:0.88rem;color:var(--muted);margin-bottom:1rem;line-height:1.55;}
+.btn-primary{background:var(--teal);color:white;padding:0.8rem 2rem;border-radius:10px;border:none;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:background 0.15s,transform 0.15s;}
+.btn-primary:hover{background:var(--teal-dark);transform:translateY(-2px);}
+.success-msg{background:var(--green-light);border:2px solid var(--green);border-radius:10px;padding:0.9rem;color:var(--green);font-weight:700;margin-top:1rem;display:none;}
+
+.export-bar{position:fixed;bottom:0;left:0;right:0;background:var(--teal);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1rem;z-index:100;flex-wrap:wrap;}
+.export-bar span{font-size:0.88rem;font-weight:700;color:rgba(255,255,255,0.85);}
+.btn-export{background:var(--orange);color:white;padding:0.55rem 1.4rem;border-radius:8px;border:none;font-family:inherit;font-size:0.9rem;font-weight:700;cursor:pointer;}
+.btn-export:hover{background:#c05a10;}
+
+@media(max-width:600px){.info-strip{gap:0.75rem;}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="qualifier">Pearson Edexcel Functional Skills English</p>
+  <h1>Level 2 Writing — Component 3 Practice 2</h1>
+  <p class="meta">Paper Reference PENW2 &nbsp;·&nbsp; 60 minutes &nbsp;·&nbsp; 36 marks total &nbsp;·&nbsp; 2 tasks</p>
+</header>
+<div class="back-bar"><a class="back-link" href="../index.html">← Back to Past Papers</a></div>
+
+<div class="info-strip">
+  <div class="info-item"><strong>Task 1:</strong> 21 marks · aim for 250–300 words · approx. 35 minutes</div>
+  <div class="info-item"><strong>Task 2:</strong> 15 marks · aim for 200–250 words · approx. 25 minutes</div>
+  <div class="info-item warn">✗ No dictionary allowed for this paper.</div>
+  <div class="info-item"><strong>Assessed on:</strong> spelling, punctuation and grammar in both tasks.</div>
+</div>
+
+<div class="prog-bar">
+  <div class="prog-inner">
+    <div class="prog-row"><span>Progress</span><span id="progText">0 of 2 tasks answered</span></div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<main class="main">
+
+<!-- ══════════ TASK 1 ══════════ -->
+<div class="task-card" id="card-t1">
+  <div class="task-header">
+    <span class="task-badge">Task 1</span>
+    <span class="task-marks">21 marks</span>
+    <span class="answered-tick">✓</span>
+  </div>
+
+  <div class="info-box">
+    <p>You volunteer at your local community centre.</p>
+    <p>The community centre needs repairs and new equipment. There is also limited access for people with disabilities.</p>
+    <p>You have been asked to contact a local business group to ask for financial help and other support.</p>
+  </div>
+
+  <div class="task-text">Write an email to the local business group to persuade them to help.</div>
+  <p style="font-size:0.92rem;color:var(--muted);margin-bottom:0.6rem;">In your email, you should:</p>
+  <ul class="bullet-list">
+    <li>describe the problems</li>
+    <li>explain how the business group can help</li>
+    <li>say how businesses will benefit.</li>
+  </ul>
+  <div class="word-target">Aim to write about 250 to 300 words.</div>
+
+  <div class="plan-box">
+    <div class="plan-label">Planning space (optional — not marked)</div>
+    <textarea id="t1-plan" rows="4" placeholder="Jot down ideas before you start writing..." style="background:transparent;border-color:transparent;" oninput="noop()"></textarea>
+  </div>
+
+  <div class="email-mockup">
+    <div class="email-hdr">
+      <div class="email-row"><span class="email-lbl">From:</span><span class="email-val">you@youremail.biz</span></div>
+      <div class="email-row"><span class="email-lbl">To:</span><span class="email-val">enquiries@localbusinessgroup.biz</span></div>
+      <div class="email-row"><span class="email-lbl">Subject:</span><span class="email-val">Community Centre</span></div>
+    </div>
+    <div class="email-body">
+      <textarea id="t1-email" rows="16" placeholder="Write your email here..." oninput="countWords('t1-email','wc1','t1','card-t1')"></textarea>
+      <div class="word-count" id="wc1">0 words</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TASK 2 ══════════ -->
+<div class="task-card" id="card-t2">
+  <div class="task-header">
+    <span class="task-badge">Task 2</span>
+    <span class="task-marks">15 marks</span>
+    <span class="answered-tick">✓</span>
+  </div>
+
+  <div class="info-box" style="background:linear-gradient(135deg,#f0f0f0,#e8e8e8);border-color:#ccc;text-align:center;">
+    <p style="font-size:1.4rem;font-weight:700;letter-spacing:0.05em;font-family:serif;margin-bottom:0.3rem;">Zaristar</p>
+    <p style="font-style:italic;color:var(--muted);margin-bottom:0.75rem;">A new online clothes shop for men and women</p>
+    <p>Our aim is simple – to be the best online fashion shop. We have an amazing range of stylish fashion items at very low prices. Clothes, shoes, hats, sunglasses and watches – everything you could possibly want.</p>
+    <p>Why not visit our website and see our full range?</p>
+    <p>You'll be amazed at the quality – and the prices.</p>
+    <p style="font-size:1rem;font-weight:700;margin-top:0.5rem;">www.zaristar.co.uk</p>
+  </div>
+
+  <div class="task-text">You bought some items from Zaristar and were very disappointed. Write a complaint about what happened on the shop web form.</div>
+  <p style="font-size:0.92rem;color:var(--muted);margin-bottom:0.6rem;">In your complaint, you should:</p>
+  <ul class="bullet-list">
+    <li>describe why you are unhappy with your purchases</li>
+    <li>explain what you would like to happen next.</li>
+  </ul>
+  <div class="word-target">Aim to write about 200 to 250 words.</div>
+
+  <div class="plan-box">
+    <div class="plan-label">Planning space (optional — not marked)</div>
+    <textarea id="t2-plan" rows="4" placeholder="Jot down ideas before you start writing..." style="background:transparent;border-color:transparent;" oninput="noop()"></textarea>
+  </div>
+
+  <div class="browser-mockup">
+    <div class="browser-bar"><span class="browser-url">www.zaristar.web/complaint</span></div>
+    <div class="browser-title">Complaint form</div>
+    <div class="browser-body">
+      <textarea id="t2-form" rows="14" placeholder="Write your complaint here..." oninput="countWords('t2-form','wc2','t2','card-t2')"></textarea>
+      <div class="word-count" id="wc2">0 words</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUBMIT -->
+<div class="submit-card">
+  <h2>📧 Send your answers to your teacher</h2>
+  <p>Opens a Gmail draft with both tasks. Spelling, punctuation and grammar are assessed on the paper — write as carefully as you can before sending.</p>
+  <button class="btn-primary" onclick="submitPaper()">Send answers</button>
+  <div class="success-msg" id="successMsg">✅ Gmail opened — check your draft and send it.</div>
+</div>
+
+</main>
+
+<div class="export-bar">
+  <span>Ready?</span>
+  <button class="btn-export" onclick="submitPaper()">📧 Send answers</button>
+</div>
+
+<script>
+function noop(){}
+const answered=new Set();
+
+function countWords(textareaId,wcId,taskKey,cardId){
+  const el=document.getElementById(textareaId);
+  const text=el.value.trim();
+  const words=text?text.split(/\s+/).length:0;
+  const wc=document.getElementById(wcId);
+  wc.textContent=words+' words';
+  if(words===0)wc.className='word-count';
+  else if(words<150)wc.className='word-count low';
+  else wc.className='word-count good';
+  if(words>30){
+    answered.add(taskKey);
+    document.getElementById(cardId).classList.add('answered');
+  }
+  updateProg();
+}
+
+function updateProg(){
+  const n=answered.size;
+  document.getElementById('progFill').style.width=(n/2*100)+'%';
+  document.getElementById('progText').textContent=n+' of 2 tasks answered';
+}
+
+function val(id){return(document.getElementById(id)||{}).value||'(blank)';}
+
+function submitPaper(){
+  const now=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  let body='FS English Level 2 Writing Practice 2 — '+now+'\n\n';
+  body+='━━━ TASK 1 — EMAIL TO LOCAL BUSINESS GROUP (21 marks) ━━━\n';
+  body+=val('t1-email')+'\n\n';
+  body+='━━━ TASK 2 — COMPLAINT TO ZARISTAR (15 marks) ━━━\n';
+  body+=val('t2-form');
+
+  const gmail='https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su='+encodeURIComponent('FS English L2 Writing Practice 2 — '+now)+'&body='+encodeURIComponent(body);
+  window.open(gmail,'_blank');
+  document.getElementById('successMsg').style.display='block';
+}
+</script>
+</body>
+</html>

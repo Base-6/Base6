@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FS English Level 2 Reading · Practice 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#fef8f4;--teal:#007291;--teal-dark:#005a72;--orange:#ef7724;
+  --orange-light:#fff3eb;--dark:#1a1a1a;--muted:#555;--green:#2e8b57;
+  --green-light:#eaf7f0;--line:#e0d8d0;--purple:#7a3fa8;--purple-light:#f5eeff;
+}
+body{font-family:'Atkinson Hyperlegible',sans-serif;background:var(--cream);color:var(--dark);min-height:100vh;font-size:17px;line-height:1.6;}
+
+.site-header{background:var(--teal);padding:1.25rem 2rem;}
+.site-header .qualifier{font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:0.25rem;}
+.site-header h1{font-size:1.5rem;font-weight:700;color:white;}
+.site-header .meta{font-size:0.88rem;color:rgba(255,255,255,0.8);margin-top:0.25rem;}
+.back-bar{background:var(--teal-dark);padding:0.5rem 2rem;}
+.back-link{color:rgba(255,255,255,0.85);font-size:0.85rem;font-weight:700;text-decoration:none;}
+
+.info-strip{background:white;border-bottom:2px solid var(--line);padding:0.75rem 2rem;display:flex;gap:2rem;flex-wrap:wrap;}
+.info-item{font-size:0.82rem;color:var(--muted);}
+.info-item strong{color:var(--dark);font-weight:700;}
+.info-item.hi{color:var(--teal);font-weight:700;}
+
+.prog-bar{background:white;border-bottom:2px solid var(--line);padding:0.6rem 1.5rem;position:sticky;top:0;z-index:50;}
+.prog-inner{max-width:880px;margin:0 auto;}
+.prog-row{display:flex;justify-content:space-between;font-size:0.78rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.prog-track{height:7px;background:var(--line);border-radius:999px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--orange));border-radius:999px;transition:width 350ms ease;}
+
+.main{max-width:880px;margin:0 auto;padding:2rem 1.5rem 5rem;}
+
+/* section labels */
+.sec-header{background:var(--teal);color:white;border-radius:12px;padding:0.75rem 1.25rem;margin:1.75rem 0 1rem;font-size:0.95rem;font-weight:700;}
+.sec-sub{font-size:0.82rem;opacity:0.85;font-weight:400;}
+.text-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;}
+.text-badge{background:var(--purple);color:white;font-size:0.78rem;font-weight:700;padding:3px 12px;border-radius:999px;}
+.text-header h2{font-size:1rem;font-weight:700;color:var(--purple);}
+
+/* source texts */
+.source-text{background:white;border:2px solid #d8b8f8;border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;}
+.source-text h3{font-size:1.25rem;font-weight:700;color:var(--dark);text-align:center;margin-bottom:1rem;}
+.source-text p{font-size:0.95rem;line-height:1.75;margin-bottom:0.85rem;color:var(--dark);}
+.source-text p:last-child{margin-bottom:0;}
+.source-text .para-head{font-weight:700;font-size:0.92rem;margin-bottom:0.2rem;color:var(--dark);}
+.source-text .text-type{font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--purple);margin-bottom:0.6rem;}
+.source-text .bullet-list{list-style:disc;padding-left:1.25rem;margin:0.4rem 0 0.75rem;}
+.source-text .bullet-list li{font-size:0.95rem;margin-bottom:0.3rem;line-height:1.6;}
+.fraud-table{width:100%;border-collapse:collapse;font-size:0.9rem;margin:0.75rem 0;}
+.fraud-table th{background:var(--dark);color:white;padding:0.55rem 0.9rem;text-align:left;font-weight:700;}
+.fraud-table td{padding:0.5rem 0.9rem;border-bottom:1px solid var(--line);}
+.fraud-table td:last-child{text-align:right;font-weight:700;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:0.75rem;}
+.case-box{background:#fafaf8;border:2px solid var(--line);border-radius:12px;padding:1.1rem;}
+.case-box h4{font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:0.6rem;}
+.case-box p{font-size:0.9rem;line-height:1.7;color:var(--dark);}
+
+/* question cards */
+.q-card{background:white;border:2px solid var(--line);border-radius:16px;padding:1.5rem;margin-bottom:1rem;transition:border-color 0.2s;}
+.q-card.answered{border-color:var(--green);}
+.q-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:0.85rem;}
+.q-num{background:var(--teal);color:white;font-size:0.78rem;font-weight:700;padding:3px 10px;border-radius:999px;flex-shrink:0;}
+.q-marks{font-size:0.78rem;font-weight:700;color:var(--muted);flex-shrink:0;}
+.q-text{font-size:1rem;font-weight:700;line-height:1.5;margin-bottom:0.65rem;}
+.q-sub{font-size:0.88rem;color:var(--muted);margin-bottom:0.75rem;line-height:1.55;}
+.answered-tick{color:var(--green);font-size:1rem;flex-shrink:0;opacity:0;transition:opacity 0.2s;}
+.q-card.answered .answered-tick{opacity:1;}
+.q-instruction{font-size:0.85rem;color:var(--muted);margin-bottom:0.75rem;font-style:italic;}
+
+/* quote box */
+.quote-box{background:var(--orange-light);border-left:4px solid var(--orange);border-radius:0 10px 10px 0;padding:0.75rem 1rem;margin-bottom:0.75rem;font-size:0.95rem;font-style:italic;}
+
+/* MCQ */
+.mcq-opts{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem;}
+.mcq-opt{display:flex;align-items:center;gap:0.75rem;padding:0.65rem 1rem;border:2px solid var(--line);border-radius:10px;cursor:pointer;font-size:0.95rem;background:white;transition:all 0.15s;user-select:none;}
+.mcq-opt:hover{border-color:var(--teal);}
+.mcq-opt.sel{border-color:var(--teal);background:#e3f1f5;}
+.mcq-opt.correct{border-color:var(--green);background:var(--green-light);}
+.mcq-opt.wrong{border-color:#c0392b;background:#fdf0ee;}
+.tick-box{width:20px;height:20px;border:2px solid var(--line);border-radius:4px;flex-shrink:0;display:grid;place-items:center;font-size:0.8rem;font-weight:700;transition:all 0.15s;}
+.mcq-opt.sel .tick-box{border-color:var(--teal);background:var(--teal);color:white;}
+.mcq-opt.correct .tick-box{border-color:var(--green);background:var(--green);color:white;}
+.mcq-opt.wrong .tick-box{border-color:#c0392b;background:#c0392b;color:white;}
+.opt-lbl{font-weight:700;color:var(--muted);min-width:20px;font-size:0.9rem;}
+.mcq-opt.sel .opt-lbl,.mcq-opt.correct .opt-lbl{color:var(--teal-dark);}
+.fb-line{font-size:0.8rem;margin-top:0.5rem;padding:0.4rem 0.75rem;border-radius:8px;display:none;}
+.fb-line.correct{background:var(--green-light);color:var(--green);display:block;}
+.fb-line.wrong{background:#fdf0ee;color:#c0392b;display:block;}
+
+/* multi-select MCQ (Q3, Q14) */
+.mcq-multi-hint{font-size:0.82rem;color:var(--orange);font-weight:700;margin-bottom:0.5rem;}
+
+/* write-in */
+textarea{width:100%;padding:0.75rem;border:2px solid var(--line);border-radius:10px;font-family:inherit;font-size:0.95rem;color:var(--dark);background:var(--cream);resize:vertical;line-height:1.65;}
+textarea:focus{outline:none;border-color:var(--teal);}
+.num-inputs{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.25rem;}
+.num-row{display:flex;align-items:center;gap:0.75rem;}
+.num-lbl{font-weight:700;color:var(--muted);min-width:20px;}
+.text-inp{flex:1;padding:0.55rem 0.85rem;border:2px solid var(--line);border-radius:10px;font-family:inherit;font-size:0.95rem;background:var(--cream);color:var(--dark);}
+.text-inp:focus{outline:none;border-color:var(--teal);}
+
+/* Q4 subheadings table */
+.sh-table{width:100%;border-collapse:collapse;font-size:0.92rem;margin-top:0.5rem;}
+.sh-table th{background:var(--teal);color:white;padding:0.55rem 1rem;text-align:left;font-weight:700;}
+.sh-table td{padding:0.55rem 1rem;border-bottom:1px solid var(--line);}
+.sh-input{width:60px;padding:0.35rem 0.5rem;border:2px solid var(--line);border-radius:8px;font-family:inherit;font-size:0.9rem;text-align:center;background:var(--cream);}
+.sh-input:focus{outline:none;border-color:var(--teal);}
+.sh-fixed{font-weight:700;color:var(--teal);}
+
+/* Q10 language feature */
+.lang-feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.5rem;}
+.lang-box{display:flex;flex-direction:column;gap:0.4rem;}
+.lang-lbl{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);}
+
+/* section divider */
+.sec-div{display:flex;align-items:center;gap:1rem;margin:2rem 0 1.5rem;}
+.sec-div .dl{flex:1;height:2px;background:var(--line);}
+.sec-div .dt{font-size:0.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;}
+
+/* totals */
+.sec-total{text-align:right;font-size:0.85rem;font-weight:700;color:var(--teal);padding:0.4rem 0 0.75rem;}
+
+/* submit */
+.submit-card{background:white;border:2px solid var(--line);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;text-align:center;}
+.submit-card h2{font-size:1.1rem;font-weight:700;color:var(--teal);margin-bottom:0.5rem;}
+.submit-card p{font-size:0.88rem;color:var(--muted);margin-bottom:1rem;line-height:1.55;}
+.btn-primary{background:var(--teal);color:white;padding:0.8rem 2rem;border-radius:10px;border:none;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:background 0.15s,transform 0.15s;}
+.btn-primary:hover{background:var(--teal-dark);transform:translateY(-2px);}
+.success-msg{background:var(--green-light);border:2px solid var(--green);border-radius:10px;padding:0.9rem;color:var(--green);font-weight:700;margin-top:1rem;display:none;}
+
+.export-bar{position:fixed;bottom:0;left:0;right:0;background:var(--teal);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1rem;z-index:100;flex-wrap:wrap;}
+.export-bar span{font-size:0.88rem;font-weight:700;color:rgba(255,255,255,0.85);}
+.btn-export{background:var(--orange);color:white;padding:0.55rem 1.4rem;border-radius:8px;border:none;font-family:inherit;font-size:0.9rem;font-weight:700;cursor:pointer;}
+.btn-export:hover{background:#c05a10;}
+
+@media(max-width:640px){.two-col,.lang-feat-grid{grid-template-columns:1fr;}.info-strip{gap:0.75rem;}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="qualifier">Pearson Edexcel Functional Skills English</p>
+  <h1>Level 2 Reading — Component 2 Practice 2</h1>
+  <p class="meta">Paper Reference PENR2 &nbsp;·&nbsp; 75 minutes &nbsp;·&nbsp; 35 marks total &nbsp;·&nbsp; 15 questions</p>
+</header>
+<div class="back-bar"><a class="back-link" href="../index.html">← Back to Past Papers</a></div>
+
+<div class="info-strip">
+  <div class="info-item"><strong>Sections:</strong> A (Text A, Q1–4) · B (Text B, Q5–8) · C (Text C, Q9–11) · D (all texts, Q12–15)</div>
+  <div class="info-item hi">✓ You may use a dictionary for this paper.</div>
+  <div class="info-item"><strong>Note:</strong> You do not need to write in sentences.</div>
+</div>
+
+<div class="prog-bar">
+  <div class="prog-inner">
+    <div class="prog-row"><span>Progress</span><span id="progText">0 of 15 questions answered</span></div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<main class="main">
+
+<!-- ══════════ SECTION A ══════════ -->
+<div class="sec-header">Section A — Text A &nbsp;<span class="sec-sub">Questions 1 to 4 · 7 marks total</span></div>
+
+<div class="text-header">
+  <span class="text-badge">Text A</span>
+  <h2>Leaflet</h2>
+</div>
+
+<div class="source-text">
+  <h3>Beware of identity theft</h3>
+  <div class="para-head">Paragraph 1</div>
+  <p>Identity theft is when someone uses your details to pretend to be you in order to steal your money or commit another crime. They may open a bank account, take out a credit card or even apply for benefits illegally in your name. Cases of identity theft are on the rise: criminals are becoming more and more adept at acquiring personal details. So be on the lookout and don't let anyone steal your identity and scam you.</p>
+  <div class="para-head">Paragraph 2</div>
+  <p>Personal details like your name, address and date of birth provide enough information to create another 'you'. A thief can use a number of methods to find out your personal information. These include stealing your phone, hacking into emails or looking at social media, so take care online and be careful what you post.</p>
+  <div class="para-head">Paragraph 3</div>
+  <p>One of the signs you may be the victim of identity theft is the loss of your passport, driving licence or other crucial documents. Alternatively, thieves may intercept your mail, for example electricity or phone bills, to get hold of your information.</p>
+  <div class="para-head">Paragraph 4</div>
+  <p>If you see items that you haven't bought on your bank statement, it may mean someone has used your bank card to buy goods. Another indication that someone might be using your payment card details is receiving bills for goods you haven't ordered.</p>
+  <div class="para-head">Paragraph 5</div>
+  <p>Check your bank account regularly for suspicious activity. If you are concerned, phone the bank using the number on your bank card. Documents with personal details should be securely disposed of, for example shredded. If you move to a new home, inform all relevant companies and give them your new address. The bottom line is you need to wise up to scammers. The less you give away, the safer you are.</p>
+</div>
+
+<!-- Q1 -->
+<div class="q-card" id="card-q1">
+  <div class="q-header"><span class="q-num">Question 1</span><span class="q-marks">2 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">Your friend wants to know about identity theft. Using Text A, identify <strong>two</strong> ways that criminals can use your personal details illegally.</div>
+  <div class="num-inputs">
+    <div class="num-row"><span class="num-lbl">1</span><input class="text-inp" type="text" id="q1-1" placeholder="First way..." oninput="checkNum('q1',2,'card-q1')"></div>
+    <div class="num-row"><span class="num-lbl">2</span><input class="text-inp" type="text" id="q1-2" placeholder="Second way..." oninput="checkNum('q1',2,'card-q1')"></div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-card" id="card-q2">
+  <div class="q-header"><span class="q-num">Question 2</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">Which word best describes the style of Text A?</div>
+  <div class="q-instruction">Answer with a cross in a box. Tap your answer.</div>
+  <div class="mcq-opts" id="mcq-q2">
+    <div class="mcq-opt" onclick="selMCQ('q2',0,0,'card-q2')"><div class="tick-box"></div><span class="opt-lbl">A</span><span>serious</span></div>
+    <div class="mcq-opt" onclick="selMCQ('q2',1,0,'card-q2')"><div class="tick-box"></div><span class="opt-lbl">B</span><span>apologetic</span></div>
+    <div class="mcq-opt" onclick="selMCQ('q2',2,0,'card-q2')"><div class="tick-box"></div><span class="opt-lbl">C</span><span>encouraging</span></div>
+    <div class="mcq-opt" onclick="selMCQ('q2',3,0,'card-q2')"><div class="tick-box"></div><span class="opt-lbl">D</span><span>sarcastic</span></div>
+  </div>
+  <div class="fb-line" id="fb-q2"></div>
+</div>
+
+<!-- Q3 — MULTI SELECT -->
+<div class="q-card" id="card-q3">
+  <div class="q-header"><span class="q-num">Question 3</span><span class="q-marks">2 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">Which <strong>two</strong> of these quotations from Text A are examples of informal language?</div>
+  <div class="mcq-multi-hint">Select two answers.</div>
+  <div class="mcq-opts" id="mcq-q3">
+    <div class="mcq-opt" onclick="selMulti('q3',0,[0,2],'card-q3')"><div class="tick-box"></div><span class="opt-lbl">A</span><span>'be on the lookout'</span></div>
+    <div class="mcq-opt" onclick="selMulti('q3',1,[0,2],'card-q3')"><div class="tick-box"></div><span class="opt-lbl">B</span><span>'all relevant companies'</span></div>
+    <div class="mcq-opt" onclick="selMulti('q3',2,[0,2],'card-q3')"><div class="tick-box"></div><span class="opt-lbl">C</span><span>'wise up to scammers'</span></div>
+    <div class="mcq-opt" onclick="selMulti('q3',3,[0,2],'card-q3')"><div class="tick-box"></div><span class="opt-lbl">D</span><span>'intercept your mail'</span></div>
+    <div class="mcq-opt" onclick="selMulti('q3',4,[0,2],'card-q3')"><div class="tick-box"></div><span class="opt-lbl">E</span><span>'looking at social media'</span></div>
+  </div>
+  <div class="fb-line" id="fb-q3"></div>
+</div>
+
+<!-- Q4 — SUBHEADINGS TABLE -->
+<div class="q-card" id="card-q4">
+  <div class="q-header"><span class="q-num">Question 4</span><span class="q-marks">2 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">You have been asked to add subheadings to each paragraph in Text A. Number each subheading from 1 to 5 to show which best matches each paragraph.</div>
+  <div class="q-instruction">Two have been done for you.</div>
+  <table class="sh-table">
+    <thead><tr><th>Subheading</th><th>Paragraph number</th></tr></thead>
+    <tbody>
+      <tr><td>Important documents</td><td><input class="sh-input" type="number" min="1" max="5" id="q4-docs" placeholder="?" oninput="checkQ4()"></td></tr>
+      <tr><td>What is identity theft?</td><td><input class="sh-input" type="number" min="1" max="5" id="q4-what" placeholder="?" oninput="checkQ4()"></td></tr>
+      <tr><td>How to avoid identity theft</td><td><input class="sh-input" type="number" min="1" max="5" id="q4-avoid" placeholder="?" oninput="checkQ4()"></td></tr>
+      <tr><td>Personal details</td><td class="sh-fixed">2</td></tr>
+      <tr><td>Unexpected items</td><td class="sh-fixed">4</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="sec-total">Section A total: 7 marks</div>
+
+<!-- ══════════ SECTION B ══════════ -->
+<div class="sec-div"><div class="dl"></div><div class="dt">Section B</div><div class="dl"></div></div>
+<div class="sec-header">Section B — Text B &nbsp;<span class="sec-sub">Questions 5 to 8 · 9 marks total</span></div>
+
+<div class="text-header">
+  <span class="text-badge">Text B</span>
+  <h2>Newspaper report</h2>
+</div>
+
+<div class="source-text">
+  <h3>Concern about scams in the UK</h3>
+  <div class="two-col" style="margin-bottom:0.75rem;">
+    <div>
+      <p>Escalating numbers of people in the UK are being scammed by heartless criminals who target victims in person, on the phone and online. Just this week an investigation revealed how crooks pose as genuine tax officials to target 10,000 people a day by phone. Victims are told they have an outstanding bill and face arrest if they don't pay up. If they do pay, this is called an authorised push payment.</p>
+      <table class="fraud-table">
+        <thead><tr><th>Fraud cases by type for 2018</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>cheque</td><td>2%</td></tr>
+          <tr><td>internet banking</td><td>12%</td></tr>
+          <tr><td>authorised push payment</td><td>30%</td></tr>
+          <tr><td>payment card</td><td>56%</td></tr>
+        </tbody>
+      </table>
+      <p>Consumer groups describe the soaring numbers of scams as 'alarming' and warn the country's grip on fraud is 'spiralling out of control': they say the true number of victims may well be even higher as they believe people are often too embarrassed to come forward.</p>
+    </div>
+    <div>
+      <p>Many instances of fraud take place online. For example, email scams may include 'phishing', which is when you are directed to a copycat website designed to trick you into revealing your bank details.</p>
+      <p>Another scam is when you get an email that seems to come from a friend who claims to have been robbed abroad and asks you to send them money urgently.</p>
+      <p>An email telling you that you need to pay for a TV licence immediately using the link provided, or you will be prosecuted is another way of conning people out of money.</p>
+      <p>If you receive a dodgy looking email, Mary Brown from Action Fraud advises you to:</p>
+      <ul class="bullet-list">
+        <li>delete messages without opening them</li>
+        <li>ignore email attachments</li>
+        <li>avoid clicking on links, even to unsubscribe</li>
+        <li>report anything that might be a scam to Action Fraud.</li>
+      </ul>
+      <p>According to Mary Brown, scammers target thousands of people in the hope that a handful of people will be tricked into falling for their cruel cons. She advises people to read up on fraud and cyber-crime and make sure they have a firewall and virus protection on their devices. If you are a victim, report it immediately: every bit of information helps to track these criminals down.</p>
+      <p style="font-size:0.8rem;color:var(--muted);">© Amelia Murray, THE DAILY MAIL, 21 March 2019</p>
+    </div>
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="q-card" id="card-q5">
+  <div class="q-header"><span class="q-num">Question 5</span><span class="q-marks">2 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">What does each of these quotations from Text B suggest about scamming?</div>
+  <div style="margin-bottom:0.75rem;">
+    <div class="quote-box">'spiralling out of control'</div>
+    <textarea id="q5-spiral" rows="2" placeholder="What does this suggest?" oninput="checkWrite('q5','card-q5','q5-spiral','q5-copycat')"></textarea>
+  </div>
+  <div>
+    <div class="quote-box">'copycat website'</div>
+    <textarea id="q5-copycat" rows="2" placeholder="What does this suggest?" oninput="checkWrite('q5','card-q5','q5-spiral','q5-copycat')"></textarea>
+  </div>
+</div>
+
+<!-- Q6 -->
+<div class="q-card" id="card-q6">
+  <div class="q-header"><span class="q-num">Question 6</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">Text B includes both facts and opinions. Which <strong>one</strong> of these statements is an opinion?</div>
+  <div class="mcq-opts" id="mcq-q6">
+    <div class="mcq-opt" onclick="selMCQ('q6',0,1,'card-q6')"><div class="tick-box"></div><span class="opt-lbl">A</span><span>Scams can be reported to Action Fraud.</span></div>
+    <div class="mcq-opt" onclick="selMCQ('q6',1,1,'card-q6')"><div class="tick-box"></div><span class="opt-lbl">B</span><span>Most people do not report being conned.</span></div>
+    <div class="mcq-opt" onclick="selMCQ('q6',2,1,'card-q6')"><div class="tick-box"></div><span class="opt-lbl">C</span><span>Phishing is a way of acquiring bank details.</span></div>
+    <div class="mcq-opt" onclick="selMCQ('q6',3,1,'card-q6')"><div class="tick-box"></div><span class="opt-lbl">D</span><span>People are scammed on the phone and online.</span></div>
+  </div>
+  <div class="fb-line" id="fb-q6"></div>
+</div>
+
+<!-- Q7 -->
+<div class="q-card" id="card-q7">
+  <div class="q-header"><span class="q-num">Question 7</span><span class="q-marks">2 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">(a) According to Text B, what percentage of fraud cases in 2018 were linked to authorised push payment?</div>
+  <textarea id="q7a" rows="2" placeholder="Write your answer here..." oninput="checkQ7()"></textarea>
+  <div class="q-text" style="margin-top:0.75rem;">(b) Which organisational feature is used to present this information?</div>
+  <textarea id="q7b" rows="2" placeholder="Name the feature..." oninput="checkQ7()"></textarea>
+</div>
+
+<!-- Q8 -->
+<div class="q-card" id="card-q8">
+  <div class="q-header"><span class="q-num">Question 8</span><span class="q-marks">4 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">(a) Using Text B, identify <strong>two</strong> examples of email fraud.</div>
+  <div class="num-inputs" style="margin-bottom:0.75rem;">
+    <div class="num-row"><span class="num-lbl">1</span><input class="text-inp" type="text" id="q8a-1" placeholder="First example..." oninput="checkQ8()"></div>
+    <div class="num-row"><span class="num-lbl">2</span><input class="text-inp" type="text" id="q8a-2" placeholder="Second example..." oninput="checkQ8()"></div>
+  </div>
+  <div class="q-text">(b) Using Text B, identify <strong>two</strong> ways you can avoid email fraud.</div>
+  <div class="num-inputs">
+    <div class="num-row"><span class="num-lbl">1</span><input class="text-inp" type="text" id="q8b-1" placeholder="First way..." oninput="checkQ8()"></div>
+    <div class="num-row"><span class="num-lbl">2</span><input class="text-inp" type="text" id="q8b-2" placeholder="Second way..." oninput="checkQ8()"></div>
+  </div>
+</div>
+<div class="sec-total">Section B total: 9 marks</div>
+
+<!-- ══════════ SECTION C ══════════ -->
+<div class="sec-div"><div class="dl"></div><div class="dt">Section C</div><div class="dl"></div></div>
+<div class="sec-header">Section C — Text C &nbsp;<span class="sec-sub">Questions 9 to 11 · 7 marks total</span></div>
+
+<div class="text-header">
+  <span class="text-badge">Text C</span>
+  <h2>Case studies</h2>
+</div>
+
+<div class="source-text">
+  <div class="case-box" style="margin-bottom:0.75rem;">
+    <h4>Dave's story</h4>
+    <p>I received a text from my bank requesting verification of a suspicious looking transaction. The message appeared completely genuine so I wasn't concerned and rang the number in the text. The person I spoke to sounded professional and said I should transfer my money into a new 'safe' account immediately. This seemed sensible and I authorised payment through my online banking system. I was informed I'd receive a letter confirming the transfer and providing a new bank card. A week later I discovered my account was overdrawn and I was flabbergasted when I realised I'd been conned. I should have monitored my account more closely, according to the bank adviser I spoke to, and used the number on my bank card to telephone the bank.</p>
+  </div>
+  <div class="case-box" style="margin-bottom:0.75rem;">
+    <h4>Zena's story</h4>
+    <p>My grandma was nearly scammed by a criminal pretending to be an electricity meter reader: he came to the door in uniform and had ID on him – he even knew her name. At first she trusted him completely, but then she became suspicious as she couldn't see a company van – and she remembered that the meter had been read recently. So she said she wanted to phone the company before allowing him in. He disappeared like greased lightning then. My grandma was extremely upset and couldn't believe it had happened to her - she phoned the local police to report him, so he couldn't target anyone else. She realised afterwards she should be more vigilant about shredding bills with her address on as this was probably how he accessed her details.</p>
+  </div>
+  <div class="case-box">
+    <h4>Marie's story</h4>
+    <p>Recently I got a call saying I'd won first prize in a competition – a luxury holiday for two in the Caribbean. Initially I thought – wow, that's absolutely brilliant – and couldn't wait to tell my partner. Then I got an email with more information, asking for an 'administration fee' for the prize to be 'unlocked'. The penny dropped then – I hadn't entered a competition, there was no prize – this was all a big fat con. I was gobsmacked! My partner thought it was funny, but I was annoyed I'd been so gullible. I contacted Fraud Action to report it and the helpline person who was reassuring said fraudsters get a lot of info from social media – so you need to be really careful what you post. She said more people are falling for scams every day.</p>
+  </div>
+</div>
+
+<!-- Q9 -->
+<div class="q-card" id="card-q9">
+  <div class="q-header"><span class="q-num">Question 9</span><span class="q-marks">2 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">Using Text C, identify <strong>two</strong> quotations that show people are shocked to discover someone has tried to cheat them.</div>
+  <div class="num-inputs">
+    <div class="num-row"><span class="num-lbl">1</span><input class="text-inp" type="text" id="q9-1" placeholder="First quotation..." oninput="checkNum('q9',2,'card-q9')"></div>
+    <div class="num-row"><span class="num-lbl">2</span><input class="text-inp" type="text" id="q9-2" placeholder="Second quotation..." oninput="checkNum('q9',2,'card-q9')"></div>
+  </div>
+</div>
+
+<!-- Q10 -->
+<div class="q-card" id="card-q10">
+  <div class="q-header"><span class="q-num">Question 10</span><span class="q-marks">4 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">Using Text C, identify <strong>two</strong> language features the writers use to describe their experience of scams. Give an example to support each answer.</div>
+  <div class="lang-feat-grid">
+    <div class="lang-box">
+      <span class="lang-lbl">Language feature 1</span>
+      <textarea id="q10-feat1" rows="2" placeholder="Name the feature..." oninput="checkQ10()"></textarea>
+      <span class="lang-lbl">Example</span>
+      <textarea id="q10-ex1" rows="2" placeholder="Quote from Text C..." oninput="checkQ10()"></textarea>
+    </div>
+    <div class="lang-box">
+      <span class="lang-lbl">Language feature 2</span>
+      <textarea id="q10-feat2" rows="2" placeholder="Name the feature..." oninput="checkQ10()"></textarea>
+      <span class="lang-lbl">Example</span>
+      <textarea id="q10-ex2" rows="2" placeholder="Quote from Text C..." oninput="checkQ10()"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Q11 -->
+<div class="q-card" id="card-q11">
+  <div class="q-header"><span class="q-num">Question 11</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">Which <strong>one</strong> of these quotations from Text C conveys a positive view of people who help victims of fraud?</div>
+  <div class="mcq-opts" id="mcq-q11">
+    <div class="mcq-opt" onclick="selMCQ('q11',0,0,'card-q11')"><div class="tick-box"></div><span class="opt-lbl">A</span><span>'the helpline person who was reassuring'</span></div>
+    <div class="mcq-opt" onclick="selMCQ('q11',1,0,'card-q11')"><div class="tick-box"></div><span class="opt-lbl">B</span><span>'according to the bank adviser I spoke to'</span></div>
+    <div class="mcq-opt" onclick="selMCQ('q11',2,0,'card-q11')"><div class="tick-box"></div><span class="opt-lbl">C</span><span>'she phoned the local police to report him'</span></div>
+    <div class="mcq-opt" onclick="selMCQ('q11',3,0,'card-q11')"><div class="tick-box"></div><span class="opt-lbl">D</span><span>'he came to the door in uniform and had ID'</span></div>
+  </div>
+  <div class="fb-line" id="fb-q11"></div>
+</div>
+<div class="sec-total">Section C total: 7 marks</div>
+
+<!-- ══════════ SECTION D ══════════ -->
+<div class="sec-div"><div class="dl"></div><div class="dt">Section D</div><div class="dl"></div></div>
+<div class="sec-header">Section D — All texts &nbsp;<span class="sec-sub">Questions 12 to 15 · 12 marks total</span></div>
+
+<!-- Q12 -->
+<div class="q-card" id="card-q12">
+  <div class="q-header"><span class="q-num">Question 12</span><span class="q-marks">2 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">You may use a dictionary to answer this question.</div>
+  <div class="quote-box">(a) 'more and more adept'</div>
+  <p style="font-size:0.92rem;margin-bottom:0.5rem;">Give one word or phrase to replace 'adept' that keeps the meaning the same.</p>
+  <textarea id="q12a" rows="2" placeholder="Replacement word or phrase..." oninput="checkQ12()"></textarea>
+  <div class="quote-box" style="margin-top:0.75rem;">(b) 'been so gullible'</div>
+  <p style="font-size:0.92rem;margin-bottom:0.5rem;">Give one word or phrase to replace 'gullible' that keeps the meaning the same.</p>
+  <textarea id="q12b" rows="2" placeholder="Replacement word or phrase..." oninput="checkQ12()"></textarea>
+</div>
+
+<!-- Q13 -->
+<div class="q-card" id="card-q13">
+  <div class="q-header"><span class="q-num">Question 13</span><span class="q-marks">6 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">Compare similar ideas from Text A <strong>and</strong> Text C about what you need to do to protect yourself from scams.</div>
+  <div class="q-sub">In your answer you should:
+    <br>• give <strong>two similarities</strong> from these texts about what you need to do to protect yourself from scams (2 marks)
+    <br>• give <strong>one quotation from Text A and one from Text C</strong> to support each similarity (4 marks)
+  </div>
+  <textarea id="q13" rows="12" placeholder="Write your comparison here, covering two similarities with quotations from both texts..." oninput="checkTA('q13','card-q13')"></textarea>
+</div>
+
+<!-- Q14 -->
+<div class="q-card" id="card-q14">
+  <div class="q-header"><span class="q-num">Question 14</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">Which <strong>one</strong> of these statements about the language used in Text A and Text B is correct?</div>
+  <div class="mcq-opts" id="mcq-q14">
+    <div class="mcq-opt" onclick="selMCQ('q14',0,1,'card-q14')"><div class="tick-box"></div><span class="opt-lbl">A</span><span>Both use statistics for authenticity.</span></div>
+    <div class="mcq-opt" onclick="selMCQ('q14',1,1,'card-q14')"><div class="tick-box"></div><span class="opt-lbl">B</span><span>Both use direct address to give advice.</span></div>
+    <div class="mcq-opt" onclick="selMCQ('q14',2,1,'card-q14')"><div class="tick-box"></div><span class="opt-lbl">C</span><span>Both use exclamations for emphasis.</span></div>
+    <div class="mcq-opt" onclick="selMCQ('q14',3,1,'card-q14')"><div class="tick-box"></div><span class="opt-lbl">D</span><span>Both use quotations to support points.</span></div>
+  </div>
+  <div class="fb-line" id="fb-q14"></div>
+</div>
+
+<!-- Q15 -->
+<div class="q-card" id="card-q15">
+  <div class="q-header"><span class="q-num">Question 15</span><span class="q-marks">3 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">Your relative wants to know how serious scamming is becoming. Identify <strong>one piece of evidence</strong> from <strong>each</strong> of the three texts that shows scams are an increasing problem.</div>
+  <div style="margin-bottom:0.6rem;">
+    <span class="lang-lbl" style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);">Text A</span>
+    <textarea id="q15a" rows="2" placeholder="Evidence from Text A..." oninput="checkQ15()" style="margin-top:0.3rem;"></textarea>
+  </div>
+  <div style="margin-bottom:0.6rem;">
+    <span class="lang-lbl" style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);">Text B</span>
+    <textarea id="q15b" rows="2" placeholder="Evidence from Text B..." oninput="checkQ15()" style="margin-top:0.3rem;"></textarea>
+  </div>
+  <div>
+    <span class="lang-lbl" style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);">Text C</span>
+    <textarea id="q15c" rows="2" placeholder="Evidence from Text C..." oninput="checkQ15()" style="margin-top:0.3rem;"></textarea>
+  </div>
+</div>
+<div class="sec-total">Section D total: 12 marks &nbsp;·&nbsp; Total for paper: 35 marks</div>
+
+<!-- SUBMIT -->
+<div class="submit-card">
+  <h2>📧 Send your answers to your teacher</h2>
+  <p>Opens a Gmail draft with all your answers. For multiple-choice questions it shows whether you chose correctly. Send when you are ready.</p>
+  <button class="btn-primary" onclick="submitPaper()">Send answers</button>
+  <div class="success-msg" id="successMsg">✅ Gmail opened — check your draft and send it.</div>
+</div>
+
+</main>
+
+<div class="export-bar">
+  <span>Ready?</span>
+  <button class="btn-export" onclick="submitPaper()">📧 Send answers</button>
+</div>
+
+<script>
+const TOTAL_Q=15;
+const answered=new Set();
+const mcqState={};
+const multiState={};
+
+function updateProg(){
+  const n=answered.size;
+  document.getElementById('progFill').style.width=(n/TOTAL_Q*100)+'%';
+  document.getElementById('progText').textContent=n+' of '+TOTAL_Q+' questions answered';
+}
+function markDone(key,cardId){answered.add(key);document.getElementById(cardId).classList.add('answered');updateProg();}
+
+function selMCQ(qid,chosen,correct,cardId){
+  const cont=document.getElementById('mcq-'+qid);
+  cont.querySelectorAll('.mcq-opt').forEach((o,i)=>{
+    o.classList.remove('sel','correct','wrong');
+    const tb=o.querySelector('.tick-box');tb.textContent='';
+    if(i===correct){o.classList.add('correct');tb.textContent='✓';}
+    else if(i===chosen&&chosen!==correct){o.classList.add('wrong');tb.textContent='✗';}
+  });
+  mcqState[qid]={chosen,correct};
+  const fb=document.getElementById('fb-'+qid);
+  if(fb){
+    const lets=['A','B','C','D','E'];
+    if(chosen===correct){fb.className='fb-line correct';fb.textContent='✓ Correct';}
+    else{fb.className='fb-line wrong';fb.textContent='✗ The correct answer is '+lets[correct]+'.';}
+  }
+  markDone(qid,cardId);
+}
+
+function selMulti(qid,idx,correctArr,cardId){
+  if(!multiState[qid])multiState[qid]=[];
+  const sel=multiState[qid];
+  const pos=sel.indexOf(idx);
+  if(pos>-1)sel.splice(pos,1);else if(sel.length<correctArr.length)sel.push(idx);
+  const cont=document.getElementById('mcq-'+qid);
+  cont.querySelectorAll('.mcq-opt').forEach((o,i)=>{
+    o.classList.remove('sel','correct','wrong');
+    const tb=o.querySelector('.tick-box');tb.textContent='';
+  });
+  sel.forEach(i=>{
+    const o=cont.querySelectorAll('.mcq-opt')[i];
+    if(correctArr.includes(i)){o.classList.add('correct');o.querySelector('.tick-box').textContent='✓';}
+    else{o.classList.add('wrong');o.querySelector('.tick-box').textContent='✗';}
+  });
+  if(sel.length===correctArr.length){
+    const fb=document.getElementById('fb-'+qid);
+    const allRight=correctArr.every(c=>sel.includes(c));
+    if(fb){fb.className='fb-line '+(allRight?'correct':'wrong');fb.textContent=allRight?'✓ Correct — A and C are both informal.':'✗ The correct answers are A and C.';}
+    markDone(qid,cardId);
+  }
+}
+
+function checkNum(prefix,count,cardId){
+  let f=0;for(let i=1;i<=count;i++){const el=document.getElementById(prefix+'-'+i);if(el&&el.value.trim())f++;}
+  if(f>0)markDone(prefix,cardId);
+}
+
+function checkTA(id,cardId){
+  const v=(document.getElementById(id)||{}).value||'';
+  if(v.trim().length>10)markDone(id,cardId);
+}
+
+function checkWrite(key,cardId,...ids){
+  const any=ids.some(id=>(document.getElementById(id)||{}).value.trim().length>0);
+  if(any)markDone(key,cardId);
+}
+
+function checkQ4(){
+  const a=document.getElementById('q4-docs').value;
+  const b=document.getElementById('q4-what').value;
+  const c=document.getElementById('q4-avoid').value;
+  if(a||b||c)markDone('q4','card-q4');
+}
+function checkQ7(){
+  const a=(document.getElementById('q7a')||{}).value||'';
+  const b=(document.getElementById('q7b')||{}).value||'';
+  if(a.trim()||b.trim())markDone('q7','card-q7');
+}
+function checkQ8(){
+  const ids=['q8a-1','q8a-2','q8b-1','q8b-2'];
+  if(ids.some(id=>(document.getElementById(id)||{}).value.trim()))markDone('q8','card-q8');
+}
+function checkQ10(){
+  const ids=['q10-feat1','q10-ex1','q10-feat2','q10-ex2'];
+  if(ids.some(id=>(document.getElementById(id)||{}).value.trim()))markDone('q10','card-q10');
+}
+function checkQ12(){
+  const a=(document.getElementById('q12a')||{}).value||'';
+  const b=(document.getElementById('q12b')||{}).value||'';
+  if(a.trim()||b.trim())markDone('q12','card-q12');
+}
+function checkQ15(){
+  const ids=['q15a','q15b','q15c'];
+  if(ids.some(id=>(document.getElementById(id)||{}).value.trim()))markDone('q15','card-q15');
+}
+
+function val(id){return(document.getElementById(id)||{}).value||'(blank)';}
+function mcqLine(qid,opts){
+  const s=mcqState[qid];if(!s)return'(not answered)';
+  const L=['A','B','C','D'];const ok=s.chosen===s.correct;
+  return(ok?'✓ ':'✗ ')+L[s.chosen]+': '+opts[s.chosen]+(ok?'':' — correct: '+L[s.correct]+': '+opts[s.correct]);
+}
+function multiLine(qid,opts){
+  const s=multiState[qid];if(!s||s.length===0)return'(not answered)';
+  const L=['A','B','C','D','E'];return s.map(i=>L[i]+': '+opts[i]).join(', ');
+}
+
+function submitPaper(){
+  const now=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  let body='FS English Level 2 Reading Practice 2 — '+now+'\n\n';
+  body+='━━━ SECTION A — TEXT A ━━━\n';
+  body+='Q1: 1. '+val('q1-1')+'\n     2. '+val('q1-2')+'\n';
+  body+='Q2 (style): '+mcqLine('q2',['serious','apologetic','encouraging','sarcastic'])+'\n';
+  body+='Q3 (informal language): '+multiLine('q3',["'be on the lookout'","'all relevant companies'","'wise up to scammers'","'intercept your mail'","'looking at social media'"])+'\n';
+  body+='Q4 (subheadings): Important docs='+val('q4-docs')+', What is ID theft='+val('q4-what')+', How to avoid='+val('q4-avoid')+'\n\n';
+  body+='━━━ SECTION B — TEXT B ━━━\n';
+  body+="Q5 'spiralling out of control': "+val('q5-spiral')+'\n';
+  body+="Q5 'copycat website': "+val('q5-copycat')+'\n';
+  body+='Q6 (fact/opinion): '+mcqLine('q6',['Scams can be reported to Action Fraud','Most people do not report being conned','Phishing is a way of acquiring bank details','People are scammed on the phone and online'])+'\n';
+  body+='Q7a (percentage): '+val('q7a')+'\n';
+  body+='Q7b (feature): '+val('q7b')+'\n';
+  body+='Q8a email fraud: 1. '+val('q8a-1')+'\n              2. '+val('q8a-2')+'\n';
+  body+='Q8b avoid fraud: 1. '+val('q8b-1')+'\n               2. '+val('q8b-2')+'\n\n';
+  body+='━━━ SECTION C — TEXT C ━━━\n';
+  body+='Q9 quotations: 1. '+val('q9-1')+'\n               2. '+val('q9-2')+'\n';
+  body+='Q10 Feature 1: '+val('q10-feat1')+'\n    Example 1: '+val('q10-ex1')+'\n    Feature 2: '+val('q10-feat2')+'\n    Example 2: '+val('q10-ex2')+'\n';
+  body+='Q11 (positive view): '+mcqLine('q11',["'the helpline person who was reassuring'","'according to the bank adviser I spoke to'","'she phoned the local police to report him'","'he came to the door in uniform and had ID'"])+'\n\n';
+  body+='━━━ SECTION D — ALL TEXTS ━━━\n';
+  body+="Q12a (adept): "+val('q12a')+'\n';
+  body+="Q12b (gullible): "+val('q12b')+'\n';
+  body+='Q13 (comparison):\n'+val('q13')+'\n';
+  body+='Q14 (language A+B): '+mcqLine('q14',['Both use statistics for authenticity','Both use direct address to give advice','Both use exclamations for emphasis','Both use quotations to support points'])+'\n';
+  body+='Q15 Text A: '+val('q15a')+'\n    Text B: '+val('q15b')+'\n    Text C: '+val('q15c');
+
+  const gmail='https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su='+encodeURIComponent('FS English L2 Reading Practice 2 — '+now)+'&body='+encodeURIComponent(body);
+  window.open(gmail,'_blank');
+  document.getElementById('successMsg').style.display='block';
+}
+</script>
+</body>
+</html>
