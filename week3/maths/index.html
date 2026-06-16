@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -86,6 +87,7 @@
   </div>
 
   <p class="section-label">Resources</p>
+
   <div class="resources-grid">
 
     <a class="resource-card" href="number-vault.html" data-activity="number-vault">
@@ -99,6 +101,13 @@
       <div class="resource-icon">🕹️</div>
       <span class="resource-name">Token Rush</span>
       <span class="resource-desc">The Chilton Arcade calculation machine. Earn tokens for every correct answer, build streaks for bonus tokens, and pick your own difficulty — from warm up to big numbers.</span>
+      <span class="resource-arrow">Open activity →</span>
+    </a>
+
+    <a class="resource-card" href="geometjay-dash.html" data-activity="geometjay-dash">
+      <div class="resource-icon">⚡</div>
+      <span class="resource-name">GeometJay Dash</span>
+      <span class="resource-desc">A fast neon geometry runner. Jump, dodge, collect coins and answer shape questions after crashes to keep your run alive.</span>
       <span class="resource-arrow">Open activity →</span>
     </a>
 
@@ -142,12 +151,14 @@ const STUDENTS = ['LW', 'AP', 'LS', 'LC', 'HK'];
 function loadState() {
   try { return JSON.parse(localStorage.getItem(TRACKER_KEY)) || {}; } catch(e) { return {}; }
 }
+
 function saveState(s) {
   try { localStorage.setItem(TRACKER_KEY, JSON.stringify(s)); } catch(e) {}
 }
 
 function buildTrackers() {
   const state = loadState();
+
   document.querySelectorAll('.resource-card[data-activity]').forEach(card => {
     const activity = card.dataset.activity;
 
@@ -167,16 +178,22 @@ function buildTrackers() {
       btn.className = 'initial-btn' + (state[activity] && state[activity][initials] ? ' done' : '');
       btn.textContent = initials;
       btn.title = state[activity] && state[activity][initials] ? initials + ' — done ✓' : initials + ' — not yet';
+
       btn.addEventListener('click', e => {
         e.preventDefault();
         e.stopPropagation();
+
         const s = loadState();
         if (!s[activity]) s[activity] = {};
+
         s[activity][initials] = !s[activity][initials];
+
         saveState(s);
+
         btn.classList.toggle('done', !!s[activity][initials]);
         btn.title = s[activity][initials] ? initials + ' — done ✓' : initials + ' — not yet';
       });
+
       row.appendChild(btn);
     });
 
@@ -190,3 +207,4 @@ buildTrackers();
 
 </body>
 </html>
+```
