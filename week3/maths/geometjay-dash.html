@@ -21,7 +21,7 @@ body {
 #gameWrapper {
   position:relative;
   width:100vw;
-  max-width:1000px;
+  max-width:1280px;
 }
 #gameCanvas {
   display:block;
@@ -435,10 +435,10 @@ body {
   background:
     radial-gradient(circle at 50% 0%, rgba(0,245,212,0.12), transparent 34%),
     linear-gradient(180deg, #080a18 0%, #020208 100%);
-  padding: clamp(8px, 2vw, 18px);
+  padding: clamp(4px, 1vw, 10px);
 }
 #gameWrapper {
-  width: min(100vw - 16px, 1000px);
+  width: min(100vw - 12px, 1280px);
   border-radius: 22px;
   overflow: hidden;
   box-shadow: 0 22px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06);
@@ -753,6 +753,16 @@ body.reduced-motion * { scroll-behavior: auto; }
 #gameCanvas { box-shadow: none; }
 #gameWrapper { box-shadow: 0 14px 44px rgba(0,0,0,0.35); }
 
+/* --- Patch: larger game screen --- */
+#gameWrapper { width: min(100vw - 12px, 1280px); max-width: 1280px; }
+@media (min-width: 900px) {
+  #gameWrapper { width: min(96vw, 1280px); }
+}
+@media (max-width: 640px) {
+  body { padding: 2px; }
+  #gameWrapper { width: 100vw; border-radius: 0; }
+}
+
 </style>
 </head>
 <body>
@@ -771,7 +781,7 @@ body.reduced-motion * { scroll-behavior: auto; }
       <h1>GeometJay Dash</h1>
       <div class="sub-title">BASE 6 · LEVEL HUB</div>
       <div class="prompt">Pick a level</div>
-      <div class="hub-copy">Hard-start build: levels begin faster, with tighter spacing and mixed obstacles from the opening seconds. Every crash becomes a geometry question.</div>
+      <div class="hub-copy">Faster large-screen build: levels begin at pace, with tighter spacing, mixed obstacles from the opening seconds, and a bigger play window.</div>
       <div class="controls-help">Space/↑ jump · P pause · R restart · M motion</div>
     </div>
     <div id="progressSummary"></div>
@@ -878,7 +888,7 @@ const LEVELS = [
   {
     id:'neon-basics', name:'Neon Basics', subtitle:'Sides and names',
     description:'A sharper starter course: faster pace, shorter gaps and mixed obstacles right away.',
-    targetScore:190, startSpeed:5.25, speedGain:0.00135, firstSpawn:58, gapScale:0.90, difficultyBias:0.42,
+    targetScore:200, startSpeed:6.10, speedGain:0.00162, firstSpawn:42, gapScale:0.82, difficultyBias:0.48,
     tutorialPatterns:[1,12,3,7], patterns:[0,1,2,3,4,5,6,7,8,11,12,14,15,16,17],
     shapeNames:['circle','triangle','square','rectangle','pentagon','hexagon'],
     quizTypes:['sides','name','description','edge'],
@@ -887,7 +897,7 @@ const LEVELS = [
   {
     id:'polygon-peaks', name:'Polygon Peaks', subtitle:'Pentagons to octagons',
     description:'Faster climbs and polygon questions focused on 5, 6, 7 and 8-sided shapes.',
-    targetScore:245, startSpeed:5.65, speedGain:0.00145, firstSpawn:54, gapScale:0.86, difficultyBias:0.48,
+    targetScore:260, startSpeed:6.55, speedGain:0.00174, firstSpawn:39, gapScale:0.78, difficultyBias:0.54,
     tutorialPatterns:[1,2,9,12], patterns:[0,1,2,4,5,6,7,8,9,10,11,12,13,16,17],
     shapeNames:['triangle','pentagon','hexagon','heptagon','octagon'],
     quizTypes:['sides','name','description','vertices','statement'],
@@ -896,7 +906,7 @@ const LEVELS = [
   {
     id:'quad-quest', name:'Quadrilateral Quest', subtitle:'Parallel and equal sides',
     description:'Blocks, tighter gaps and questions about squares, rectangles, rhombuses, kites and trapeziums.',
-    targetScore:300, startSpeed:6.00, speedGain:0.00155, firstSpawn:50, gapScale:0.82, difficultyBias:0.54,
+    targetScore:320, startSpeed:6.95, speedGain:0.00186, firstSpawn:37, gapScale:0.74, difficultyBias:0.60,
     tutorialPatterns:[5,8,14,15], patterns:[0,1,2,3,4,5,7,8,12,14,15,16,17,19,20,21],
     shapeNames:['square','rectangle','parallelogram','trapezium','rhombus','kite'],
     quizTypes:['name','description','statement','parallel','angles','vertices'],
@@ -905,7 +915,7 @@ const LEVELS = [
   {
     id:'symmetry-circuit', name:'Symmetry Circuit', subtitle:'Symmetry and properties',
     description:'Moving platforms, saws and shape-property questions with symmetry, corners and special cases.',
-    targetScore:365, startSpeed:6.30, speedGain:0.00162, firstSpawn:48, gapScale:0.78, difficultyBias:0.60,
+    targetScore:390, startSpeed:7.30, speedGain:0.00195, firstSpawn:35, gapScale:0.70, difficultyBias:0.66,
     tutorialPatterns:[8,12,14,17], patterns:[0,1,2,5,7,8,9,10,11,12,13,14,15,17,18,19,20,21],
     shapeNames:['circle','triangle','square','rectangle','pentagon','hexagon','octagon','rhombus','kite'],
     quizTypes:['symmetry','vertices','statement','name','edge','angles'],
@@ -914,7 +924,7 @@ const LEVELS = [
   {
     id:'area-arena', name:'Area Arena', subtitle:'Perimeter and area',
     description:'The final neon arena mixes every obstacle type with quick area and perimeter challenges.',
-    targetScore:440, startSpeed:6.65, speedGain:0.00172, firstSpawn:45, gapScale:0.74, difficultyBias:0.68,
+    targetScore:470, startSpeed:7.75, speedGain:0.00206, firstSpawn:33, gapScale:0.66, difficultyBias:0.74,
     tutorialPatterns:[12,15,18,19], patterns:[0,1,2,3,5,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],
     shapeNames:['square','rectangle','triangle','hexagon','octagon','parallelogram','rhombus','trapezium'],
     quizTypes:['area','perimeter','parallel','symmetry','statement','sides'],
@@ -1017,16 +1027,18 @@ function resetLevelProgress() {
 
 
 function resizeCanvas() {
-  const maxW = Math.min(window.innerWidth, 1000);
-  const maxH = Math.max(220, Math.min(window.innerHeight - 18, 420));
+  // Larger playfield: keep the original internal game co-ordinates,
+  // but scale the canvas up to fill more of the screen.
+  const maxW = Math.min(window.innerWidth - 12, 1280);
+  const maxH = Math.max(280, Math.min(window.innerHeight - 12, 560));
   let displayW = maxW;
   let displayH = displayW * 420 / 1000;
   if (displayH > maxH) {
     displayH = maxH;
     displayW = displayH * 1000 / 420;
   }
-  canvas.style.width = displayW + 'px';
-  canvas.style.height = displayH + 'px';
+  canvas.style.width = Math.round(displayW) + 'px';
+  canvas.style.height = Math.round(displayH) + 'px';
 }
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
