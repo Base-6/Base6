@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GeometJay Dash: Base 6</title>
+<title>GeometJay Dash: Base 6 · Challenge Build</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -779,7 +779,7 @@ body.reduced-motion * { scroll-behavior: auto; }
   <div id="overlay">
     <div class="titleBlock">
       <h1>GeometJay Dash</h1>
-      <div class="sub-title">BASE 6 · LEVEL HUB</div>
+      <div class="sub-title">BASE 6 · CHALLENGE HUB</div>
       <div class="prompt">Pick a level</div>
       <div class="hub-copy">Faster large-screen build: levels begin at pace, with tighter spacing, mixed obstacles from the opening seconds, and a bigger play window.</div>
       <div class="controls-help">Space/↑ jump · P pause · R restart · M motion</div>
@@ -887,45 +887,45 @@ function setStoredJSON(key, value) {
 const LEVELS = [
   {
     id:'neon-basics', name:'Neon Basics', subtitle:'Sides and names',
-    description:'A sharper starter course: faster pace, shorter gaps and mixed obstacles right away.',
-    targetScore:200, startSpeed:6.10, speedGain:0.00162, firstSpawn:42, gapScale:0.82, difficultyBias:0.48,
-    tutorialPatterns:[1,12,3,7], patterns:[0,1,2,3,4,5,6,7,8,11,12,14,15,16,17],
+    description:'The starter level now begins at challenge speed with double spikes, saws and tight ceilings immediately.',
+    targetScore:260, startSpeed:7.65, speedGain:0.00245, firstSpawn:26, gapScale:0.64, difficultyBias:0.72,
+    tutorialPatterns:[2,12,15], patterns:[1,2,3,5,7,8,12,13,14,15,16,17,18,19,20,21],
     shapeNames:['circle','triangle','square','rectangle','pentagon','hexagon'],
     quizTypes:['sides','name','description','edge'],
     theme:{ sky0:'#030716', sky1:'#071c37', sky2:'#0c2d46', ground:'#071629', grid:'#00f5d4', accent:'#00f5d4', accent2:'#ffe600', hazard:'#ef7724', mountain:'#102d52' }
   },
   {
     id:'polygon-peaks', name:'Polygon Peaks', subtitle:'Pentagons to octagons',
-    description:'Faster climbs and polygon questions focused on 5, 6, 7 and 8-sided shapes.',
-    targetScore:260, startSpeed:6.55, speedGain:0.00174, firstSpawn:39, gapScale:0.78, difficultyBias:0.54,
-    tutorialPatterns:[1,2,9,12], patterns:[0,1,2,4,5,6,7,8,9,10,11,12,13,16,17],
+    description:'Fast polygon climbs with saws, moving platforms and triple spikes from the opening stretch.',
+    targetScore:330, startSpeed:8.05, speedGain:0.00262, firstSpawn:24, gapScale:0.60, difficultyBias:0.78,
+    tutorialPatterns:[2,13,17], patterns:[1,2,5,7,8,9,10,12,13,15,16,17,18,19,20,21],
     shapeNames:['triangle','pentagon','hexagon','heptagon','octagon'],
     quizTypes:['sides','name','description','vertices','statement'],
     theme:{ sky0:'#080412', sky1:'#251144', sky2:'#452263', ground:'#120b24', grid:'#b56cff', accent:'#b56cff', accent2:'#ffdf57', hazard:'#ff6b35', mountain:'#2d1c52' }
   },
   {
     id:'quad-quest', name:'Quadrilateral Quest', subtitle:'Parallel and equal sides',
-    description:'Blocks, tighter gaps and questions about squares, rectangles, rhombuses, kites and trapeziums.',
-    targetScore:320, startSpeed:6.95, speedGain:0.00186, firstSpawn:37, gapScale:0.74, difficultyBias:0.60,
-    tutorialPatterns:[5,8,14,15], patterns:[0,1,2,3,4,5,7,8,12,14,15,16,17,19,20,21],
+    description:'Tight quadrilateral routes with narrow ceilings, moving platforms and fewer safe landings.',
+    targetScore:405, startSpeed:8.45, speedGain:0.00282, firstSpawn:23, gapScale:0.57, difficultyBias:0.84,
+    tutorialPatterns:[15,17,20], patterns:[1,2,3,5,7,8,12,13,14,15,16,17,18,19,20,21],
     shapeNames:['square','rectangle','parallelogram','trapezium','rhombus','kite'],
     quizTypes:['name','description','statement','parallel','angles','vertices'],
     theme:{ sky0:'#04100c', sky1:'#07331e', sky2:'#14572e', ground:'#071c16', grid:'#38ff87', accent:'#38ff87', accent2:'#ffee58', hazard:'#ff8a00', mountain:'#113b25' }
   },
   {
     id:'symmetry-circuit', name:'Symmetry Circuit', subtitle:'Symmetry and properties',
-    description:'Moving platforms, saws and shape-property questions with symmetry, corners and special cases.',
-    targetScore:390, startSpeed:7.30, speedGain:0.00195, firstSpawn:35, gapScale:0.70, difficultyBias:0.66,
-    tutorialPatterns:[8,12,14,17], patterns:[0,1,2,5,7,8,9,10,11,12,13,14,15,17,18,19,20,21],
+    description:'A harsh symmetry circuit with immediate moving-platform chains and mixed hazard traps.',
+    targetScore:500, startSpeed:8.90, speedGain:0.00305, firstSpawn:22, gapScale:0.54, difficultyBias:0.90,
+    tutorialPatterns:[17,18,20], patterns:[1,2,5,7,8,9,10,12,13,14,15,17,18,19,20,21],
     shapeNames:['circle','triangle','square','rectangle','pentagon','hexagon','octagon','rhombus','kite'],
     quizTypes:['symmetry','vertices','statement','name','edge','angles'],
     theme:{ sky0:'#10040c', sky1:'#38102c', sky2:'#661343', ground:'#1a0713', grid:'#ff4fb7', accent:'#ff4fb7', accent2:'#7df9ff', hazard:'#ff3b3b', mountain:'#45143a' }
   },
   {
     id:'area-arena', name:'Area Arena', subtitle:'Perimeter and area',
-    description:'The final neon arena mixes every obstacle type with quick area and perimeter challenges.',
-    targetScore:470, startSpeed:7.75, speedGain:0.00206, firstSpawn:33, gapScale:0.66, difficultyBias:0.74,
-    tutorialPatterns:[12,15,18,19], patterns:[0,1,2,3,5,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],
+    description:'The final arena throws nearly every hard pattern at you quickly with rapid area and perimeter checks.',
+    targetScore:610, startSpeed:9.35, speedGain:0.00328, firstSpawn:20, gapScale:0.51, difficultyBias:0.94,
+    tutorialPatterns:[13,18,21], patterns:[1,2,3,5,7,8,9,10,12,13,14,15,16,17,18,19,20,21],
     shapeNames:['square','rectangle','triangle','hexagon','octagon','parallelogram','rhombus','trapezium'],
     quizTypes:['area','perimeter','parallel','symmetry','statement','sides'],
     theme:{ sky0:'#101000', sky1:'#3d3000', sky2:'#6b4d00', ground:'#1c1404', grid:'#ffe600', accent:'#ffe600', accent2:'#00f5d4', hazard:'#ff2f2f', mountain:'#4a3506' }
@@ -1014,7 +1014,7 @@ function showHub() {
   pauseOverlay.setAttribute('aria-hidden', 'true');
   pauseBtn.textContent = 'Pause';
   renderLevelSelect();
-  announce('Level hub. Pick an unlocked level.');
+  announce('Level hub. Pick a challenge level.');
 }
 
 function resetLevelProgress() {
@@ -1114,8 +1114,8 @@ const PLAYER = {
   airJumpsUsed: 0    // double-jump: 0 = available, 1 = used
 };
 const GROUND_Y = 360;
-const GRAVITY = 0.62;
-const JUMP_FORCE = -14;
+const GRAVITY = 0.70;
+const JUMP_FORCE = -13.65;
 
 // ── Obstacles ──
 let obstacles = [];
@@ -1547,10 +1547,10 @@ function initGame() {
 
 function mkSpike(x, h) {
   h = h || 50;
-  return { x, y: GROUND_Y - h, w: 32, h, type: 'spike' };
+  return { x, y: GROUND_Y - h, w: 38, h: h + 4, type: 'spike' };
 }
 function mkBlock(x, h, w) {
-  h = h || 50; w = w || 32;
+  h = h || 56; w = w || 38;
   return { x, y: GROUND_Y - h, w, h, type: 'block' };
 }
 function mkPlatform(x, y, w) {
@@ -1561,14 +1561,14 @@ function mkMovingPlatform(x, y, w, range, spd) {
            baseY: y, range: range || 80, spd: spd || 1.2, t: Math.random()*Math.PI*2 };
 }
 function mkPortal(x) {
-  return { x, y: GROUND_Y - 160, w: 40, h: 160, type: 'portal', t: 0 };
+  return { x, y: GROUND_Y - 168, w: 38, h: 168, type: 'portal', t: 0 };
 }
 function mkSaw(x, y) {
-  return { x, y: y || GROUND_Y - 36, w: 36, h: 36, type: 'saw', angle: 0 };
+  return { x, y: y || GROUND_Y - 44, w: 44, h: 44, type: 'saw', angle: 0 };
 }
 function mkTopSpike(x, h) {
   h = h || 50;
-  return { x, y: 0, w: 32, h, type: 'topSpike' };
+  return { x, y: 0, w: 38, h: h + 8, type: 'topSpike' };
 }
 function mkCoin(x, y) {
   return { x, y: y || GROUND_Y - 100, w: 22, h: 22, type: 'coin', t: Math.random()*Math.PI*2, collected: false };
@@ -1643,8 +1643,8 @@ const PATTERNS = [
 ];
 
 // Weight patterns by difficulty (early game = easier patterns)
-const PATTERN_GAPS = [130,150,170,155,120,135,150,165,170,180,180,145,150,175,155,175,175,190,175,190,185,160];
-const TUTORIAL_PATTERNS = [0, 4, 6, 7, 11, 1];
+const PATTERN_GAPS = [104,118,132,122,96,106,120,128,132,142,142,112,116,132,118,130,132,144,132,146,138,122];
+const TUTORIAL_PATTERNS = [2, 12, 15];
 
 function spawnObstacle() {
   const level = currentLevel();
@@ -1658,12 +1658,16 @@ function spawnObstacle() {
   } else {
     // Hard-start tuning: make more of each level's obstacle set available immediately,
     // then keep escalating as the player approaches the target score.
-    const difficultyBias = Math.max(0, Math.min(0.85, level.difficultyBias || 0));
+    const difficultyBias = Math.max(0, Math.min(0.97, level.difficultyBias || 0));
     const progress = Math.min(1, (score / Math.max(1, level.targetScore)) + difficultyBias);
-    const minAvailable = Math.min(pool.length, Math.max(5, Math.ceil(pool.length * 0.45)));
+    const minAvailable = Math.min(pool.length, Math.max(8, Math.ceil(pool.length * 0.68)));
     const availableCount = Math.min(pool.length, Math.max(minAvailable, Math.ceil(minAvailable + progress * (pool.length - minAvailable))));
     const available = pool.slice(0, availableCount);
-    idx = available[Math.floor(Math.random() * available.length)];
+    // Weight the draw towards the hardest currently available patterns.
+    const roll = Math.random();
+    const startAt = roll < 0.58 ? Math.floor(available.length * 0.45) : (roll < 0.84 ? Math.floor(available.length * 0.25) : 0);
+    const hardSlice = available.slice(startAt);
+    idx = hardSlice[Math.floor(Math.random() * hardSlice.length)];
   }
   const newObs = PATTERNS[idx]();
   newObs.forEach(o => obstacles.push(o));
@@ -1742,7 +1746,7 @@ function doJump() {
     spawnJumpParticles();
   } else if (PLAYER.airJumpsUsed < 1) {
     // Double jump — slightly weaker than ground jump
-    PLAYER.vy = JUMP_FORCE * 0.85;
+    PLAYER.vy = JUMP_FORCE * 0.78;
     PLAYER.airJumpsUsed++;
     PLAYER.squish = 1;
     // Extra burst in a different colour to signal it's the air jump
@@ -1899,7 +1903,7 @@ function handleAnswer(ans, btn) {
     flash('#00c65060', 400);
     const quizToken = quizSequenceId;
     announce('Correct answer. Continuing.');
-    setTimeout(() => { if (state === 'quiz' && quizToken === quizSequenceId) { quizOverlay.style.display = 'none'; respawn(); } }, reduceMotion ? 900 : 1600);
+    setTimeout(() => { if (state === 'quiz' && quizToken === quizSequenceId) { quizOverlay.style.display = 'none'; respawn(); } }, reduceMotion ? 550 : 950);
   } else {
     currentQuiz.wrongAttempts++;
     btn.classList.add('wrong');
@@ -1919,9 +1923,9 @@ function respawn() {
   state = 'playing';
   currentRunContinues = true;
   // Clear a safe runway around the player but keep score/speed/frameCount.
-  obstacles = obstacles.filter(o => o.x + o.w < PLAYER.x - 40 || o.x > 560);
-  nextObstacleIn = Math.max(nextObstacleIn, 110);
-  invulnerableUntil = frameCount + 120;
+  obstacles = obstacles.filter(o => o.x + o.w < PLAYER.x - 24 || o.x > 430);
+  nextObstacleIn = Math.max(nextObstacleIn, 56);
+  invulnerableUntil = frameCount + 72;
   PLAYER.y = GROUND_Y - PLAYER.h;
   PLAYER.vy = 0;
   PLAYER.onGround = true;
@@ -2594,7 +2598,7 @@ function checkPortals() {
         flash('#aa00ff80', 300);
         spawnParticles(cx, cy, '#cc88ff', 16);
         spawnParticles(cx, cy, '#ffffff', 8);
-        PLAYER.vy = JUMP_FORCE * 1.1;
+        PLAYER.vy = JUMP_FORCE * 1.02;
         PLAYER.onGround = false;
         announce('Portal boost.');
       }
@@ -2790,9 +2794,9 @@ function loop() {
   if (nextObstacleIn <= 0) {
     const patternGap = spawnObstacle();
     const level = currentLevel();
-    const gapTightener = Math.max(0.78, 1 - (level.difficultyBias || 0) * 0.18);
-    const baseGap = Math.max(patternGap * gapTightener, 118 - frameCount * 0.012);
-    nextObstacleIn = Math.floor(baseGap + Math.random() * 28);
+    const gapTightener = Math.max(0.66, 1 - (level.difficultyBias || 0) * 0.24);
+    const baseGap = Math.max(patternGap * gapTightener, 92 - frameCount * 0.014);
+    nextObstacleIn = Math.floor(baseGap + Math.random() * 18);
   }
 
   drawObstaclesAll();
@@ -2827,7 +2831,7 @@ function loop() {
 
 updateMotionButton();
 renderLevelSelect();
-announce('Ready. Pick an unlocked level or press Space to start the selected level.');
+announce('Ready. Pick a challenge level or press Space to start the selected level.');
 </script>
 </body>
 </html>
