@@ -43,6 +43,17 @@
         .submit-button { background:#007291; color:#fff; padding:15px 40px; font-size:16px; border:none; border-radius:6px; cursor:pointer; font-family:'Atkinson Hyperlegible',sans-serif; font-weight:700; transition:background .3s; }
         .submit-button:hover { background:#005a74; }
         a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline:3px solid #ef7724; outline-offset:2px; }
+
+        /* success / fallback messaging */
+        .success-msg { background-color: #eaf7f0; border: 2px solid #2e8b57; border-radius: 6px; padding: 14px; color: #2e8b57; font-weight: 700; margin-top: 20px; display: none; }
+        .fallback-card { background-color: #fff8ea; border: 2px solid #ef7724; border-radius: 6px; padding: 16px; margin-top: 20px; text-align: left; display: none; }
+        .fallback-card p { font-size: 14px; color: #333; margin-bottom: 10px; line-height: 1.55; }
+        .fallback-card textarea { min-height: 160px; font-size: 13px; margin-bottom: 10px; }
+        .fallback-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .btn-secondary { background-color: #007291; color: white; padding: 10px 20px; border-radius: 6px; border: none; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+        .btn-secondary:hover { background-color: #005a74; }
+        .btn-secondary.outline { background-color: white; color: #007291; border: 2px solid #007291; }
+        #copyStatus { font-size: 13px; color: #2e8b57; font-weight: 700; margin-top: 8px; min-height: 1.2em; }
 </style>
 </head>
 <body>
@@ -479,24 +490,96 @@
                     <p id="submitNote" style="display:none;color:#c0392b;font-weight:700;margin:8px 0 0;"></p>
                 </div>
                 <button type="button" class="submit-button" onclick="submitForm()">Submit Your Answers</button>
+
+                <div class="success-msg" id="successMsg">✅ Gmail opened in a new tab — check your draft and send it.</div>
+
+                <div class="fallback-card" id="fallbackCard">
+                    <p id="fallbackReason">Gmail did not open.</p>
+                    <p>You can still get your answers to your teacher. Either click the button below to try your email app, or copy the text and paste it into a new email.</p>
+                    <textarea id="fallbackBody" readonly onclick="this.select()"></textarea>
+                    <div class="fallback-actions">
+                        <button class="btn-secondary" type="button" onclick="copyFallback()">📋 Copy answers</button>
+                        <a class="btn-secondary outline" id="fallbackMailto" href="#" target="_blank" rel="noopener" style="text-decoration:none; display:inline-flex; align-items:center;">✉️ Try email app</a>
+                    </div>
+                    <div id="copyStatus"></div>
+                </div>
             </div>
 
         </form>
     </div>
     <script>
         const SCHOOL_DOMAIN = 'chiltonbridgeschool.co.uk';
+        const ANSWERS_KEY = 'fsMathsE3Set2SectionB_answers';
+        // Browsers / Gmail can mishandle very long compose URLs, so anything over
+        // this length is sent via the fallback panel instead of window.open.
+        const SAFE_URL_LENGTH = 1900;
+        // Teacher name fields use their own separate localStorage keys (below),
+        // so they're excluded from the general answers autosave.
+        const EXCLUDE_NAMES = ['teacherFirst', 'teacherLast'];
+
         function cleanNamePart(s){ return s.trim().toLowerCase().replace(/[^a-z0-9-]/g,''); }
         function buildTeacherEmail(){ const f=cleanNamePart(document.getElementById('teacherFirst').value); const l=cleanNamePart(document.getElementById('teacherLast').value); if(!f||!l) return ''; return f+'.'+l+'@'+SCHOOL_DOMAIN; }
         function updateEmailPreview(){ const e=buildTeacherEmail(); document.getElementById('emailPreview').textContent = e ? 'This will send to: '+e : ''; }
         function ans(fd,k){ return fd.get(k) || '[Not answered]'; }
-        function submitForm(){
+
+        // ── AUTOSAVE / RESTORE ───────────────────────────────────
+        // Saves progress locally so answers survive an accidental refresh or
+        // closed tab before the email has been sent. Works generically across
+        // every named text/textarea/radio field in the form, so it covers the
+        // Q8 table inputs (which only have a name, no id) as well as everything else.
+        function saveState() {
+            try {
+                const form = document.getElementById('assessmentForm');
+                const state = { text: {}, radio: {} };
+                form.querySelectorAll('input[type="text"], textarea').forEach(function(el) {
+                    const name = el.name || el.id;
+                    if (!name || EXCLUDE_NAMES.indexOf(name) > -1) return;
+                    state.text[name] = el.value;
+                });
+                const radioNames = new Set();
+                form.querySelectorAll('input[type="radio"]').forEach(function(el) { radioNames.add(el.name); });
+                radioNames.forEach(function(name) {
+                    const checked = form.querySelector('input[name="' + name + '"]:checked');
+                    state.radio[name] = checked ? checked.value : '';
+                });
+                localStorage.setItem(ANSWERS_KEY, JSON.stringify(state));
+            } catch (e) {
+                // localStorage may be unavailable (e.g. private browsing) — fail silently
+            }
+        }
+
+        function restoreState() {
+            let raw;
+            try { raw = localStorage.getItem(ANSWERS_KEY); } catch (e) { return; }
+            if (!raw) return;
+            let state;
+            try { state = JSON.parse(raw); } catch (e) { return; }
+            const form = document.getElementById('assessmentForm');
+
+            if (state.text) {
+                Object.keys(state.text).forEach(function(name) {
+                    const el = form.querySelector('[name="' + name + '"]') || document.getElementById(name);
+                    if (el && state.text[name]) el.value = state.text[name];
+                });
+            }
+            if (state.radio) {
+                Object.keys(state.radio).forEach(function(name) {
+                    const value = state.radio[name];
+                    if (!value) return;
+                    const els = form.querySelectorAll('input[name="' + name + '"]');
+                    els.forEach(function(el) { if (el.value === value) el.checked = true; });
+                });
+            }
+        }
+
+        function clearSavedAnswers() {
+            try { localStorage.removeItem(ANSWERS_KEY); } catch (e) {}
+        }
+
+        // ── EMAIL BODY ────────────────────────────────────────────
+        function buildEmailBody() {
             const fd = new FormData(document.getElementById('assessmentForm'));
             const studentName = document.getElementById('studentName').value.trim();
-            const note = document.getElementById('submitNote');
-            const teacherEmail = buildTeacherEmail();
-            if(!teacherEmail){ note.textContent="Please add your teacher's first and last name first."; note.style.display='block'; document.getElementById('teacherFirst').focus(); return; }
-            note.style.display='none';
-            try{ localStorage.setItem('base6TeacherFirst', document.getElementById('teacherFirst').value.trim()); localStorage.setItem('base6TeacherLast', document.getElementById('teacherLast').value.trim()); }catch(e){}
             let b = "FUNCTIONAL SKILLS MATHEMATICS ENTRY 3\nSET 2 - SECTION B (CALCULATOR)\n\n";
             b += "Student: " + (studentName || '[Name not given]') + "\n\n===== STUDENT ANSWERS =====\n\n";
             b += "Q1 - Total cost for 24 months:\n  Working: "+ans(fd,'q1_working')+"\n  Answer: \u00a3"+ans(fd,'q1_answer')+"\n\n";
@@ -522,13 +605,80 @@
             b += "Q18 - Bar chart description:\n  Scale: "+ans(fd,'q18_scale')+"\n  Bar heights: "+ans(fd,'q18_bars')+"\n\n";
             b += "===== END OF ANSWERS =====\n";
             const subject = "FS Maths Entry 3 Set 2 Section B" + (studentName ? " - "+studentName : "");
-            window.open("https://mail.google.com/mail/?ui=2&fs=1&to="+encodeURIComponent(teacherEmail)+"&su="+encodeURIComponent(subject)+"&body="+encodeURIComponent(b), '_blank');
+            return { body: b, subject };
         }
+
+        // ── SUBMIT ────────────────────────────────────────────────
+        function submitForm(){
+            const studentName = document.getElementById('studentName').value.trim();
+            const note = document.getElementById('submitNote');
+            const teacherEmail = buildTeacherEmail();
+            if(!teacherEmail){ note.textContent="Please add your teacher's first and last name first."; note.style.display='block'; document.getElementById('teacherFirst').focus(); return; }
+            note.style.display='none';
+            try{ localStorage.setItem('base6TeacherFirst', document.getElementById('teacherFirst').value.trim()); localStorage.setItem('base6TeacherLast', document.getElementById('teacherLast').value.trim()); }catch(e){}
+
+            const { body, subject } = buildEmailBody();
+            const gmailUrl = "https://mail.google.com/mail/?ui=2&fs=1&to="+encodeURIComponent(teacherEmail)+"&su="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body);
+
+            if (gmailUrl.length > SAFE_URL_LENGTH) {
+                showFallback(body, subject, teacherEmail, 'Your answers are quite long, so Gmail may not load them correctly.');
+                return;
+            }
+
+            // '_blank' opens Gmail in a new tab rather than navigating away
+            // from the paper, so nothing the student has done is lost.
+            let win = null;
+            try { win = window.open(gmailUrl, '_blank'); } catch (e) { win = null; }
+
+            if (!win) {
+                showFallback(body, subject, teacherEmail, 'Gmail did not open. Your browser may have blocked the pop-up.');
+                return;
+            }
+
+            document.getElementById('successMsg').style.display = 'block';
+            document.getElementById('fallbackCard').style.display = 'none';
+            clearSavedAnswers();
+        }
+
+        function showFallback(body, subject, teacherEmail, reason) {
+            document.getElementById('successMsg').style.display = 'none';
+            const fb = document.getElementById('fallbackCard');
+            document.getElementById('fallbackReason').textContent = reason;
+            document.getElementById('fallbackBody').value = body;
+            const mailto = document.getElementById('fallbackMailto');
+            // Note: the recipient is not percent-encoded here — encoding the
+            // @ symbol as %40 makes some mail apps fail to recognise the address.
+            mailto.href = 'mailto:' + teacherEmail + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+            fb.style.display = 'block';
+            fb.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function copyFallback() {
+            const ta = document.getElementById('fallbackBody');
+            ta.select();
+            const status = document.getElementById('copyStatus');
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(ta.value).then(function() {
+                    status.textContent = '✓ Copied! Paste this into a new email to your teacher.';
+                }).catch(function() {
+                    status.textContent = 'Select the text above, copy it, then paste it into an email to your teacher.';
+                });
+            } else {
+                status.textContent = 'Select the text above, copy it, then paste it into an email to your teacher.';
+            }
+        }
+
         (function(){
             try{ const f=localStorage.getItem('base6TeacherFirst'); const l=localStorage.getItem('base6TeacherLast'); if(f) document.getElementById('teacherFirst').value=f; if(l) document.getElementById('teacherLast').value=l; }catch(e){}
             document.getElementById('teacherFirst').addEventListener('input', updateEmailPreview);
             document.getElementById('teacherLast').addEventListener('input', updateEmailPreview);
             updateEmailPreview();
+
+            restoreState();
+
+            const form = document.getElementById('assessmentForm');
+            form.addEventListener('input', saveState);
+            form.addEventListener('change', saveState);
         })();
 </script>
 </body>
