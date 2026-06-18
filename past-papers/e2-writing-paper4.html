@@ -121,6 +121,16 @@ textarea:focus { outline: none; border-color: var(--teal); }
 .btn-primary:hover { background: var(--teal-dark); }
 .success-msg { background: var(--green-light); border: 2px solid var(--green); border-radius: 10px; padding: 0.9rem; color: var(--green); font-weight: 700; margin-top: 1rem; display: none; }
 
+/* ── FALLBACK CARD (shown if Gmail does not open) ── */
+.fallback-card { background: #fff8ea; border: 2px solid var(--orange); border-radius: 10px; padding: 1rem; margin-top: 1rem; text-align: left; display: none; }
+.fallback-card p { font-size: 0.85rem; color: var(--dark); margin-bottom: 0.6rem; line-height: 1.55; }
+.fallback-card textarea { min-height: 160px; font-size: 0.82rem; margin-bottom: 0.6rem; }
+.fallback-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; }
+.btn-secondary { background: var(--teal); color: white; padding: 0.55rem 1.2rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+.btn-secondary:hover { background: var(--teal-dark); }
+.btn-secondary.outline { background: white; color: var(--teal); border: 2px solid var(--teal); }
+#copyStatus { font-size: 0.8rem; color: var(--green); font-weight: 700; margin-top: 0.4rem; min-height: 1.2em; }
+
 /* ── EXPORT BAR ── */
 .export-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--teal); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: center; gap: 1rem; z-index: 100; flex-wrap: wrap; }
 .export-bar span { font-size: 0.88rem; font-weight: 700; color: rgba(255,255,255,0.85); }
@@ -170,10 +180,10 @@ textarea:focus { outline: none; border-color: var(--teal); }
       still &nbsp;&nbsp; seven &nbsp;&nbsp; school &nbsp;&nbsp; small
     </div>
     <div class="alpha-inputs">
-      <div class="alpha-row"><span class="alpha-num">1</span><input class="alpha-input" type="text" placeholder="first word..." oninput="checkQ1()" data-q1="1"></div>
-      <div class="alpha-row"><span class="alpha-num">2</span><input class="alpha-input" type="text" placeholder="second word..." oninput="checkQ1()" data-q1="2"></div>
-      <div class="alpha-row"><span class="alpha-num">3</span><input class="alpha-input" type="text" placeholder="third word..." oninput="checkQ1()" data-q1="3"></div>
-      <div class="alpha-row"><span class="alpha-num">4</span><input class="alpha-input" type="text" placeholder="fourth word..." oninput="checkQ1()" data-q1="4"></div>
+      <div class="alpha-row"><span class="alpha-num">1</span><input class="alpha-input" type="text" id="q1-1" placeholder="first word..." oninput="checkQ1()" data-q1="1"></div>
+      <div class="alpha-row"><span class="alpha-num">2</span><input class="alpha-input" type="text" id="q1-2" placeholder="second word..." oninput="checkQ1()" data-q1="2"></div>
+      <div class="alpha-row"><span class="alpha-num">3</span><input class="alpha-input" type="text" id="q1-3" placeholder="third word..." oninput="checkQ1()" data-q1="3"></div>
+      <div class="alpha-row"><span class="alpha-num">4</span><input class="alpha-input" type="text" id="q1-4" placeholder="fourth word..." oninput="checkQ1()" data-q1="4"></div>
     </div>
   </div>
 
@@ -304,9 +314,20 @@ textarea:focus { outline: none; border-color: var(--teal); }
   <!-- SUBMIT -->
   <div class="submit-card">
     <h2>📧 Send your answers to Jay</h2>
-    <p>This will open a Gmail draft with all your answers. Send it when you are ready. You can send before the paper is finished too.</p>
+    <p>This will open a Gmail draft already addressed to Jay, with all your answers filled in. You can send before the paper is finished too.</p>
     <button class="btn btn-primary" onclick="submitPaper()">Send answers to Jay</button>
-    <div class="success-msg" id="successMsg">✅ Gmail opened — check your draft and send it.</div>
+    <div class="success-msg" id="successMsg">✅ Gmail opened, addressed to jay.raine@chiltonbridgeschool.co.uk — check the draft and send it.</div>
+
+    <div class="fallback-card" id="fallbackCard">
+      <p id="fallbackReason">Gmail did not open.</p>
+      <p>You can still get your answers to Jay. Either click the button below to try your email app, or copy the text and paste it into a new email addressed to <strong id="fallbackTo">jay.raine@chiltonbridgeschool.co.uk</strong>.</p>
+      <textarea id="fallbackBody" readonly onclick="this.select()"></textarea>
+      <div class="fallback-actions">
+        <button class="btn-secondary" onclick="copyFallback()">📋 Copy answers</button>
+        <a class="btn-secondary outline" id="fallbackMailto" href="#" style="text-decoration:none; display:inline-flex; align-items:center;">✉️ Try email app</a>
+      </div>
+      <div id="copyStatus"></div>
+    </div>
   </div>
 
 </main>
@@ -317,6 +338,13 @@ textarea:focus { outline: none; border-color: var(--teal); }
 </div>
 
 <script>
+// ── CONFIG ────────────────────────────────────────────────
+const RECIPIENT = 'jay.raine@chiltonbridgeschool.co.uk';
+const STORAGE_KEY = 'e2WritingP4_state';
+// Browsers / Gmail can mishandle very long compose URLs, so anything over
+// this length is sent via the fallback panel instead of window.open.
+const SAFE_URL_LENGTH = 1900;
+
 // ── Q6 DATA ───────────────────────────────────────────────
 const Q6_ITEMS = [
   { id:'q6a', sentence:'Stan is ______ today.', options:['fourty','forty','fortey','fourtey'], correct:1 },
@@ -353,7 +381,7 @@ function buildQ6() {
   });
 }
 
-function selectQ6(id, chosen, correct) {
+function selectQ6(id, chosen, correct, skipSave) {
   // Clear previous
   for(let i=0;i<4;i++) {
     const el = document.getElementById(`opt-${id}-${i}`);
@@ -368,14 +396,15 @@ function selectQ6(id, chosen, correct) {
     if(correctEl) correctEl.classList.add('correct');
   }
   q6Answers[id] = { chosen, correct, text: Q6_ITEMS.find(i=>i.id===id).options[chosen] };
-  checkQ6();
+  checkQ6(skipSave);
 }
 
-function checkQ6() {
-  const answered = Object.keys(q6Answers).length;
+function checkQ6(skipSave) {
+  const answeredCount = Object.keys(q6Answers).length;
   const card = document.getElementById('card-q6');
-  if(answered >= Q6_ITEMS.length) card.classList.add('answered');
+  if(answeredCount >= Q6_ITEMS.length) card.classList.add('answered');
   updateProgress();
+  if(!skipSave) saveState();
 }
 
 // ── PROGRESS ──────────────────────────────────────────────
@@ -391,33 +420,115 @@ function updateProgress() {
 }
 
 // ── INDIVIDUAL QUESTION CHECKS ────────────────────────────
-function checkQ1() {
+function checkQ1(skipSave) {
   const vals = document.querySelectorAll('[data-q1]');
   const filled = Array.from(vals).some(v=>v.value.trim().length > 0);
   if(filled){ document.getElementById('card-q1').classList.add('answered'); markAnswered('q1'); }
+  if(!skipSave) saveState();
 }
-function checkQ2() {
+function checkQ2(skipSave) {
   const w = document.getElementById('plural-watch').value.trim();
   const a = document.getElementById('plural-apple').value.trim();
   if(w||a){ document.getElementById('card-q2').classList.add('answered'); markAnswered('q2'); }
+  if(!skipSave) saveState();
 }
-function checkQ3() {
+function checkQ3(skipSave) {
   const a = document.getElementById('q3a').value.trim();
   const b = document.getElementById('q3b').value.trim();
   if(a||b){ document.getElementById('card-q3').classList.add('answered'); markAnswered('q3'); }
+  if(!skipSave) saveState();
 }
-function checkQ4() {
+function checkQ4(skipSave) {
   const name = document.getElementById('q4-name').value.trim();
   const sents = document.getElementById('q4-sentences').value.trim();
   if(name||sents){ document.getElementById('card-q4').classList.add('answered'); markAnswered('q4'); }
+  if(!skipSave) saveState();
 }
-function checkQ5() {
+function checkQ5(skipSave) {
   const email = document.getElementById('q5-email').value.trim();
   if(email.length > 10){ document.getElementById('card-q5').classList.add('answered'); markAnswered('q5'); }
+  if(!skipSave) saveState();
+}
+
+// ── AUTOSAVE / RESTORE ───────────────────────────────────
+// Saves progress locally so answers survive an accidental refresh or
+// closed tab before the email has been sent.
+function saveState() {
+  try {
+    const state = {
+      q1: Array.from(document.querySelectorAll('[data-q1]')).map(el => el.value),
+      q2: { watch: document.getElementById('plural-watch').value, apple: document.getElementById('plural-apple').value },
+      q3: { a: document.getElementById('q3a').value, b: document.getElementById('q3b').value },
+      q4: {
+        name: document.getElementById('q4-name').value,
+        house: document.getElementById('q4-house').value,
+        street: document.getElementById('q4-street').value,
+        town: document.getElementById('q4-town').value,
+        postcode: document.getElementById('q4-postcode').value,
+        email: document.getElementById('q4-email').value,
+        sentences: document.getElementById('q4-sentences').value
+      },
+      q5: { email: document.getElementById('q5-email').value },
+      q6: {}
+    };
+    Object.keys(q6Answers).forEach(id => { state.q6[id] = q6Answers[id].chosen; });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e) {
+    // localStorage may be unavailable (e.g. private browsing) — fail silently
+  }
+}
+
+function restoreState() {
+  let raw;
+  try { raw = localStorage.getItem(STORAGE_KEY); } catch(e) { return; }
+  if(!raw) return;
+  let state;
+  try { state = JSON.parse(raw); } catch(e) { return; }
+
+  if(state.q1) {
+    const inputs = document.querySelectorAll('[data-q1]');
+    state.q1.forEach((v, i) => { if(inputs[i] && v) inputs[i].value = v; });
+    checkQ1(true);
+  }
+  if(state.q2) {
+    if(state.q2.watch) document.getElementById('plural-watch').value = state.q2.watch;
+    if(state.q2.apple) document.getElementById('plural-apple').value = state.q2.apple;
+    checkQ2(true);
+  }
+  if(state.q3) {
+    if(state.q3.a) document.getElementById('q3a').value = state.q3.a;
+    if(state.q3.b) document.getElementById('q3b').value = state.q3.b;
+    checkQ3(true);
+  }
+  if(state.q4) {
+    if(state.q4.name) document.getElementById('q4-name').value = state.q4.name;
+    if(state.q4.house) document.getElementById('q4-house').value = state.q4.house;
+    if(state.q4.street) document.getElementById('q4-street').value = state.q4.street;
+    if(state.q4.town) document.getElementById('q4-town').value = state.q4.town;
+    if(state.q4.postcode) document.getElementById('q4-postcode').value = state.q4.postcode;
+    if(state.q4.email) document.getElementById('q4-email').value = state.q4.email;
+    if(state.q4.sentences) document.getElementById('q4-sentences').value = state.q4.sentences;
+    checkQ4(true);
+  }
+  if(state.q5 && state.q5.email) {
+    document.getElementById('q5-email').value = state.q5.email;
+    checkQ5(true);
+  }
+  if(state.q6) {
+    Object.keys(state.q6).forEach(id => {
+      const item = Q6_ITEMS.find(i => i.id === id);
+      if(item) selectQ6(id, state.q6[id], item.correct, true);
+    });
+  }
+  updateProgress();
+}
+
+function clearSavedState() {
+  try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
 }
 
 // ── SUBMIT ────────────────────────────────────────────────
-function submitPaper() {
+function buildEmailBody() {
   const now = new Date().toLocaleDateString('en-GB', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const val = id => (document.getElementById(id)||{}).value || '(blank)';
   const alphaVals = Array.from(document.querySelectorAll('[data-q1]')).map((el,i)=>`  ${i+1}. ${el.value||'(blank)'}`).join('\n');
@@ -440,13 +551,61 @@ function submitPaper() {
   body += `━━━ Q5: EMAIL (Last Weekend) ━━━\n${val('q5-email')}\n\n`;
   body += `━━━ Q6: SPELLING (10 marks) ━━━\n${q6Lines}\n`;
 
-  const gmail = 'https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su=' + encodeURIComponent('E2 Writing Paper 4 — ' + now) + '&body=' + encodeURIComponent(body);
-  window.open(gmail, '_blank');
+  return { body, subject: 'E2 Writing Paper 4 — ' + now };
+}
+
+function submitPaper() {
+  const { body, subject } = buildEmailBody();
+  const gmailUrl = 'https://mail.google.com/mail/?view=cm&to=' + encodeURIComponent(RECIPIENT) +
+                    '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+
+  if(gmailUrl.length > SAFE_URL_LENGTH) {
+    showFallback(body, subject, 'Your answers are quite long, so Gmail may not load them correctly.');
+    return;
+  }
+
+  let win = null;
+  try { win = window.open(gmailUrl, '_blank'); } catch(e) { win = null; }
+
+  if(!win) {
+    showFallback(body, subject, 'Gmail did not open. Your browser may have blocked the pop-up.');
+    return;
+  }
+
   document.getElementById('successMsg').style.display = 'block';
+  document.getElementById('fallbackCard').style.display = 'none';
+  clearSavedState();
+}
+
+function showFallback(body, subject, reason) {
+  document.getElementById('successMsg').style.display = 'none';
+  const fb = document.getElementById('fallbackCard');
+  document.getElementById('fallbackReason').textContent = reason;
+  document.getElementById('fallbackBody').value = body;
+  const mailto = document.getElementById('fallbackMailto');
+  mailto.href = 'mailto:' + encodeURIComponent(RECIPIENT) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  fb.style.display = 'block';
+  fb.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function copyFallback() {
+  const ta = document.getElementById('fallbackBody');
+  ta.select();
+  const status = document.getElementById('copyStatus');
+  if(navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(ta.value).then(() => {
+      status.textContent = '✓ Copied! Paste this into a new email to ' + RECIPIENT;
+    }).catch(() => {
+      status.textContent = 'Select the text above, copy it, then paste it into an email to ' + RECIPIENT;
+    });
+  } else {
+    status.textContent = 'Select the text above, copy it, then paste it into an email to ' + RECIPIENT;
+  }
 }
 
 // ── INIT ──────────────────────────────────────────────────
 buildQ6();
+restoreState();
 </script>
 </body>
 </html>
