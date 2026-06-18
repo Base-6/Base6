@@ -51,7 +51,6 @@
   .paper-tile .pt-top { display: flex; align-items: center; gap: 0.5rem; }
   .paper-tile .pt-icon { font-size: 1.3rem; }
   .paper-tile .pt-type { font-size: 1rem; font-weight: 700; color: var(--accent, #007291); }
-  .paper-tile .pt-meta { font-size: 0.78rem; color: #888; margin-top: 0.1rem; }
   .paper-tile .pt-open { font-size: 0.82rem; font-weight: 700; color: var(--accent, #007291); margin-top: 0.2rem; }
 
   .paper-tile.soon {
@@ -82,7 +81,7 @@
 
 <main class="main">
 
-  <p class="intro-note">Each paper opens as its own activity. You can type your answers straight in, and when you are done there is a button to send them to your teacher. There is no timer here unless you choose to set one yourself.</p>
+  <p class="intro-note">Each tile opens as its own activity. You can type your answers straight in, and when you are done there is a button to send them to your teacher. There is no timer here unless you choose to set one yourself.</p>
 
   <div class="jump-row">
     <a class="jump-chip jump-maths" href="#maths">🔢 Maths</a>
@@ -106,20 +105,20 @@ const SUBJECTS = [
         { type: 'Calculator',     icon: '🧮', file: 'fs_maths_level2_pp10_sectionB.html' },
       ]},
       { name: 'Functional Skills Level 1', tag: 'Functional Skills', papers: [
-        { type: 'Non-calculator', icon: '✏️', meta: 'Past Paper 10 · 14 marks · 25 min', file: 'fs_maths_level1_pp10_sectionA.html' },
-        { type: 'Calculator',     icon: '🧮', meta: 'Past Paper 10 · 42 marks · 90 min', file: 'fs_maths_level1_pp10_sectionB.html' },
+        { type: 'Non-calculator', icon: '✏️', file: 'fs_maths_level1_pp10_sectionA.html' },
+        { type: 'Calculator',     icon: '🧮', file: 'fs_maths_level1_pp10_sectionB.html' },
       ]},
       { name: 'Entry Level 3', tag: 'Entry Level', papers: [
         { type: 'Non-calculator', icon: '✏️', file: 'fs_maths_entry3_set2_sectionA.html' },
         { type: 'Calculator',     icon: '🧮', file: 'fs_maths_entry3_set2_sectionB.html' },
       ]},
       { name: 'Entry Level 2', tag: 'Entry Level', papers: [
-        { type: 'Non-calculator', icon: '✏️', meta: 'Set 9 · Practice Paper · 7 marks · 25 min', file: 's_maths_entry2_set9_sectionA.html' },
-        { type: 'Calculator',     icon: '🧮', meta: 'Set 9 · Practice Paper · 21 marks · 65 min', file: 's_maths_entry2_set9_sectionB.html' },
+        { type: 'Non-calculator', icon: '✏️', file: 's_maths_entry2_set9_sectionA.html' },
+        { type: 'Calculator',     icon: '🧮', file: 's_maths_entry2_set9_sectionB.html' },
       ]},
       { name: 'Entry Level 1', tag: 'Entry Level', papers: [
-        { type: 'Non-calculator', icon: '✏️', file: '' },
-        { type: 'Calculator',     icon: '🧮', file: '' },
+        { type: 'Non-calculator', icon: '✏️', file: 'fs_maths_entry1_set9_sectionA.html' },
+        { type: 'Calculator',     icon: '🧮', file: 'fs_maths_entry1_set9_sectionB.html' },
       ]},
     ]
   },
@@ -128,8 +127,8 @@ const SUBJECTS = [
     accent: '#ef7724',
     levels: [
       { name: 'Functional Skills Level 2', tag: 'Functional Skills', papers: [
-        { type: 'Reading', icon: '📖', meta: 'Practice 2 · 35 marks · 75 min', file: 'fs-english-level2-reading-p2.html' },
-        { type: 'Writing', icon: '✍️', meta: 'Practice 2 · 36 marks · 60 min', file: 'fs-english-level2-writing-p2.html' },
+        { type: 'Reading', icon: '📖', file: 'fs-english-level2-reading-p2.html' },
+        { type: 'Writing', icon: '✍️', file: 'fs-english-level2-writing-p2.html' },
       ]},
       { name: 'Functional Skills Level 1', tag: 'Functional Skills', papers: [
         { type: 'Reading', icon: '📖', file: 'fs_english_level1_reading_pp2.html' },
@@ -140,12 +139,12 @@ const SUBJECTS = [
         { type: 'Writing', icon: '✍️', file: 'fs_english_entry3_writing_pp1.html' },
       ]},
       { name: 'Entry Level 2', tag: 'Entry Level', papers: [
-        { type: 'Reading', icon: '📖', meta: 'Paper 8 · 20 marks · 45 min', file: 'e2-reading-paper8.html' },
-        { type: 'Writing', icon: '✍️', meta: 'Paper 4 · 35 marks · 50 min', file: 'e2-writing-paper4.html' },
+        { type: 'Reading', icon: '📖', file: 'e2-reading-paper8.html' },
+        { type: 'Writing', icon: '✍️', file: 'e2-writing-paper4.html' },
       ]},
       { name: 'Entry Level 1', tag: 'Entry Level', papers: [
-        { type: 'Reading', icon: '📖', file: '' },
-        { type: 'Writing', icon: '✍️', file: '' },
+        { type: 'Reading', icon: '📖', file: 'fs_english_entry1_reading_paper4.html' },
+        { type: 'Writing', icon: '✍️', file: 'fs_english_entry1_writing_paper4.html' },
       ]},
     ]
   }
@@ -177,8 +176,7 @@ function renderCatalogue(){
         if (p.file) {
           html += `<a class="paper-tile" href="${encodeURI(p.file)}" style="--accent:${sub.accent}">
                      <div class="pt-top"><span class="pt-icon" aria-hidden="true">${p.icon}</span><span class="pt-type">${esc(p.type)}</span></div>
-                     ${p.meta ? `<span class="pt-meta">${esc(p.meta)}</span>` : ''}
-                     <span class="pt-open">Open paper →</span>
+                     <span class="pt-open">Open activity →</span>
                    </a>`;
         } else {
           html += `<div class="paper-tile soon" aria-disabled="true">
