@@ -132,6 +132,16 @@ textarea:focus{outline:none;border-color:var(--teal);}
 .btn-primary:hover{background:var(--teal-dark);transform:translateY(-2px);}
 .success-msg{background:var(--green-light);border:2px solid var(--green);border-radius:10px;padding:0.9rem;color:var(--green);font-weight:700;margin-top:1rem;display:none;}
 
+/* fallback (shown if Gmail does not open) */
+.fallback-card{background:#fff8ea;border:2px solid var(--orange);border-radius:10px;padding:1rem;margin-top:1rem;text-align:left;display:none;}
+.fallback-card p{font-size:0.85rem;color:var(--dark);margin-bottom:0.6rem;line-height:1.55;}
+.fallback-card textarea{min-height:160px;font-size:0.82rem;margin-bottom:0.6rem;}
+.fallback-actions{display:flex;gap:0.6rem;flex-wrap:wrap;justify-content:center;}
+.btn-secondary{background:var(--teal);color:white;padding:0.55rem 1.2rem;border-radius:8px;border:none;font-family:inherit;font-size:0.85rem;font-weight:700;cursor:pointer;}
+.btn-secondary:hover{background:var(--teal-dark);}
+.btn-secondary.outline{background:white;color:var(--teal);border:2px solid var(--teal);}
+#copyStatus{font-size:0.8rem;color:var(--green);font-weight:700;margin-top:0.4rem;min-height:1.2em;}
+
 .export-bar{position:fixed;bottom:0;left:0;right:0;background:var(--teal);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1rem;z-index:100;flex-wrap:wrap;}
 .export-bar span{font-size:0.88rem;font-weight:700;color:rgba(255,255,255,0.85);}
 .btn-export{background:var(--orange);color:white;padding:0.55rem 1.4rem;border-radius:8px;border:none;font-family:inherit;font-size:0.9rem;font-weight:700;cursor:pointer;}
@@ -470,6 +480,17 @@ textarea:focus{outline:none;border-color:var(--teal);}
   <p>Opens a Gmail draft with all your answers. For multiple-choice questions it shows whether you chose correctly. Send when you are ready.</p>
   <button class="btn-primary" onclick="submitPaper()">Send answers</button>
   <div class="success-msg" id="successMsg">✅ Gmail opened — check your draft and send it.</div>
+
+  <div class="fallback-card" id="fallbackCard">
+    <p id="fallbackReason">Gmail did not open.</p>
+    <p>You can still get your answers to your teacher. Either click the button below to try your email app, or copy the text and paste it into a new email.</p>
+    <textarea id="fallbackBody" readonly onclick="this.select()"></textarea>
+    <div class="fallback-actions">
+      <button class="btn-secondary" onclick="copyFallback()">📋 Copy answers</button>
+      <a class="btn-secondary outline" id="fallbackMailto" href="#" style="text-decoration:none; display:inline-flex; align-items:center;">✉️ Try email app</a>
+    </div>
+    <div id="copyStatus"></div>
+  </div>
 </div>
 
 </main>
@@ -480,10 +501,22 @@ textarea:focus{outline:none;border-color:var(--teal);}
 </div>
 
 <script>
+// ── CONFIG ────────────────────────────────────────────────
+const RECIPIENT = 'jay.raine@chiltonbridgeschool.co.uk';
+const STORAGE_KEY = 'fsL2ReadingP2_state';
+// Browsers / Gmail can mishandle very long compose URLs, so anything over
+// this length is sent via the fallback panel instead of window.open.
+const SAFE_URL_LENGTH = 1900;
+
 const TOTAL_Q=15;
 const answered=new Set();
 const mcqState={};
 const multiState={};
+
+const MCQ_MAP = { q2:{correct:0,card:'card-q2'}, q6:{correct:1,card:'card-q6'}, q11:{correct:0,card:'card-q11'}, q14:{correct:1,card:'card-q14'} };
+const MULTI_MAP = { q3:{correct:[0,2],card:'card-q3'} };
+const TEXT_FIELDS = ['q1-1','q1-2','q5-spiral','q5-copycat','q7a','q7b','q8a-1','q8a-2','q8b-1','q8b-2','q9-1','q9-2','q10-feat1','q10-ex1','q10-feat2','q10-ex2','q12a','q12b','q13','q15a','q15b','q15c'];
+const NUM_FIELDS = ['q4-docs','q4-what','q4-avoid'];
 
 function updateProg(){
   const n=answered.size;
@@ -508,17 +541,15 @@ function selMCQ(qid,chosen,correct,cardId){
     else{fb.className='fb-line wrong';fb.textContent='✗ The correct answer is '+lets[correct]+'.';}
   }
   markDone(qid,cardId);
+  saveState();
 }
 
-function selMulti(qid,idx,correctArr,cardId){
-  if(!multiState[qid])multiState[qid]=[];
-  const sel=multiState[qid];
-  const pos=sel.indexOf(idx);
-  if(pos>-1)sel.splice(pos,1);else if(sel.length<correctArr.length)sel.push(idx);
+function renderMulti(qid,correctArr,cardId,skipMark){
+  const sel=multiState[qid]||[];
   const cont=document.getElementById('mcq-'+qid);
-  cont.querySelectorAll('.mcq-opt').forEach((o,i)=>{
+  cont.querySelectorAll('.mcq-opt').forEach((o)=>{
     o.classList.remove('sel','correct','wrong');
-    const tb=o.querySelector('.tick-box');tb.textContent='';
+    o.querySelector('.tick-box').textContent='';
   });
   sel.forEach(i=>{
     const o=cont.querySelectorAll('.mcq-opt')[i];
@@ -529,23 +560,35 @@ function selMulti(qid,idx,correctArr,cardId){
     const fb=document.getElementById('fb-'+qid);
     const allRight=correctArr.every(c=>sel.includes(c));
     if(fb){fb.className='fb-line '+(allRight?'correct':'wrong');fb.textContent=allRight?'✓ Correct — A and C are both informal.':'✗ The correct answers are A and C.';}
-    markDone(qid,cardId);
+    if(!skipMark) markDone(qid,cardId);
   }
+}
+
+function selMulti(qid,idx,correctArr,cardId){
+  if(!multiState[qid])multiState[qid]=[];
+  const sel=multiState[qid];
+  const pos=sel.indexOf(idx);
+  if(pos>-1)sel.splice(pos,1);else if(sel.length<correctArr.length)sel.push(idx);
+  renderMulti(qid,correctArr,cardId);
+  saveState();
 }
 
 function checkNum(prefix,count,cardId){
   let f=0;for(let i=1;i<=count;i++){const el=document.getElementById(prefix+'-'+i);if(el&&el.value.trim())f++;}
   if(f>0)markDone(prefix,cardId);
+  saveState();
 }
 
 function checkTA(id,cardId){
   const v=(document.getElementById(id)||{}).value||'';
   if(v.trim().length>10)markDone(id,cardId);
+  saveState();
 }
 
 function checkWrite(key,cardId,...ids){
   const any=ids.some(id=>(document.getElementById(id)||{}).value.trim().length>0);
   if(any)markDone(key,cardId);
+  saveState();
 }
 
 function checkQ4(){
@@ -553,28 +596,34 @@ function checkQ4(){
   const b=document.getElementById('q4-what').value;
   const c=document.getElementById('q4-avoid').value;
   if(a||b||c)markDone('q4','card-q4');
+  saveState();
 }
 function checkQ7(){
   const a=(document.getElementById('q7a')||{}).value||'';
   const b=(document.getElementById('q7b')||{}).value||'';
   if(a.trim()||b.trim())markDone('q7','card-q7');
+  saveState();
 }
 function checkQ8(){
   const ids=['q8a-1','q8a-2','q8b-1','q8b-2'];
   if(ids.some(id=>(document.getElementById(id)||{}).value.trim()))markDone('q8','card-q8');
+  saveState();
 }
 function checkQ10(){
   const ids=['q10-feat1','q10-ex1','q10-feat2','q10-ex2'];
   if(ids.some(id=>(document.getElementById(id)||{}).value.trim()))markDone('q10','card-q10');
+  saveState();
 }
 function checkQ12(){
   const a=(document.getElementById('q12a')||{}).value||'';
   const b=(document.getElementById('q12b')||{}).value||'';
   if(a.trim()||b.trim())markDone('q12','card-q12');
+  saveState();
 }
 function checkQ15(){
   const ids=['q15a','q15b','q15c'];
   if(ids.some(id=>(document.getElementById(id)||{}).value.trim()))markDone('q15','card-q15');
+  saveState();
 }
 
 function val(id){return(document.getElementById(id)||{}).value||'(blank)';}
@@ -588,7 +637,75 @@ function multiLine(qid,opts){
   const L=['A','B','C','D','E'];return s.map(i=>L[i]+': '+opts[i]).join(', ');
 }
 
-function submitPaper(){
+// ── AUTOSAVE / RESTORE ───────────────────────────────────
+// Saves progress locally so answers survive an accidental refresh or
+// closed tab before the email has been sent.
+function saveState(){
+  try{
+    const state={ text:{}, numbers:{}, mcq:{}, multi:{} };
+    TEXT_FIELDS.forEach(id=>{ const el=document.getElementById(id); if(el) state.text[id]=el.value; });
+    NUM_FIELDS.forEach(id=>{ const el=document.getElementById(id); if(el) state.numbers[id]=el.value; });
+    Object.keys(mcqState).forEach(qid=>{ state.mcq[qid]=mcqState[qid].chosen; });
+    Object.keys(multiState).forEach(qid=>{ state.multi[qid]=multiState[qid].slice(); });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }catch(e){
+    // localStorage may be unavailable (e.g. private browsing) — fail silently
+  }
+}
+
+function restoreState(){
+  let raw;
+  try{ raw=localStorage.getItem(STORAGE_KEY); }catch(e){ return; }
+  if(!raw) return;
+  let state;
+  try{ state=JSON.parse(raw); }catch(e){ return; }
+
+  if(state.text){
+    Object.keys(state.text).forEach(id=>{
+      const el=document.getElementById(id);
+      if(el && state.text[id]) el.value=state.text[id];
+    });
+  }
+  if(state.numbers){
+    Object.keys(state.numbers).forEach(id=>{
+      const el=document.getElementById(id);
+      if(el && state.numbers[id]) el.value=state.numbers[id];
+    });
+  }
+
+  // Re-run the relevant checks so cards / progress reflect the restored values
+  checkNum('q1',2,'card-q1');
+  checkQ4();
+  checkWrite('q5','card-q5','q5-spiral','q5-copycat');
+  checkQ7();
+  checkQ8();
+  checkNum('q9',2,'card-q9');
+  checkQ10();
+  checkQ12();
+  checkTA('q13','card-q13');
+  checkQ15();
+
+  if(state.mcq){
+    Object.keys(state.mcq).forEach(qid=>{
+      const m=MCQ_MAP[qid];
+      if(m) selMCQ(qid, state.mcq[qid], m.correct, m.card);
+    });
+  }
+  if(state.multi){
+    Object.keys(state.multi).forEach(qid=>{
+      const m=MULTI_MAP[qid];
+      if(m){ multiState[qid]=state.multi[qid].slice(); renderMulti(qid, m.correct, m.card); }
+    });
+  }
+  updateProg();
+}
+
+function clearSavedState(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+}
+
+// ── SUBMIT ────────────────────────────────────────────────
+function buildEmailBody(){
   const now=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   let body='FS English Level 2 Reading Practice 2 — '+now+'\n\n';
   body+='━━━ SECTION A — TEXT A ━━━\n';
@@ -615,10 +732,60 @@ function submitPaper(){
   body+='Q14 (language A+B): '+mcqLine('q14',['Both use statistics for authenticity','Both use direct address to give advice','Both use exclamations for emphasis','Both use quotations to support points'])+'\n';
   body+='Q15 Text A: '+val('q15a')+'\n    Text B: '+val('q15b')+'\n    Text C: '+val('q15c');
 
-  const gmail='https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su='+encodeURIComponent('FS English L2 Reading Practice 2 — '+now)+'&body='+encodeURIComponent(body);
-  window.open(gmail,'_blank');
-  document.getElementById('successMsg').style.display='block';
+  return { body, subject: 'FS English L2 Reading Practice 2 — ' + now };
 }
+
+function submitPaper(){
+  const { body, subject } = buildEmailBody();
+  const gmailUrl = 'https://mail.google.com/mail/?view=cm&to=' + encodeURIComponent(RECIPIENT) +
+                    '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+
+  if(gmailUrl.length > SAFE_URL_LENGTH){
+    showFallback(body, subject, 'Your answers are quite long, so Gmail may not load them correctly.');
+    return;
+  }
+
+  let win=null;
+  try{ win=window.open(gmailUrl,'_blank'); }catch(e){ win=null; }
+
+  if(!win){
+    showFallback(body, subject, 'Gmail did not open. Your browser may have blocked the pop-up.');
+    return;
+  }
+
+  document.getElementById('successMsg').style.display='block';
+  document.getElementById('fallbackCard').style.display='none';
+  clearSavedState();
+}
+
+function showFallback(body, subject, reason){
+  document.getElementById('successMsg').style.display='none';
+  const fb=document.getElementById('fallbackCard');
+  document.getElementById('fallbackReason').textContent=reason;
+  document.getElementById('fallbackBody').value=body;
+  const mailto=document.getElementById('fallbackMailto');
+  mailto.href='mailto:'+encodeURIComponent(RECIPIENT)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  fb.style.display='block';
+  fb.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+function copyFallback(){
+  const ta=document.getElementById('fallbackBody');
+  ta.select();
+  const status=document.getElementById('copyStatus');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(ta.value).then(()=>{
+      status.textContent='✓ Copied! Paste this into a new email to your teacher.';
+    }).catch(()=>{
+      status.textContent='Select the text above, copy it, then paste it into an email to your teacher.';
+    });
+  } else {
+    status.textContent='Select the text above, copy it, then paste it into an email to your teacher.';
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────
+restoreState();
 </script>
 </body>
 </html>
