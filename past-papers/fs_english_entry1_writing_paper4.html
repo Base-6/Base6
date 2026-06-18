@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E1 Writing Paper 4 · Functional Skills English</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cream:#fef8f4; --teal:#007291; --teal-dark:#005a72; --orange:#ef7724;
+  --orange-light:#fff3eb; --dark:#1a1a1a; --muted:#555; --green:#2e8b57;
+  --green-light:#eaf7f0; --red:#c0392b; --red-light:#fdf0ee; --line:#e0d8d0; --white:#fff;
+}
+body { font-family:'Atkinson Hyperlegible', Arial, sans-serif; background:var(--cream); color:var(--dark); min-height:100vh; font-size:17px; line-height:1.6; }
+.site-header { background:var(--teal); padding:1.25rem 2rem; }
+.site-header .qualifier { font-size:.78rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.72); margin-bottom:.25rem; }
+.site-header h1 { font-size:1.55rem; font-weight:700; color:white; line-height:1.25; }
+.site-header .meta { font-size:.88rem; color:rgba(255,255,255,.82); margin-top:.25rem; }
+.back-bar { background:var(--teal-dark); padding:.5rem 2rem; }
+.back-link { color:rgba(255,255,255,.88); font-size:.85rem; font-weight:700; text-decoration:none; }
+.info-strip { background:white; border-bottom:2px solid var(--line); padding:.75rem 2rem; display:flex; gap:1.4rem; flex-wrap:wrap; }
+.info-item { font-size:.82rem; color:var(--muted); }
+.info-item strong { color:var(--dark); font-weight:700; }
+.progress-bar { background:white; border-bottom:2px solid var(--line); padding:.6rem 1.5rem; position:sticky; top:0; z-index:50; }
+.progress-inner { max-width:840px; margin:0 auto; }
+.prog-row { display:flex; justify-content:space-between; font-size:.78rem; font-weight:700; color:var(--muted); margin-bottom:4px; gap:1rem; }
+.prog-track { height:7px; background:var(--line); border-radius:999px; overflow:hidden; }
+.prog-fill { height:100%; width:0%; background:linear-gradient(90deg,var(--teal),var(--orange)); border-radius:999px; transition:width 350ms ease; }
+.main { max-width:840px; margin:0 auto; padding:2rem 1.5rem 5rem; }
+.text-card, .q-card, .submit-card { background:white; border:2px solid var(--line); border-radius:16px; padding:1.45rem; margin-bottom:1.5rem; }
+.text-card { border-color:#d7edf3; }
+.text-label { font-size:.75rem; font-weight:700; color:var(--orange); text-transform:uppercase; letter-spacing:.08em; margin-bottom:.35rem; }
+.text-card h2 { color:var(--teal); font-size:1.22rem; margin-bottom:.7rem; }
+.text-card p { margin-bottom:.6rem; }
+.text-card ul { padding-left:1.4rem; margin:.45rem 0 .7rem; }
+.ticket-grid, .transport-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:.65rem; margin-top:.75rem; }
+.mini-panel { background:#f7f4f0; border:1.5px solid var(--line); border-radius:12px; padding:.85rem; }
+.mini-panel strong { color:var(--teal); }
+.email-mockup { border:2px solid var(--line); border-radius:12px; overflow:hidden; margin-top:.5rem; background:white; }
+.email-header { background:#f0f0f0; border-bottom:1px solid var(--line); }
+.email-field { display:flex; gap:.5rem; padding:.4rem .75rem; border-bottom:1px solid var(--line); font-size:.88rem; }
+.email-field:last-child { border-bottom:none; }
+.email-field-label { font-weight:700; color:var(--muted); min-width:64px; }
+.email-body { padding:1rem; }
+.q-card { transition:border-color .2s; }
+.q-card.answered { border-color:var(--green); }
+.q-header { display:flex; align-items:flex-start; justify-content:space-between; gap:.8rem; margin-bottom:.9rem; }
+.q-num { background:var(--teal); color:white; font-size:.78rem; font-weight:700; padding:3px 10px; border-radius:999px; flex-shrink:0; }
+.q-marks { font-size:.78rem; font-weight:700; color:var(--muted); flex-shrink:0; }
+.answered-tick { color:var(--green); font-size:1rem; opacity:0; transition:opacity .2s; }
+.q-card.answered .answered-tick { opacity:1; }
+.q-text { font-size:1rem; font-weight:700; color:var(--dark); line-height:1.5; margin-bottom:.75rem; }
+.q-instruction { font-size:.9rem; color:var(--muted); margin-bottom:.8rem; }
+.answer-row { display:flex; align-items:center; gap:.75rem; margin-bottom:.55rem; }
+.answer-row label, .field-label { font-size:.88rem; font-weight:700; color:var(--dark); min-width:110px; }
+.answer-input, textarea { width:100%; padding:.65rem .85rem; border:2px solid var(--line); border-radius:10px; font-family:inherit; font-size:1rem; color:var(--dark); background:var(--cream); }
+.answer-input.short { max-width:260px; }
+textarea { resize:vertical; min-height:110px; line-height:1.65; }
+.answer-input:focus, textarea:focus { outline:none; border-color:var(--teal); background:white; }
+.word-box { display:inline-block; background:var(--orange-light); border:1.5px solid #fcd8bc; color:var(--dark); border-radius:10px; padding:.5rem 1rem; margin:.25rem 0 .75rem; font-weight:700; letter-spacing:.04em; }
+.form-section { background:#f7f4f0; border:1.5px solid var(--line); border-radius:12px; padding:1.1rem 1.2rem; margin-bottom:1rem; }
+.form-section h3 { font-size:.92rem; font-weight:700; color:var(--teal); margin-bottom:.65rem; text-transform:uppercase; letter-spacing:.06em; }
+.bullet-list { list-style:disc; padding-left:1.25rem; margin:.45rem 0 .8rem; }
+.bullet-list li { margin-bottom:.25rem; color:var(--muted); }
+.mcq-grid { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; margin-top:.5rem; }
+.mcq-grid.three { grid-template-columns:1fr 1fr 1fr; }
+.mcq-opt { display:flex; align-items:center; gap:.6rem; padding:.6rem .85rem; border:2px solid var(--line); border-radius:10px; cursor:pointer; transition:border-color .15s, background .15s; font-size:.95rem; background:white; }
+.mcq-opt:hover { border-color:var(--teal); }
+.mcq-opt.selected { border-color:var(--teal); background:#e3f1f5; }
+.mcq-opt.correct { border-color:var(--green); background:var(--green-light); }
+.mcq-opt.wrong { border-color:var(--red); background:var(--red-light); }
+.mcq-radio { width:18px; height:18px; border-radius:50%; border:2px solid var(--line); flex-shrink:0; display:grid; place-items:center; transition:all .15s; }
+.mcq-opt.selected .mcq-radio, .mcq-opt.correct .mcq-radio { border-color:var(--teal); background:var(--teal); }
+.mcq-opt.wrong .mcq-radio { border-color:var(--red); background:var(--red); }
+.mcq-radio::after { content:''; width:8px; height:8px; border-radius:50%; background:white; opacity:0; }
+.mcq-opt.selected .mcq-radio::after, .mcq-opt.correct .mcq-radio::after, .mcq-opt.wrong .mcq-radio::after { opacity:1; }
+.choice-letter { font-weight:700; color:var(--teal); min-width:1.2em; }
+.spell-item { background:#fafaf8; border:1.5px solid var(--line); border-radius:12px; padding:1rem; margin-bottom:.8rem; }
+.spell-label { font-size:.75rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:.35rem; }
+.spell-sentence { margin-bottom:.45rem; }
+.submit-card { text-align:center; }
+.submit-card h2 { font-size:1.1rem; font-weight:700; color:var(--teal); margin-bottom:.5rem; }
+.submit-card p { font-size:.88rem; color:var(--muted); margin-bottom:1rem; }
+.btn { display:inline-block; padding:.78rem 1.8rem; border-radius:10px; border:none; font-family:inherit; font-size:1rem; font-weight:700; cursor:pointer; transition:transform .15s, background .15s; text-decoration:none; }
+.btn:hover { transform:translateY(-2px); }
+.btn-primary { background:var(--teal); color:white; }
+.btn-primary:hover { background:var(--teal-dark); }
+.btn-secondary { background:var(--teal); color:white; padding:.55rem 1.2rem; border-radius:8px; border:none; font-family:inherit; font-size:.85rem; font-weight:700; cursor:pointer; }
+.btn-secondary.outline { background:white; color:var(--teal); border:2px solid var(--teal); }
+.success-msg { background:var(--green-light); border:2px solid var(--green); border-radius:10px; padding:.9rem; color:var(--green); font-weight:700; margin-top:1rem; display:none; }
+.fallback-card { background:#fff8ea; border:2px solid var(--orange); border-radius:10px; padding:1rem; margin-top:1rem; text-align:left; display:none; }
+.fallback-card p { font-size:.85rem; color:var(--dark); margin-bottom:.6rem; }
+.fallback-card textarea { min-height:170px; font-size:.82rem; margin-bottom:.6rem; }
+.fallback-actions { display:flex; gap:.6rem; flex-wrap:wrap; justify-content:center; }
+#copyStatus { font-size:.8rem; color:var(--green); font-weight:700; margin-top:.4rem; min-height:1.2em; text-align:center; }
+.export-bar { position:fixed; bottom:0; left:0; right:0; background:var(--teal); padding:.75rem 1.5rem; display:flex; align-items:center; justify-content:center; gap:1rem; z-index:100; flex-wrap:wrap; }
+.export-bar span { font-size:.88rem; font-weight:700; color:rgba(255,255,255,.85); }
+.btn-export { background:var(--orange); color:white; padding:.55rem 1.4rem; border-radius:8px; border:none; font-family:inherit; font-size:.9rem; font-weight:700; cursor:pointer; }
+.btn-export:hover { background:#c05a10; }
+@media(max-width:700px){ .mcq-grid, .mcq-grid.three { grid-template-columns:1fr; } .answer-row { align-items:stretch; flex-direction:column; gap:.3rem; } .answer-row label { min-width:0; } .info-strip { gap:.75rem; } .site-header, .back-bar { padding-left:1rem; padding-right:1rem; } }
+</style>
+</head>
+<body data-storage-key="e1-writing-paper4-v2" data-paper-title="E1 Writing Paper 4 · Functional Skills English" data-total-questions="5">
+<header class="site-header">
+  <p class="qualifier">Pearson Edexcel Functional Skills English</p>
+  <h1>Entry 1 Writing — Paper 4</h1>
+  <p class="meta">Valid September 2021 to August 2022 · 50 minutes · 30 marks total</p>
+</header>
+<div class="back-bar"><a class="back-link" href="index.html">← Back to Past Papers</a></div>
+<div class="info-strip"><div class="info-item"><strong>Instructions:</strong> Use blue or black ink. Write your answers clearly.</div><div class="info-item"><strong>Note:</strong> Dictionaries are not allowed for this paper.</div><div class="info-item"><strong>Advice:</strong> Use capital letters and full stops where you need to.</div></div>
+<div class="progress-bar"><div class="progress-inner"><div class="prog-row"><span>Progress</span><span id="progText">0 of 5 questions answered</span></div><div class="prog-track"><div class="prog-fill" id="progFill"></div></div></div></div>
+<main class="main">
+<div class="q-card" id="card-q1" data-required-fields="2">
+  <div class="q-header"><span class="q-num">Question 1</span><span class="q-marks">2 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">(a) Write the letters below in alphabetical order.</div>
+  <div class="word-box">N &nbsp; P &nbsp; M &nbsp; O</div>
+<div class="answer-row"><label for="q1a-answer">(a)</label><input class="answer-input " type="text" id="q1a-answer" data-label="(a)" placeholder="Write the letters in order..."></div><div class="q-text" style="margin-top:1rem;">(b) Write the letters below in lower case.</div>
+  <div class="word-box">J &nbsp; K &nbsp; L &nbsp; M</div>
+<div class="answer-row"><label for="q1b-answer">(b)</label><input class="answer-input " type="text" id="q1b-answer" data-label="(b)" placeholder="Write the lower case letters..."></div>
+</div>
+<div class="q-card" id="card-q2">
+  <div class="q-header"><span class="q-num">Question 2</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">Rewrite the sentence. Use capital letters where you need to.</div>
+  <div class="form-section"><strong>I saw ben this morning.</strong></div>
+<div class="answer-row"><label for="q2-answer">Sentence</label><input class="answer-input " type="text" id="q2-answer" data-label="Sentence" placeholder="Rewrite the sentence..."></div>
+</div>
+<div class="q-card" id="card-q3" data-required-fields="2">
+  <div class="q-header"><span class="q-num">Question 3</span><span class="q-marks">7 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">You use the town bus service. Fill in this form to say what you think about the bus service.</div>
+  <div class="q-instruction">Write in sentences to say two things you like and two things you don’t like. Use capital letters and full stops where you need to.</div>
+  <div class="form-section"><h3>Town Bus Service Feedback Form</h3>
+    <label class="field-label" for="q3-like">Things I like about the town bus service</label>
+    <textarea id="q3-like" data-label="Things I like" rows="4" placeholder="Write two things you like..."></textarea>
+    <label class="field-label" for="q3-dislike" style="margin-top:.9rem; display:block;">Things I don’t like about the town bus service</label>
+    <textarea id="q3-dislike" data-label="Things I don’t like" rows="4" placeholder="Write two things you don’t like..."></textarea>
+  </div>
+</div>
+<div class="q-card" id="card-q4">
+  <div class="q-header"><span class="q-num">Question 4</span><span class="q-marks">10 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">You have moved into a new flat. Write a note to ask your friend to visit.</div>
+  <div class="q-instruction">Write in sentences to tell your friend:</div>
+  <ul class="bullet-list"><li>what day and time to come and visit you</li><li>where the flat is</li><li>how your friend can get to the flat</li><li>two things you can do at the flat</li></ul>
+  <div class="q-instruction">Use capital letters and full stops where you need to.</div>
+<label class="field-label" for="q4-note">Your note</label><textarea id="q4-note" data-label="Your note" rows="8" placeholder="Write your note here..."></textarea>
+</div>
+<div class="q-card" id="card-q5" data-required-mcq="10">
+  <div class="q-header"><span class="q-num">Question 5</span><span class="q-marks">10 marks</span><span class="answered-tick">✓</span></div>
+  <div class="q-text">Choose the correct word to complete each sentence.</div>
+  <div class="q-instruction">The first one has been done for you: <strong>What’s his name?</strong></div><div class="spell-item"><div class="spell-label">(a)</div><div class="spell-sentence">I want to go shopping on <strong>______</strong> .</div><div class="mcq-grid three"><div class="mcq-opt" data-q="q5a" data-value="Saterday" data-label="Saterday" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">A</span><span>Saterday</span></div><div class="mcq-opt" data-q="q5a" data-value="Saturday" data-label="Saturday" data-correct="true"><div class="mcq-radio"></div><span class="choice-letter">B</span><span>Saturday</span></div><div class="mcq-opt" data-q="q5a" data-value="Satturday" data-label="Satturday" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">C</span><span>Satturday</span></div></div></div><div class="spell-item"><div class="spell-label">(b)</div><div class="spell-sentence">Sally <strong>______</strong> the bus.</div><div class="mcq-grid three"><div class="mcq-opt" data-q="q5b" data-value="missed" data-label="missed" data-correct="true"><div class="mcq-radio"></div><span class="choice-letter">A</span><span>missed</span></div><div class="mcq-opt" data-q="q5b" data-value="misst" data-label="misst" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">B</span><span>misst</span></div><div class="mcq-opt" data-q="q5b" data-value="myssed" data-label="myssed" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">C</span><span>myssed</span></div></div></div><div class="spell-item"><div class="spell-label">(c)</div><div class="spell-sentence">The dog was very <strong>______</strong> .</div><div class="mcq-grid three"><div class="mcq-opt" data-q="q5c" data-value="smorl" data-label="smorl" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">A</span><span>smorl</span></div><div class="mcq-opt" data-q="q5c" data-value="smal" data-label="smal" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">B</span><span>smal</span></div><div class="mcq-opt" data-q="q5c" data-value="small" data-label="small" data-correct="true"><div class="mcq-radio"></div><span class="choice-letter">C</span><span>small</span></div></div></div><div class="spell-item"><div class="spell-label">(d)</div><div class="spell-sentence">Do you want to go to the cafe <strong>______</strong> class?</div><div class="mcq-grid three"><div class="mcq-opt" data-q="q5d" data-value="arfter" data-label="arfter" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">A</span><span>arfter</span></div><div class="mcq-opt" data-q="q5d" data-value="after" data-label="after" data-correct="true"><div class="mcq-radio"></div><span class="choice-letter">B</span><span>after</span></div><div class="mcq-opt" data-q="q5d" data-value="aftir" data-label="aftir" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">C</span><span>aftir</span></div></div></div><div class="spell-item"><div class="spell-label">(e)</div><div class="spell-sentence">The sun is shining <strong>______</strong> .</div><div class="mcq-grid three"><div class="mcq-opt" data-q="q5e" data-value="taday" data-label="taday" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">A</span><span>taday</span></div><div class="mcq-opt" data-q="q5e" data-value="todei" data-label="todei" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">B</span><span>todei</span></div><div class="mcq-opt" data-q="q5e" data-value="today" data-label="today" data-correct="true"><div class="mcq-radio"></div><span class="choice-letter">C</span><span>today</span></div></div></div><div class="spell-item"><div class="spell-label">(f)</div><div class="spell-sentence">I need to <strong>______</strong> my clothes.</div><div class="mcq-grid three"><div class="mcq-opt" data-q="q5f" data-value="change" data-label="change" data-correct="true"><div class="mcq-radio"></div><span class="choice-letter">A</span><span>change</span></div><div class="mcq-opt" data-q="q5f" data-value="cheinge" data-label="cheinge" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">B</span><span>cheinge</span></div><div class="mcq-opt" data-q="q5f" data-value="chaynge" data-label="chaynge" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">C</span><span>chaynge</span></div></div></div><div class="spell-item"><div class="spell-label">(g)</div><div class="spell-sentence">What do you want to <strong>______</strong> ?</div><div class="mcq-grid three"><div class="mcq-opt" data-q="q5g" data-value="eet" data-label="eet" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">A</span><span>eet</span></div><div class="mcq-opt" data-q="q5g" data-value="eyt" data-label="eyt" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">B</span><span>eyt</span></div><div class="mcq-opt" data-q="q5g" data-value="eat" data-label="eat" data-correct="true"><div class="mcq-radio"></div><span class="choice-letter">C</span><span>eat</span></div></div></div><div class="spell-item"><div class="spell-label">(h)</div><div class="spell-sentence">Paul <strong>______</strong> like the film.</div><div class="mcq-grid three"><div class="mcq-opt" data-q="q5h" data-value="didn’t" data-label="didn’t" data-correct="true"><div class="mcq-radio"></div><span class="choice-letter">A</span><span>didn’t</span></div><div class="mcq-opt" data-q="q5h" data-value="did’nt" data-label="did’nt" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">B</span><span>did’nt</span></div><div class="mcq-opt" data-q="q5h" data-value="didnt’" data-label="didnt’" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">C</span><span>didnt’</span></div></div></div><div class="spell-item"><div class="spell-label">(i)</div><div class="spell-sentence">My class is on <strong>______</strong> .</div><div class="mcq-grid three"><div class="mcq-opt" data-q="q5i" data-value="Wensday" data-label="Wensday" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">A</span><span>Wensday</span></div><div class="mcq-opt" data-q="q5i" data-value="Wednesday" data-label="Wednesday" data-correct="true"><div class="mcq-radio"></div><span class="choice-letter">B</span><span>Wednesday</span></div><div class="mcq-opt" data-q="q5i" data-value="Wenesday" data-label="Wenesday" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">C</span><span>Wenesday</span></div></div></div><div class="spell-item"><div class="spell-label">(j)</div><div class="spell-sentence">I want to <strong>______</strong> you a present.</div><div class="mcq-grid three"><div class="mcq-opt" data-q="q5j" data-value="give" data-label="give" data-correct="true"><div class="mcq-radio"></div><span class="choice-letter">A</span><span>give</span></div><div class="mcq-opt" data-q="q5j" data-value="ghive" data-label="ghive" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">B</span><span>ghive</span></div><div class="mcq-opt" data-q="q5j" data-value="giv" data-label="giv" data-correct="false"><div class="mcq-radio"></div><span class="choice-letter">C</span><span>giv</span></div></div></div>
+</div>
+
+  <div class="submit-card">
+    <h2>📧 Send your answers to Jay</h2>
+    <p>When you are finished, open Gmail with your answers filled in. You can check the email before sending it.</p>
+    <button class="btn btn-primary" onclick="submitPaper()">Send answers</button>
+    <div class="success-msg" id="successMsg">✓ Gmail opened in a new tab. Check the email, then press send.</div>
+    <div class="fallback-card" id="fallbackCard">
+      <p><strong>Gmail did not open.</strong> <span id="fallbackReason"></span></p>
+      <p>Copy the answers below into an email to <strong>jay.raine@chiltonbridgeschool.co.uk</strong>.</p>
+      <textarea id="fallbackBody" readonly></textarea>
+      <div class="fallback-actions">
+        <button class="btn-secondary" onclick="copyFallback()">Copy answers</button>
+        <a class="btn-secondary outline" id="fallbackMailto" href="#">Open email app</a>
+      </div>
+      <div id="copyStatus"></div>
+    </div>
+  </div>
+</main>
+<div class="export-bar"><span>Ready to submit?</span><button class="btn-export" onclick="submitPaper()">Email answers</button></div>
+<script>
+const RECIPIENT = 'jay.raine@chiltonbridgeschool.co.uk';
+const SAFE_URL_LENGTH = 1800;
+const STORAGE_KEY = document.body.dataset.storageKey;
+const PAPER_TITLE = document.body.dataset.paperTitle;
+const TOTAL_Q = Number(document.body.dataset.totalQuestions || 0);
+
+function escText(s){ return (s || '').replace(/\s+/g, ' ').trim(); }
+
+function cardAnswered(card){
+  const requiredMcq = Number(card.dataset.requiredMcq || 0);
+  if(requiredMcq){
+    const answeredMcq = new Set(Array.from(card.querySelectorAll('.mcq-opt.selected')).map(el => el.dataset.q));
+    return answeredMcq.size >= requiredMcq;
+  }
+  const requiredFields = Number(card.dataset.requiredFields || 0);
+  const fields = Array.from(card.querySelectorAll('input[type="text"], textarea'));
+  if(requiredFields){
+    return fields.filter(f => f.value.trim().length > 0).length >= requiredFields;
+  }
+  if(fields.some(f => f.value.trim().length > 0)) return true;
+  const selected = card.querySelector('.mcq-opt.selected, .mcq-opt.correct, .mcq-opt.wrong');
+  return !!selected;
+}
+
+function updateProgress(){
+  const cards = Array.from(document.querySelectorAll('.q-card'));
+  let n = 0;
+  cards.forEach(card => {
+    if(cardAnswered(card)){ card.classList.add('answered'); n++; }
+    else { card.classList.remove('answered'); }
+  });
+  document.getElementById('progFill').style.width = (cards.length ? (n / cards.length * 100) : 0) + '%';
+  document.getElementById('progText').textContent = n + ' of ' + cards.length + ' questions answered';
+}
+
+function selectOption(opt, skipSave){
+  const q = opt.dataset.q;
+  document.querySelectorAll(`.mcq-opt[data-q="${q}"]`).forEach(el => el.classList.remove('selected','correct','wrong'));
+  opt.classList.add('selected');
+  if(opt.dataset.correct === 'true') {
+    opt.classList.add('correct');
+  } else if(opt.dataset.correct === 'false') {
+    opt.classList.add('wrong');
+    const correct = document.querySelector(`.mcq-opt[data-q="${q}"][data-correct="true"]`);
+    if(correct) correct.classList.add('correct');
+  }
+  updateProgress();
+  if(!skipSave) saveState();
+}
+
+document.querySelectorAll('.mcq-opt').forEach(opt => opt.addEventListener('click', () => selectOption(opt)));
+document.querySelectorAll('input[type="text"], textarea').forEach(el => el.addEventListener('input', () => { updateProgress(); saveState(); }));
+
+function saveState(){
+  try {
+    const state = { fields:{}, mcq:{} };
+    document.querySelectorAll('input[type="text"], textarea').forEach(el => { if(el.id) state.fields[el.id] = el.value; });
+    document.querySelectorAll('.mcq-opt.selected').forEach(opt => { state.mcq[opt.dataset.q] = opt.dataset.value; });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e) {}
+}
+
+function restoreState(){
+  let raw;
+  try { raw = localStorage.getItem(STORAGE_KEY); } catch(e) { return; }
+  if(!raw) return;
+  let state;
+  try { state = JSON.parse(raw); } catch(e) { return; }
+  if(state.fields){ Object.entries(state.fields).forEach(([id,val]) => { const el = document.getElementById(id); if(el) el.value = val; }); }
+  if(state.mcq){ Object.entries(state.mcq).forEach(([q,val]) => { const opt = Array.from(document.querySelectorAll(`.mcq-opt[data-q="${q}"]`)).find(el => el.dataset.value === val); if(opt) selectOption(opt, true); }); }
+  updateProgress();
+}
+
+function clearSavedState(){ try { localStorage.removeItem(STORAGE_KEY); } catch(e){} }
+
+function collectAnswers(){
+  const sections = [];
+  document.querySelectorAll('.q-card').forEach(card => {
+    const qNum = escText((card.querySelector('.q-num') || {}).textContent || 'Question');
+    const qText = escText((card.querySelector('.q-text') || {}).textContent || '');
+    let lines = [];
+    card.querySelectorAll('input[type="text"], textarea').forEach(el => {
+      const label = el.dataset.label || el.placeholder || el.id;
+      lines.push(`  ${label}: ${el.value.trim() || '(blank)'}`);
+    });
+    const selected = card.querySelector('.mcq-opt.selected');
+    if(selected){
+      const mark = selected.dataset.correct === 'true' ? '✓' : (selected.dataset.correct === 'false' ? '✗' : '');
+      const correct = card.querySelector('.mcq-opt[data-correct="true"]');
+      const correctText = correct ? ` — correct: ${correct.dataset.label || correct.dataset.value}` : '';
+      lines.push(`  Selected: ${mark} ${selected.dataset.label || selected.dataset.value}${correctText}`);
+    }
+    if(lines.length === 0) lines.push('  (blank)');
+    sections.push(`━━━ ${qNum}: ${qText} ━━━\n${lines.join('\n')}`);
+  });
+  return sections.join('\n\n');
+}
+
+function buildEmailBody(){
+  const now = new Date().toLocaleDateString('en-GB', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const body = `${PAPER_TITLE} — ${now}\n\n${collectAnswers()}`;
+  return { body, subject: `${PAPER_TITLE} — ${now}` };
+}
+
+function submitPaper(){
+  const { body, subject } = buildEmailBody();
+  const gmailUrl = 'https://mail.google.com/mail/?view=cm&to=' + encodeURIComponent(RECIPIENT) + '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  if(gmailUrl.length > SAFE_URL_LENGTH){ showFallback(body, subject, 'Your answers are quite long, so Gmail may not load them correctly.'); return; }
+  let win = null;
+  try { win = window.open(gmailUrl, '_blank'); } catch(e) { win = null; }
+  if(!win){ showFallback(body, subject, 'Gmail did not open. Your browser may have blocked the pop-up.'); return; }
+  document.getElementById('successMsg').style.display = 'block';
+  document.getElementById('fallbackCard').style.display = 'none';
+  clearSavedState();
+}
+
+function showFallback(body, subject, reason){
+  document.getElementById('successMsg').style.display = 'none';
+  document.getElementById('fallbackReason').textContent = reason;
+  document.getElementById('fallbackBody').value = body;
+  document.getElementById('fallbackMailto').href = 'mailto:' + encodeURIComponent(RECIPIENT) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  document.getElementById('fallbackCard').style.display = 'block';
+  document.getElementById('fallbackCard').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function copyFallback(){
+  const ta = document.getElementById('fallbackBody');
+  ta.select();
+  const status = document.getElementById('copyStatus');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(ta.value).then(() => { status.textContent = '✓ Copied! Paste this into a new email to ' + RECIPIENT; }).catch(() => { status.textContent = 'Select the text above, copy it, then paste it into an email to ' + RECIPIENT; });
+  } else { status.textContent = 'Select the text above, copy it, then paste it into an email to ' + RECIPIENT; }
+}
+
+restoreState();
+updateProgress();
+</script>
+</body>
+</html>

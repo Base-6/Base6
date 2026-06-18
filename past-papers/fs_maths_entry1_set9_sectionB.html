@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entry 1 Maths Section B — Set 9 Practice Paper</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cream: #fef8f4; --teal: #007291; --teal-dark: #005a72; --orange: #ef7724;
+  --orange-light: #fff3eb; --dark: #1a1a1a; --muted: #555; --green: #2e8b57;
+  --green-light: #eaf7f0; --line: #e0d8d0; --white: #ffffff; --red: #c0392b;
+}
+body { font-family: 'Atkinson Hyperlegible', sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; font-size: 17px; line-height: 1.6; padding-bottom: 4rem; }
+.site-header { background: var(--teal); padding: 1.25rem 2rem; }
+.site-header .qualifier { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 0.25rem; }
+.site-header h1 { font-size: 1.5rem; font-weight: 700; color: white; }
+.site-header .meta { font-size: 0.88rem; color: rgba(255,255,255,0.8); margin-top: 0.25rem; }
+.back-bar { background: var(--teal-dark); padding: 0.5rem 2rem; }
+.back-link { color: rgba(255,255,255,0.85); font-size: 0.85rem; font-weight: 700; text-decoration: none; }
+.back-link:hover { color: #fff; }
+.info-strip { background: white; border-bottom: 2px solid var(--line); padding: 0.75rem 2rem; display: flex; gap: 2rem; flex-wrap: wrap; }
+.info-item { font-size: 0.82rem; color: var(--muted); }
+.info-item strong { color: var(--dark); font-weight: 700; }
+.progress-bar { background: white; border-bottom: 2px solid var(--line); padding: 0.6rem 1.5rem; position: sticky; top: 0; z-index: 50; }
+.progress-inner { max-width: 840px; margin: 0 auto; }
+.prog-row { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+.prog-track { height: 7px; background: var(--line); border-radius: 999px; overflow: hidden; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--orange)); border-radius: 999px; transition: width 350ms ease; }
+.main { max-width: 840px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+.q-card, .source-card, .submit-card { background: white; border: 2px solid var(--line); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; transition: border-color 0.2s; }
+.q-card.answered { border-color: var(--green); }
+.q-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.q-num { background: var(--teal); color: white; font-size: 0.78rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; flex-shrink: 0; }
+.q-marks { font-size: 0.78rem; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+.q-text { font-size: 1rem; font-weight: 700; color: var(--dark); line-height: 1.5; margin-bottom: 0.75rem; }
+.q-instruction { font-size: 0.9rem; color: var(--muted); margin-bottom: 0.9rem; line-height: 1.55; }
+.answered-tick { color: var(--green); font-size: 1rem; flex-shrink: 0; opacity: 0; transition: opacity 0.2s; }
+.q-card.answered .answered-tick { opacity: 1; }
+.source-card h2 { color: var(--teal); font-size: 1.2rem; margin-bottom: 0.8rem; }
+.source-card h3 { font-size: 1.05rem; margin: 0.6rem 0 0.2rem; color: var(--dark); }
+.source-card p { margin-bottom: 0.65rem; }
+.source-card ul { padding-left: 1.3rem; margin: 0.4rem 0 0.8rem; }
+.source-note { background: var(--orange-light); border: 1.5px solid #fcd8bc; border-radius: 10px; padding: 0.85rem 1rem; margin-top: 0.8rem; }
+.answer-input, textarea { width: 100%; padding: 0.7rem 0.85rem; border: 2px solid var(--line); border-radius: 10px; font-family: inherit; font-size: 1rem; color: var(--dark); background: var(--cream); resize: vertical; line-height: 1.55; }
+.answer-input:focus, textarea:focus { outline: none; border-color: var(--teal); }
+.short-input { max-width: 220px; }
+.input-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.55rem; }
+.input-row label, .input-label { font-size: 0.9rem; font-weight: 700; color: var(--muted); min-width: 64px; }
+.mcq-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.7rem; margin-top: 0.5rem; }
+.mcq-grid.two-col { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.mcq-opt { display: flex; align-items: center; gap: 0.7rem; padding: 0.75rem 0.9rem; border: 2px solid var(--line); border-radius: 12px; cursor: pointer; transition: border-color 0.15s, background 0.15s, transform 0.1s; font-size: 0.96rem; background: white; min-height: 56px; }
+.mcq-opt:hover { border-color: var(--teal); transform: translateY(-1px); }
+.mcq-opt.selected { border-color: var(--teal); background: #e3f1f5; }
+.mcq-opt.correct { border-color: var(--green); background: var(--green-light); }
+.mcq-opt.wrong { border-color: var(--red); background: #fdf0ee; }
+.mcq-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); flex-shrink: 0; display: grid; place-items: center; transition: all 0.15s; }
+.mcq-opt.selected .mcq-radio, .mcq-opt.correct .mcq-radio { border-color: var(--teal); background: var(--teal); }
+.mcq-opt.wrong .mcq-radio { border-color: var(--red); background: var(--red); }
+.mcq-radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: white; opacity: 0; }
+.mcq-opt.selected .mcq-radio::after, .mcq-opt.correct .mcq-radio::after, .mcq-opt.wrong .mcq-radio::after { opacity: 1; }
+.visual-card { background: #fafaf8; border: 1.5px solid var(--line); border-radius: 12px; padding: 1rem; margin: 0.75rem 0 1rem; }
+.visual-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.8rem; align-items: center; justify-items: center; }
+.icon-row { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center; margin: 0.5rem 0; }
+.food-icon { font-size: 2.2rem; line-height: 1; }
+.roll-dot { width: 42px; height: 30px; border-radius: 50%; background: #d8cabd; border: 2px solid #b6a897; display:inline-block; box-shadow: inset 0 -5px 0 rgba(0,0,0,0.08); }
+.shelf { max-width: 520px; margin: 0.5rem auto; border-left: 12px solid #7b7b7b; border-right: 12px solid #7b7b7b; background: #f7f7f7; }
+.shelf-row { display:grid; grid-template-columns: 1fr 1fr; border-bottom: 10px solid #777; min-height: 120px; align-items:center; justify-items:center; }
+.shelf-row:last-child { border-bottom: 0; }
+.shelf-item { text-align:center; font-weight:700; }
+.loaf-option { flex-direction: column; align-items: stretch; }
+.loaf-shape { height: 28px; border-radius: 999px; background: #d8d8d8; box-shadow: inset 0 -7px 0 rgba(0,0,0,0.08); margin: 0.2rem auto; }
+.shape { width: 110px; height: 110px; margin: 0.2rem auto; display:grid; place-items:center; }
+.shape.rectangle div { width: 70px; height: 110px; border: 2px solid #222; }
+.shape.circle div { width: 100px; height: 100px; border-radius:50%; border: 2px solid #222; }
+.shape.triangle div { width: 0; height: 0; border-left: 55px solid transparent; border-right: 55px solid transparent; border-bottom: 82px solid transparent; position:relative; }
+.shape.triangle div::before { content:''; position:absolute; left:-55px; top:0; width:110px; height:82px; clip-path: polygon(50% 0, 0 100%, 100% 100%); border:2px solid #222; }
+.shape.diamond div { width: 80px; height: 80px; border: 2px solid #222; transform: rotate(45deg); }
+.money-note { width: min(420px, 100%); height: 145px; margin: 0.5rem auto; border: 3px solid #222; background: #9c9c9c; position:relative; border-radius: 4px; color:#111; font-weight:700; }
+.money-note span { position:absolute; font-size:1.4rem; }
+.money-note .tl { left:16px; top:12px; }
+.money-note .tr { right:16px; top:12px; }
+.money-note .br { right:16px; bottom:12px; }
+.coin { width: 78px; height: 78px; border-radius:50%; border: 5px double #888; display:grid; place-items:center; font-weight:700; font-size:1.25rem; background:#efefef; }
+.bar-chart { max-width: 600px; margin: 0.5rem auto 0; padding: 1rem 1rem 0.5rem; border-left:3px solid #222; border-bottom:3px solid #222; display:grid; grid-template-columns: repeat(3, 1fr); gap:1rem; align-items:end; height:260px; background: linear-gradient(to top, #ddd 1px, transparent 1px); background-size: 100% calc(100%/12); }
+.bar-wrap { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; font-weight:700; font-size:0.85rem; }
+.bar { width:70%; border:2px solid #222; background: repeating-linear-gradient(45deg, #fff 0 8px, #eaeaea 8px 12px); }
+.bar.coffee { background:#777; }
+.bar-label { margin-top:0.4rem; font-size:0.85rem; }
+.tally-table { max-width: 420px; margin:0.5rem auto 1rem; display:grid; grid-template-columns: 120px 1fr; gap: 0.4rem 1rem; align-items:center; font-size:1.2rem; }
+.tally-marks { font-family: 'Courier New', monospace; letter-spacing: 2px; font-weight: 700; font-size: 1.45rem; }
+.clock { width: 170px; height: 170px; }
+.submit-card { text-align: center; }
+.submit-card h2 { font-size: 1.1rem; font-weight: 700; color: var(--teal); margin-bottom: 0.5rem; }
+.submit-card p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1rem; line-height: 1.55; }
+.btn { display: inline-block; padding: 0.8rem 2rem; border-radius: 10px; border: none; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, background 0.15s; }
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: var(--teal); color: white; }
+.btn-primary:hover { background: var(--teal-dark); }
+.success-msg { background: var(--green-light); border: 2px solid var(--green); border-radius: 10px; padding: 0.9rem; color: var(--green); font-weight: 700; margin-top: 1rem; display: none; }
+.fallback-card { background: #fff8ea; border: 2px solid var(--orange); border-radius: 10px; padding: 1rem; margin-top: 1rem; text-align: left; display: none; }
+.fallback-card p { font-size: 0.85rem; color: var(--dark); margin-bottom: 0.6rem; line-height: 1.55; }
+.fallback-card textarea { min-height: 180px; font-size: 0.82rem; margin-bottom: 0.6rem; }
+.fallback-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; }
+.btn-secondary { background: var(--teal); color: white; padding: 0.55rem 1.2rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+.btn-secondary.outline { background: white; color: var(--teal); border: 2px solid var(--teal); text-decoration:none; display:inline-flex; align-items:center; }
+#copyStatus { font-size: 0.8rem; color: var(--green); font-weight: 700; margin-top: 0.4rem; min-height: 1.2em; }
+.export-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--teal); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: center; gap: 1rem; z-index: 100; flex-wrap: wrap; }
+.export-bar span { font-size: 0.88rem; font-weight: 700; color: rgba(255,255,255,0.85); }
+.btn-export { background: var(--orange); color: white; padding: 0.55rem 1.4rem; border-radius: 8px; border: none; font-family: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, .mcq-opt:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+@media(max-width:600px){ .info-strip { gap: 0.75rem; } .mcq-grid, .mcq-grid.two-col { grid-template-columns: 1fr; } .input-row { flex-direction: column; align-items: stretch; } .input-row label { min-width: 0; } .clock { width: 130px; height: 130px; } }
+</style>
+</head>
+<body data-title="Entry 1 Maths Section B — Set 9 Practice Paper" data-storage="e1MathsSet9SectionB_state">
+<header class="site-header">
+  <p class="qualifier">Pearson Edexcel Functional Skills Mathematics</p>
+  <h1>Entry 1 Maths — Section B Calculator</h1>
+  <p class="meta">Set 9 Practice Paper &nbsp;·&nbsp; 60 minutes &nbsp;·&nbsp; 15 marks total</p>
+</header>
+<div class="back-bar"><a class="back-link" href="index.html">← Back to Past Papers</a></div>
+<div class="info-strip"><div class="info-item"><strong>Instructions:</strong> Answer every question. You can write or draw to show your answers.</div>
+<div class="info-item"><strong>Calculator:</strong> You may use a calculator.</div>
+<div class="info-item"><strong>Advice:</strong> Ask if you do not understand any words.</div></div>
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="prog-row"><span>Progress</span><span id="progText">0 questions answered</span></div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+</div>
+<main class="main">
+
+  <div class="q-card" id="card-q1">
+    <div class="q-header"><span class="q-num">Question 1</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">Adam orders flour on a Tuesday. Flour is only delivered on these days. Which is the earliest day the flour can be delivered?</div>
+    <div class="mcq-grid"><div class="mcq-opt" data-q="q1" data-value="Sunday" data-label="Sunday" data-correct="false"><div class="mcq-radio"></div><span>Sunday</span></div><div class="mcq-opt" data-q="q1" data-value="Saturday" data-label="Saturday" data-correct="false"><div class="mcq-radio"></div><span>Saturday</span></div><div class="mcq-opt" data-q="q1" data-value="Friday" data-label="Friday" data-correct="false"><div class="mcq-radio"></div><span>Friday</span></div><div class="mcq-opt" data-q="q1" data-value="Thursday" data-label="Thursday" data-correct="true"><div class="mcq-radio"></div><span>Thursday</span></div></div>
+  </div>
+
+  <div class="q-card" id="card-q2">
+    <div class="q-header"><span class="q-num">Question 2</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">Adam bakes bread. The bread will be baked by twelve o’clock. Which clock shows twelve o’clock?</div>
+    <div class="mcq-grid two-col"><div class="mcq-opt" data-q="q2" data-value="Clock A" data-label="Clock A" data-correct="false"><div class="mcq-radio"></div><span><svg class="clock" viewBox="0 0 170 170" aria-hidden="true"><defs><marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#222" /></marker></defs><circle cx="85" cy="85" r="76" fill="#fff" stroke="#777" stroke-width="12"/><circle cx="85" cy="85" r="2.5" fill="#222" /><text x="115.0" y="39.0" text-anchor="middle" font-size="20" font-weight="700">1</text><text x="137.0" y="61.0" text-anchor="middle" font-size="20" font-weight="700">2</text><text x="145.0" y="91.0" text-anchor="middle" font-size="20" font-weight="700">3</text><text x="137.0" y="121.0" text-anchor="middle" font-size="20" font-weight="700">4</text><text x="115.0" y="143.0" text-anchor="middle" font-size="20" font-weight="700">5</text><text x="85.0" y="151.0" text-anchor="middle" font-size="20" font-weight="700">6</text><text x="55.0" y="143.0" text-anchor="middle" font-size="20" font-weight="700">7</text><text x="33.0" y="121.0" text-anchor="middle" font-size="20" font-weight="700">8</text><text x="25.0" y="91.0" text-anchor="middle" font-size="20" font-weight="700">9</text><text x="33.0" y="61.0" text-anchor="middle" font-size="20" font-weight="700">10</text><text x="55.0" y="39.0" text-anchor="middle" font-size="20" font-weight="700">11</text><text x="85.0" y="31.0" text-anchor="middle" font-size="20" font-weight="700">12</text><line x1="85" y1="85" x2="85.0" y2="37.0" stroke="#222" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)" /><line x1="85" y1="85" x2="85.0" y2="153.0" stroke="#222" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow)" /></svg></span></div><div class="mcq-opt" data-q="q2" data-value="Clock B" data-label="Clock B" data-correct="false"><div class="mcq-radio"></div><span><svg class="clock" viewBox="0 0 170 170" aria-hidden="true"><defs><marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#222" /></marker></defs><circle cx="85" cy="85" r="76" fill="#fff" stroke="#777" stroke-width="12"/><circle cx="85" cy="85" r="2.5" fill="#222" /><text x="115.0" y="39.0" text-anchor="middle" font-size="20" font-weight="700">1</text><text x="137.0" y="61.0" text-anchor="middle" font-size="20" font-weight="700">2</text><text x="145.0" y="91.0" text-anchor="middle" font-size="20" font-weight="700">3</text><text x="137.0" y="121.0" text-anchor="middle" font-size="20" font-weight="700">4</text><text x="115.0" y="143.0" text-anchor="middle" font-size="20" font-weight="700">5</text><text x="85.0" y="151.0" text-anchor="middle" font-size="20" font-weight="700">6</text><text x="55.0" y="143.0" text-anchor="middle" font-size="20" font-weight="700">7</text><text x="33.0" y="121.0" text-anchor="middle" font-size="20" font-weight="700">8</text><text x="25.0" y="91.0" text-anchor="middle" font-size="20" font-weight="700">9</text><text x="33.0" y="61.0" text-anchor="middle" font-size="20" font-weight="700">10</text><text x="55.0" y="39.0" text-anchor="middle" font-size="20" font-weight="700">11</text><text x="85.0" y="31.0" text-anchor="middle" font-size="20" font-weight="700">12</text><line x1="85" y1="85" x2="85.0" y2="37.0" stroke="#222" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)" /><line x1="85" y1="85" x2="119.0" y2="26.1" stroke="#222" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow)" /></svg></span></div><div class="mcq-opt" data-q="q2" data-value="Clock C" data-label="Clock C" data-correct="false"><div class="mcq-radio"></div><span><svg class="clock" viewBox="0 0 170 170" aria-hidden="true"><defs><marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#222" /></marker></defs><circle cx="85" cy="85" r="76" fill="#fff" stroke="#777" stroke-width="12"/><circle cx="85" cy="85" r="2.5" fill="#222" /><text x="115.0" y="39.0" text-anchor="middle" font-size="20" font-weight="700">1</text><text x="137.0" y="61.0" text-anchor="middle" font-size="20" font-weight="700">2</text><text x="145.0" y="91.0" text-anchor="middle" font-size="20" font-weight="700">3</text><text x="137.0" y="121.0" text-anchor="middle" font-size="20" font-weight="700">4</text><text x="115.0" y="143.0" text-anchor="middle" font-size="20" font-weight="700">5</text><text x="85.0" y="151.0" text-anchor="middle" font-size="20" font-weight="700">6</text><text x="55.0" y="143.0" text-anchor="middle" font-size="20" font-weight="700">7</text><text x="33.0" y="121.0" text-anchor="middle" font-size="20" font-weight="700">8</text><text x="25.0" y="91.0" text-anchor="middle" font-size="20" font-weight="700">9</text><text x="33.0" y="61.0" text-anchor="middle" font-size="20" font-weight="700">10</text><text x="55.0" y="39.0" text-anchor="middle" font-size="20" font-weight="700">11</text><text x="85.0" y="31.0" text-anchor="middle" font-size="20" font-weight="700">12</text><line x1="85" y1="85" x2="85.0" y2="37.0" stroke="#222" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)" /><line x1="85" y1="85" x2="36.9" y2="36.9" stroke="#222" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow)" /></svg></span></div><div class="mcq-opt" data-q="q2" data-value="Clock D" data-label="Clock D" data-correct="true"><div class="mcq-radio"></div><span><svg class="clock" viewBox="0 0 170 170" aria-hidden="true"><defs><marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#222" /></marker></defs><circle cx="85" cy="85" r="76" fill="#fff" stroke="#777" stroke-width="12"/><circle cx="85" cy="85" r="2.5" fill="#222" /><text x="115.0" y="39.0" text-anchor="middle" font-size="20" font-weight="700">1</text><text x="137.0" y="61.0" text-anchor="middle" font-size="20" font-weight="700">2</text><text x="145.0" y="91.0" text-anchor="middle" font-size="20" font-weight="700">3</text><text x="137.0" y="121.0" text-anchor="middle" font-size="20" font-weight="700">4</text><text x="115.0" y="143.0" text-anchor="middle" font-size="20" font-weight="700">5</text><text x="85.0" y="151.0" text-anchor="middle" font-size="20" font-weight="700">6</text><text x="55.0" y="143.0" text-anchor="middle" font-size="20" font-weight="700">7</text><text x="33.0" y="121.0" text-anchor="middle" font-size="20" font-weight="700">8</text><text x="25.0" y="91.0" text-anchor="middle" font-size="20" font-weight="700">9</text><text x="33.0" y="61.0" text-anchor="middle" font-size="20" font-weight="700">10</text><text x="55.0" y="39.0" text-anchor="middle" font-size="20" font-weight="700">11</text><text x="85.0" y="31.0" text-anchor="middle" font-size="20" font-weight="700">12</text><line x1="85" y1="85" x2="85.0" y2="37.0" stroke="#222" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)" /><line x1="85" y1="85" x2="85.0" y2="17.0" stroke="#222" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow)" /></svg></span></div></div>
+  </div>
+
+  <div class="q-card" id="card-q3">
+    <div class="q-header"><span class="q-num">Question 3</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">Adam puts bread on a shelf. Where is the bread on the shelf?</div>
+    <div class="shelf"><div class="shelf-row"><div class="shelf-item"><div class="food-icon">🥯</div>bun</div><div class="shelf-item"><div class="food-icon">🥧</div>pie</div></div><div class="shelf-row"><div class="shelf-item"><div class="food-icon">🥐</div>pastry</div><div class="shelf-item"><div class="food-icon">🍞</div>bread</div></div></div><div class="mcq-grid"><div class="mcq-opt" data-q="q3" data-value="above the pie" data-label="above the pie" data-correct="false"><div class="mcq-radio"></div><span>above the pie</span></div><div class="mcq-opt" data-q="q3" data-value="under the pastry" data-label="under the pastry" data-correct="false"><div class="mcq-radio"></div><span>under the pastry</span></div><div class="mcq-opt" data-q="q3" data-value="to the left of the bun" data-label="to the left of the bun" data-correct="false"><div class="mcq-radio"></div><span>to the left of the bun</span></div><div class="mcq-opt" data-q="q3" data-value="to the right of the pastry" data-label="to the right of the pastry" data-correct="true"><div class="mcq-radio"></div><span>to the right of the pastry</span></div></div>
+  </div>
+
+  <div class="q-card" id="card-q4">
+    <div class="q-header"><span class="q-num">Question 4</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">A customer buys the longest loaf in the bakery. Which loaf does the customer buy?</div>
+    <div class="mcq-grid"><div class="mcq-opt" data-q="q4" data-value="Loaf A" data-label="Loaf A" data-correct="false"><div class="mcq-radio"></div><span><span>Loaf A</span><div class="loaf-shape" style="width:72%"></div></span></div><div class="mcq-opt" data-q="q4" data-value="Loaf B" data-label="Loaf B" data-correct="false"><div class="mcq-radio"></div><span><span>Loaf B</span><div class="loaf-shape" style="width:38%"></div></span></div><div class="mcq-opt" data-q="q4" data-value="Loaf C" data-label="Loaf C" data-correct="true"><div class="mcq-radio"></div><span><span>Loaf C</span><div class="loaf-shape" style="width:100%"></div></span></div><div class="mcq-opt" data-q="q4" data-value="Loaf D" data-label="Loaf D" data-correct="false"><div class="mcq-radio"></div><span><span>Loaf D</span><div class="loaf-shape" style="width:55%"></div></span></div></div>
+  </div>
+
+  <div class="q-card" id="card-q5">
+    <div class="q-header"><span class="q-num">Question 5</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">Adam sells different types of bread. Which type of bread sold the least?</div>
+    <div class="mcq-grid"><div class="mcq-opt" data-q="q5" data-value="Bun — 10 sold" data-label="Bun — 10 sold" data-correct="false"><div class="mcq-radio"></div><span><span class="food-icon">🥯</span><strong>10 sold</strong></span></div><div class="mcq-opt" data-q="q5" data-value="Round loaf — 9 sold" data-label="Round loaf — 9 sold" data-correct="false"><div class="mcq-radio"></div><span><span class="food-icon">🍞</span><strong>9 sold</strong></span></div><div class="mcq-opt" data-q="q5" data-value="Long loaf — 8 sold" data-label="Long loaf — 8 sold" data-correct="true"><div class="mcq-radio"></div><span><span class="food-icon">🥖</span><strong>8 sold</strong></span></div><div class="mcq-opt" data-q="q5" data-value="Sliced bread — 14 sold" data-label="Sliced bread — 14 sold" data-correct="false"><div class="mcq-radio"></div><span><span class="food-icon">🍞</span><strong>14 sold</strong></span></div></div>
+  </div>
+
+  <div class="q-card" id="card-q6">
+    <div class="q-header"><span class="q-num">Question 6</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">Adam makes bread rolls. A customer buys 3 of the rolls. How many rolls are left over?</div>
+    <div class="visual-card"><div class="icon-row" aria-label="13 bread rolls"><span class="roll-dot"></span><span class="roll-dot"></span><span class="roll-dot"></span><span class="roll-dot"></span><span class="roll-dot"></span><span class="roll-dot"></span><span class="roll-dot"></span><span class="roll-dot"></span><span class="roll-dot"></span><span class="roll-dot"></span><span class="roll-dot"></span><span class="roll-dot"></span><span class="roll-dot"></span></div></div><input class="answer-input short-input" type="text" id="q6-answer" data-q="q6" data-label="Rolls left" placeholder="rolls...">
+  </div>
+
+  <div class="q-card" id="card-q7">
+    <div class="q-header"><span class="q-num">Question 7</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">Adam sells packs of rolls. How many rolls are in the largest pack of herb rolls?</div>
+    <div class="visual-card"><table style="width:100%;border-collapse:collapse;"><tr><th style="text-align:left;border-bottom:1px solid var(--line);padding:0.4rem;">Pack</th><th style="text-align:left;border-bottom:1px solid var(--line);padding:0.4rem;">Rolls</th></tr><tr><td style="padding:0.35rem;">plain</td><td>12</td></tr><tr><td style="padding:0.35rem;">cheese</td><td>4</td></tr><tr><td style="padding:0.35rem;">herb</td><td>9</td></tr><tr><td style="padding:0.35rem;">plain</td><td>8</td></tr><tr><td style="padding:0.35rem;">cheese</td><td>10</td></tr><tr><td style="padding:0.35rem;">herb</td><td>4</td></tr></table></div><input class="answer-input short-input" type="text" id="q7-answer" data-q="q7" data-label="Largest herb pack" placeholder="rolls...">
+  </div>
+
+  <div class="q-card" id="card-q8">
+    <div class="q-header"><span class="q-num">Question 8</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">Adam makes these buns and pies. How many pies does Adam make?</div>
+    <div class="visual-card"><div class="q-instruction"><strong>Key:</strong> 🥯 bun &nbsp; 🥧 pie</div><div class="icon-row"><span class="food-icon">🥯</span><span class="food-icon">🥯</span><span class="food-icon">🥧</span><span class="food-icon">🥯</span><span class="food-icon">🥧</span><span class="food-icon">🥧</span><span class="food-icon">🥯</span><span class="food-icon">🥯</span><span class="food-icon">🥯</span><span class="food-icon">🥯</span><span class="food-icon">🥧</span><span class="food-icon">🥯</span><span class="food-icon">🥧</span><span class="food-icon">🥧</span></div></div><input class="answer-input short-input" type="text" id="q8-answer" data-q="q8" data-label="Number of pies" placeholder="pies...">
+  </div>
+
+  <div class="q-card" id="card-q9">
+    <div class="q-header"><span class="q-num">Question 9</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">Adam makes flatbread in the shape of a square. Which shape is a square?</div>
+    <div class="mcq-grid two-col"><div class="mcq-opt" data-q="q9" data-value="Rectangle" data-label="Rectangle" data-correct="false"><div class="mcq-radio"></div><span><span>Rectangle</span><div class="shape rectangle"><div></div></div></span></div><div class="mcq-opt" data-q="q9" data-value="Circle" data-label="Circle" data-correct="false"><div class="mcq-radio"></div><span><span>Circle</span><div class="shape circle"><div></div></div></span></div><div class="mcq-opt" data-q="q9" data-value="Triangle" data-label="Triangle" data-correct="false"><div class="mcq-radio"></div><span><span>Triangle</span><div class="shape triangle"><div></div></div></span></div><div class="mcq-opt" data-q="q9" data-value="Square" data-label="Square" data-correct="true"><div class="mcq-radio"></div><span><span>Square</span><div class="shape diamond"><div></div></div></span></div></div>
+  </div>
+
+  <div class="q-card" id="card-q10">
+    <div class="q-header"><span class="q-num">Question 10</span><span class="q-marks">2 marks</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">A customer buys a cake. The customer pays with this money. How much does the customer pay in total? Use the correct symbol for money.</div>
+    <div class="visual-card"><div class="money-note"><span class="tl">£5</span><span class="tr">£5</span><span class="br">£5</span></div><div class="visual-grid" style="grid-template-columns:repeat(3,90px);justify-content:center;"><div class="coin">£1</div><div class="coin">£1</div><div class="coin">£2</div></div></div><input class="answer-input short-input" type="text" id="q10-answer" data-q="q10" data-label="Total paid" placeholder="£...">
+  </div>
+
+  <div class="q-card" id="card-q11">
+    <div class="q-header"><span class="q-num">Question 11</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">Adam works out 8 add 7. The answer is 15. How can Adam write this?</div>
+    <div class="mcq-grid"><div class="mcq-opt" data-q="q11" data-value="8 − 7 + 15" data-label="8 − 7 + 15" data-correct="false"><div class="mcq-radio"></div><span>8 − 7 + 15</span></div><div class="mcq-opt" data-q="q11" data-value="8 + 7 = 15" data-label="8 + 7 = 15" data-correct="true"><div class="mcq-radio"></div><span>8 + 7 = 15</span></div><div class="mcq-opt" data-q="q11" data-value="8 = 7 + 15" data-label="8 = 7 + 15" data-correct="false"><div class="mcq-radio"></div><span>8 = 7 + 15</span></div><div class="mcq-opt" data-q="q11" data-value="8 + 7 − 15" data-label="8 + 7 − 15" data-correct="false"><div class="mcq-radio"></div><span>8 + 7 − 15</span></div></div>
+  </div>
+
+  <div class="q-card" id="card-q12">
+    <div class="q-header"><span class="q-num">Question 12</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">The chart shows how many cakes Adam makes. How many more chocolate cakes does Adam make than fruit cakes?</div>
+    <div class="visual-card"><h3 style="text-align:center;margin-bottom:0.5rem;">Cakes that Adam makes</h3><div class="bar-chart"><div class="bar-wrap"><div class="bar" style="height:91.6%;"></div><div class="bar-label">chocolate<br>11</div></div><div class="bar-wrap"><div class="bar coffee" style="height:25%;"></div><div class="bar-label">coffee<br>3</div></div><div class="bar-wrap"><div class="bar" style="height:50%;"></div><div class="bar-label">fruit<br>6</div></div></div></div><input class="answer-input short-input" type="text" id="q12-answer" data-q="q12" data-label="Difference" placeholder="cakes...">
+  </div>
+
+  <div class="q-card" id="card-q13">
+    <div class="q-header"><span class="q-num">Question 13</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">Adam works out a total cost for a customer: 11 + 2 = 13. Adam can check his answer in a different way. Show how Adam can check his answer.</div>
+    <textarea id="q13-answer" data-q="q13" data-label="Check method" rows="3" placeholder="Show a different way to check 11 + 2 = 13..."></textarea>
+  </div>
+
+  <div class="q-card" id="card-q14">
+    <div class="q-header"><span class="q-num">Question 14</span><span class="q-marks">1 mark</span><span class="answered-tick">✓</span></div>
+    <div class="q-text">Adam makes a tally chart of the pies he sells. Adam sells 5 more cherry pies than lemon pies. Show the number of cherry pies on the tally chart.</div>
+    <div class="visual-card"><div class="tally-table"><strong>apple</strong><span class="tally-marks">||||/||</span><strong>lemon</strong><span class="tally-marks">||||</span><strong>cherry</strong><span class="tally-marks">?</span></div></div><input class="answer-input" type="text" id="q14-answer" data-q="q14" data-label="Cherry pies tally or number" placeholder="type the tally or number...">
+  </div>
+
+
+  <div class="submit-card">
+    <h2>📧 Send your answers to Jay</h2>
+    <p>This opens a Gmail draft addressed to Jay with your answers filled in. You can send before the paper is finished too.</p>
+    <button class="btn btn-primary" onclick="submitPaper()">Send answers to Jay</button>
+    <div class="success-msg" id="successMsg">✅ Gmail opened, addressed to jay.raine@chiltonbridgeschool.co.uk — check the draft and send it.</div>
+    <div class="fallback-card" id="fallbackCard">
+      <p id="fallbackReason">Gmail did not open.</p>
+      <p>You can still send your answers. Try your email app, or copy the text and paste it into a new email addressed to <strong>jay.raine@chiltonbridgeschool.co.uk</strong>.</p>
+      <textarea id="fallbackBody" readonly onclick="this.select()"></textarea>
+      <div class="fallback-actions">
+        <button class="btn-secondary" onclick="copyFallback()">📋 Copy answers</button>
+        <a class="btn-secondary outline" id="fallbackMailto" href="#">✉️ Try email app</a>
+      </div>
+      <div id="copyStatus"></div>
+    </div>
+  </div>
+
+</main>
+
+<div class="export-bar">
+  <span>Ready to submit?</span>
+  <button class="btn-export" onclick="submitPaper()">📧 Send to Jay</button>
+</div>
+
+
+<script>
+const RECIPIENT = 'jay.raine@chiltonbridgeschool.co.uk';
+const STORAGE_KEY = document.body.dataset.storage || 'paper_state';
+const SAFE_URL_LENGTH = 1900;
+const selectedAnswers = {};
+
+function answerEls(q){ return Array.from(document.querySelectorAll(`[data-q="${q}"]`)); }
+function cardFor(q){ return document.getElementById('card-' + q); }
+
+function selectOption(opt, skipSave) {
+  const q = opt.dataset.q;
+  document.querySelectorAll(`.mcq-opt[data-q="${q}"]`).forEach(el => el.classList.remove('selected','correct','wrong'));
+  opt.classList.add('selected');
+  if(opt.dataset.correct === 'true') {
+    opt.classList.add('correct');
+  } else if(opt.dataset.correct === 'false') {
+    opt.classList.add('wrong');
+    const correct = document.querySelector(`.mcq-opt[data-q="${q}"][data-correct="true"]`);
+    if(correct) correct.classList.add('correct');
+  }
+  selectedAnswers[q] = { value: opt.dataset.value || opt.textContent.trim(), label: opt.dataset.label || '' };
+  updateCard(q);
+  if(!skipSave) saveState();
+}
+
+function updateCard(q){
+  const card = cardFor(q);
+  if(!card) return;
+  const hasInput = answerEls(q).some(el => {
+    if(el.classList && el.classList.contains('mcq-opt')) return el.classList.contains('selected');
+    if(el.type === 'checkbox' || el.type === 'radio') return el.checked;
+    return (el.value || '').trim().length > 0;
+  });
+  card.classList.toggle('answered', hasInput);
+  updateProgress();
+}
+
+function updateProgress(){
+  const cards = Array.from(document.querySelectorAll('.q-card'));
+  const done = cards.filter(c => c.classList.contains('answered')).length;
+  const total = cards.length;
+  document.getElementById('progFill').style.width = total ? (done / total * 100) + '%' : '0%';
+  document.getElementById('progText').textContent = done + ' of ' + total + ' questions answered';
+}
+
+function saveState(){
+  try {
+    const state = { fields:{}, selected:{} };
+    document.querySelectorAll('input[data-q], textarea[data-q]').forEach(el => { state.fields[el.id] = el.value; });
+    Object.assign(state.selected, selectedAnswers);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e) {}
+}
+
+function restoreState(){
+  let raw;
+  try { raw = localStorage.getItem(STORAGE_KEY); } catch(e) { return; }
+  if(!raw) return;
+  let state;
+  try { state = JSON.parse(raw); } catch(e) { return; }
+  if(state.fields) {
+    Object.keys(state.fields).forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.value = state.fields[id];
+    });
+  }
+  if(state.selected) {
+    Object.keys(state.selected).forEach(q => {
+      const value = state.selected[q].value;
+      const opt = Array.from(document.querySelectorAll(`.mcq-opt[data-q="${q}"]`)).find(el => (el.dataset.value || el.textContent.trim()) === value);
+      if(opt) selectOption(opt, true);
+    });
+  }
+  document.querySelectorAll('.q-card').forEach(card => updateCard(card.id.replace('card-','')));
+}
+
+function clearSavedState(){ try { localStorage.removeItem(STORAGE_KEY); } catch(e) {} }
+
+function buildEmailBody(){
+  const now = new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  const title = document.body.dataset.title || document.title;
+  let body = `${title} — ${now}\n\n`;
+  document.querySelectorAll('.q-card').forEach(card => {
+    const q = card.id.replace('card-','');
+    const heading = card.querySelector('.q-num')?.textContent?.trim() || q;
+    const qtext = card.querySelector('.q-text')?.textContent?.trim() || '';
+    body += `━━━ ${heading.toUpperCase()} ━━━\n${qtext}\n`;
+    const selected = document.querySelector(`.mcq-opt[data-q="${q}"].selected`);
+    if(selected) {
+      body += `Selected: ${selected.dataset.value || selected.textContent.trim()}\n`;
+    }
+    const fields = Array.from(card.querySelectorAll('input[data-q], textarea[data-q]'));
+    fields.forEach(el => {
+      const label = el.dataset.label || el.getAttribute('aria-label') || el.id;
+      body += `${label}: ${el.value || '(blank)'}\n`;
+    });
+    if(!selected && fields.length === 0) body += '(no answer captured)\n';
+    body += '\n';
+  });
+  return { body, subject: title + ' — ' + now };
+}
+
+function submitPaper(){
+  const { body, subject } = buildEmailBody();
+  const gmailUrl = 'https://mail.google.com/mail/?view=cm&to=' + encodeURIComponent(RECIPIENT) +
+                  '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  if(gmailUrl.length > SAFE_URL_LENGTH) {
+    showFallback(body, subject, 'Your answers are quite long, so Gmail may not load them correctly.');
+    return;
+  }
+  let win = null;
+  try { win = window.open(gmailUrl, '_blank'); } catch(e) { win = null; }
+  if(!win) {
+    showFallback(body, subject, 'Gmail did not open. Your browser may have blocked the pop-up.');
+    return;
+  }
+  document.getElementById('successMsg').style.display = 'block';
+  document.getElementById('fallbackCard').style.display = 'none';
+  clearSavedState();
+}
+
+function showFallback(body, subject, reason){
+  document.getElementById('successMsg').style.display = 'none';
+  const fb = document.getElementById('fallbackCard');
+  document.getElementById('fallbackReason').textContent = reason;
+  document.getElementById('fallbackBody').value = body;
+  document.getElementById('fallbackMailto').href = 'mailto:' + encodeURIComponent(RECIPIENT) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  fb.style.display = 'block';
+  fb.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function copyFallback(){
+  const ta = document.getElementById('fallbackBody');
+  ta.select();
+  const status = document.getElementById('copyStatus');
+  if(navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(ta.value).then(() => {
+      status.textContent = '✓ Copied! Paste this into a new email to ' + RECIPIENT;
+    }).catch(() => { status.textContent = 'Select the text above, copy it, then paste it into an email to ' + RECIPIENT; });
+  } else {
+    status.textContent = 'Select the text above, copy it, then paste it into an email to ' + RECIPIENT;
+  }
+}
+
+function initActivity(){
+  document.querySelectorAll('.mcq-opt').forEach(opt => { opt.setAttribute('tabindex','0'); opt.addEventListener('click', () => selectOption(opt)); opt.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectOption(opt); } }); });
+  document.querySelectorAll('input[data-q], textarea[data-q]').forEach(el => { el.addEventListener('input', () => { updateCard(el.dataset.q); saveState(); }); });
+  restoreState();
+  document.querySelectorAll('.q-card').forEach(card => updateCard(card.id.replace('card-','')));
+}
+
+document.addEventListener('DOMContentLoaded', initActivity);
+</script>
+
+</body>
+</html>
