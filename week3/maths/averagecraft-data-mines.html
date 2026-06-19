@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AverageCraft: The Data Mines</title>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <style>
+    :root{
+      --ink:#f8fbff;--dark:#07121d;--glass:rgba(7,18,29,.74);--glass2:rgba(7,18,29,.92);
+      --gold:#ffd166;--cyan:#5ee7ff;--purple:#c792ea;--green:#6aff98;--bad:#ff6b6b;
+      --line:rgba(255,255,255,.22);--shadow:0 18px 60px rgba(0,0,0,.4);
+    }
+    *{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#07121d;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+    #game{position:relative;width:100vw;height:100vh;background:#07121d}#three{position:absolute;inset:0}canvas{display:block}
+    .hud{position:absolute;inset:0;pointer-events:none;z-index:3}.topbar{position:absolute;top:12px;left:12px;right:12px;display:flex;gap:10px;align-items:flex-start;justify-content:space-between;pointer-events:auto}.brand,.chip,.panel,.icon-btn,.mission{background:var(--glass);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+    .brand{border-radius:999px;padding:9px 13px;font-weight:900;display:flex;gap:10px;align-items:center;white-space:nowrap}.cube-logo{width:25px;height:25px;border-radius:5px;background:linear-gradient(135deg,#74d25a 0 49%,#71472d 50% 100%);transform:rotate(45deg);border:2px solid rgba(255,255,255,.7)}
+    .stats{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end}.chip{border-radius:999px;padding:8px 11px;font-weight:800;font-size:14px}.icon-btn{height:38px;min-width:38px;border-radius:999px;color:#fff;font-weight:900;cursor:pointer}.icon-btn:hover{border-color:#fff}.crosshair{position:absolute;left:50%;top:50%;width:26px;height:26px;transform:translate(-50%,-50%);opacity:.9}.crosshair:before,.crosshair:after{content:"";position:absolute;background:#fff;box-shadow:0 0 10px #000}.crosshair:before{left:12px;top:2px;width:2px;height:22px}.crosshair:after{left:2px;top:12px;width:22px;height:2px}.aim-label{position:absolute;left:50%;top:calc(50% + 26px);transform:translateX(-50%);background:rgba(0,0,0,.62);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;display:none;white-space:nowrap}.aim-label.show{display:block}
+    .mission{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);width:min(760px,calc(100vw - 24px));border-radius:18px;padding:13px 15px;pointer-events:auto;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.mission h2{font-size:18px;margin:0 0 3px}.mission p{margin:0;color:#dfefff;font-weight:650}.mission .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.hidden{display:none!important}
+    button{font:inherit;border:0;border-radius:12px;padding:.72rem 1rem;font-weight:900;cursor:pointer;background:#fff;color:#07121d}button.primary{background:var(--gold)}button.blue{background:var(--cyan)}button.purple{background:var(--purple)}button.green{background:var(--green)}button.ghost{background:transparent;color:#fff;border:1px solid var(--line)}button.bad{background:var(--bad);color:#fff}button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+    .center{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,rgba(60,125,95,.35),rgba(7,18,29,.75));pointer-events:auto;padding:22px}.splash{width:min(900px,96vw);background:var(--glass2);border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:var(--shadow);text-align:center}.splash h1{font-size:clamp(38px,7vw,78px);line-height:1;margin:6px 0 12px}.sub{letter-spacing:.12em;text-transform:uppercase;font-weight:900;color:#a9d8ff;font-size:13px}.lead{font-size:clamp(17px,2.4vw,23px);line-height:1.4;color:#e9f7ff}.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:18px}.tile{border:1px solid var(--line);border-radius:18px;padding:16px;background:rgba(255,255,255,.08);text-align:left}.tile b{display:block;font-size:17px}.tile span{display:block;color:#d5e8f4;font-size:14px;margin-top:5px}.settings{display:grid;gap:13px;max-width:520px;margin:18px auto;text-align:left}.settings label{display:grid;gap:5px;font-weight:800}.settings select,.settings input{font:inherit;border-radius:10px;border:1px solid var(--line);padding:10px;background:#fff;color:#07121d}
+    .toast{position:absolute;top:72px;left:50%;transform:translate(-50%,-8px);z-index:7;background:rgba(7,18,29,.92);border:1px solid var(--line);border-radius:999px;padding:10px 14px;font-weight:900;opacity:0;transition:.18s;box-shadow:var(--shadow);pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}.flash{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0}.flash.good{animation:flashGood .28s}.flash.bad{animation:flashBad .28s}@keyframes flashGood{50%{opacity:.18;background:var(--green)}}@keyframes flashBad{50%{opacity:.22;background:var(--bad)}}
+    .mobile{position:absolute;inset:0;z-index:4;pointer-events:none;display:none}.mobile.show{display:block}.pad{position:absolute;left:16px;bottom:96px;width:154px;height:154px;pointer-events:auto}.pad button,.look-pad button{position:absolute;width:48px;height:48px;border-radius:14px;padding:0}.pad .up{left:53px;top:0}.pad .left{left:0;top:53px}.pad .right{right:0;top:53px}.pad .down{left:53px;bottom:0}.look-pad{position:absolute;right:16px;bottom:96px;width:154px;height:154px;pointer-events:auto}.look-pad .turn-l{left:0;top:53px}.look-pad .turn-r{right:0;top:53px}.look-pad .interact{left:53px;top:53px;background:var(--gold)}
+    .fallback{position:absolute;inset:0;z-index:9;background:#07121d;color:#fff;display:none;place-items:center;text-align:center;padding:30px}.completion-strip{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}.initials{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.initials button.done{background:var(--green)}
+    .mission{background:linear-gradient(180deg,rgba(8,22,34,.86),rgba(8,22,34,.7));border-color:rgba(255,255,255,.18)}
+    .mission h2{display:flex;align-items:center;gap:8px}.mission p{font-size:15px}.mission .actions button{padding:.58rem .85rem;border-radius:999px}
+    .chip{background:rgba(8,22,34,.72);border-color:rgba(255,255,255,.16);box-shadow:0 8px 26px rgba(0,0,0,.25)}
+    .guide-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:16px}.guide-card{background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:18px;padding:14px;text-align:left}.guide-card .big{font-size:28px;display:block;margin-bottom:6px}.guide-card b{font-size:16px}.guide-card span{display:block;color:#d5e8f4;font-size:14px;margin-top:4px}.kbd{display:inline-grid;place-items:center;min-width:30px;height:28px;border-radius:8px;background:rgba(255,255,255,.12);border:1px solid var(--line);font-weight:900;margin:0 2px}.clean-note{margin-top:12px;color:#cfe9ff;font-size:14px}.mode-count{color:#ffe8ff;font-weight:900}.smallprint{font-size:13px;color:#cce1ed;line-height:1.45;margin-top:8px}
+    @media(max-width:760px){.brand span:last-child{display:none}.mission{grid-template-columns:1fr}.mission .actions{justify-content:flex-start}.chip{font-size:12px;padding:7px 9px}.toast{top:116px}.topbar{align-items:flex-start}.splash{padding:20px}.mobile.show{display:block}.guide-list{grid-template-columns:1fr 1fr}.mission p{font-size:14px}}
+  </style>
+</head>
+<body>
+  <div id="game">
+    <div id="three"></div>
+    <div class="flash" id="flash"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="hud">
+      <div class="topbar">
+        <div class="brand"><span class="cube-logo"></span><span>AverageCraft: The Data Mines</span></div>
+        <div class="stats" id="stats"></div>
+      </div>
+      <div class="crosshair" aria-hidden="true"></div>
+      <div class="aim-label" id="aimLabel">Aim at a block</div>
+      <section class="mission hidden" id="mission" aria-live="polite"></section>
+    </div>
+    <div class="mobile" id="mobileControls" aria-hidden="false">
+      <div class="pad">
+        <button class="up" data-hold="w">▲</button><button class="left" data-hold="a">◀</button><button class="right" data-hold="d">▶</button><button class="down" data-hold="s">▼</button>
+      </div>
+      <div class="look-pad">
+        <button class="turn-l" data-hold="turnleft">↶</button><button class="turn-r" data-hold="turnright">↷</button><button class="interact" id="mobileInteract">E</button>
+      </div>
+    </div>
+    <div class="center" id="center"></div>
+    <div class="fallback" id="fallback"><div><h1>3D library could not load</h1><p>This GitHub Pages game needs an internet connection to load Three.js from the CDN.</p></div></div>
+  </div>
+
+<script>
+/* AverageCraft: The Data Mines
+   Single-file GitHub Pages activity. First-person, skill-based average practice. */
+const $ = s => document.querySelector(s);
+const threeEl = $('#three'), center = $('#center'), missionEl = $('#mission'), statsEl = $('#stats'), toastEl = $('#toast'), flashEl = $('#flash'), fallbackEl = $('#fallback'), aimLabel = $('#aimLabel'), mobileControls = $('#mobileControls');
+
+const TRACKER_KEY = 'base6_w3_maths_tracker';
+const ACTIVITY_ID = 'averagecraft-data-mines';
+const STUDENTS = ['LW','AP','LS','LC','HK'];
+const TOPIC_KEYS = ['mean','median','mode','range'];
+const TOPICS = {
+  mean:{label:'Mean',zone:'Mean Mine',icon:'⚖️',color:0xffd166,glow:'#ffd166',prompt:'Balance the towers. Mine high → fill low.',micro:'Share the total equally across all towers.'},
+  median:{label:'Median',zone:'Median Mountain',icon:'🏔️',color:0x5ee7ff,glow:'#5ee7ff',prompt:'Sort carts. Tag the centre. Power the median.',micro:'Sort low to high, then find the centre value.'},
+  mode:{label:'Mode',zone:'Mode Cave',icon:'🔁',color:0xc792ea,glow:'#c792ea',prompt:'Find the value with the highest count.',micro:'The mode is the most repeated value.'},
+  range:{label:'Range',zone:'Range Tower',icon:'📏',color:0x6aff98,glow:'#6aff98',prompt:'Tag min and max, then power the range.',micro:'Range = biggest minus smallest.'}
+};
+const CONFIG = { practicePerTopic:3, assessmentCount:8, difficulty:1, eco:false };
+const state = {
+  screen:'home', mode:'hub', run:null, challenge:null, stats:makeStats(), score:0, xp:Number(localStorage.getItem('averagecraft_xp')||0), best:Number(localStorage.getItem('averagecraft_best')||0), streak:0,
+  sound:true, simple:false, pointer:false, keys:{}, learned:JSON.parse(localStorage.getItem('averagecraft_learned')||'{}')
+};
+function makeStats(){return {mean:{correct:0,total:0},median:{correct:0,total:0},mode:{correct:0,total:0},range:{correct:0,total:0}};}
+
+let scene,camera,renderer,raycaster,clock,worldGroup,missionGroup,fxGroup,labelGroup,portalGroup;
+let player = {pos:null, yaw:Math.PI, pitch:0, vel:null};
+let clickable=[]; let aimed=null; let mouseDown=false; let lastMouse={x:0,y:0};
+let portalPositions = {};
+
+init();
+function init(){
+  if(!window.THREE){ fallbackEl.style.display='grid'; center.classList.add('hidden'); return; }
+  initThree(); buildHub(); showHome(); updateStats(); setupMobileControls(); animate();
+}
+function initThree(){
+  scene = new THREE.Scene(); scene.background = new THREE.Color(0x75c9ff); scene.fog = new THREE.Fog(0x75c9ff,42,120);
+  camera = new THREE.PerspectiveCamera(74, innerWidth/innerHeight, .08, 170);
+  renderer = new THREE.WebGLRenderer({antialias:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,1.6)); renderer.setSize(innerWidth,innerHeight); renderer.shadowMap.enabled=true; threeEl.appendChild(renderer.domElement);
+  raycaster = new THREE.Raycaster(); clock = new THREE.Clock();
+  player.pos = new THREE.Vector3(0,1.7,11); player.vel = new THREE.Vector3();
+  portalPositions = {mean:new THREE.Vector3(-14,0,-8), median:new THREE.Vector3(14,0,-8), mode:new THREE.Vector3(-14,0,10), range:new THREE.Vector3(14,0,10), training:new THREE.Vector3(0,0,-16)};
+  scene.add(new THREE.HemisphereLight(0xffffff,0x365c32,.86));
+  const sun = new THREE.DirectionalLight(0xffffff,1.06); sun.position.set(20,36,10); sun.castShadow=true; sun.shadow.mapSize.set(1024,1024); scene.add(sun);
+  worldGroup=new THREE.Group(); missionGroup=new THREE.Group(); fxGroup=new THREE.Group(); labelGroup=new THREE.Group(); portalGroup=new THREE.Group(); scene.add(worldGroup,portalGroup,missionGroup,fxGroup,labelGroup);
+  addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+  addEventListener('keydown',onKeyDown); addEventListener('keyup',e=>state.keys[e.key.toLowerCase()]=false);
+  renderer.domElement.addEventListener('click',()=>{ if(!state.simple && document.pointerLockElement!==renderer.domElement) renderer.domElement.requestPointerLock(); else interact(); });
+  renderer.domElement.addEventListener('mousedown',e=>{mouseDown=true;lastMouse={x:e.clientX,y:e.clientY};});
+  addEventListener('mouseup',()=>mouseDown=false);
+  addEventListener('mousemove',onMouseMove);
+  document.addEventListener('pointerlockchange',()=>{state.pointer=document.pointerLockElement===renderer.domElement; updateStats();});
+}
+function onMouseMove(e){
+  if(state.pointer){ look(e.movementX,e.movementY); return; }
+  if(state.simple && mouseDown){ look((e.clientX-lastMouse.x)*1.5,(e.clientY-lastMouse.y)*1.5); lastMouse={x:e.clientX,y:e.clientY}; }
+}
+function onKeyDown(e){
+  const k=e.key.toLowerCase(); state.keys[k]=true;
+  if(k==='e') interact();
+  if(k==='h') returnToHub();
+  if(k==='escape') { state.simple=true; document.exitPointerLock?.(); updateStats(); }
+}
+function look(dx,dy){ player.yaw -= dx*.0027; player.pitch = clamp(player.pitch - dy*.0022, -1.15, 1.0); }
+function setupMobileControls(){
+  document.querySelectorAll('[data-hold]').forEach(btn=>{
+    const key=btn.dataset.hold;
+    const down=e=>{e.preventDefault();state.keys[key]=true;}; const up=e=>{e.preventDefault();state.keys[key]=false;};
+    btn.addEventListener('pointerdown',down); btn.addEventListener('pointerup',up); btn.addEventListener('pointercancel',up); btn.addEventListener('pointerleave',up);
+  });
+  $('#mobileInteract').addEventListener('click',interact);
+}
+
+function buildHub(){
+  clearGroup(worldGroup); clearGroup(portalGroup); clearGroup(missionGroup); clearGroup(fxGroup); clearGroup(labelGroup); clickable=[];
+  const ground = new THREE.Mesh(new THREE.BoxGeometry(62,.6,62), new THREE.MeshLambertMaterial({color:0x568f44})); ground.position.y=-.32; ground.receiveShadow=true; worldGroup.add(ground);
+  const pathMat = new THREE.MeshLambertMaterial({color:0x8a7251});
+  const path1 = new THREE.Mesh(new THREE.BoxGeometry(5,.08,56),pathMat); path1.position.set(0,.04,0); worldGroup.add(path1);
+  const path2 = new THREE.Mesh(new THREE.BoxGeometry(56,.08,5),pathMat); path2.position.set(0,.05,0); worldGroup.add(path2);
+  addDecor(); addTrainingCave(); TOPIC_KEYS.forEach(k=>addPortal(k,portalPositions[k]));
+  player.pos.set(0,1.7,14); player.yaw=Math.PI; player.pitch=-.04; state.mode='hub'; state.challenge=null; missionEl.classList.remove('hidden');
+  missionEl.innerHTML = `<div><h2>Skill Hub</h2><p>Choose a glowing portal. Aim + click/E to enter.</p></div><div class="actions"><button class="primary" onclick="startAssessment()">Final Gate</button><button class="ghost" onclick="showHome()">Menu</button></div>`;
+}
+function addDecor(){
+  const trunk = new THREE.MeshLambertMaterial({color:0x6d4328}), leaf = new THREE.MeshLambertMaterial({color:0x2d7b3d}), stone = new THREE.MeshLambertMaterial({color:0x777f88});
+  for(let i=0;i<(CONFIG.eco?10:26);i++){
+    const x=randChoice([-1,1])*randFloat(21,29), z=randFloat(-28,28);
+    const t=cube(.7,2,.7,trunk); t.position.set(x,1,z); t.castShadow=true; worldGroup.add(t);
+    const l=cube(2.3,2.3,2.3,leaf); l.position.set(x,2.8,z); l.castShadow=true; worldGroup.add(l);
+  }
+  for(let i=0;i<(CONFIG.eco?10:24);i++){ const r=cube(randFloat(.5,1.4),randFloat(.35,1),randFloat(.5,1.4),stone); r.position.set(randFloat(-28,28),.2,randFloat(-28,28)); r.castShadow=true; worldGroup.add(r); }
+}
+function addPortal(topic,pos){
+  const t=TOPICS[topic], mat=new THREE.MeshLambertMaterial({color:t.color,emissive:t.color,emissiveIntensity:.25});
+  const g=new THREE.Group();
+  const base=cube(4,.4,2,mat); base.position.y=.2; g.add(base);
+  const left=cube(.45,4.4,.45,mat); left.position.set(-1.65,2.35,0); const right=left.clone(); right.position.x=1.65; const top=cube(3.75,.45,.45,mat); top.position.y=4.35; g.add(left,right,top);
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,8,18,true), new THREE.MeshBasicMaterial({color:t.color,transparent:true,opacity:.18,depthWrite:false})); beam.position.y=4.2; beam.userData.spin=true; g.add(beam);
+  const label=makeLabel(`${t.icon} ${t.label}`,{bg:'rgba(7,18,29,.82)',color:'#fff',size:52}); label.position.set(0,5.35,0); g.add(label);
+  g.position.copy(pos); g.userData={action:'portal',topic,help:`Enter ${t.zone}`}; portalGroup.add(g); setClickable(g);
+}
+function addTrainingCave(){
+  const mat=new THREE.MeshLambertMaterial({color:0x8bd1ff,emissive:0x2db8ff,emissiveIntensity:.18});
+  const g=new THREE.Group(); const b=cube(4,.4,2,mat); b.position.y=.2; const sign=makeLabel('🎮 Training Cave',{bg:'rgba(7,18,29,.82)',color:'#fff',size:52}); sign.position.set(0,2.8,0); g.add(b,sign); g.position.copy(portalPositions.training); g.userData={action:'training',help:'Try controls'}; portalGroup.add(g); setClickable(g);
+}
+
+// UI screens
+function showHome(){
+  state.screen='home'; center.classList.remove('hidden'); missionEl.classList.add('hidden');
+  center.innerHTML=`<div class="splash"><p class="sub">First-person data mission</p><h1>AverageCraft</h1><p class="lead">Four mines. Four skills. No worksheets.</p><div class="row"><button class="primary" onclick="enterGame()">Enter Skill Hub</button><button class="blue" onclick="startAssessment()">Final Gate</button><button class="ghost" onclick="showSettings()">Teacher Settings</button></div><div class="guide-list"><div class="guide-card"><span class="big">⚖️</span><b>Balance</b><span>Mean towers</span></div><div class="guide-card"><span class="big">🏔️</span><b>Sort</b><span>Median carts</span></div><div class="guide-card"><span class="big">🔁</span><b>Hunt</b><span>Mode crystals</span></div><div class="guide-card"><span class="big">📏</span><b>Power</b><span>Range gates</span></div></div><p class="clean-note"><span class="kbd">W</span><span class="kbd">A</span><span class="kbd">S</span><span class="kbd">D</span> move · mouse look · <span class="kbd">E</span> use · <span class="kbd">H</span> hub</p></div>`;
+}
+window.enterGame=function(){ center.classList.add('hidden'); buildHub(); if(!state.simple) setTimeout(()=>renderer.domElement.requestPointerLock?.(),60); };
+function showSettings(){
+  center.classList.remove('hidden');
+  center.innerHTML=`<div class="splash"><p class="sub">Teacher Settings</p><h1>Setup</h1><div class="settings"><label>Difficulty<select id="setDifficulty"><option value="0">Easy: 5 numbers, 1–10</option><option value="1">Medium: 6–8 numbers, 1–20</option><option value="2">Hard: 8–10 numbers, 1–50</option></select></label><label>Practice rounds per zone<input id="setPractice" type="number" min="1" max="8" value="${CONFIG.practicePerTopic}"></label><label>Final gate questions<input id="setAssess" type="number" min="4" max="20" value="${CONFIG.assessmentCount}"></label></div><div class="row"><button class="primary" onclick="saveSettings()">Save</button><button class="ghost" onclick="showHome()">Back</button></div></div>`;
+  $('#setDifficulty').value=String(CONFIG.difficulty);
+}
+window.showSettings=showSettings;
+window.saveSettings=function(){ CONFIG.difficulty=Number($('#setDifficulty').value); CONFIG.practicePerTopic=clamp(Number($('#setPractice').value)||3,1,8); CONFIG.assessmentCount=clamp(Number($('#setAssess').value)||8,4,20); toast('Settings saved'); showHome(); };
+function showResults(){
+  const total = Object.values(state.stats).reduce((a,s)=>a+s.total,0), correct=Object.values(state.stats).reduce((a,s)=>a+s.correct,0);
+  const pct = total?Math.round(correct/total*100):0; if(pct>state.best){state.best=pct;localStorage.setItem('averagecraft_best',pct);}
+  const weak = TOPIC_KEYS.filter(k=>state.stats[k].total && state.stats[k].correct<state.stats[k].total).map(k=>TOPICS[k].label).join(', ') || 'none';
+  center.classList.remove('hidden'); missionEl.classList.add('hidden');
+  center.innerHTML=`<div class="splash"><p class="sub">Final Gate Result</p><h1>${pct}%</h1><p class="lead">${pct>=80?'Gate unlocked. Strong run.':pct>=55?'Gate charged. Replay one weak zone.':'Good start. Revisit the skill portals.'}</p><div class="tiles">${TOPIC_KEYS.map(k=>`<div class="tile"><b>${TOPICS[k].icon} ${TOPICS[k].label}</b><span>${state.stats[k].correct}/${state.stats[k].total} correct</span></div>`).join('')}</div><p style="margin-top:14px;color:#dbefff"><b>Needs practice:</b> ${weak}</p><div class="completion-strip"><p class="sub">Mark complete for maths index</p><div class="initials">${STUDENTS.map(s=>`<button onclick="toggleStudent('${s}')" id="student_${s}">${s}</button>`).join('')}</div></div><div class="row"><button class="primary" onclick="startAssessment()">Retry Gate</button><button class="blue" onclick="enterGame()">Return to Hub</button><button class="ghost" onclick="showHome()">Menu</button></div></div>`;
+  paintStudentButtons(); updateStats();
+}
+window.toggleStudent=function(initials){ const s=loadTracker(); s[ACTIVITY_ID]=s[ACTIVITY_ID]||{}; s[ACTIVITY_ID][initials]=!s[ACTIVITY_ID][initials]; saveTracker(s); paintStudentButtons(); };
+function loadTracker(){try{return JSON.parse(localStorage.getItem(TRACKER_KEY))||{};}catch(e){return {};}}
+function saveTracker(s){try{localStorage.setItem(TRACKER_KEY,JSON.stringify(s));}catch(e){}}
+function paintStudentButtons(){ const s=loadTracker()[ACTIVITY_ID]||{}; STUDENTS.forEach(i=>{const b=$('#student_'+i); if(b) b.classList.toggle('done',!!s[i]);}); }
+
+// Runs and challenges
+window.startAssessment=function(){ center.classList.add('hidden'); if(state.mode!=='hub') buildHub(); state.run={type:'assessment',queue:shuffle(Array.from({length:CONFIG.assessmentCount},(_,i)=>TOPIC_KEYS[i%4])),index:0}; state.stats=makeStats(); state.score=0; state.streak=0; startNextChallenge(); };
+function startTopic(topic){ state.run={type:'practice',topic,left:CONFIG.practicePerTopic,index:0}; state.stats=makeStats(); state.score=0; state.streak=0; if(!state.learned[topic]) showSkillBrief(topic); else startNextChallenge(); }
+function showSkillBrief(topic){
+  const t=TOPICS[topic]; center.classList.remove('hidden'); missionEl.classList.add('hidden');
+  const cards = {
+    mean:[['1','Mine orange towers'],['2','Fill blue towers'],['3','All towers match']],
+    median:[['1','Click carts low → high'],['2','Tag centre cart(s)'],['3','Choose median power']],
+    mode:[['1','Read each count'],['2','Pick highest count'],['3','Use No Mode if all ×1']],
+    range:[['1','Tag smallest'],['2','Tag biggest'],['3','Choose biggest − smallest']]
+  }[topic];
+  center.innerHTML=`<div class="splash"><p class="sub">Micro tutorial</p><h1>${t.icon} ${t.label}</h1><p class="lead">${t.micro}</p><div class="guide-list">${cards.map(c=>`<div class="guide-card"><span class="big">${c[0]}</span><b>${c[1]}</b></div>`).join('')}</div><p class="smallprint">Short mission. Aim at glowing objects and press E or click.</p><div class="row"><button class="primary" onclick="beginBriefTopic('${topic}')">Start ${t.label} Mission</button><button class="ghost" onclick="returnToHub()">Hub</button></div></div>`;
+}
+window.beginBriefTopic=function(topic){ state.learned[topic]=true; localStorage.setItem('averagecraft_learned',JSON.stringify(state.learned)); center.classList.add('hidden'); startNextChallenge(); };
+function startNextChallenge(){
+  clearMissionObjects();
+  if(!state.run){ buildHub(); return; }
+  let topic;
+  if(state.run.type==='assessment'){
+    if(state.run.index>=state.run.queue.length){ showResults(); return; }
+    topic=state.run.queue[state.run.index++];
+  } else {
+    if(state.run.left<=0){ toast(`${TOPICS[state.run.topic].label} zone cleared`); buildHub(); return; }
+    topic=state.run.topic; state.run.left--; state.run.index++;
+  }
+  const q=generateQuestion(topic, CONFIG.difficulty); state.challenge=createChallenge(q,state.run.type); renderChallenge(state.challenge); updateStats();
+}
+function createChallenge(q,runType){
+  const ch={id:Date.now()+Math.random(),topic:q.topic,data:q.data,answer:q.answer,options:q.options,runType,completed:false,attempts:0,step:'start'};
+  if(q.topic==='mean'){ ch.towers=q.data.slice(); ch.target=Number(q.answer); ch.carry=0; ch.step='balance'; }
+  if(q.topic==='median'){ ch.sorted=[...q.data].sort((a,b)=>a-b); ch.remaining=q.data.map((v,i)=>({v,i})); ch.placed=[]; ch.middleSelected=[]; ch.step='sort'; }
+  if(q.topic==='mode'){ ch.modeValues=getModes(q.data); ch.selected=[]; ch.step='select'; }
+  if(q.topic==='range'){ ch.min=Math.min(...q.data); ch.max=Math.max(...q.data); ch.range=ch.max-ch.min; ch.tagged={min:false,max:false}; ch.step='tagMin'; }
+  return ch;
+}
+function clearMissionObjects(){ resetMissionGroup(); clearGroup(fxGroup); clearGroup(labelGroup); }
+function resetMissionGroup(){ clickable = clickable.filter(o => o.parent && o.parent !== missionGroup); clearGroup(missionGroup); }
+function renderChallenge(ch){
+  clearMissionObjects();
+  const topic=ch.topic, pos=portalPositions[topic], t=TOPICS[topic];
+  player.pos.set(pos.x,1.7,pos.z+7.5); player.yaw=Math.PI; player.pitch=-.04;
+  missionEl.classList.remove('hidden'); center.classList.add('hidden');
+  setMission(`${t.icon} ${t.zone}`, t.prompt, true);
+  addBeacon(new THREE.Vector3(pos.x,0,pos.z),t.color);
+  if(topic==='mean') renderMean(ch,pos); if(topic==='median') renderMedian(ch,pos); if(topic==='mode') renderMode(ch,pos); if(topic==='range') renderRange(ch,pos);
+}
+function setMission(title,body,showHint){
+  const hint = showHint && (!state.run || state.run.type!=='assessment') ? `<button class="ghost" onclick="showHint()">Hint</button>` : '';
+  missionEl.innerHTML=`<div><h2>${title}</h2><p>${body}</p></div><div class="actions">${hint}<button class="ghost" onclick="returnToHub()">Hub</button></div>`;
+}
+window.showHint=function(){
+  const ch=state.challenge; if(!ch || ch.completed || (state.run&&state.run.type==='assessment')) return;
+  const t=TOPICS[ch.topic];
+  if(ch.topic==='mean') toast(`Total ${sum(ch.data)} ÷ ${ch.data.length} = ${ch.target}. Balance every tower to ${ch.target}.`);
+  if(ch.topic==='median') toast(ch.step==='sort'?`Next cart: ${ch.sorted[ch.placed.length]}`:`Median power = ${ch.answer}`);
+  if(ch.topic==='mode') toast(ch.answer==='No mode'?'Every value is ×1, so use No Mode.':'Highest count: '+ch.answer);
+  if(ch.topic==='range') toast(`${ch.max} - ${ch.min} = ${ch.range}`);
+};
+window.returnToHub=returnToHub; function returnToHub(){ state.run=null; buildHub(); }
+function completeChallenge(){
+  const ch=state.challenge; if(!ch || ch.completed) return; ch.completed=true;
+  const good = ch.attempts===0; state.stats[ch.topic].total++; if(good){state.stats[ch.topic].correct++; state.score++; state.streak++; state.xp += 20 + Math.min(state.streak,5)*5; localStorage.setItem('averagecraft_xp',state.xp); flash('good'); spawnBurst(TOPICS[ch.topic].color,true); blip(660,.07); toast('Mission complete');} else {state.streak=0; flash('good'); spawnBurst(TOPICS[ch.topic].color,true,16); blip(520,.06); toast('Cleared');}
+  setMission('Mission complete', state.run&&state.run.type==='assessment'?'Next gate challenge ready.':'Nice. Continue or replay from the hub.', false);
+  missionEl.querySelector('.actions').innerHTML = `<button class="primary" onclick="startNextChallenge()">Continue</button><button class="ghost" onclick="returnToHub()">Hub</button>`;
+  updateStats();
+}
+window.startNextChallenge=startNextChallenge;
+function mistake(msg){ const ch=state.challenge; if(!ch || ch.completed) return; ch.attempts++; state.streak=0; flash('bad'); blip(180,.08); toast(msg||'Try again'); updateStats(); }
+
+// Rendering individual mechanics
+function renderMean(ch,pos){
+  const startX=pos.x-(ch.towers.length-1)*1.2/2;
+  ch.towerGroups=[];
+  ch.towers.forEach((v,i)=>{
+    const g=new THREE.Group(); g.position.set(startX+i*1.2,0,pos.z-.8); g.userData={action:'meanTower',index:i,help:'Mine/fill tower'}; missionGroup.add(g); setClickable(g); ch.towerGroups.push(g);
+  });
+  updateMeanTowers(ch); addLabelAt(`Fair height = mean`,pos.x,4.9,pos.z-2.8,TOPICS.mean.color);
+}
+function updateMeanTowers(ch){
+  ch.towerGroups.forEach((g,i)=>{ clearGroup(g); const v=ch.towers[i]; const h=.35+v*.16; const color=v>ch.target?0xcc8350:v<ch.target?0x5279c8:TOPICS.mean.color; const mat=new THREE.MeshLambertMaterial({color,emissive:v===ch.target?TOPICS.mean.color:0x000000,emissiveIntensity:v===ch.target?.2:0}); const pillar=cube(.86,h,.86,mat); pillar.position.y=h/2; g.add(pillar); const lab=makeLabel(String(v),{size:58,bg:'rgba(0,0,0,.62)',color:'#fff'}); lab.position.y=h+.55; g.add(lab); });
+  if(ch.towers.every(v=>v===ch.target) && ch.carry===0) completeChallenge();
+  const carryText = ch.carry?`Ore ${ch.carry}. Fill blue towers.`:'Mine orange towers. Auto-moves up to 5 ore.'; setMission('⚖️ Mean Mine',carryText,false);
+}
+function handleMeanTower(ch,index){
+  if(ch.completed) return; const v=ch.towers[index];
+  if(ch.carry>0 && v<ch.target){ const move=Math.min(5,ch.carry,ch.target-v); ch.towers[index]+=move; ch.carry-=move; updateMeanTowers(ch); toast(`+${move} ore`); blip(460,.04); return; }
+  if(v>ch.target){ const move=Math.min(5,v-ch.target); ch.towers[index]-=move; ch.carry+=move; updateMeanTowers(ch); toast(`Mined ${move} ore`); blip(360,.04); return; }
+  mistake(v===ch.target?'That tower is already balanced.':'Mine a high tower first.');
+}
+function renderMedian(ch,pos){ updateMedianScene(ch,pos); }
+function updateMedianScene(ch,pos){
+  resetMissionGroup(); addBeacon(new THREE.Vector3(pos.x,0,pos.z),TOPICS.median.color); ch.cartGroups=[];
+  const startX=pos.x-(ch.data.length-1)*1.15/2;
+  ch.remaining.forEach((item,j)=>{ const g=makeCart(item.v,TOPICS.median.color); g.position.set(startX+j*1.15,.05,pos.z-1.8); g.userData={action:'medianCart',id:item.i,value:item.v,help:'Sort cart'}; missionGroup.add(g); setClickable(g); ch.cartGroups.push(g); });
+  const sortedStart=pos.x-(ch.data.length-1)*1.15/2;
+  for(let j=0;j<ch.data.length;j++){ const rail=cube(1,.08,1.2,new THREE.MeshLambertMaterial({color:0x2b3a48})); rail.position.set(sortedStart+j*1.15,.08,pos.z+1.2); missionGroup.add(rail); }
+  ch.placed.forEach((item,j)=>{ const g=makeCart(item.v, item.middle?0x6aff98:TOPICS.median.color); g.position.set(sortedStart+j*1.15,.18,pos.z+1.2); g.userData={action:'medianMiddle',slot:j,value:item.v,help:'Tag middle'}; missionGroup.add(g); setClickable(g); });
+  if(ch.step==='sort') setMission('🏔️ Median Mountain',`Sort low → high. Next cart: ${ch.sorted[ch.placed.length]}`,true);
+  if(ch.step==='middle') setMission('🏔️ Median Mountain',`Tag the ${ch.sorted.length%2?'middle cart':'two middle carts'}.`,true);
+  if(ch.step==='answer') renderAnswerCrystals(ch,pos,`Power median = ?`);
+}
+function makeCart(value,color){ const g=new THREE.Group(); const body=cube(.95,.55,.75,new THREE.MeshLambertMaterial({color,emissive:color,emissiveIntensity:.12})); body.position.y=.35; const wmat=new THREE.MeshLambertMaterial({color:0x111111}); [-.32,.32].forEach(x=>[-.33,.33].forEach(z=>{const w=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.12,12),wmat); w.rotation.z=Math.PI/2; w.position.set(x,.08,z); g.add(w);})); const lab=makeLabel(String(value),{size:58,bg:'rgba(0,0,0,.65)',color:'#fff'}); lab.position.y=1.05; g.add(body,lab); return g; }
+function handleMedianCart(ch,id){
+  if(ch.completed || ch.step!=='sort') return; const item=ch.remaining.find(x=>x.i===id); const need=ch.sorted[ch.placed.length];
+  if(!item || item.v!==need){ mistake(`Lowest remaining is ${need}`); return; }
+  ch.remaining=ch.remaining.filter(x=>x.i!==id); ch.placed.push(item); blip(500,.04);
+  if(ch.placed.length===ch.sorted.length) ch.step='middle'; updateMedianScene(ch,portalPositions.median);
+}
+function handleMedianMiddle(ch,slot){
+  if(ch.completed || ch.step!=='middle') return; const mid1=Math.floor((ch.sorted.length-1)/2), mid2=Math.ceil((ch.sorted.length-1)/2);
+  if(slot!==mid1 && slot!==mid2){ mistake('That is not the centre.'); return; }
+  if(!ch.middleSelected.includes(slot)) ch.middleSelected.push(slot); ch.placed[slot].middle=true; blip(620,.04);
+  if(ch.middleSelected.length===(mid1===mid2?1:2)){ ch.step='answer'; updateMedianScene(ch,portalPositions.median); } else updateMedianScene(ch,portalPositions.median);
+}
+function renderMode(ch,pos){
+  const counts=countValues(ch.data), values=Object.keys(counts).map(Number).sort((a,b)=>a-b);
+  const startX=pos.x-(values.length-1)*1.45/2;
+  values.forEach((v,i)=>{
+    const count=counts[v], isTop=ch.modeValues.includes(v);
+    const g=new THREE.Group();
+    const mat=new THREE.MeshLambertMaterial({color:isTop?0xc792ea:0x7a5aa8,emissive:isTop?0xc792ea:0x5b3e8d,emissiveIntensity:.18});
+    const crystal=new THREE.Mesh(new THREE.OctahedronGeometry(.55+.08*count,0),mat); crystal.position.y=.78; crystal.castShadow=true;
+    const lab=makeLabel(`${v} × ${count}`,{size:50,bg:'rgba(0,0,0,.68)',color:'#fff'}); lab.position.y=1.58;
+    g.add(crystal,lab); g.position.set(startX+i*1.45,0,pos.z-.8); g.userData={action:'modeValue',value:v,help:`Select ${v} × ${count}`}; missionGroup.add(g); setClickable(g);
+  });
+  const lock=cube(2,.75,1.2,new THREE.MeshLambertMaterial({color:0x1f3244,emissive:0xc792ea,emissiveIntensity:.14})); lock.position.set(pos.x,0.38,pos.z+2.4); lock.userData={action:'modeLock',help:'Lock in modes'}; missionGroup.add(lock); setClickable(lock); addLabelAt('LOCK IN',pos.x,1.45,pos.z+2.4,0xc792ea);
+  const none=cube(2,.75,1.2,new THREE.MeshLambertMaterial({color:0x4c5160,emissive:0x999999,emissiveIntensity:.1})); none.position.set(pos.x+3,0.38,pos.z+2.4); none.userData={action:'modeNone',help:'No mode'}; missionGroup.add(none); setClickable(none); addLabelAt('NO MODE',pos.x+3,1.45,pos.z+2.4,0xffffff);
+  setMission('🔁 Mode Cave','Pick the highest count crystal. If every count is ×1, use No Mode.',true);
+}
+function handleModeValue(ch,value){ if(ch.completed) return; if(ch.selected.includes(value)) ch.selected=ch.selected.filter(v=>v!==value); else ch.selected.push(value); clearGroup(fxGroup); const counts=countValues(ch.data); ch.selected.forEach((v,j)=>addLabelAt(`Selected ${v} × ${counts[v]}`,portalPositions.mode.x-2.4+j*2.4,3.7,portalPositions.mode.z+1.6,TOPICS.mode.color,fxGroup)); blip(540,.04); }
+function handleModeNone(ch){ if(ch.completed) return; ch.selected=['No mode']; handleModeLock(ch); }
+function handleModeLock(ch){ if(ch.completed) return; const actual=ch.modeValues.length?ch.modeValues.map(String).sort():['No mode']; const picked=ch.selected.map(String).sort(); if(arrEq(actual,picked)) completeChallenge(); else {ch.selected=[]; clearGroup(fxGroup); mistake('Check the highest × count.');} }
+function renderRange(ch,pos){
+  const startX=pos.x-(ch.data.length-1)*1.1/2;
+  ch.data.forEach((v,i)=>{ const h=.45+v*.13; const color=v===ch.min?0x50a6ff:v===ch.max?0xffb84d:0x6aa65c; const g=new THREE.Group(); const p=cube(.85,h,.85,new THREE.MeshLambertMaterial({color,emissive:color,emissiveIntensity:.08})); p.position.y=h/2; const lab=makeLabel(String(v),{size:54,bg:'rgba(0,0,0,.62)',color:'#fff'}); lab.position.y=h+.45; g.add(p,lab); g.position.set(startX+i*1.1,0,pos.z-.6); g.userData={action:'rangePillar',value:v,help:'Tag min/max'}; missionGroup.add(g); setClickable(g); });
+  setMission('📏 Range Tower','Tag the smallest pillar first.',true);
+}
+function handleRangePillar(ch,value){
+  if(ch.completed) return;
+  if(ch.step==='tagMin'){ if(value!==ch.min){mistake('Find the smallest first.'); return;} ch.tagged.min=true; ch.step='tagMax'; addLabelAt('MIN ✓',portalPositions.range.x-2,3.6,portalPositions.range.z+1.4,TOPICS.range.color,fxGroup); setMission('📏 Range Tower','Now tag the biggest pillar.',true); blip(540,.04); return; }
+  if(ch.step==='tagMax'){ if(value!==ch.max){mistake('Now find the biggest.'); return;} ch.tagged.max=true; ch.step='answer'; addLabelAt('MAX ✓',portalPositions.range.x+2,3.6,portalPositions.range.z+1.4,TOPICS.range.color,fxGroup); renderAnswerCrystals(ch,portalPositions.range,`${ch.max} - ${ch.min} = ?`); blip(580,.04); }
+}
+function renderAnswerCrystals(ch,pos,title){
+  setMission(`${TOPICS[ch.topic].icon} ${TOPICS[ch.topic].label}`,title,false);
+  const opts=ch.options, startX=pos.x-(opts.length-1)*1.8/2;
+  opts.forEach((ans,i)=>{ const g=new THREE.Group(); const ped=cube(1.25,.35,1.25,new THREE.MeshLambertMaterial({color:0x1c2c3a})); ped.position.y=.18; const cry=new THREE.Mesh(new THREE.OctahedronGeometry(.55,0),new THREE.MeshLambertMaterial({color:TOPICS[ch.topic].color,emissive:TOPICS[ch.topic].color,emissiveIntensity:.26})); cry.position.y=1.0; const lab=makeLabel(String(ans),{size:56,bg:'rgba(255,255,255,.92)',color:'#07121d'}); lab.position.y=1.9; g.add(ped,cry,lab); g.position.set(startX+i*1.8,0,pos.z+3.1); g.userData={action:'answerCrystal',answer:String(ans),help:'Choose answer'}; missionGroup.add(g); setClickable(g); });
+}
+function handleAnswerCrystal(ch,answer){
+  if(ch.completed) return; if(normalize(answer)!==normalize(ch.answer)){mistake('That power value is off.');return;}
+  if(ch.topic==='range'){ ch.step='lever'; clearAnswerCrystals(); const pos=portalPositions.range; const lever=cube(.75,1.8,.75,new THREE.MeshLambertMaterial({color:0x21442e,emissive:TOPICS.range.color,emissiveIntensity:.18})); lever.position.set(pos.x, .9, pos.z+3.2); lever.userData={action:'rangeLever',help:'Pull range lever'}; missionGroup.add(lever); setClickable(lever); addLabelAt('PULL LEVER',pos.x,2.35,pos.z+3.2,TOPICS.range.color); setMission('📏 Range Tower','Range powered. Pull the lever.',false); blip(660,.05); return; }
+  completeChallenge();
+}
+function clearAnswerCrystals(){ missionGroup.children.filter(o=>o.userData&&o.userData.action==='answerCrystal').forEach(o=>{missionGroup.remove(o); removeClickable(o);}); }
+
+// Interactions
+function interact(){
+  if(center && !center.classList.contains('hidden')) return;
+  if(!aimed){ toast('Aim at a portal or object'); return; }
+  const data=aimed.userData; const ch=state.challenge;
+  if(data.action==='portal'){ startTopic(data.topic); return; }
+  if(data.action==='training'){ startTraining(); return; }
+  if(data.action==='trainingBlock'){ toast('Training complete. Aim + click/E works.'); blip(640,.06); return; }
+  if(!ch || ch.completed) return;
+  if(data.action==='meanTower') handleMeanTower(ch,data.index);
+  if(data.action==='medianCart') handleMedianCart(ch,data.id);
+  if(data.action==='medianMiddle') handleMedianMiddle(ch,data.slot);
+  if(data.action==='modeValue') handleModeValue(ch,data.value);
+  if(data.action==='modeLock') handleModeLock(ch);
+  if(data.action==='modeNone') handleModeNone(ch);
+  if(data.action==='rangePillar') handleRangePillar(ch,data.value);
+  if(data.action==='answerCrystal') handleAnswerCrystal(ch,data.answer);
+  if(data.action==='rangeLever') completeChallenge();
+}
+function startTraining(){
+  clearMissionObjects(); state.challenge=null; const pos=portalPositions.training; player.pos.set(pos.x,1.7,pos.z+6); player.yaw=Math.PI; player.pitch=-.04; setMission('🎮 Training Cave','Aim at gold. Click or press E.',false);
+  const b=cube(1.5,1.5,1.5,new THREE.MeshLambertMaterial({color:0xffd166,emissive:0xffd166,emissiveIntensity:.18})); b.position.set(pos.x,1,pos.z); b.userData={action:'trainingBlock',help:'Click/E training block'}; missionGroup.add(b); setClickable(b); b.userData.action='trainingBlock';
+}
+
+// Maths generation
+function generateQuestion(topic,difficulty){ let data, answer; for(let i=0;i<300;i++){ data=makeData(topic,difficulty); answer=computeAnswer(topic,data); if(answer!==undefined && answer!==null && answer!=='' && (topic!=='median' || Number.isInteger(Number(answer)))) break; } return {topic,data,answer:String(answer),options:makeOptions(topic,data,answer)}; }
+function makeData(topic,difficulty){ const sizes=[[5,5],[6,8],[8,10]][difficulty], maxes=[10,20,50], n=randInt(sizes[0],sizes[1]), max=maxes[difficulty];
+  if(topic==='mean'){ const target=randInt(3,Math.max(6,Math.floor(max*.65))); let arr=[],total=0; for(let i=0;i<n-1;i++){const v=clamp(target+randInt(-3-difficulty*2,3+difficulty*2),1,max);arr.push(v);total+=v;} const last=target*n-total; if(last>=1&&last<=max) return shuffle([...arr,last]); return makeData(topic,difficulty); }
+  if(topic==='median') return makeWholeMedianData(n,max);
+  if(topic==='mode') return makeModeData(n,max,difficulty);
+  const set=new Set(); while(set.size<n) set.add(randInt(1,max)); return shuffle([...set]); }
+function makeWholeMedianData(n,max){ const sorted=[]; if(n%2){ const mid=randInt(Math.ceil(max*.28),Math.floor(max*.72)); const leftCount=(n-1)/2,rightCount=leftCount; while(sorted.length<leftCount) sorted.push(randInt(1,Math.max(1,mid-1))); sorted.sort((a,b)=>a-b); sorted.push(mid); const right=[]; while(right.length<rightCount) right.push(randInt(Math.min(max,mid+1),max)); right.sort((a,b)=>a-b); return shuffle(sorted.concat(right)); }
+  const half=n/2; let a,b; for(let tries=0;tries<100;tries++){ a=randInt(2,Math.max(3,max-3)); b=randInt(a, max); if((a+b)%2===0 && a<=b) break; } const left=[]; while(left.length<half-1) left.push(randInt(1,Math.max(1,a))); left.sort((x,y)=>x-y); const right=[]; while(right.length<half-1) right.push(randInt(Math.min(max,b),max)); right.sort((x,y)=>x-y); return shuffle(left.concat([a,b],right)); }
+function makeModeData(n,max,difficulty){ const type=randChoice(['one','one','multi','none']); if(type==='none'){const set=new Set(); while(set.size<n) set.add(randInt(1,max)); return shuffle([...set]);} if(type==='multi'){ let a=randInt(1,max),b=randInt(1,max); while(b===a)b=randInt(1,max); const arr=[a,a,b,b]; while(arr.length<n){const v=randInt(1,max); if(v!==a&&v!==b&&!arr.includes(v)) arr.push(v);} return shuffle(arr);} const mode=randInt(1,max), arr=[mode,mode,mode]; while(arr.length<n){const v=randInt(1,max); if(v!==mode && arr.filter(x=>x===v).length<2) arr.push(v);} return shuffle(arr); }
+function computeAnswer(topic,data){ const sorted=[...data].sort((a,b)=>a-b); if(topic==='mean') return sum(data)/data.length; if(topic==='median'){ const mid=(sorted.length-1)/2; return sorted.length%2?sorted[mid]:(sorted[Math.floor(mid)]+sorted[Math.ceil(mid)])/2; } if(topic==='mode'){ const m=getModes(data); return m.length?m.join(' & '):'No mode'; } if(topic==='range') return Math.max(...data)-Math.min(...data); }
+function makeOptions(topic,data,answer){ if(topic==='mode'){ const actual=String(answer); const vals=[...new Set(data)].map(String); const opts=new Set([actual]); if(actual!=='No mode') opts.add('No mode'); shuffle(vals).forEach(v=>{ if(opts.size<4) opts.add(v); }); while(opts.size<4) opts.add(String(randInt(1,20))); return shuffle([...opts]); } const ans=Number(answer); const opts=new Set([String(ans)]); const deltas=[-4,-3,-2,-1,1,2,3,4,5]; shuffle(deltas).forEach(d=>{ if(opts.size<4 && ans+d>=0) opts.add(String(ans+d)); }); while(opts.size<4) opts.add(String(Math.max(0,ans+randInt(-8,8)))); return shuffle([...opts]); }
+function getModes(data){ const counts=countValues(data), max=Math.max(...Object.values(counts)); if(max<=1) return []; return Object.keys(counts).filter(k=>counts[k]===max).map(Number).sort((a,b)=>a-b); }
+function countValues(data){ return data.reduce((m,v)=>(m[v]=(m[v]||0)+1,m),{}); }
+
+// Three helpers and animation
+function cube(w,h,d,mat){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat); m.castShadow=true; m.receiveShadow=true; return m; }
+function setClickable(obj){ obj.userData.clickableRoot=true; clickable.push(obj); }
+function removeClickable(obj){ clickable=clickable.filter(o=>o!==obj); }
+function getRoot(obj){ while(obj && !obj.userData.clickableRoot) obj=obj.parent; return obj; }
+function makeLabel(text,opt={}){ const size=opt.size||54, pad=18; const canvas=document.createElement('canvas'), ctx=canvas.getContext('2d'); ctx.font=`900 ${size}px system-ui, sans-serif`; const w=Math.ceil(ctx.measureText(text).width+pad*2), h=size+pad*2; canvas.width=nextPow2(w); canvas.height=nextPow2(h); ctx.font=`900 ${size}px system-ui, sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; roundRect(ctx,(canvas.width-w)/2,(canvas.height-h)/2,w,h,16,opt.bg||'rgba(0,0,0,.62)'); ctx.fillStyle=opt.color||'#fff'; ctx.fillText(text,canvas.width/2,canvas.height/2+1); const tex=new THREE.CanvasTexture(canvas); const mat=new THREE.SpriteMaterial({map:tex,transparent:true}); const s=new THREE.Sprite(mat); s.scale.set(canvas.width/130,canvas.height/130,1); return s; }
+function addLabelAt(text,x,y,z,color,parent=labelGroup){ const lab=makeLabel(text,{size:52,bg:'rgba(7,18,29,.78)',color:'#fff'}); lab.position.set(x,y,z); lab.userData.float=true; parent.add(lab); return lab; }
+function addBeacon(pos,color){ const beam=new THREE.Mesh(new THREE.CylinderGeometry(.2,.55,7,18,true),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.18,depthWrite:false})); beam.position.set(pos.x,3.5,pos.z); beam.userData.spin=true; missionGroup.add(beam); }
+function clearGroup(g){ while(g.children.length){ const o=g.children[0]; g.remove(o); o.traverse?.(c=>{ if(c.geometry)c.geometry.dispose?.(); if(c.material){ if(c.material.map)c.material.map.dispose?.(); c.material.dispose?.(); }}); } }
+function spawnBurst(color,good,count=24){ const mat=new THREE.MeshLambertMaterial({color,emissive:color,emissiveIntensity:.45}); for(let i=0;i<count;i++){ const s=cube(.18,.18,.18,mat.clone()); const p=player.pos.clone().add(new THREE.Vector3(randFloat(-2,2),randFloat(.5,2.4),randFloat(-3,-1))); s.position.copy(p); s.userData.velocity=new THREE.Vector3(randFloat(-.04,.04),randFloat(.03,.1),randFloat(-.04,.04)); s.userData.life=1+Math.random(); fxGroup.add(s); } }
+function animate(){ requestAnimationFrame(animate); const dt=Math.min(clock.getDelta(),.05); updatePlayer(dt); updateAim(); animateObjects(dt); renderer.render(scene,camera); }
+function updatePlayer(dt){
+  if(state.keys.turnleft) player.yaw += 1.9*dt; if(state.keys.turnright) player.yaw -= 1.9*dt;
+  const f=new THREE.Vector3(-Math.sin(player.yaw),0,-Math.cos(player.yaw)); const r=new THREE.Vector3(Math.cos(player.yaw),0,-Math.sin(player.yaw)); let move=new THREE.Vector3();
+  if(state.keys.w||state.keys.arrowup) move.add(f); if(state.keys.s||state.keys.arrowdown) move.addScaledVector(f,-1); if(state.keys.a||state.keys.arrowleft) move.addScaledVector(r,-1); if(state.keys.d||state.keys.arrowright) move.add(r);
+  if(move.lengthSq()>0){ move.normalize().multiplyScalar(7.2*dt); player.pos.add(move); player.pos.x=clamp(player.pos.x,-29,29); player.pos.z=clamp(player.pos.z,-29,29); }
+  camera.position.copy(player.pos); camera.rotation.order='YXZ'; camera.rotation.y=player.yaw; camera.rotation.x=player.pitch;
+}
+function updateAim(){ aimed=null; raycaster.setFromCamera(new THREE.Vector2(0,0),camera); const hits=raycaster.intersectObjects(clickable,true); for(const hit of hits){ const root=getRoot(hit.object); if(root && hit.distance<6.2){ aimed=root; break; }} if(aimed){ aimLabel.textContent = aimed.userData.help ? `E / click: ${aimed.userData.help}` : 'E / click'; aimLabel.classList.add('show'); } else aimLabel.classList.remove('show'); }
+function animateObjects(dt){ scene.traverse(o=>{ if(o.userData.float) o.position.y += Math.sin(performance.now()/450 + o.id)*.0018; if(o.userData.spin) o.rotation.y += dt*.9; if(o.userData.velocity){ o.position.add(o.userData.velocity); o.userData.velocity.y-=dt*.08; o.userData.life-=dt; if(o.userData.life<0 && o.parent) o.parent.remove(o); }}); }
+function updateStats(){ const learned=TOPIC_KEYS.filter(k=>state.learned[k]).length; statsEl.innerHTML=`<span class="chip">⭐ ${state.xp}</span><span class="chip">🔥 ${state.streak}</span><span class="chip">✅ ${state.score}</span><span class="chip">🏆 ${state.best}%</span><span class="chip">🧠 ${learned}/4</span><button class="icon-btn" onclick="toggleSimple()" title="Simple controls">${state.simple?'🎮':'🖱️'}</button><button class="icon-btn" onclick="toggleEco()" title="Eco mode">${CONFIG.eco?'🌱':'🌳'}</button><button class="icon-btn" onclick="toggleSound()" title="Sound">${state.sound?'🔊':'🔇'}</button>`; mobileControls.classList.toggle('show',state.simple); }
+window.toggleSimple=function(){ state.simple=!state.simple; if(state.simple) document.exitPointerLock?.(); updateStats(); toast(state.simple?'Simple controls on':'Mouse-look on'); };
+window.toggleEco=function(){ CONFIG.eco=!CONFIG.eco; renderer.shadowMap.enabled=!CONFIG.eco; buildHub(); updateStats(); toast(CONFIG.eco?'Eco Mode on':'Eco Mode off'); };
+window.toggleSound=function(){ state.sound=!state.sound; updateStats(); if(state.sound) blip(600,.05); };
+function toast(text){ toastEl.textContent=text; toastEl.classList.add('show'); clearTimeout(toastEl._t); toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),1700); }
+function flash(kind){ flashEl.className='flash '+kind; setTimeout(()=>flashEl.className='flash',290); }
+let audioCtx=null; function blip(freq=440,dur=.06){ if(!state.sound) return; try{audioCtx=audioCtx||new (AudioContext||webkitAudioContext)(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.value=freq; g.gain.setValueAtTime(.025,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+dur); o.connect(g).connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+dur);}catch(e){} }
+
+// Small utilities
+function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a;} function randFloat(a,b){return Math.random()*(b-a)+a;} function randChoice(a){return a[randInt(0,a.length-1)];} function shuffle(a){const x=[...a]; for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [x[i],x[j]]=[x[j],x[i]];} return x;} function sum(a){return a.reduce((x,y)=>x+y,0);} function clamp(v,a,b){return Math.max(a,Math.min(b,v));} function normalize(v){return String(v).trim().toLowerCase();} function arrEq(a,b){return a.length===b.length&&a.every((v,i)=>String(v)===String(b[i]));} function nextPow2(v){return Math.pow(2,Math.ceil(Math.log2(v)));}
+function roundRect(ctx,x,y,w,h,r,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();ctx.fill();}
+</script>
+</body>
+</html>
