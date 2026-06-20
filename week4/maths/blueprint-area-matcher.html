@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Blueprint Area Matcher · Maths · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background:#fef8f4; color:#1a1a1a; min-height:100vh; }
+  .site-header { background:#007291; padding:1.25rem 2rem; }
+  .back-link { color:#fef8f4; font-size:0.9rem; font-weight:700; text-decoration:none; opacity:0.85; }
+  .back-link:hover { opacity:1; }
+  .hero { background:#007291; padding:1.5rem 2rem 2.25rem; text-align:center; }
+  .hero .subject-label { font-size:0.85rem; font-weight:700; color:#fef8f4; opacity:0.8; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem; }
+  .hero h1 { font-size:2.1rem; font-weight:700; color:#fef8f4; line-height:1.2; }
+  .hero p { font-size:0.98rem; color:#fef8f4; opacity:0.9; max-width:600px; margin:0.6rem auto 0; line-height:1.6; }
+  .main { max-width:820px; margin:0 auto; padding:1.6rem 1.5rem 4rem; }
+
+  .progress { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.4rem; position:sticky; top:0; background:#fef8f4; padding:0.7rem 0; z-index:5; }
+  .pchip { font-size:0.72rem; font-weight:700; padding:5px 11px; border-radius:20px; background:#f0ede8; color:#999; border:1.5px solid #e0d8d0; }
+  .pchip.active { background:#e6f5f8; color:#0b5a72; border-color:#a9d4e0; }
+  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; }
+
+  .stage { display:none; } .stage.show { display:block; }
+  .stage-card { background:#fff; border:2px solid #e0d8d0; border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .stage-eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#ef7724; margin-bottom:0.3rem; }
+  .stage-card h2 { font-size:1.25rem; font-weight:700; color:#007291; line-height:1.25; margin-bottom:0.5rem; }
+  .stage-card .intro { font-size:0.95rem; color:#444; line-height:1.65; margin-bottom:1rem; }
+
+  .demo-grid { display:grid; gap:2px; margin:0.6rem 0; }
+  .cell { width:26px; height:26px; background:#cdeaf0; border:1px solid #7bc0d0; border-radius:3px; }
+  .miniq { background:#f7f4ee; border-radius:10px; padding:0.8rem 1rem; margin:0.8rem 0; }
+  .miniq .qline { font-size:0.95rem; font-weight:700; margin-bottom:0.5rem; }
+
+  .numin { font-family:inherit; font-size:1rem; width:80px; padding:0.4rem 0.6rem; border:2px solid #007291; border-radius:8px; background:#fff; text-align:center; outline:none; }
+  .numin:focus { border-color:#ef7724; }
+  .check-btn, .hint-btn, .reveal-btn { font-family:inherit; font-weight:700; border-radius:8px; cursor:pointer; border:2px solid #007291; background:#fff; color:#007291; font-size:0.82rem; padding:0.45rem 1rem; }
+  .check-btn:hover, .hint-btn:hover, .reveal-btn:hover { background:#e6f5f8; }
+  .fb { display:none; font-size:0.86rem; margin-top:0.5rem; padding:0.5rem 0.8rem; border-radius:8px; line-height:1.5; }
+  .fb.r { display:block; background:#e6f5e6; color:#1a5e1a; } .fb.w { display:block; background:#fff3e6; color:#7a4a00; }
+
+  /* room matcher */
+  .bank { display:flex; gap:0.5rem; flex-wrap:wrap; padding:0.8rem; background:#fff7f0; border:2px dashed #fcd8bc; border-radius:12px; margin-bottom:1rem; min-height:56px; align-items:center; }
+  .bank .bank-label { font-size:0.72rem; font-weight:700; text-transform:uppercase; color:#c05a10; width:100%; margin-bottom:0.2rem; }
+  .chip { font-family:inherit; font-size:1.05rem; font-weight:700; color:#fff; background:#ef7724; border:none; border-radius:10px; padding:0.5rem 1rem; cursor:pointer; }
+  .chip.sel { outline:3px solid #007291; outline-offset:2px; }
+  .chip.used { display:none; }
+  .rooms { display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; }
+  .room { position:relative; border:2px solid #007291; border-radius:8px; background:#eaf4f6; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; }
+  .room .rname { font-size:0.72rem; font-weight:700; color:#007291; z-index:2; }
+  .room .dim { font-size:0.74rem; color:#0b5a72; z-index:2; }
+  .room .placed { font-size:1.1rem; font-weight:700; color:#1a5e1a; z-index:2; }
+  .room.filled { background:#e6f5e6; border-color:#2e8b57; cursor:default; }
+  .room .grid-ov { position:absolute; inset:0; opacity:0; transition:opacity 0.35s; background-image:linear-gradient(rgba(0,114,145,.35) 1px, transparent 1px), linear-gradient(90deg, rgba(0,114,145,.35) 1px, transparent 1px); background-size: var(--cell) var(--cell); }
+  .room.hint .grid-ov { opacity:1; }
+  .room .hintbtn { position:absolute; bottom:2px; right:3px; font-size:0.6rem; font-weight:700; background:rgba(255,255,255,.85); border:1px solid #b8d8e0; border-radius:5px; padding:1px 5px; color:#007291; cursor:pointer; z-index:3; }
+
+  /* composite */
+  .lshape-wrap { text-align:center; margin:0.6rem 0 1rem; }
+  .lshape-wrap svg { max-width:320px; width:100%; height:auto; }
+  .calc-row { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; font-size:0.95rem; margin:0.6rem 0; }
+
+  .next-btn { font-family:inherit; font-weight:700; border-radius:8px; cursor:pointer; font-size:0.92rem; padding:0.7rem 1.5rem; border:none; background:#ef7724; color:#fff; margin-top:0.6rem; }
+  .next-btn:hover { background:#c05a10; }
+  .tip { font-size:0.84rem; color:#888; margin-top:0.5rem; line-height:1.5; }
+  label.q { display:block; font-size:0.9rem; font-weight:700; margin:0.8rem 0 0.4rem; line-height:1.5; }
+  textarea { width:100%; min-height:80px; padding:0.7rem 0.9rem; font-family:inherit; font-size:0.92rem; border:1.5px solid #e0d8d0; border-radius:8px; background:#fffaf6; color:#1a1a1a; outline:none; resize:vertical; line-height:1.6; }
+  textarea:focus { border-color:#ef7724; }
+
+  .send-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:16px; padding:1.4rem 1.5rem; margin-top:1rem; text-align:center; }
+  .send-card p { font-size:0.92rem; color:#555; line-height:1.6; margin-bottom:0.9rem; }
+  .action-btn { font-family:inherit; font-size:0.92rem; font-weight:700; padding:0.7rem 1.5rem; border-radius:8px; cursor:pointer; border:none; color:#fff; background:#007291; }
+  .action-btn:hover { background:#005a73; }
+  .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; line-height:1.5; }
+  .notify.show { display:block; }
+  a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline:3px solid #007291; outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header"><a class="back-link" href="index.html">← Maths</a></header>
+
+<div class="hero">
+  <p class="subject-label">Maths · Week 4</p>
+  <h1>📐 The Blueprint Area Matcher</h1>
+  <p>You are the architect. Area means how much flat space a room covers — and the quick way to find it is length × width. Work through the blueprint, room by room.</p>
+</div>
+
+<main class="main">
+  <div class="progress" id="progress"></div>
+
+  <!-- STAGE 1 -->
+  <section class="stage" id="stage-1">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 1 of 5</p>
+      <h2>Area is just counting squares</h2>
+      <p class="intro">This room is 4 squares across and 3 squares down. You could count all the squares one by one... or you could go faster: 4 × 3.</p>
+      <div class="demo-grid" id="demo" style="grid-template-columns:repeat(4,26px); width:max-content;"></div>
+      <div class="miniq">
+        <p class="qline">1. How many squares cover this room?</p>
+        <input class="numin" id="s1a" inputmode="numeric"> <button class="check-btn" onclick="checkNum('s1a',12,'s1afb','✓ Yes — and that is exactly 4 × 3. Counting and multiplying give the same answer.','Count the squares, or try 4 × 3.')">Check</button>
+        <div class="fb" id="s1afb"></div>
+      </div>
+      <div class="miniq">
+        <p class="qline">2. A new room is 5 squares across and 3 down. Without drawing it — what is its area?</p>
+        <input class="numin" id="s1b" inputmode="numeric"> <button class="check-btn" onclick="checkNum('s1b',15,'s1bfb','✓ Brilliant — 5 × 3 = 15 squares. You did not even need the grid.','Try length × width: 5 × 3.')">Check</button>
+        <div class="fb" id="s1bfb"></div>
+      </div>
+      <button class="next-btn" onclick="goStage(2)">I've got it — to the blueprint →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 2 -->
+  <section class="stage" id="stage-2">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 2 of 5</p>
+      <h2>Match the rooms to their areas</h2>
+      <p class="intro">Each room shows its length and width — but no squares this time. Work out each area (length × width), tap an area label, then tap the room it belongs to. Stuck? Tap <strong>grid</strong> on a room to fade the squares in.</p>
+      <div class="bank" id="bank"><span class="bank-label">Area labels (m²) — tap one, then tap its room</span></div>
+      <div class="rooms" id="rooms"></div>
+      <p class="tip" id="match-count">Rooms matched: 0 / 6</p>
+      <button class="next-btn" onclick="goStage(3)">Continue →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 3 -->
+  <section class="stage" id="stage-3">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 3 of 5</p>
+      <h2>Find the missing side</h2>
+      <p class="intro">An architect often knows the area and one side, and has to work out the other. If length × width = area, then area ÷ one side = the other side.</p>
+      <div id="missing"></div>
+      <button class="next-btn" onclick="goStage(4)">Continue →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 4 -->
+  <section class="stage" id="stage-4">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 4 of 5</p>
+      <h2>The L-shaped room</h2>
+      <p class="intro">This open-plan room is an L-shape. The trick: split it into two rectangles, find each area, then add them together.</p>
+      <div class="lshape-wrap">
+        <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An L-shaped room">
+          <polygon points="20,20 180,20 180,120 120,120 120,200 20,200" fill="#eaf4f6" stroke="#007291" stroke-width="3"/>
+          <line x1="20" y1="120" x2="120" y2="120" stroke="#ef7724" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="100" y="14" text-anchor="middle" font-size="13" font-weight="700" fill="#0b5a72">8 m</text>
+          <text x="190" y="74" font-size="13" font-weight="700" fill="#0b5a72">5 m</text>
+          <text x="66" y="116" text-anchor="middle" font-size="12" fill="#c05a10">A</text>
+          <text x="66" y="166" text-anchor="middle" font-size="12" fill="#c05a10">B</text>
+          <text x="8" y="74" font-size="13" font-weight="700" fill="#0b5a72" transform="rotate(-90 8 74)">5 m</text>
+          <text x="70" y="214" text-anchor="middle" font-size="13" font-weight="700" fill="#0b5a72">5 m</text>
+          <text x="132" y="164" font-size="13" font-weight="700" fill="#0b5a72">4 m</text>
+        </svg>
+      </div>
+      <div class="miniq">
+        <p class="qline">Rectangle A (the top) is 8 m by 5 m.</p>
+        <div class="calc-row">Area A = <input class="numin" id="s4a" inputmode="numeric"> m² <button class="check-btn" onclick="checkNum('s4a',40,'s4afb','✓ 8 × 5 = 40 m².','Top rectangle: 8 × 5.')">Check</button></div>
+        <div class="fb" id="s4afb"></div>
+      </div>
+      <div class="miniq">
+        <p class="qline">Rectangle B (the bottom-left) is 5 m by 4 m.</p>
+        <div class="calc-row">Area B = <input class="numin" id="s4b" inputmode="numeric"> m² <button class="check-btn" onclick="checkNum('s4b',20,'s4bfb','✓ 5 × 4 = 20 m².','Bottom rectangle: 5 × 4.')">Check</button></div>
+        <div class="fb" id="s4bfb"></div>
+      </div>
+      <div class="miniq">
+        <p class="qline">Total area of the whole L-shaped room = A + B.</p>
+        <div class="calc-row">Total = <input class="numin" id="s4t" inputmode="numeric"> m² <button class="check-btn" onclick="checkNum('s4t',60,'s4tfb','✓ 40 + 20 = 60 m². That is the whole floor.','Add your two answers: 40 + 20.')">Check</button></div>
+        <div class="fb" id="s4tfb"></div>
+      </div>
+      <div class="miniq">
+        <p class="qline">Carpet costs £5 for every square metre. How much to carpet the whole room?</p>
+        <div class="calc-row">Cost = £ <input class="numin" id="s4c" inputmode="numeric"> <button class="check-btn" onclick="checkNum('s4c',300,'s4cfb','✓ 60 m² × £5 = £300.','Total area × £5 per m².')">Check</button></div>
+        <div class="fb" id="s4cfb"></div>
+      </div>
+      <button class="next-btn" onclick="goStage(5)">Last stage →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 5 -->
+  <section class="stage" id="stage-5">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 5 of 5</p>
+      <h2>Design your own room</h2>
+      <p class="intro">Invent a room. Type its length and width and the area works out automatically — then explain in your own words how to find the area of any rectangle.</p>
+      <div class="calc-row">
+        Length <input class="numin" id="dl" inputmode="numeric" oninput="designCalc()"> m
+        &nbsp;×&nbsp; Width <input class="numin" id="dw" inputmode="numeric" oninput="designCalc()"> m
+        &nbsp;=&nbsp; <strong id="darea" style="font-size:1.1rem; color:#007291;">? m²</strong>
+      </div>
+      <label class="q" for="explain">How do you find the area of any rectangle? Write the rule in your own words.</label>
+      <textarea id="explain" data-save="explain" placeholder="To find the area of a rectangle you..."></textarea>
+    </div>
+    <div class="send-card">
+      <p>Nice work, architect. Send your blueprint results to Jay.</p>
+      <button class="action-btn" onclick="emailWork()">📧 Send my work to Jay</button>
+      <div class="notify" id="notify"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School · Maths</footer>
+
+<script>
+const STORE_KEY = 'base6_w4_maths_blueprint';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+const CELL = 24;
+
+const ROOMS = [
+  { id:'bed',    name:'Bedroom',     l:5, w:4 },
+  { id:'kit',    name:'Kitchen',     l:6, w:3 },
+  { id:'hall',   name:'Hallway',     l:6, w:2 },
+  { id:'bath',   name:'Bathroom',    l:3, w:3 },
+  { id:'living', name:'Living Room', l:7, w:4 },
+  { id:'study',  name:'Study',       l:5, w:3 },
+];
+const MISSING = [
+  { id:'m1', text:'A room has an area of 24 m² and a length of 6 m. What is its width?', ans:4, hint:'24 ÷ 6.' },
+  { id:'m2', text:'A room has an area of 30 m² and a width of 5 m. What is its length?', ans:6, hint:'30 ÷ 5.' },
+  { id:'m3', text:'A square room has an area of 16 m². How long is one side?', ans:4, hint:'Which number times itself makes 16?' },
+];
+
+let state = { fields:{}, matched:{}, num:{}, stage:1 };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e){}
+['fields','matched','num'].forEach(k=>{ if(!state[k]) state[k]={}; });
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+
+const PLABELS=['Recap','Match','Missing','L-shape','Design'];
+function renderProgress(){ const p=document.getElementById('progress'); p.innerHTML='';
+  PLABELS.forEach((lab,i)=>{ const n=i+1; const c=document.createElement('span');
+    c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':''); c.textContent=n+'. '+lab; p.appendChild(c); }); }
+function goStage(n){ state.stage=Math.max(state.stage,n); save();
+  for(let i=1;i<=5;i++){ const el=document.getElementById('stage-'+i); if(el) el.classList.toggle('show', i<=n); }
+  renderProgress(); const t=document.getElementById('stage-'+n); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }
+
+// Stage 1 demo grid
+(function(){ const d=document.getElementById('demo'); for(let i=0;i<12;i++){ const c=document.createElement('div'); c.className='cell'; d.appendChild(c);} })();
+
+function checkNum(inId, ans, fbId, rmsg, wmsg){
+  const v = parseFloat(document.getElementById(inId).value);
+  const fb = document.getElementById(fbId);
+  state.num[inId] = document.getElementById(inId).value; save();
+  if(v===ans){ fb.className='fb r'; fb.textContent=rmsg; }
+  else { fb.className='fb w'; fb.textContent=wmsg; }
+}
+// restore number inputs
+function restoreNums(){ Object.keys(state.num).forEach(id=>{ const el=document.getElementById(id); if(el) el.value=state.num[id]; }); }
+
+// Stage 2 matcher
+let selChip=null;
+function buildMatcher(){
+  const bank=document.getElementById('bank');
+  const rooms=document.getElementById('rooms');
+  const areas=ROOMS.map(r=>r.l*r.w);
+  const shuffled=areas.slice().sort(()=>Math.random()-0.5);
+  shuffled.forEach((a,i)=>{
+    const chip=document.createElement('button'); chip.className='chip'; chip.dataset.val=a; chip.textContent=a;
+    chip.setAttribute('draggable','true');
+    chip.addEventListener('click',()=>selectChip(chip));
+    chip.addEventListener('dragstart',e=>{ selChip=chip; e.dataTransfer.setData('text/plain',a); });
+    bank.appendChild(chip);
+  });
+  ROOMS.forEach(r=>{
+    const area=r.l*r.w;
+    const div=document.createElement('div'); div.className='room'; div.dataset.id=r.id; div.dataset.area=area;
+    div.style.width=(r.l*CELL)+'px'; div.style.height=(r.w*CELL+28)+'px'; div.style.setProperty('--cell',CELL+'px');
+    div.innerHTML='<div class="grid-ov"></div><div class="rname">'+r.name+'</div><div class="dim">'+r.l+' m × '+r.w+' m</div><button class="hintbtn">grid</button>';
+    div.addEventListener('click',()=>placeOnRoom(div));
+    div.addEventListener('dragover',e=>e.preventDefault());
+    div.addEventListener('drop',e=>{ e.preventDefault(); placeOnRoom(div); });
+    div.querySelector('.hintbtn').addEventListener('click',e=>{ e.stopPropagation(); div.classList.toggle('hint'); });
+    rooms.appendChild(div);
+    if(state.matched[r.id]){ markFilled(div, area); }
+  });
+  // hide chips already used
+  Object.keys(state.matched).forEach(id=>{ const r=ROOMS.find(x=>x.id===id); if(r){ const v=r.l*r.w; const c=[...bank.querySelectorAll('.chip')].find(c=>!c.classList.contains('used')&&c.dataset.val==v); if(c) c.classList.add('used'); } });
+  updateMatchCount();
+}
+function selectChip(chip){ if(chip.classList.contains('used')) return; selChip=chip; document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel')); chip.classList.add('sel'); }
+function placeOnRoom(div){
+  if(div.classList.contains('filled')) return;
+  if(!selChip){ div.classList.add('hint'); return; }
+  const val=parseInt(selChip.dataset.val,10); const area=parseInt(div.dataset.area,10);
+  if(val===area){
+    selChip.classList.add('used'); selChip.classList.remove('sel');
+    markFilled(div, area); state.matched[div.dataset.id]=true; save(); selChip=null; updateMatchCount();
+  } else {
+    div.classList.add('hint');
+    const dim=div.querySelector('.dim'); const old=dim.textContent; dim.textContent='Not '+val+' — try the grid'; dim.style.color='#c0392b';
+    setTimeout(()=>{ dim.textContent=old; dim.style.color=''; },1600);
+  }
+}
+function markFilled(div, area){ div.classList.add('filled'); div.classList.remove('hint');
+  const dim=div.querySelector('.dim'); dim.insertAdjacentHTML('afterend','<div class="placed">'+area+' m²</div>'); }
+function updateMatchCount(){ const n=Object.keys(state.matched).length; document.getElementById('match-count').textContent='Rooms matched: '+n+' / 6'; }
+
+// Stage 3 missing
+function buildMissing(){
+  const wrap=document.getElementById('missing');
+  MISSING.forEach(m=>{
+    const d=document.createElement('div'); d.className='miniq';
+    d.innerHTML='<p class="qline">'+m.text+'</p><div class="calc-row"><input class="numin" id="'+m.id+'" inputmode="numeric"> m '
+      +'<button class="check-btn">Check</button></div><div class="fb" id="'+m.id+'fb"></div>';
+    wrap.appendChild(d);
+    d.querySelector('.check-btn').addEventListener('click',()=>checkNum(m.id,m.ans,m.id+'fb','✓ That is right.', 'Have another go — '+m.hint));
+  });
+}
+
+// Stage 5 design
+function designCalc(){
+  const l=parseFloat(document.getElementById('dl').value), w=parseFloat(document.getElementById('dw').value);
+  const out=document.getElementById('darea');
+  if(!isNaN(l)&&!isNaN(w)){ out.textContent=(l*w)+' m²'; state.fields.dl=document.getElementById('dl').value; state.fields.dw=document.getElementById('dw').value; save(); }
+  else out.textContent='? m²';
+}
+
+document.querySelectorAll('[data-save]').forEach(el=>{ const k=el.dataset.save; if(state.fields[k]!==undefined) el.value=state.fields[k];
+  el.addEventListener('input',()=>{ state.fields[k]=el.value; save(); }); });
+
+function emailWork(){
+  const f=state.fields, num=state.num;
+  const g=k=>(num[k]!==undefined&&num[k]!==''?num[k]:'—');
+  let b='THE BLUEPRINT AREA MATCHER — MATHS, WEEK 4\n';
+  b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n';
+  b+='Stage 1 (recap): '+g('s1a')+' squares; 5x3 room = '+g('s1b')+'\n';
+  b+='Stage 2 (matcher): rooms matched '+Object.keys(state.matched).length+' / 6\n';
+  b+='Stage 3 (missing sides): '+MISSING.map(m=>g(m.id)).join(', ')+'\n';
+  b+='Stage 4 (L-shape): A='+g('s4a')+', B='+g('s4b')+', total='+g('s4t')+', carpet cost £'+g('s4c')+'\n';
+  b+='Stage 5 (own room): '+(f.dl||'?')+' x '+(f.dw||'?')+'\n';
+  b+='The area rule, in their words: '+((f.explain||'').trim()||'(not written)')+'\n\n—\nSent from Base 6';
+  const su=encodeURIComponent('Base 6 · Blueprint Area Matcher');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank');
+  const n=document.getElementById('notify'); n.textContent='✓ Opening your email — your work is ready to send.'; n.classList.add('show');
+}
+
+// init
+buildMatcher(); buildMissing(); restoreNums();
+if(state.fields.dl||state.fields.dw){ const dl=document.getElementById('dl'),dw=document.getElementById('dw'); if(state.fields.dl)dl.value=state.fields.dl; if(state.fields.dw)dw.value=state.fields.dw; designCalc(); }
+goStage(state.stage||1);
+</script>
+
+</body>
+</html>

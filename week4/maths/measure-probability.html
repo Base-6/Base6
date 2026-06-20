@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maths Lab: Measure &amp; Probability · Maths · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background:#fef8f4; color:#1a1a1a; min-height:100vh; }
+  .site-header { background:#007291; padding:1.25rem 2rem; }
+  .back-link { color:#fef8f4; font-size:0.9rem; font-weight:700; text-decoration:none; opacity:0.85; }
+  .back-link:hover { opacity:1; }
+  .hero { background:#007291; padding:1.5rem 2rem 2.25rem; text-align:center; }
+  .hero .subject-label { font-size:0.85rem; font-weight:700; color:#fef8f4; opacity:0.8; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem; }
+  .hero h1 { font-size:1.9rem; font-weight:700; color:#fef8f4; line-height:1.2; }
+  .hero p { font-size:0.98rem; color:#fef8f4; opacity:0.9; max-width:560px; margin:0.6rem auto 0; line-height:1.6; }
+  .main { max-width:760px; margin:0 auto; padding:1.8rem 1.5rem 4rem; }
+
+  .choice-note { background:#fff; border:2px dashed #007291; border-radius:14px; padding:0.9rem 1.2rem; margin-bottom:1.6rem; font-size:0.93rem; line-height:1.6; color:#444; }
+  .card { background:#fff; border:2px solid #e0d8d0; border-radius:14px; padding:1.3rem 1.5rem; margin-bottom:1.3rem; }
+  .card h2 { font-size:1.05rem; font-weight:700; color:#007291; margin-bottom:0.3rem; }
+  .card .lead { font-size:0.9rem; color:#555; line-height:1.6; margin-bottom:1rem; }
+  .q { font-size:0.95rem; font-weight:700; line-height:1.55; margin:1.1rem 0 0.5rem; }
+  .numin { font-family:inherit; font-size:1rem; width:78px; padding:0.4rem 0.6rem; border:2px solid #007291; border-radius:8px; background:#fff; text-align:center; outline:none; }
+  .numin:focus { border-color:#ef7724; }
+  .calc-row { display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap; font-size:0.95rem; margin:0.5rem 0; }
+  .check-btn { font-family:inherit; font-size:0.82rem; font-weight:700; padding:0.45rem 1rem; border-radius:8px; cursor:pointer; border:2px solid #007291; background:#fff; color:#007291; }
+  .check-btn:hover { background:#e6f5f8; }
+  .fb { display:none; font-size:0.86rem; margin-top:0.4rem; padding:0.5rem 0.8rem; border-radius:8px; line-height:1.5; }
+  .fb.r { display:block; background:#e6f5e6; color:#1a5e1a; } .fb.w { display:block; background:#fff3e6; color:#7a4a00; }
+
+  /* units sort */
+  .pool { display:flex; flex-wrap:wrap; gap:0.5rem; padding:0.8rem; background:#fff7f0; border:2px dashed #fcd8bc; border-radius:12px; margin-bottom:1rem; min-height:54px; }
+  .uchip { font-family:inherit; font-size:0.92rem; font-weight:700; color:#fff; background:#007291; border:none; border-radius:10px; padding:0.45rem 0.9rem; cursor:pointer; }
+  .uchip.sel { outline:3px solid #ef7724; outline-offset:2px; }
+  .columns { display:grid; grid-template-columns:repeat(3,1fr); gap:0.7rem; }
+  @media (max-width:560px){ .columns { grid-template-columns:1fr; } }
+  .col { border:2px solid #e0d8d0; border-radius:12px; padding:0.7rem; min-height:110px; cursor:pointer; }
+  .col h3 { font-size:0.82rem; color:#007291; margin-bottom:0.5rem; }
+  .col .drop { display:flex; flex-direction:column; gap:0.4rem; min-height:40px; }
+
+  /* array */
+  .arr { display:grid; grid-template-columns:repeat(4,34px); gap:3px; justify-content:center; margin:0.6rem auto; width:max-content; }
+  .arr div { width:34px; height:34px; border-radius:4px; }
+
+  /* dice */
+  .dice-wrap { text-align:center; margin:0.6rem 0; }
+  .die { display:inline-block; font-size:3rem; line-height:1; }
+  .roll-btns { display:flex; gap:0.6rem; justify-content:center; flex-wrap:wrap; margin:0.7rem 0; }
+  .roll-btn { font-family:inherit; font-size:0.9rem; font-weight:700; padding:0.6rem 1.2rem; border-radius:8px; border:none; background:#ef7724; color:#fff; cursor:pointer; }
+  .roll-btn.alt { background:#fff; color:#007291; border:2px solid #007291; }
+  .roll-btn:hover { filter:brightness(0.95); }
+  table.tally { width:100%; border-collapse:collapse; font-size:0.9rem; margin:0.6rem 0; }
+  table.tally th, table.tally td { border:1px solid #e0d8d0; padding:5px 8px; text-align:left; }
+  table.tally th { background:#f3ece4; }
+  table.tally td.cnt { text-align:center; font-weight:700; width:60px; }
+  table.tally .marks { font-family:monospace; letter-spacing:2px; color:#007291; }
+
+  .ybtn { font-family:inherit; font-size:0.85rem; font-weight:700; padding:0.45rem 1rem; border-radius:20px; border:2px solid #e0d8d0; background:#fff; color:#555; cursor:pointer; margin-right:0.4rem; }
+  .ybtn.sel { border-color:#007291; background:#e6f5f8; color:#0b5a72; }
+  textarea { width:100%; min-height:70px; padding:0.7rem 0.9rem; font-family:inherit; font-size:0.92rem; border:1.5px solid #e0d8d0; border-radius:8px; background:#fff7f5; color:#1a1a1a; outline:none; resize:vertical; line-height:1.6; margin-top:0.4rem; }
+  textarea:focus { border-color:#ef7724; }
+
+  /* match quiz */
+  .match-row { display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap; padding:0.6rem 0; border-bottom:1px solid #f0e8e0; }
+  .match-word { font-size:0.95rem; font-weight:700; color:#007291; min-width:110px; }
+  select { font-family:inherit; font-size:0.86rem; padding:0.45rem 0.6rem; border:2px solid #e0d8d0; border-radius:8px; background:#fff; flex:1; min-width:200px; }
+  .match-row.right select { border-color:#2e8b57; background:#e6f5e6; }
+  .match-row.wrong select { border-color:#e8a020; background:#fff3e6; }
+
+  .send-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:14px; padding:1.3rem 1.5rem; margin-top:1.6rem; text-align:center; }
+  .send-card p { font-size:0.92rem; color:#555; line-height:1.6; margin-bottom:0.9rem; }
+  .action-btn { font-family:inherit; font-size:0.92rem; font-weight:700; padding:0.7rem 1.5rem; border-radius:8px; cursor:pointer; border:none; color:#fff; background:#ef7724; }
+  .action-btn:hover { background:#c05a10; }
+  .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; line-height:1.5; }
+  .notify.show { display:block; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:3px solid #007291; outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header"><a class="back-link" href="index.html">← Maths</a></header>
+
+<div class="hero">
+  <p class="subject-label">Maths · Week 4</p>
+  <h1>🎲 Maths Lab: Measure &amp; Probability</h1>
+  <p>Sort the units, find area with arrays, run a real dice experiment, and match the maths words.</p>
+</div>
+
+<main class="main">
+  <div class="choice-note">Everything saves as you go. The dice experiment has a built-in roller, so you can do it even without a real die. Send your work to Jay at the bottom.</div>
+
+  <!-- PART 1 -->
+  <div class="card">
+    <h2>Part 1: Units of measure</h2>
+    <p class="lead">Tap a unit, then tap the column it belongs in. Move them around until you are happy, then check.</p>
+    <div class="pool" id="pool"></div>
+    <div class="columns">
+      <div class="col" data-col="length" onclick="dropCol('length')"><h3>Length (how long?)</h3><div class="drop" id="col-length"></div></div>
+      <div class="col" data-col="area" onclick="dropCol('area')"><h3>Area (flat space?)</h3><div class="drop" id="col-area"></div></div>
+      <div class="col" data-col="capacity" onclick="dropCol('capacity')"><h3>Capacity (liquid?)</h3><div class="drop" id="col-capacity"></div></div>
+    </div>
+    <button class="check-btn" style="margin-top:0.8rem;" onclick="checkUnits()">Check my columns</button>
+    <div class="fb" id="unitsfb"></div>
+  </div>
+
+  <!-- PART 2 -->
+  <div class="card">
+    <h2>Part 2: Area and arrays</h2>
+    <p class="lead">You can find the area by counting the squares, or by using a multiplication sum.</p>
+    <div class="arr" id="arr"></div>
+    <p class="q">1. How many squares are there in total?</p>
+    <div class="calc-row">Total = <input class="numin" id="p2a" inputmode="numeric"> squares <button class="check-btn" onclick="ck('p2a',12,'p2af','✓ 12 squares.','Count them, or use 3 rows × 4.')">Check</button></div>
+    <div class="fb" id="p2af"></div>
+    <p class="q">2. Find the area using multiplication. Rows: 3, in each row: 4.</p>
+    <div class="calc-row">3 × 4 = <input class="numin" id="p2b" inputmode="numeric"> <button class="check-btn" onclick="ck('p2b',12,'p2bf','✓ 3 × 4 = 12. Same answer, faster!','3 × 4.')">Check</button></div>
+    <div class="fb" id="p2bf"></div>
+  </div>
+
+  <!-- PART 3 -->
+  <div class="card">
+    <h2>Part 3: 🎲 Probability outcome lab</h2>
+    <p class="lead"><strong>Theoretical probability</strong> is what we expect. Because there are 6 numbers, we expect each to show up about 5 times if we roll 30 times. Let's test it!</p>
+    <div class="dice-wrap"><span class="die" id="die">🎲</span></div>
+    <div class="roll-btns">
+      <button class="roll-btn" onclick="roll(1)">Roll once</button>
+      <button class="roll-btn alt" onclick="roll(30)">Roll 30 times</button>
+      <button class="roll-btn alt" onclick="resetRolls()">Reset</button>
+    </div>
+    <table class="tally" id="tally"></table>
+    <p class="q">3. Look at your results. Did every number appear exactly 5 times?</p>
+    <div>
+      <button class="ybtn" id="yn-yes" onclick="setYN('yes')">Yes</button>
+      <button class="ybtn" id="yn-no" onclick="setYN('no')">No</button>
+    </div>
+    <p class="q">Finish the sentence:</p>
+    <p style="font-size:0.92rem; color:#444;">My results were different from the theoretical probability because...</p>
+    <textarea id="p3text" data-save="p3text" placeholder="...because each roll is down to chance, so..."></textarea>
+    <div class="fb r" style="display:block; margin-top:0.7rem;">💡 Real results are often different from what we expect. They only get close to "5 each" over a very large number of rolls — because every roll is an independent chance event.</div>
+  </div>
+
+  <!-- PART 4 -->
+  <div class="card">
+    <h2>Part 4: Quick match quiz</h2>
+    <p class="lead">Match each maths word to its correct meaning.</p>
+    <div id="match"></div>
+    <button class="check-btn" style="margin-top:0.8rem;" onclick="checkMatch()">Check my matches</button>
+    <div class="fb" id="matchfb"></div>
+  </div>
+
+  <div class="send-card">
+    <p>All done? Send your work to Jay.</p>
+    <button class="action-btn" onclick="emailWork()">📧 Send my work to Jay</button>
+    <div class="notify" id="notify"></div>
+  </div>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School · Maths</footer>
+
+<script>
+const STORE_KEY = 'base6_w4_maths_measure';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const UNITS = [
+  { u:'centimetres (cm)', cat:'length' },
+  { u:'litres (L)', cat:'capacity' },
+  { u:'square metres (m²)', cat:'area' },
+  { u:'millilitres (ml)', cat:'capacity' },
+  { u:'kilometres (km)', cat:'length' },
+  { u:'square centimetres (cm²)', cat:'area' },
+];
+const MEANINGS = [
+  { w:'Area', m:'The amount of flat space inside a shape (measured in cm² or m²).' },
+  { w:'Capacity', m:'How much liquid a container can hold (measured in ml or litres).' },
+  { w:'Perimeter', m:'The total distance all the way around the outside of a shape.' },
+  { w:'Probability', m:'How likely it is that an event or outcome will happen.' },
+];
+
+let state = { num:{}, place:{}, counts:[0,0,0,0,0,0], total:0, yn:null, match:{}, fields:{} };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e){}
+['num','place','match','fields'].forEach(k=>{ if(!state[k]) state[k]={}; });
+if(!Array.isArray(state.counts)) state.counts=[0,0,0,0,0,0];
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+
+function ck(id, ans, fbId, rmsg, wmsg){
+  const el=document.getElementById(id); const v=parseFloat(el.value); const fb=document.getElementById(fbId);
+  state.num[id]=el.value; save();
+  if(v===ans){ fb.className='fb r'; fb.textContent=rmsg; } else { fb.className='fb w'; fb.textContent=wmsg; }
+}
+document.querySelectorAll('.numin').forEach(el=>{ if(state.num[el.id]!==undefined) el.value=state.num[el.id];
+  el.addEventListener('input',()=>{ state.num[el.id]=el.value; save(); }); });
+
+// Part 1 units
+let selUnit=null;
+function buildUnits(){
+  const pool=document.getElementById('pool');
+  UNITS.forEach((it,i)=>{
+    const b=document.createElement('button'); b.className='uchip'; b.dataset.i=i; b.dataset.cat=it.cat; b.textContent=it.u;
+    b.addEventListener('click',(e)=>{ e.stopPropagation(); selectUnit(b); });
+    const placed=state.place[i];
+    (placed?document.getElementById('col-'+placed):pool).appendChild(b);
+  });
+}
+function selectUnit(b){ selUnit=b; document.querySelectorAll('.uchip').forEach(c=>c.classList.remove('sel')); b.classList.add('sel'); }
+function dropCol(col){ if(!selUnit) return; document.getElementById('col-'+col).appendChild(selUnit);
+  state.place[selUnit.dataset.i]=col; save(); selUnit.classList.remove('sel'); selUnit=null; }
+function checkUnits(){
+  const fb=document.getElementById('unitsfb'); let allPlaced=true, allRight=true;
+  UNITS.forEach((it,i)=>{ const p=state.place[i]; if(!p) allPlaced=false; else if(p!==it.cat) allRight=false; });
+  if(!allPlaced){ fb.className='fb w'; fb.textContent='A few units are still in the pool — place them all first.'; return; }
+  if(allRight){ fb.className='fb r'; fb.textContent='✓ All correct! Length: cm, km · Area: m², cm² · Capacity: L, ml.'; }
+  else { fb.className='fb w'; fb.textContent='Not quite. Remember: cm and km measure length, the "square" units measure area, and litres/ml measure liquid.'; }
+}
+
+// Part 2 array (3 rows x 4)
+(function(){ const a=document.getElementById('arr'); const rowCols=['#2e8b57','#ef7724','#4a6fa5'];
+  for(let r=0;r<3;r++){ for(let c=0;c<4;c++){ const d=document.createElement('div'); d.style.background=rowCols[r]; a.appendChild(d);} } })();
+
+// Part 3 dice
+const FACES=['','⚀','⚁','⚂','⚃','⚄','⚅'];
+function renderTally(){
+  const t=document.getElementById('tally');
+  let html='<tr><th>Number</th><th>Tally</th><th class="cnt">Count</th></tr>';
+  for(let n=1;n<=6;n++){ const c=state.counts[n-1];
+    let marks=''; for(let k=0;k<c;k++){ marks+='|'+((k+1)%5===0?' ':''); }
+    html+='<tr><td>'+n+' '+FACES[n]+'</td><td class="marks">'+marks+'</td><td class="cnt">'+c+'</td></tr>'; }
+  html+='<tr><th>Total rolls</th><th></th><th class="cnt">'+state.total+'</th></tr>';
+  t.innerHTML=html;
+}
+function roll(times){
+  let last=1;
+  for(let i=0;i<times;i++){ const r=1+Math.floor(Math.random()*6); state.counts[r-1]++; state.total++; last=r; }
+  document.getElementById('die').textContent=FACES[last];
+  save(); renderTally();
+}
+function resetRolls(){ state.counts=[0,0,0,0,0,0]; state.total=0; save(); renderTally(); document.getElementById('die').textContent='🎲'; }
+function setYN(v){ state.yn=v; save(); document.getElementById('yn-yes').classList.toggle('sel',v==='yes'); document.getElementById('yn-no').classList.toggle('sel',v==='no'); }
+
+// Part 4 match
+function buildMatch(){
+  const wrap=document.getElementById('match');
+  const opts=MEANINGS.map(m=>m.m);
+  MEANINGS.forEach((it,i)=>{
+    const row=document.createElement('div'); row.className='match-row'; row.dataset.i=i;
+    let sel='<select data-mi="'+i+'"><option value="">— choose a meaning —</option>';
+    opts.forEach((o,oi)=>{ sel+='<option value="'+oi+'">'+o+'</option>'; });
+    sel+='</select>';
+    row.innerHTML='<span class="match-word">'+it.w+'</span>'+sel;
+    wrap.appendChild(row);
+    const s=row.querySelector('select'); if(state.match[i]!==undefined) s.value=state.match[i];
+    s.addEventListener('change',()=>{ state.match[i]=s.value; save(); });
+  });
+}
+function checkMatch(){
+  const fb=document.getElementById('matchfb'); let allRight=true, allDone=true;
+  MEANINGS.forEach((it,i)=>{ const row=document.querySelector('.match-row[data-i="'+i+'"]'); row.classList.remove('right','wrong');
+    const v=state.match[i]; if(v===undefined||v==='') { allDone=false; return; }
+    const ok=parseInt(v,10)===i; row.classList.add(ok?'right':'wrong'); if(!ok) allRight=false; });
+  if(!allDone){ fb.className='fb w'; fb.textContent='Choose a meaning for each word first.'; return; }
+  if(allRight){ fb.className='fb r'; fb.textContent='✓ All matched correctly!'; }
+  else { fb.className='fb w'; fb.textContent='Some are not matched yet — the wrong ones are highlighted. Have another go.'; }
+}
+
+document.querySelectorAll('[data-save]').forEach(el=>{ const k=el.dataset.save; if(state.fields[k]!==undefined) el.value=state.fields[k];
+  el.addEventListener('input',()=>{ state.fields[k]=el.value; save(); }); });
+
+function emailWork(){
+  const g=k=>(state.num[k]!==undefined&&state.num[k]!==''?state.num[k]:'—');
+  let b='MATHS LAB: MEASURE & PROBABILITY — MATHS, WEEK 4\n';
+  b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n';
+  b+='PART 1 — UNITS\n';
+  ['length','area','capacity'].forEach(col=>{ const us=UNITS.filter((it,i)=>state.place[i]===col).map(it=>it.u); b+= col+': '+(us.join(', ')||'(empty)')+'\n'; });
+  b+='\nPART 2 — ARRAY\nTotal squares: '+g('p2a')+'; 3 × 4 = '+g('p2b')+'\n';
+  b+='\nPART 3 — DICE ('+state.total+' rolls)\n';
+  for(let n=1;n<=6;n++){ b+= n+': '+state.counts[n-1]+'   '; }
+  b+='\nEvery number exactly 5? '+(state.yn||'(not answered)')+'\n';
+  b+='Why results differ: '+((state.fields.p3text||'').trim()||'(not written)')+'\n';
+  b+='\nPART 4 — MATCH\n';
+  let mc=0; MEANINGS.forEach((it,i)=>{ if(parseInt(state.match[i],10)===i) mc++; });
+  b+='Matched correctly: '+mc+' / '+MEANINGS.length+'\n\n—\nSent from Base 6';
+  const su=encodeURIComponent('Base 6 · Maths Lab: Measure & Probability');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank');
+  const n=document.getElementById('notify'); n.textContent='✓ Opening your email — your work is ready to send.'; n.classList.add('show');
+}
+
+// init
+buildUnits(); renderTally(); buildMatch();
+if(state.yn) setYN(state.yn);
+</script>
+
+</body>
+</html>
