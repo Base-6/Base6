@@ -102,6 +102,7 @@
   .b6a-eyes { top: 28%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.42); }
   .b6a-neck { bottom: 0%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.4); }
   .b6a-friend { bottom: -8%; right: -12%; font-size: calc(var(--b6a-size,64px) * 0.42); }
+  .b6a-hand { bottom: -6%; left: -12%; font-size: calc(var(--b6a-size,64px) * 0.42); }
 
   .b6a-hero-badge { display: none; margin: 0.6rem auto 0; }
 
@@ -373,22 +374,29 @@ const DAY_ID   = "week4-day4";
 <script>
 // ===== BASE 6 AVATAR + COSMETICS =====
 (function () {
-  var STUDENTS = ['LW','AP','LS','LC','HK'];
+  var STUDENTS = ['LW','AP','LS','LC','HK','JTK'];
   var CREATURES = ['\uD83E\uDD8A','\uD83D\uDC22','\uD83E\uDD89','\uD83D\uDC19','\uD83E\uDD8B','\uD83D\uDC31','\uD83D\uDC27','\uD83E\uDD81','\uD83D\uDC38','\uD83D\uDC3C'];
   var ITEMS = [
-    { id:'glasses', slot:'eyes',  emoji:'\uD83D\uDC53', label:'Glasses' },
-    { id:'cap',     slot:'head',  emoji:'\uD83E\uDDE2', label:'Cap' },
-    { id:'bow',     slot:'neck',  emoji:'\uD83C\uDF80', label:'Bow' },
-    { id:'sunny',   slot:'bg',    color:'#fff1c9',      label:'Sunny' },
-    { id:'shades',  slot:'eyes',  emoji:'\uD83D\uDD76\uFE0F', label:'Shades' },
-    { id:'tophat',  slot:'head',  emoji:'\uD83C\uDFA9', label:'Top hat' },
-    { id:'scarf',   slot:'neck',  emoji:'\uD83E\uDDE3', label:'Scarf' },
-    { id:'friend',  slot:'friend',emoji:'\uD83D\uDC25', label:'Friend' },
-    { id:'crown',   slot:'head',  emoji:'\uD83D\uDC51', label:'Crown' },
-    { id:'sky',     slot:'bg',    color:'#e3f1f5',      label:'Sky' }
+    { id:'glasses',    slot:'eyes',  emoji:'\uD83D\uDC53', label:'Glasses' },
+    { id:'cap',        slot:'head',  emoji:'\uD83E\uDDE2', label:'Cap' },
+    { id:'balloon',    slot:'hand',  emoji:'\uD83C\uDF88', label:'Balloon' },
+    { id:'bow',        slot:'neck',  emoji:'\uD83C\uDF80', label:'Bow' },
+    { id:'sunny',      slot:'bg',    color:'#fff1c9',      label:'Sunny' },
+    { id:'chick',      slot:'friend',emoji:'\uD83D\uDC25', label:'Chick' },
+    { id:'shades',     slot:'eyes',  emoji:'\uD83D\uDD76\uFE0F', label:'Shades' },
+    { id:'scarf',      slot:'neck',  emoji:'\uD83E\uDDE3', label:'Scarf' },
+    { id:'paintbrush', slot:'hand',  emoji:'\uD83D\uDD8C\uFE0F', label:'Paintbrush' },
+    { id:'tophat',     slot:'head',  emoji:'\uD83C\uDFA9', label:'Top hat' },
+    { id:'butterfly',  slot:'friend',emoji:'\uD83E\uDD8B', label:'Butterfly' },
+    { id:'sky',        slot:'bg',    color:'#e3f1f5',      label:'Sky' },
+    { id:'goggles',    slot:'eyes',  emoji:'\uD83E\uDD7D', label:'Goggles' },
+    { id:'skateboard', slot:'hand',  emoji:'\uD83D\uDEF9', label:'Skateboard' },
+    { id:'medal',      slot:'neck',  emoji:'\uD83C\uDFC5', label:'Medal' },
+    { id:'wand',       slot:'hand',  emoji:'\uD83E\uDE84', label:'Wand' },
+    { id:'crown',      slot:'head',  emoji:'\uD83D\uDC51', label:'Crown' }
   ];
-  var SLOT_ORDER = ['head','eyes','neck','friend','bg'];
-  var SLOT_LABELS = { head:'Head', eyes:'Eyes', neck:'Neck', friend:'Friend', bg:'Background' };
+  var SLOT_ORDER = ['head','eyes','neck','hand','friend','bg'];
+  var SLOT_LABELS = { head:'Head', eyes:'Eyes', neck:'Neck', hand:'Holding', friend:'Friend', bg:'Background' };
   var WEEK_KEY = 'base6Avatar-week4';
   var pendingInitials = null;
 
@@ -415,7 +423,7 @@ const DAY_ID   = "week4-day4";
     if (worn.bg){ var b = itemById(worn.bg); if (b && b.color) bg = b.color; }
     el.style.setProperty('--b6a-bg', bg);
     var html = '<span class="b6a-creature" aria-hidden="true">' + (p.creature || CREATURES[0]) + '</span>';
-    ['head','eyes','neck','friend'].forEach(function(slot){
+    ['head','eyes','neck','friend','hand'].forEach(function(slot){
       var id = worn[slot]; if (!id) return; var it = itemById(id); if (!it || !it.emoji) return;
       html += '<span class="b6a-acc b6a-' + slot + '" aria-hidden="true">' + it.emoji + '</span>';
     });
