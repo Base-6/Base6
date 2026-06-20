@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wednesday · Week 4 · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+  .day-hero {
+    background: linear-gradient(135deg, #007291 0%, #007291 62%, #ef7724 150%);
+    padding: 2rem 2rem 2.4rem; text-align: center; color: #fef8f4;
+  }
+  .day-hero .week-label { font-size: 0.85rem; font-weight: 700; opacity: 0.85; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .day-hero h1 { font-size: 2.4rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.4rem; }
+  .day-hero h1 .hero-emoji { margin-right: 0.5rem; }
+  .day-hero .tagline { font-size: 1rem; opacity: 0.9; }
+  .day-hero .greeting { font-size: 1.02rem; font-weight: 700; margin-top: 0.7rem; }
+  .today-banner {
+    display: none; background: #fef8f4; color: #007291; border-radius: 10px;
+    padding: 0.4rem 1.1rem; margin: 0.9rem auto 0; font-weight: 700; width: fit-content; font-size: 0.9rem;
+  }
+  .today-banner.show { display: block; }
+  .wotw-banner { background-color: #ef7724; padding: 0.9rem 2rem; text-align: center; }
+  .wotw-banner a { color: #fef8f4; font-size: 0.95rem; font-weight: 700; text-decoration: none; }
+  .wotw-banner a:hover { text-decoration: underline; }
+  .main { max-width: 760px; margin: 0 auto; padding: 2.2rem 1.5rem 4rem; }
+  .choice-note {
+    background: #ffffff; border: 2px dashed #007291; border-radius: 14px;
+    padding: 0.9rem 1.2rem; margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.6; color: #444;
+  }
+  .slot { margin-bottom: 1.4rem; }
+  .slot-time {
+    color: #007291; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.06em;
+    text-transform: uppercase; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.6rem;
+  }
+  .slot-time .dot { width: 11px; height: 11px; border-radius: 50%; background: #007291; display: inline-block; flex-shrink: 0; }
+  .activity {
+    background: #ffffff; border: 2px solid var(--subject, #007291); border-radius: 14px;
+    padding: 1.1rem 1.2rem; display: flex; gap: 1rem; align-items: flex-start;
+    transition: box-shadow 0.15s, transform 0.1s;
+  }
+  .activity:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+  .activity.calm { border-style: dashed; background: #e3f1f5; }
+  .activity.done { border-color: #ef7724; background: #fff3e8; }
+  .activity-emoji {
+    font-size: 1.7rem; line-height: 1.2; flex-shrink: 0;
+    background: #e3f1f5; border-radius: 12px; padding: 0.55rem;
+  }
+  .activity.calm .activity-emoji { background: #ffffff; }
+  .activity-body { flex: 1; }
+  .activity-body h3 { font-size: 1.08rem; font-weight: 700; color: var(--subject, #007291); margin-bottom: 0.3rem; }
+  .activity.done .activity-body h3 { color: #1a1a1a; }
+  .activity-body p { font-size: 0.9rem; color: #555; line-height: 1.55; }
+  .activity-body .open-link {
+    display: inline-block; margin-top: 0.7rem; text-decoration: none;
+    background: var(--subject, #007291); color: #ffffff; font-weight: 700;
+    border-radius: 8px; padding: 0.5rem 1.1rem; font-size: 0.88rem;
+  }
+  .activity-body .open-link:hover { background: #ef7724; }
+  .done-btn {
+    background: #e3f1f5; border: 2px solid var(--subject, #007291); color: var(--subject, #007291);
+    border-radius: 8px; padding: 0.45rem 0.8rem; font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer; flex-shrink: 0;
+  }
+  .done-btn:hover { background: var(--subject, #007291); color: #ffffff; }
+  .activity.done .done-btn { background: #ef7724; border-color: #ef7724; color: #ffffff; }
+  .bonus-section { margin-top: 2.6rem; }
+  .bonus-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 0.4rem; }
+  .bonus-intro { font-size: 0.9rem; color: #555; line-height: 1.55; margin-bottom: 1.1rem; }
+  .bonus-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0.8rem; }
+  .bonus-card {
+    background: #ffffff; border: 2px solid var(--subject); border-radius: 12px;
+    padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.25rem;
+    text-decoration: none; color: inherit; transition: box-shadow 0.15s, transform 0.1s;
+  }
+  .bonus-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.08); transform: translateY(-2px); }
+  .bonus-card .b-emoji { font-size: 1.4rem; }
+  .bonus-card .b-name { font-size: 0.95rem; font-weight: 700; color: var(--subject); line-height: 1.3; }
+  .bonus-card .b-desc { font-size: 0.8rem; color: #666; line-height: 1.45; }
+  .day-footer { display: flex; justify-content: space-between; gap: 0.8rem; margin-top: 2.6rem; flex-wrap: wrap; }
+  .day-footer a {
+    text-decoration: none; color: #007291; background: #ffffff;
+    border: 2px solid #007291; border-radius: 10px; padding: 0.6rem 1.2rem; font-weight: 700; font-size: 0.9rem;
+  }
+  .day-footer a:hover { background: #007291; color: #ffffff; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+  a:focus-visible, button:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .activity-body .open-link:focus-visible, .done-btn:focus-visible { outline: 3px solid #1a1a1a; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+  /* ===== BASE 6 AVATAR + COSMETICS (b6a-) ===== */
+  .b6a-badge { position: relative; width: var(--b6a-size,64px); height: var(--b6a-size,64px); border-radius: 50%; background: var(--b6a-bg,#ffe9d6); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .b6a-creature { font-size: calc(var(--b6a-size,64px) * 0.6); line-height: 1; }
+  .b6a-acc { position: absolute; line-height: 1; pointer-events: none; }
+  .b6a-head { top: -10%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.5); }
+  .b6a-eyes { top: 28%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.42); }
+  .b6a-neck { bottom: 0%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.4); }
+  .b6a-friend { bottom: -8%; right: -12%; font-size: calc(var(--b6a-size,64px) * 0.42); }
+
+  .b6a-hero-badge { display: none; margin: 0.6rem auto 0; }
+
+  .b6a-pick-overlay, .b6a-cust-overlay { position: fixed; inset: 0; background: rgba(0,114,145,0.22); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 1000; }
+  .b6a-pick-card, .b6a-cust-card { position: relative; background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 18px; padding: 1.7rem 1.5rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.18); max-height: 88vh; overflow-y: auto; }
+  .b6a-eyebrow { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #ef7724; margin-bottom: 0.4rem; }
+  .b6a-pick-title { font-size: 1.35rem; font-weight: 700; color: #1a1a1a; line-height: 1.3; margin-bottom: 0.4rem; }
+  .b6a-pick-sub { font-size: 0.9rem; color: #555; line-height: 1.5; margin-bottom: 1.2rem; }
+  .b6a-pick-btns { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 1rem; }
+  .b6a-pick-btn { font-family: inherit; font-size: 1.3rem; font-weight: 700; color: #007291; background: #fff; border: 2px solid #007291; border-radius: 12px; padding: 0.8rem 0; cursor: pointer; flex: 1 1 calc(33% - 0.6rem); min-width: 84px; transition: background 0.15s, color 0.15s; }
+  .b6a-pick-btn:hover { background: #007291; color: #fff; }
+  .b6a-skip { font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; text-decoration: underline; }
+  .b6a-skip:hover { color: #555; }
+
+  .b6a-creature-grid, .b6a-creature-row { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .b6a-creature-opt { font-size: 1.7rem; line-height: 1; background: #fff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 0.4rem 0.5rem; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+  .b6a-creature-opt:hover { border-color: #007291; transform: translateY(-2px); }
+  .b6a-creature-opt.sel { border-color: #ef7724; background: #fff3e8; }
+
+  .b6a-close { position: absolute; top: 0.6rem; right: 0.8rem; font-size: 1.4rem; line-height: 1; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; }
+  .b6a-close:hover { color: #1a1a1a; }
+  .b6a-preview { display: flex; justify-content: center; margin-bottom: 0.6rem; }
+  .b6a-cust-initials { font-size: 1.1rem; font-weight: 700; color: #007291; margin-bottom: 0.3rem; }
+  .b6a-switch { font-family: inherit; font-size: 0.8rem; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; text-decoration: underline; margin-bottom: 1rem; }
+  .b6a-switch:hover { color: #555; }
+  .b6a-cust-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #007291; margin: 1rem 0 0.5rem; text-align: left; }
+  .b6a-slot { text-align: left; }
+  .b6a-opt-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .b6a-opt { font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #555; background: #fff; border: 2px solid #e0d8d0; border-radius: 10px; padding: 0.4rem 0.7rem; cursor: pointer; transition: border-color 0.15s; }
+  .b6a-opt:hover { border-color: #007291; }
+  .b6a-opt.sel { border-color: #ef7724; background: #fff3e8; color: #1a1a1a; }
+  .b6a-empty { font-size: 0.88rem; color: #555; line-height: 1.5; margin-top: 1rem; }
+
+  .b6a-chip { position: fixed; bottom: 1rem; right: 1rem; z-index: 900; display: inline-flex; align-items: center; gap: 0.45rem; font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #007291; background: #fff; border: 1.5px solid #007291; border-radius: 999px; padding: 0.3rem 0.8rem 0.3rem 0.35rem; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+  .b6a-chip:hover { background: #f0fafc; }
+
+  .b6a-toast { position: fixed; left: 50%; bottom: 1.2rem; transform: translateX(-50%); z-index: 1100; background: #007291; color: #fef8f4; font-family: inherit; font-size: 0.9rem; font-weight: 700; padding: 0.7rem 1.1rem; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.22); max-width: 90vw; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- ===== BASE 6 AVATAR + COSMETICS (self-contained, b6a-) ===== -->
+<div class="b6a-pick-overlay" id="b6a-pick" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="b6a-pick-title">
+  <div class="b6a-pick-card">
+    <p class="b6a-eyebrow">Base 6</p>
+    <div id="b6a-step1">
+      <h2 class="b6a-pick-title" id="b6a-pick-title">Who is working here today?</h2>
+      <p class="b6a-pick-sub">Tap your initials. This device will remember you.</p>
+      <div class="b6a-pick-btns" id="b6a-initials-row"></div>
+      <button class="b6a-skip" id="b6a-skip">Not now</button>
+    </div>
+    <div id="b6a-step2" style="display:none;">
+      <h2 class="b6a-pick-title">Choose your avatar</h2>
+      <p class="b6a-pick-sub">Pick a creature. You can change it any time.</p>
+      <div class="b6a-creature-grid" id="b6a-creature-grid"></div>
+    </div>
+  </div>
+</div>
+
+<div class="b6a-cust-overlay" id="b6a-cust" style="display:none;" role="dialog" aria-modal="true">
+  <div class="b6a-cust-card">
+    <button class="b6a-close" id="b6a-cust-close" aria-label="Close">&times;</button>
+    <p class="b6a-eyebrow">Your avatar</p>
+    <div class="b6a-preview"><span class="b6a-badge" id="b6a-cust-badge" style="--b6a-size:96px;"></span></div>
+    <p class="b6a-cust-initials" id="b6a-cust-initials">&nbsp;</p>
+    <button class="b6a-switch" id="b6a-switch">Switch student</button>
+    <p class="b6a-cust-label">Your creature</p>
+    <div class="b6a-creature-row" id="b6a-creature-row"></div>
+    <div id="b6a-slots"></div>
+    <p class="b6a-empty" id="b6a-empty" style="display:none;">Do an activity this week to unlock things to wear.</p>
+  </div>
+</div>
+
+<button class="b6a-chip" id="b6a-chip" style="display:none;" aria-label="Your avatar">
+  <span class="b6a-badge" id="b6a-chip-badge" style="--b6a-size:30px;"></span>
+  <span id="b6a-chip-text">&nbsp;</span>
+</button>
+
+<div class="b6a-toast" id="b6a-toast" role="status" aria-live="polite" style="display:none;"></div>
+
+
+
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Week 4</a>
+</header>
+
+<div class="day-hero">
+  <p class="week-label">Week 4 · Day 3 · Wed 24 June</p>
+  <h1><span class="hero-emoji" aria-hidden="true">🌱</span>Wednesday</h1>
+  <p class="tagline">Halfway there</p>
+  <span class="b6a-badge b6a-hero-badge" id="b6a-hero-badge" style="--b6a-size:54px;display:block;"></span>
+  <p class="greeting" id="greeting">Welcome to Wednesday.</p>
+  <div class="today-banner" id="today-banner">This is today</div>
+</div>
+
+<div class="wotw-banner">
+  <a href="prioritise-explorer.html">Word of the Week — <strong>Prioritise</strong> →</a>
+</div>
+
+<main class="main">
+
+  <div class="choice-note">
+    Here is the shape of Wednesday. The times are a guide, not a rule. Marking things as done is optional - it is just there if you find it helpful.
+  </div>
+
+  <section class="slot">
+    <p class="slot-time"><span class="dot"></span>9:30 - 10:00</p>
+    <div class="activity calm">
+      <div class="activity-emoji" aria-hidden="true">🌅</div>
+      <div class="activity-body">
+        <h3>Breathe In</h3>
+        <p>Ease into the day. Music, a chat, a doodle, or just settling in - whatever works for you this morning.</p>
+      </div>
+    </div>
+  </section>
+  <section class="slot">
+    <p class="slot-time"><span class="dot"></span>10:00 - 10:20</p>
+    <div class="activity" style="--subject: #7b5ea7;" data-activity-id="w4d3-pshe">
+      <div class="activity-emoji" aria-hidden="true">💬</div>
+      <div class="activity-body">
+        <h3>PSHE: Relational (PSHE and RSE)</h3>
+        <p>Changing me - personal hygiene, grooming and looking after yourself.</p>
+        <a class="open-link" href="relational/index.html">Open hub</a>
+      </div>
+      <button class="done-btn" aria-pressed="false">Done</button>
+    </div>
+  </section>
+  <section class="slot">
+    <p class="slot-time"><span class="dot"></span>10:20 - 12:00</p>
+    <div class="activity" style="--subject: #007291;" data-activity-id="w4d3-project">
+      <div class="activity-emoji" aria-hidden="true">🚀</div>
+      <div class="activity-body">
+        <h3>Project</h3>
+        <p>Continued development on individual projects.</p>
+        <a class="open-link" href="project/index.html">Open hub</a>
+      </div>
+      <button class="done-btn" aria-pressed="false">Done</button>
+    </div>
+  </section>
+  <section class="slot">
+    <p class="slot-time"><span class="dot"></span>12:30 - 1:15</p>
+    <div class="activity" style="--subject: #007291;" data-activity-id="w4d3-maths">
+      <div class="activity-emoji" aria-hidden="true">🔢</div>
+      <div class="activity-body">
+        <h3>Maths</h3>
+        <p>Handling data - collecting, organising and recording data on paper and with digital tools.</p>
+        <a class="open-link" href="maths/index.html">Open hub</a>
+      </div>
+      <button class="done-btn" aria-pressed="false">Done</button>
+    </div>
+  </section>
+  <section class="slot">
+    <p class="slot-time"><span class="dot"></span>1:15 - 2:00</p>
+    <div class="activity" style="--subject: #0e8a9e;" data-activity-id="w4d3-adulthood">
+      <div class="activity-emoji" aria-hidden="true">🧘</div>
+      <div class="activity-body">
+        <h3>Preparation for Adulthood</h3>
+        <p>Wellbeing - yoga poses and how they help your body and mind.</p>
+        <a class="open-link" href="adulthood/index.html">Open hub</a>
+      </div>
+      <button class="done-btn" aria-pressed="false">Done</button>
+    </div>
+  </section>
+  <section class="slot">
+    <p class="slot-time"><span class="dot"></span>2:00 - 2:30</p>
+    <div class="activity calm">
+      <div class="activity-emoji" aria-hidden="true">🌙</div>
+      <div class="activity-body">
+        <h3>Breathe Out</h3>
+        <p>Wind down time. A book, a doodle, or just some quiet before home.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="bonus-section">
+    <p class="bonus-label">Bonus opportunities</p>
+    <p class="bonus-intro">These are not on today's timetable, but they are open if you finish early, want a change, or fancy working on something different. Totally your call.</p>
+    <div class="bonus-grid">
+    <a class="bonus-card" href="english/index.html" style="--subject: #ef7724;">
+      <span class="b-emoji" aria-hidden="true">📝</span>
+      <span class="b-name">English</span>
+      <span class="b-desc">Writing with purpose and using Standard English.</span>
+    </a>
+    <a class="bonus-card" href="digital-media/index.html" style="--subject: #4a6fa5;">
+      <span class="b-emoji" aria-hidden="true">💻</span>
+      <span class="b-name">Digital Media</span>
+      <span class="b-desc">What is AI and where do we meet it every day?</span>
+    </a>
+    <a class="bonus-card" href="science/index.html" style="--subject: #2e8b57;">
+      <span class="b-emoji" aria-hidden="true">🧲</span>
+      <span class="b-name">Scientific and Environmental</span>
+      <span class="b-desc">Forces, motion and energy in action.</span>
+    </a>
+    <a class="bonus-card" href="physical-world/index.html" style="--subject: #6b8e23;">
+      <span class="b-emoji" aria-hidden="true">🦋</span>
+      <span class="b-name">Physical World and Exploration</span>
+      <span class="b-desc">Wildlife exploration - conservation and biodiversity.</span>
+    </a>
+    <a class="bonus-card" href="human-social/index.html" style="--subject: #c0392b;">
+      <span class="b-emoji" aria-hidden="true">📜</span>
+      <span class="b-name">Human and Social</span>
+      <span class="b-desc">History beyond living memory - sources and bias.</span>
+    </a>
+    <a class="bonus-card" href="creative/index.html" style="--subject: #c2185b;">
+      <span class="b-emoji" aria-hidden="true">🎨</span>
+      <span class="b-name">Aesthetic and Creative</span>
+      <span class="b-desc">Design - textiles, fabrics and fashion.</span>
+    </a>
+    </div>
+  </div>
+
+  <nav class="day-footer" aria-label="Day navigation">
+    <a href="day2.html">← Tuesday</a>
+    <a href="day4.html">Thursday →</a>
+  </nav>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School</footer>
+
+<script>
+// ============ CONFIG ============
+const DAY_NAME = "Wednesday";
+const DAY_DATE = "2026-06-24";
+const DAY_ID   = "week4-day3";
+// ================================
+
+(function () {
+  try {
+    const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+    if (profile && profile.initials) {
+      document.getElementById('greeting').textContent =
+        'Hello ' + profile.initials.toUpperCase() + '. Welcome to ' + DAY_NAME + '.';
+    }
+  } catch (e) { /* no profile yet */ }
+})();
+
+(function () {
+  const now = new Date();
+  const today = now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+    String(now.getDate()).padStart(2, '0');
+  if (today === DAY_DATE) {
+    document.getElementById('today-banner').classList.add('show');
+  }
+})();
+
+(function () {
+  const KEY = 'base6Done-' + DAY_ID;
+  let done = [];
+  try { done = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { done = []; }
+
+  document.querySelectorAll('.activity[data-activity-id]').forEach(function (card) {
+    const id = card.getAttribute('data-activity-id');
+    const btn = card.querySelector('.done-btn');
+    if (!btn) { return; }
+
+    function render() {
+      const isDone = done.indexOf(id) !== -1;
+      card.classList.toggle('done', isDone);
+      btn.textContent = isDone ? 'Done \u2713' : 'Done';
+      btn.setAttribute('aria-pressed', isDone ? 'true' : 'false');
+    }
+
+    btn.addEventListener('click', function () {
+      const i = done.indexOf(id);
+      if (i === -1) { done.push(id); } else { done.splice(i, 1); }
+      localStorage.setItem(KEY, JSON.stringify(done));
+      render();
+    });
+
+    render();
+  });
+})();
+</script>
+
+
+
+<script>
+// ===== BASE 6 AVATAR + COSMETICS =====
+(function () {
+  var STUDENTS = ['LW','AP','LS','LC','HK'];
+  var CREATURES = ['\uD83E\uDD8A','\uD83D\uDC22','\uD83E\uDD89','\uD83D\uDC19','\uD83E\uDD8B','\uD83D\uDC31','\uD83D\uDC27','\uD83E\uDD81','\uD83D\uDC38','\uD83D\uDC3C'];
+  var ITEMS = [
+    { id:'glasses', slot:'eyes',  emoji:'\uD83D\uDC53', label:'Glasses' },
+    { id:'cap',     slot:'head',  emoji:'\uD83E\uDDE2', label:'Cap' },
+    { id:'bow',     slot:'neck',  emoji:'\uD83C\uDF80', label:'Bow' },
+    { id:'sunny',   slot:'bg',    color:'#fff1c9',      label:'Sunny' },
+    { id:'shades',  slot:'eyes',  emoji:'\uD83D\uDD76\uFE0F', label:'Shades' },
+    { id:'tophat',  slot:'head',  emoji:'\uD83C\uDFA9', label:'Top hat' },
+    { id:'scarf',   slot:'neck',  emoji:'\uD83E\uDDE3', label:'Scarf' },
+    { id:'friend',  slot:'friend',emoji:'\uD83D\uDC25', label:'Friend' },
+    { id:'crown',   slot:'head',  emoji:'\uD83D\uDC51', label:'Crown' },
+    { id:'sky',     slot:'bg',    color:'#e3f1f5',      label:'Sky' }
+  ];
+  var SLOT_ORDER = ['head','eyes','neck','friend','bg'];
+  var SLOT_LABELS = { head:'Head', eyes:'Eyes', neck:'Neck', friend:'Friend', bg:'Background' };
+  var WEEK_KEY = 'base6Avatar-week4';
+  var pendingInitials = null;
+
+  function getProfile(){ try { return JSON.parse(localStorage.getItem('base6Profile') || 'null'); } catch(e){ return null; } }
+  function setProfile(p){ try { localStorage.setItem('base6Profile', JSON.stringify(p)); } catch(e){} }
+  function getWardrobe(){ try { return JSON.parse(localStorage.getItem(WEEK_KEY) || 'null') || { worn:{}, seen:[] }; } catch(e){ return { worn:{}, seen:[] }; } }
+  function setWardrobe(w){ try { localStorage.setItem(WEEK_KEY, JSON.stringify(w)); } catch(e){} }
+  function itemById(id){ for (var i=0;i<ITEMS.length;i++){ if (ITEMS[i].id===id) return ITEMS[i]; } return null; }
+
+  function totalDone(){
+    var t = 0;
+    for (var d=1; d<=5; d++){
+      try { var a = JSON.parse(localStorage.getItem('base6Done-week4-day'+d) || '[]'); if (a && a.length) t += a.length; } catch(e){}
+    }
+    return t;
+  }
+  function unlockedItems(){ var n = totalDone(); return ITEMS.filter(function(it,i){ return (i+1) <= n; }); }
+
+  function renderBadge(el, size){
+    var p = getProfile(); if (!p || !el) return;
+    var w = getWardrobe(); var worn = w.worn || {};
+    el.style.setProperty('--b6a-size', size + 'px');
+    var bg = '#ffe9d6';
+    if (worn.bg){ var b = itemById(worn.bg); if (b && b.color) bg = b.color; }
+    el.style.setProperty('--b6a-bg', bg);
+    var html = '<span class="b6a-creature" aria-hidden="true">' + (p.creature || CREATURES[0]) + '</span>';
+    ['head','eyes','neck','friend'].forEach(function(slot){
+      var id = worn[slot]; if (!id) return; var it = itemById(id); if (!it || !it.emoji) return;
+      html += '<span class="b6a-acc b6a-' + slot + '" aria-hidden="true">' + it.emoji + '</span>';
+    });
+    el.innerHTML = html;
+  }
+
+  function updateGreeting(p){
+    var hero = document.getElementById('hero-greeting');
+    var greet = document.getElementById('greeting');
+    var dn = (typeof DAY_NAME !== 'undefined') ? DAY_NAME : '';
+    if (p && p.initials){
+      if (hero){ hero.textContent = 'Hello ' + p.initials.toUpperCase() + '.'; hero.style.display = 'block'; }
+      else if (greet){ greet.textContent = 'Hello ' + p.initials.toUpperCase() + (dn ? '. Welcome to ' + dn + '.' : '.'); }
+      var cName = document.getElementById('c-name'); if (cName && !cName.value){ cName.value = p.initials; }
+    } else if (hero){ hero.style.display = 'none'; }
+    var hb = document.getElementById('b6a-hero-badge');
+    if (hb){ if (p){ hb.style.display = 'inline-flex'; renderBadge(hb, 54); } else { hb.style.display = 'none'; } }
+  }
+
+  function refreshAll(){
+    var p = getProfile();
+    updateGreeting(p);
+    var chip = document.getElementById('b6a-chip');
+    if (p){
+      chip.style.display = 'inline-flex';
+      renderBadge(document.getElementById('b6a-chip-badge'), 30);
+      document.getElementById('b6a-chip-text').textContent = p.initials.toUpperCase();
+    } else { chip.style.display = 'none'; }
+  }
+
+  var toastTimer = null;
+  function showToast(msg){
+    var t = document.getElementById('b6a-toast');
+    t.textContent = msg; t.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.style.display = 'none'; }, 5500);
+  }
+  document.getElementById('b6a-toast').addEventListener('click', function(){ this.style.display = 'none'; });
+
+  function checkUnlocks(){
+    var p = getProfile(); if (!p) return;
+    var w = getWardrobe(); var unlocked = unlockedItems(); var seen = w.seen || [];
+    var fresh = unlocked.filter(function(it){ return seen.indexOf(it.id) === -1; });
+    if (fresh.length > 0){
+      w.seen = unlocked.map(function(it){ return it.id; }); setWardrobe(w);
+      showToast(fresh.length === 1
+        ? 'You unlocked ' + fresh[0].label + '. Tap your avatar to try it on.'
+        : 'You unlocked ' + fresh.length + ' new things. Tap your avatar to try them on.');
+    }
+  }
+
+  var pickOverlay = document.getElementById('b6a-pick');
+  function openPicker(step){ buildPickerOnce(); showStep(step || 1); pickOverlay.style.display = 'flex'; }
+  function closePicker(){ pickOverlay.style.display = 'none'; }
+  function showStep(n){
+    document.getElementById('b6a-step1').style.display = (n === 1) ? 'block' : 'none';
+    document.getElementById('b6a-step2').style.display = (n === 2) ? 'block' : 'none';
+  }
+  var pickerBuilt = false;
+  function buildPickerOnce(){
+    if (pickerBuilt) return; pickerBuilt = true;
+    var ir = document.getElementById('b6a-initials-row');
+    STUDENTS.forEach(function(s){
+      var b = document.createElement('button'); b.className = 'b6a-pick-btn'; b.textContent = s;
+      b.addEventListener('click', function(){ pendingInitials = s; showStep(2); });
+      ir.appendChild(b);
+    });
+    var cg = document.getElementById('b6a-creature-grid');
+    CREATURES.forEach(function(c){
+      var b = document.createElement('button'); b.className = 'b6a-creature-opt'; b.textContent = c;
+      b.addEventListener('click', function(){ commitNew(pendingInitials, c); });
+      cg.appendChild(b);
+    });
+  }
+  function commitNew(initials, creature){
+    setProfile({ initials: initials.toLowerCase(), creature: creature });
+    var w = getWardrobe(); w.seen = unlockedItems().map(function(it){ return it.id; }); setWardrobe(w);
+    closePicker(); refreshAll();
+  }
+  document.getElementById('b6a-skip').addEventListener('click', function(){
+    try { localStorage.setItem('base6ProfileAsked', '1'); } catch(e){}
+    closePicker();
+  });
+
+  var custOverlay = document.getElementById('b6a-cust');
+  function openCust(){ buildCust(); custOverlay.style.display = 'flex'; }
+  function closeCust(){ custOverlay.style.display = 'none'; }
+  document.getElementById('b6a-cust-close').addEventListener('click', closeCust);
+  document.getElementById('b6a-switch').addEventListener('click', function(){ closeCust(); openPicker(1); });
+
+  function buildCust(){
+    var p = getProfile(); if (!p) return;
+    var w = getWardrobe();
+    renderBadge(document.getElementById('b6a-cust-badge'), 96);
+    document.getElementById('b6a-cust-initials').textContent = p.initials.toUpperCase();
+
+    var cr = document.getElementById('b6a-creature-row'); cr.innerHTML = '';
+    CREATURES.forEach(function(c){
+      var b = document.createElement('button'); b.className = 'b6a-creature-opt' + (c === p.creature ? ' sel' : ''); b.textContent = c;
+      b.addEventListener('click', function(){ var pr = getProfile(); pr.creature = c; setProfile(pr); buildCust(); refreshAll(); });
+      cr.appendChild(b);
+    });
+
+    var unlocked = unlockedItems();
+    var slotsEl = document.getElementById('b6a-slots'); slotsEl.innerHTML = ''; var any = false;
+    SLOT_ORDER.forEach(function(slot){
+      var items = unlocked.filter(function(it){ return it.slot === slot; });
+      if (items.length === 0) return; any = true;
+      var wrap = document.createElement('div'); wrap.className = 'b6a-slot';
+      var lab = document.createElement('p'); lab.className = 'b6a-cust-label'; lab.textContent = SLOT_LABELS[slot]; wrap.appendChild(lab);
+      var row = document.createElement('div'); row.className = 'b6a-opt-row';
+      var none = document.createElement('button'); none.className = 'b6a-opt' + (!w.worn[slot] ? ' sel' : ''); none.textContent = 'None';
+      none.addEventListener('click', function(){ var ww = getWardrobe(); delete ww.worn[slot]; setWardrobe(ww); buildCust(); refreshAll(); });
+      row.appendChild(none);
+      items.forEach(function(it){
+        var b = document.createElement('button'); b.className = 'b6a-opt' + (w.worn[slot] === it.id ? ' sel' : '');
+        b.innerHTML = (it.emoji ? '<span aria-hidden="true">' + it.emoji + '</span> ' : '') + it.label;
+        b.addEventListener('click', function(){ var ww = getWardrobe(); ww.worn[slot] = it.id; setWardrobe(ww); buildCust(); refreshAll(); });
+        row.appendChild(b);
+      });
+      wrap.appendChild(row); slotsEl.appendChild(wrap);
+    });
+    document.getElementById('b6a-empty').style.display = any ? 'none' : 'block';
+  }
+
+  document.getElementById('b6a-chip').addEventListener('click', function(){ if (getProfile()) openCust(); else openPicker(1); });
+
+  var asked = (function(){ try { return localStorage.getItem('base6ProfileAsked'); } catch(e){ return null; } })();
+  if (document.getElementById('hero-greeting') && !getProfile() && !asked){ openPicker(1); }
+  refreshAll();
+  checkUnlocks();
+})();
+</script>
+
+</body>
+</html>

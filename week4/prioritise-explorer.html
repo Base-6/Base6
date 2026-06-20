@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word of the Week · Prioritise · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .word-hero { background: linear-gradient(135deg, #007291 0%, #007291 60%, #ef7724 150%); padding: 2.4rem 2rem 2.6rem; text-align: center; color: #fef8f4; }
+  .word-hero .eyebrow { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.85; margin-bottom: 0.6rem; }
+  .word-hero h1 { font-size: 3rem; font-weight: 700; line-height: 1.1; margin-bottom: 0.5rem; }
+  .word-hero .say { font-size: 1rem; opacity: 0.9; }
+  .word-hero .say strong { letter-spacing: 0.02em; }
+
+  .main { max-width: 720px; margin: 0 auto; padding: 2.2rem 1.5rem 4rem; }
+
+  .card { background: #ffffff; border: 2px solid #e8e0d8; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.3rem; }
+  .card.teal { border-color: #007291; }
+  .card.orange { border-color: #ef7724; }
+  .card h2 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 0.7rem; }
+  .card.orange h2 { color: #c05a10; }
+  .meaning { font-size: 1.15rem; font-weight: 700; line-height: 1.5; color: #1a1a1a; }
+  .plain { font-size: 0.95rem; color: #444; line-height: 1.65; margin-top: 0.6rem; }
+
+  .family { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .family .chip { font-size: 0.9rem; font-weight: 700; color: #007291; background: #e6f5f8; border-radius: 20px; padding: 0.35rem 0.85rem; }
+  .family .chip span { font-weight: 400; color: #555; }
+
+  .examples { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .examples li { font-size: 0.98rem; line-height: 1.6; color: #1a1a1a; padding-left: 1.1rem; position: relative; }
+  .examples li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 8px; height: 8px; border-radius: 50%; background: #ef7724; }
+  .examples .word { color: #c05a10; font-weight: 700; }
+
+  .where { font-size: 0.95rem; color: #444; line-height: 1.65; }
+  .where strong { color: #007291; }
+
+  .reflect-q { font-size: 1.05rem; font-weight: 700; line-height: 1.5; color: #1a1a1a; margin-bottom: 0.5rem; }
+  .reflect-sub { font-size: 0.92rem; color: #555; line-height: 1.6; margin-bottom: 1rem; }
+  textarea { width: 100%; min-height: 90px; padding: 0.7rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #fffaf6; color: #1a1a1a; outline: none; resize: vertical; line-height: 1.55; }
+  textarea:focus { border-color: #ef7724; }
+  .share-row { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; flex-wrap: wrap; margin-top: 0.8rem; }
+  .share-note { font-size: 0.82rem; color: #888; line-height: 1.5; }
+  .share-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.92rem; font-weight: 700; padding: 0.6rem 1.3rem; background: #ef7724; color: #ffffff; border: none; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+  .share-btn:hover { background: #c05a10; }
+
+  .page-footer { display: flex; justify-content: flex-start; margin-top: 2rem; }
+  .page-footer a { text-decoration: none; color: #007291; background: #ffffff; border: 2px solid #007291; border-radius: 10px; padding: 0.6rem 1.2rem; font-weight: 700; font-size: 0.9rem; }
+  .page-footer a:hover { background: #007291; color: #ffffff; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+  a:focus-visible, button:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Week 4</a>
+</header>
+
+<div class="word-hero">
+  <p class="eyebrow">Word of the Week</p>
+  <h1>Prioritise</h1>
+  <p class="say">Say it: <strong>pry-OR-it-ise</strong> · a verb (a doing word)</p>
+</div>
+
+<main class="main">
+
+  <div class="card teal">
+    <h2>What it means</h2>
+    <p class="meaning">To prioritise is to decide what matters most, and do that first.</p>
+    <p class="plain">We prioritise when we cannot do everything at once. Instead of trying to do it all, we choose the thing that matters most right now, and start there. There is no single right answer - what you prioritise can depend on the day, the task, and you.</p>
+  </div>
+
+  <div class="card">
+    <h2>Word family</h2>
+    <div class="family">
+      <span class="chip">priority <span>· the thing that comes first</span></span>
+      <span class="chip">priorities <span>· more than one</span></span>
+      <span class="chip">prioritising <span>· doing it now</span></span>
+      <span class="chip">prioritised <span>· already done</span></span>
+    </div>
+  </div>
+
+  <div class="card orange">
+    <h2>In a sentence</h2>
+    <ul class="examples">
+      <li>On a busy morning, I <span class="word">prioritise</span> getting dressed before I check my phone.</li>
+      <li>I <span class="word">prioritised</span> my reading task because it was due first.</li>
+      <li>A good designer will <span class="word">prioritise</span> the parts of a plan that matter most.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Where you might meet it this week</h2>
+    <p class="where">In your <strong>Project</strong>, when you choose which step to do first. In <strong>Preparation for Adulthood</strong>, when you plan your day or your free time. In <strong>Maths</strong>, when you work out which part of a problem to solve first. Noticing when you prioritise is a skill in itself.</p>
+  </div>
+
+  <div class="card teal">
+    <h2>Something to think about</h2>
+    <p class="reflect-q">Our big question is: how do our choices today shape the worlds of tomorrow?</p>
+    <p class="reflect-sub">When you prioritise, you are choosing what matters. What is one thing worth prioritising this week - and what might change because you did? You can jot a thought below if you would like. This is optional.</p>
+    <textarea id="reflect" placeholder="One thing I want to prioritise this week is..."></textarea>
+    <div class="share-row">
+      <span class="share-note">Nothing is sent unless you choose to share it.</span>
+      <button class="share-btn" onclick="shareReflection()">Share with Jay</button>
+    </div>
+  </div>
+
+  <nav class="page-footer">
+    <a href="index.html">← Back to Week 4</a>
+  </nav>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School</footer>
+
+<script>
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+function shareReflection() {
+  var text = document.getElementById('reflect').value.trim();
+  if (!text) { document.getElementById('reflect').focus(); return; }
+  var subject = encodeURIComponent('Base 6 · Word of the Week — Prioritise');
+  var body = encodeURIComponent(
+    'BASE 6 · WORD OF THE WEEK\n\n' +
+    'Word: Prioritise\n' +
+    'Date: ' + new Date().toLocaleDateString('en-GB') + '\n\n' +
+    'One thing I want to prioritise this week:\n' + text + '\n\n' +
+    '—\nSent from the Word of the Week page'
+  );
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + subject + '&body=' + body, '_blank');
+}
+</script>
+
+</body>
+</html>
