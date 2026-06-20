@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Artifact Inspector · Human and Social · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.9; max-width: 600px; margin: 0.6rem auto 0; line-height: 1.6; }
+  .main { max-width: 820px; margin: 0 auto; padding: 1.6rem 1.5rem 4rem; }
+
+  .progress { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.4rem; position:sticky; top:0; background:#fef8f4; padding:0.7rem 0; z-index:5; }
+  .pchip { font-size:0.72rem; font-weight:700; padding:5px 11px; border-radius:20px; background:#f0ede8; color:#999; border:1.5px solid #e0d8d0; }
+  .pchip.active { background:#fff3e8; color:#c05a10; border-color:#fcd8bc; }
+  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; }
+
+  .stage { display:none; } .stage.show { display:block; }
+  .stage-card { background:#fff; border:2px solid #e0d8d0; border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .stage-eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#c0392b; margin-bottom:0.3rem; }
+  .stage-card h2 { font-size:1.25rem; font-weight:700; color:#007291; line-height:1.25; margin-bottom:0.5rem; }
+  .stage-card .intro { font-size:0.95rem; color:#444; line-height:1.65; margin-bottom:1rem; }
+
+  .stage-wrap { background:#20242b; border-radius:12px; padding:0.8rem; margin-bottom:0.8rem; }
+  .stage-wrap svg { width:100%; height:auto; display:block; }
+  .hotspot { fill:#ffd84d; stroke:#fff; stroke-width:2; cursor:pointer; transform-box:fill-box; transform-origin:center; animation:pulse 1.4s ease-in-out infinite; }
+  .hotspot:hover { fill:#ffe680; }
+  .hotspot.found { fill:#2e8b57; animation:none; }
+  @keyframes pulse { 0%,100%{ transform:scale(1); opacity:0.95; } 50%{ transform:scale(1.35); opacity:0.55; } }
+  @media (prefers-reduced-motion: reduce){ .hotspot { animation:none; } }
+
+  .counter { text-align:center; font-size:0.85rem; font-weight:700; color:#007291; margin:0.3rem 0 0.6rem; }
+  .clue { border:1.5px solid #e0d8d0; border-radius:10px; padding:0.8rem 0.95rem; margin-bottom:0.7rem; background:#fafafa; opacity:0.55; }
+  .clue.found { opacity:1; border-color:#2e8b57; background:#fff; }
+  .clue .obs { font-size:0.92rem; line-height:1.55; }
+  .clue .obs b { color:#2e8b57; }
+  .clue .locked { font-size:0.9rem; color:#aaa; }
+  .clue label { display:block; font-size:0.82rem; font-weight:700; color:#555; margin:0.6rem 0 0.3rem; }
+  .clue textarea { width:100%; min-height:50px; }
+
+  textarea { width:100%; min-height:80px; padding:0.7rem 0.9rem; font-family:inherit; font-size:0.92rem; border:1.5px solid #e0d8d0; border-radius:8px; background:#fffaf6; color:#1a1a1a; outline:none; resize:vertical; line-height:1.6; }
+  textarea:focus { border-color:#c0392b; }
+  textarea.big { min-height:150px; }
+
+  .sort-row { display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap; padding:0.7rem 0.2rem; border-bottom:1px solid #f0e8e0; }
+  .sort-name { flex:1; min-width:170px; font-size:0.92rem; }
+  .sbtn { font-family:inherit; font-size:0.78rem; font-weight:700; padding:0.4rem 0.8rem; border-radius:20px; border:2px solid #e0d8d0; background:#fff; color:#555; cursor:pointer; }
+  .sbtn:hover { border-color:#b8d8e0; }
+  .sbtn.right { border-color:#2e8b57; background:#e6f5e6; color:#1a5e1a; }
+  .sbtn.wrong { border-color:#e8a020; background:#fff3e6; color:#7a4a00; }
+  .sort-fb { width:100%; font-size:0.83rem; line-height:1.5; display:none; margin-top:0.3rem; padding:0.4rem 0.7rem; border-radius:8px; }
+  .sort-fb.r { display:block; background:#e6f5e6; color:#1a5e1a; } .sort-fb.w { display:block; background:#fff3e6; color:#7a4a00; }
+
+  .hcard { border:2px solid #e0d8d0; border-radius:14px; padding:1.1rem 1.2rem; margin-bottom:1rem; position:relative; }
+  .hcard.chosen { border-color:#c0392b; box-shadow:0 0 0 3px #fbe4ed; }
+  .hcard .face { font-size:1.6rem; }
+  .hcard .hname { font-size:1.02rem; font-weight:700; color:#007291; margin:0.2rem 0; }
+  .hcard .claim { font-size:0.92rem; color:#444; line-height:1.6; margin-bottom:0.7rem; }
+  .evidence-q { font-size:0.82rem; font-weight:700; color:#555; margin-bottom:0.4rem; }
+  .ev-clues { display:flex; flex-direction:column; gap:0.35rem; }
+  .ev-clue { display:flex; align-items:flex-start; gap:0.5rem; font-size:0.86rem; line-height:1.45; cursor:pointer; }
+  .ev-clue input { width:18px; height:18px; accent-color:#007291; margin-top:1px; flex-shrink:0; }
+  .ev-clue.sugg { background:#fff7ec; border-radius:6px; padding:1px 4px; }
+  .stamp { position:absolute; top:8px; right:10px; font-size:0.7rem; font-weight:700; color:#b3123c; border:2.5px solid #b3123c; border-radius:6px; padding:2px 7px; transform:rotate(-10deg); display:none; }
+  .hcard.chosen .stamp { display:block; }
+
+  .evidence-box { background:#eef4fb; border:2px solid #1b3aa3; border-radius:12px; padding:1rem 1.15rem; margin-bottom:1rem; }
+  .evidence-box .tag { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#1b3aa3; margin-bottom:0.3rem; }
+  .evidence-box p { font-size:0.95rem; line-height:1.6; color:#23314d; }
+
+  .pick-row { display:flex; gap:0.5rem; flex-wrap:wrap; margin:0.6rem 0; }
+  .pick-btn { font-family:inherit; font-size:0.85rem; font-weight:700; padding:0.55rem 1rem; border-radius:8px; border:2px solid #007291; background:#fff; color:#007291; cursor:pointer; }
+  .pick-btn:hover { background:#e6f5f8; }
+  .pick-btn.sel { background:#c0392b; border-color:#c0392b; color:#fff; }
+
+  .checklist { display:flex; flex-direction:column; gap:0.5rem; margin:0.6rem 0 0.8rem; }
+  .crow { display:flex; align-items:flex-start; gap:0.6rem; font-size:0.92rem; line-height:1.5; cursor:pointer; }
+  .crow input { width:20px; height:20px; accent-color:#007291; margin-top:1px; flex-shrink:0; cursor:pointer; }
+
+  .reveal-btn, .check-btn, .next-btn { font-family:inherit; font-weight:700; border-radius:8px; cursor:pointer; }
+  .reveal-btn, .check-btn { font-size:0.82rem; padding:0.45rem 1rem; border:2px solid #007291; background:#fff; color:#007291; }
+  .reveal-btn:hover, .check-btn:hover { background:#e6f5f8; }
+  .next-btn { font-size:0.92rem; padding:0.7rem 1.5rem; border:none; background:#c0392b; color:#fff; margin-top:0.6rem; }
+  .next-btn:hover { background:#992c21; }
+  .next-btn:disabled { background:#ccc; cursor:default; }
+  .tip { font-size:0.84rem; color:#888; margin-top:0.5rem; line-height:1.5; }
+  .qbox label { display:block; font-size:0.9rem; font-weight:700; color:#1a1a1a; margin:0.8rem 0 0.4rem; line-height:1.5; }
+
+  .send-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:16px; padding:1.4rem 1.5rem; margin-top:1rem; text-align:center; }
+  .send-card p { font-size:0.92rem; color:#555; line-height:1.6; margin-bottom:0.9rem; }
+  .action-btn { font-family:inherit; font-size:0.92rem; font-weight:700; padding:0.7rem 1.5rem; border-radius:8px; cursor:pointer; border:none; color:#fff; background:#007291; }
+  .action-btn:hover { background:#005a73; }
+  .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; line-height:1.5; }
+  .notify.show { display:block; }
+  a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline:3px solid #007291; outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header"><a class="back-link" href="index.html">← Human and Social</a></header>
+
+<div class="hero">
+  <p class="subject-label">Human and Social · Week 4</p>
+  <h1>🔍 The Artifact Inspector</h1>
+  <p>An object was dug up that no one fully understands. It is carved from bone and fits in one hand. Be the historian: examine it closely, weigh the theories, and reach your own careful verdict.</p>
+</div>
+
+<main class="main">
+
+  <div class="progress" id="progress"></div>
+
+  <!-- STAGE 1 -->
+  <section class="stage" id="stage-1">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 1 of 5</p>
+      <h2>Examine the object</h2>
+      <p class="intro">Tap each glowing spot to look closely. For each one, read what an expert noticed, then write what <strong>you</strong> see in your own words. Good historians record carefully before they decide anything.</p>
+      <div class="stage-wrap">
+        <svg id="art" viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A mysterious carved object">
+          <path d="M40 140 Q 80 80 200 92 Q 322 102 360 150 Q 322 182 200 172 Q 92 166 40 140 Z" fill="#e8dcc0" stroke="#b7a77f" stroke-width="3"/>
+          <ellipse cx="338" cy="150" rx="22" ry="22" fill="#f3ecd9" opacity="0.7"/>
+          <ellipse cx="150" cy="150" rx="28" ry="15" fill="#f1e8d0" opacity="0.65"/>
+          <circle cx="168" cy="108" r="4" fill="#6b5a3e"/><circle cx="196" cy="105" r="4" fill="#6b5a3e"/><circle cx="224" cy="107" r="4" fill="#6b5a3e"/>
+          <g stroke="#7a6a45" stroke-width="2"><line x1="95" y1="150" x2="95" y2="162"/><line x1="103" y1="149" x2="103" y2="161"/><line x1="111" y1="150" x2="111" y2="162"/><line x1="119" y1="149" x2="119" y2="161"/></g>
+          <path d="M40 140 Q 60 120 78 132 Q 60 150 40 140 Z" fill="#d8c9a3"/>
+          <line x1="244" y1="132" x2="262" y2="150" stroke="#b3123c" stroke-width="3"/>
+          <circle class="hotspot" data-clue="0" cx="56"  cy="138" r="11"/>
+          <circle class="hotspot" data-clue="1" cx="196" cy="106" r="11"/>
+          <circle class="hotspot" data-clue="2" cx="107" cy="156" r="11"/>
+          <circle class="hotspot" data-clue="3" cx="340" cy="150" r="11"/>
+          <circle class="hotspot" data-clue="4" cx="253" cy="141" r="11"/>
+          <circle class="hotspot" data-clue="5" cx="150" cy="150" r="11"/>
+        </svg>
+      </div>
+      <p class="counter" id="counter">Spots examined: 0 / 6</p>
+      <div id="clues"></div>
+      <button class="next-btn" id="s1next" onclick="goStage(2)">Continue →</button>
+      <p class="tip">Try to examine all six spots before moving on.</p>
+    </div>
+  </section>
+
+  <!-- STAGE 2 -->
+  <section class="stage" id="stage-2">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 2 of 5</p>
+      <h2>Fact or theory?</h2>
+      <p class="intro">An <strong>observation</strong> is something we can actually see on the object. An <strong>interpretation</strong> is what someone <em>thinks</em> it means. Historians must not mix them up. Sort each statement.</p>
+      <div id="sortlist"></div>
+      <button class="next-btn" onclick="goStage(3)">Continue →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 3 -->
+  <section class="stage" id="stage-3">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 3 of 5</p>
+      <h2>Weigh the three theories</h2>
+      <p class="intro">Three historians have each studied your object. They used the <strong>same</strong> clues, yet reached different answers. For each theory, tick the clues you think support it. Then reveal which clues each historian points to.</p>
+      <div id="theories"></div>
+      <button class="reveal-btn" onclick="revealEvidence()">Show which clues each historian points to</button>
+    </div>
+    <div class="stage-card">
+      <p class="intro" style="margin:0;">When you have weighed all three, continue — but hold on, the laboratory has just sent something in...</p>
+      <button class="next-btn" onclick="goStage(4)">Open the lab report →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 4 -->
+  <section class="stage" id="stage-4">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 4 of 5</p>
+      <h2>New evidence arrives</h2>
+      <div class="evidence-box">
+        <p class="tag">Laboratory report</p>
+        <p>The object was not found lying alone. It was buried <strong>carefully beside a human skeleton</strong>, in a grave, together with a necklace of shells and a polished stone. Tests also show the red colour in the cut lines is <strong>ochre</strong> — a pigment often used in special ceremonies.</p>
+      </div>
+      <p class="intro">Historians change their minds when new evidence appears. That is good thinking, not weak thinking.</p>
+      <div class="qbox">
+        <label for="s4q">Does this new evidence make any theory stronger, or weaker? Which one, and why?</label>
+        <textarea id="s4q" data-save="s4q" placeholder="This makes Dr...'s theory stronger/weaker because..."></textarea>
+      </div>
+      <p class="evidence-q" style="margin-top:0.8rem;">After this report, which theory now seems strongest to you?</p>
+      <div class="pick-row" id="newvote"></div>
+      <button class="next-btn" onclick="goStage(5)">Continue to my verdict →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 5 -->
+  <section class="stage" id="stage-5">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 5 of 5</p>
+      <h2>Your verdict</h2>
+      <p class="intro">Time to decide. Pick the theory you find strongest, then write your argument. A strong verdict uses the evidence — and is honest that another historian might disagree.</p>
+      <p class="evidence-q">I back this theory:</p>
+      <div class="pick-row" id="verdict"></div>
+      <div class="checklist" id="verdict-check"></div>
+      <textarea id="argument" class="big" data-save="argument" placeholder="I think this object was... I believe this because... The new evidence shows... Another historian might say... but..."></textarea>
+      <div class="qbox">
+        <label for="s5reflect">Last thought: why do historians sometimes disagree, even when they are all looking at the same object?</label>
+        <textarea id="s5reflect" data-save="s5reflect" placeholder="They disagree because..."></textarea>
+      </div>
+    </div>
+    <div class="send-card">
+      <p>A full investigation, start to finish. Send it to Jay.</p>
+      <button class="action-btn" onclick="emailWork()">📧 Send my investigation to Jay</button>
+      <div class="notify" id="notify"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School · Human and Social</footer>
+
+<script>
+const STORE_KEY = 'base6_w4_human_artifact';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const CLUES = [
+  'This edge is worn very smooth — it has rubbed against something many, many times.',
+  'A neat row of small holes has been drilled along one side.',
+  'Groups of short scratch marks, cut in a careful, even pattern.',
+  'One end is polished and rounded, as if held in a hand a great deal.',
+  'There is faint red colour left deep inside some of the cut lines.',
+  'There is a smooth, shiny patch in the middle, the size of a thumb.'
+];
+
+const SORTERS = [
+  { t:'The edge is worn smooth.', obs:true },
+  { t:'It was used to scrape animal skins.', obs:false },
+  { t:'There are scratch marks in an even pattern.', obs:true },
+  { t:'The scratches count the days of the moon.', obs:false },
+  { t:'There is red colour deep in the cut lines.', obs:true },
+  { t:'The red colour was used in a special ceremony.', obs:false },
+  { t:'One end is polished and rounded.', obs:true },
+  { t:'It was a handle, held in the hand every day.', obs:false },
+];
+
+const THEORIES = [
+  { id:'vale', face:'🧑🏽‍🔬', name:'Dr. Vale — a working TOOL',
+    claim:'"It is an everyday tool. The worn edge scraped animal hides, the polished end was a handle, and the smooth patch is where a thumb pressed for years."',
+    clues:[0,3,5] },
+  { id:'okafor', face:'🧑🏿‍🏫', name:'Dr. Okafor — a TALLY or calendar',
+    claim:'"It is a counting stick. The even scratch marks count the days or the moons, and the drilled holes mark special days, like a hunt or a festival."',
+    clues:[1,2] },
+  { id:'reyes', face:'🧑🏻‍🎨', name:'Dr. Reyes — a SPECIAL or sacred object',
+    claim:'"It is a precious, meaningful object. The red colour was added on purpose, and the careful carving suggests it mattered far more than an ordinary tool."',
+    clues:[4] },
+];
+const TNAMES = { vale:'Dr. Vale (tool)', okafor:'Dr. Okafor (tally)', reyes:'Dr. Reyes (special object)' };
+
+const VERDICT_CHECK = [
+  'I named which theory I think is strongest.',
+  'I used at least TWO clues to back it up.',
+  'I mentioned the new evidence from the lab.',
+  'I admitted another historian might see it differently.'
+];
+
+let state = { found:[], obsnotes:{}, sort:{}, evidence:{}, newvote:null, verdict:null, vchk:{}, fields:{}, stage:1 };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e){}
+if(!Array.isArray(state.found)) state.found=[];
+['obsnotes','sort','evidence','vchk','fields'].forEach(k=>{ if(!state[k]) state[k]={}; });
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+
+const PLABELS = ['Examine','Sort','Theories','New clue','Verdict'];
+function renderProgress(){
+  const p=document.getElementById('progress'); p.innerHTML='';
+  PLABELS.forEach((lab,i)=>{ const n=i+1; const c=document.createElement('span');
+    c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':''); c.textContent=n+'. '+lab; p.appendChild(c); });
+}
+function goStage(n){
+  state.stage=Math.max(state.stage,n); save();
+  for(let i=1;i<=5;i++){ const el=document.getElementById('stage-'+i); if(el) el.classList.toggle('show', i<=n); }
+  renderProgress();
+  const t=document.getElementById('stage-'+n); if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// Stage 1
+const cluesEl=document.getElementById('clues');
+CLUES.forEach((c,i)=>{
+  const d=document.createElement('div'); d.className='clue'; d.id='clue-'+i;
+  d.innerHTML='<div class="body"><span class="locked">Tap glowing spot '+(i+1)+' on the object to examine it.</span></div>';
+  cluesEl.appendChild(d);
+});
+function revealClue(i){
+  if(state.found.indexOf(i)===-1){ state.found.push(i); save(); }
+  const d=document.getElementById('clue-'+i); d.classList.add('found');
+  d.querySelector('.body').innerHTML =
+    '<div class="obs"><b>Expert notes:</b> '+CLUES[i]+'</div>'
+    +'<label for="obs-'+i+'">In your own words, what do you notice here?</label>'
+    +'<textarea id="obs-'+i+'" data-obs="'+i+'" placeholder="I can see..."></textarea>';
+  const ta=d.querySelector('textarea'); if(state.obsnotes[i]) ta.value=state.obsnotes[i];
+  ta.addEventListener('input',()=>{ state.obsnotes[i]=ta.value; save(); });
+  const hs=document.querySelector('.hotspot[data-clue="'+i+'"]'); if(hs) hs.classList.add('found');
+  updateCounter();
+}
+function updateCounter(){ document.getElementById('counter').textContent='Spots examined: '+state.found.length+' / 6'; }
+document.querySelectorAll('.hotspot').forEach(h=>h.addEventListener('click',()=>revealClue(parseInt(h.dataset.clue,10))));
+
+// Stage 2
+const sortlist=document.getElementById('sortlist');
+SORTERS.forEach((s,i)=>{
+  const row=document.createElement('div'); row.className='sort-row';
+  row.innerHTML='<span class="sort-name">'+s.t+'</span>'
+    +'<button class="sbtn" data-v="obs">Observation</button>'
+    +'<button class="sbtn" data-v="interp">Interpretation</button>'
+    +'<div class="sort-fb" data-fb="'+i+'"></div>';
+  sortlist.appendChild(row);
+  const fb=row.querySelector('[data-fb="'+i+'"]');
+  function paint(v){
+    const want = s.obs?'obs':'interp';
+    row.querySelectorAll('.sbtn').forEach(b=>{ b.classList.remove('right','wrong'); if(b.dataset.v===v) b.classList.add(v===want?'right':'wrong'); });
+    const ok=v===want; fb.className='sort-fb '+(ok?'r':'w');
+    fb.textContent = ok
+      ? (s.obs?'✓ Yes — this is something we can actually see on the object.':'✓ Yes — this is an idea about what it means, not something we can see.')
+      : (s.obs?'Look again — can you actually SEE this on the object? If yes, it is an observation.':'Look again — is this a fact you can see, or someone\'s idea about what it means?');
+  }
+  row.querySelectorAll('.sbtn').forEach(b=>b.addEventListener('click',()=>{ state.sort[i]=b.dataset.v; save(); paint(b.dataset.v); }));
+  if(state.sort[i]) paint(state.sort[i]);
+});
+
+// Stage 3 theories + evidence ticks
+const theoriesEl=document.getElementById('theories');
+THEORIES.forEach(th=>{
+  const card=document.createElement('div'); card.className='hcard'; card.id='th-'+th.id;
+  let ev='<div class="evidence-q">Which clues support this theory? Tick the ones you think fit.</div><div class="ev-clues">';
+  CLUES.forEach((c,ci)=>{ ev+='<label class="ev-clue" data-evcell="'+th.id+'_'+ci+'"><input type="checkbox" data-ev="'+th.id+'_'+ci+'"> '+c+'</label>'; });
+  ev+='</div>';
+  card.innerHTML='<span class="stamp">✔ You backed this</span><div class="face" aria-hidden="true">'+th.face+'</div><div class="hname">'+th.name+'</div><div class="claim">'+th.claim+'</div>'+ev;
+  theoriesEl.appendChild(card);
+});
+document.querySelectorAll('input[data-ev]').forEach(cb=>{
+  const k=cb.dataset.ev; if(state.evidence[k]) cb.checked=true;
+  cb.addEventListener('change',()=>{ state.evidence[k]=cb.checked; save(); });
+});
+function revealEvidence(){
+  THEORIES.forEach(th=>{ th.clues.forEach(ci=>{ const cell=document.querySelector('[data-evcell="'+th.id+'_'+ci+'"]'); if(cell) cell.classList.add('sugg'); }); });
+}
+
+// Stage 4 new vote
+const nv=document.getElementById('newvote');
+THEORIES.forEach(th=>{
+  const b=document.createElement('button'); b.className='pick-btn'+(state.newvote===th.id?' sel':''); b.textContent=TNAMES[th.id];
+  b.addEventListener('click',()=>{ state.newvote=th.id; save(); nv.querySelectorAll('.pick-btn').forEach(x=>x.classList.toggle('sel', x===b)); });
+  nv.appendChild(b);
+});
+
+// Stage 5 verdict
+const vd=document.getElementById('verdict');
+THEORIES.forEach(th=>{
+  const b=document.createElement('button'); b.className='pick-btn'+(state.verdict===th.id?' sel':''); b.textContent=TNAMES[th.id];
+  b.addEventListener('click',()=>{
+    state.verdict=th.id; save();
+    vd.querySelectorAll('.pick-btn').forEach(x=>x.classList.toggle('sel', x===b));
+    document.querySelectorAll('.hcard').forEach(c=>c.classList.toggle('chosen', c.id==='th-'+th.id));
+  });
+  vd.appendChild(b);
+});
+const vchk=document.getElementById('verdict-check');
+VERDICT_CHECK.forEach((c,i)=>{
+  const l=document.createElement('label'); l.className='crow';
+  l.innerHTML='<input type="checkbox" data-vchk="'+i+'"> '+c;
+  vchk.appendChild(l);
+  const cb=l.querySelector('input'); if(state.vchk[i]) cb.checked=true;
+  cb.addEventListener('change',()=>{ state.vchk[i]=cb.checked; save(); });
+});
+
+document.querySelectorAll('[data-save]').forEach(el=>{
+  const k=el.dataset.save; if(state.fields[k]!==undefined) el.value=state.fields[k];
+  el.addEventListener('input',()=>{ state.fields[k]=el.value; save(); });
+});
+
+function emailWork(){
+  const f=state.fields;
+  let b='THE ARTIFACT INSPECTOR — AN INVESTIGATION (Human and Social, Week 4)\n';
+  b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n';
+  b+='STAGE 1 — OBSERVATIONS RECORDED ('+state.found.length+'/6 spots)\n';
+  CLUES.forEach((c,i)=>{ if(state.obsnotes[i]&&state.obsnotes[i].trim()) b+= '• '+state.obsnotes[i].trim()+'\n'; });
+  b+='\nSTAGE 2 — FACT OR THEORY\n';
+  let sc=0; SORTERS.forEach((s,i)=>{ const a=state.sort[i]; const want=s.obs?'obs':'interp'; if(a===want) sc++; });
+  b+='Sorted correctly: '+sc+' / '+SORTERS.length+'\n';
+  b+='\nSTAGE 3 — EVIDENCE TICKED PER THEORY\n';
+  THEORIES.forEach(th=>{ const ticks=CLUES.map((c,ci)=>state.evidence[th.id+'_'+ci]?(ci+1):null).filter(x=>x); b+= TNAMES[th.id]+': clues '+(ticks.length?ticks.join(', '):'none')+'\n'; });
+  b+='\nSTAGE 4 — NEW EVIDENCE\n';
+  b+='Effect of lab report: '+((f.s4q||'').trim()||'(no answer)')+'\n';
+  b+='Strongest after new evidence: '+(state.newvote?TNAMES[state.newvote]:'(not chosen)')+'\n';
+  b+='\nSTAGE 5 — VERDICT\n';
+  b+='Theory backed: '+(state.verdict?TNAMES[state.verdict]:'(not chosen)')+'\n';
+  b+='Checklist: '+VERDICT_CHECK.filter((c,i)=>state.vchk[i]).length+' / '+VERDICT_CHECK.length+'\n';
+  b+='Argument:\n'+((f.argument||'').trim()||'(not written yet)')+'\n';
+  b+='Why historians disagree: '+((f.s5reflect||'').trim()||'(no answer)')+'\n\n—\nSent from Base 6';
+  const su=encodeURIComponent('Base 6 · Artifact Inspector investigation');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank');
+  const n=document.getElementById('notify'); n.textContent='✓ Opening your email — your full investigation is ready to send.'; n.classList.add('show');
+}
+
+// init / restore
+state.found.slice().forEach(revealClue);
+updateCounter();
+if(state.verdict){ const c=document.getElementById('th-'+state.verdict); if(c) c.classList.add('chosen'); }
+goStage(state.stage||1);
+</script>
+
+</body>
+</html>
