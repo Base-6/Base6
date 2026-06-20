@@ -386,25 +386,25 @@ const DAY_ID   = "week4-day2";
 // ===== BASE 6 AVATAR + COSMETICS =====
 (function () {
   var STUDENTS = ['LW','AP','LS','LC','HK','JTK'];
-  var CREATURES = ['\uD83E\uDD8A','\uD83D\uDC22','\uD83E\uDD89','\uD83D\uDC19','\uD83E\uDD8B','\uD83D\uDC31','\uD83D\uDC27','\uD83E\uDD81','\uD83D\uDC38','\uD83D\uDC3C'];
+  var CREATURES = ['\ud83e\udd85','\ud83d\udc09','\ud83e\udd96','\ud83d\udc3a','\ud83e\udd84','\ud83e\udd8c','\ud83e\udda3','\ud83d\udc05','\ud83e\udd8e','\ud83e\udd8f'];
   var ITEMS = [
-    { id:'glasses',    slot:'eyes',  emoji:'\uD83D\uDC53', label:'Glasses' },
-    { id:'cap',        slot:'head',  emoji:'\uD83E\uDDE2', label:'Cap' },
-    { id:'balloon',    slot:'hand',  emoji:'\uD83C\uDF88', label:'Balloon' },
-    { id:'bow',        slot:'neck',  emoji:'\uD83C\uDF80', label:'Bow' },
-    { id:'sunny',      slot:'bg',    color:'#fff1c9',      label:'Sunny' },
-    { id:'chick',      slot:'friend',emoji:'\uD83D\uDC25', label:'Chick' },
-    { id:'shades',     slot:'eyes',  emoji:'\uD83D\uDD76\uFE0F', label:'Shades' },
-    { id:'scarf',      slot:'neck',  emoji:'\uD83E\uDDE3', label:'Scarf' },
-    { id:'paintbrush', slot:'hand',  emoji:'\uD83D\uDD8C\uFE0F', label:'Paintbrush' },
-    { id:'tophat',     slot:'head',  emoji:'\uD83C\uDFA9', label:'Top hat' },
-    { id:'butterfly',  slot:'friend',emoji:'\uD83E\uDD8B', label:'Butterfly' },
-    { id:'sky',        slot:'bg',    color:'#e3f1f5',      label:'Sky' },
-    { id:'goggles',    slot:'eyes',  emoji:'\uD83E\uDD7D', label:'Goggles' },
-    { id:'skateboard', slot:'hand',  emoji:'\uD83D\uDEF9', label:'Skateboard' },
-    { id:'medal',      slot:'neck',  emoji:'\uD83C\uDFC5', label:'Medal' },
-    { id:'wand',       slot:'hand',  emoji:'\uD83E\uDE84', label:'Wand' },
-    { id:'crown',      slot:'head',  emoji:'\uD83D\uDC51', label:'Crown' }
+    { id:'goggles', slot:'eyes', emoji:'\ud83e\udd7d', label:'Goggles' },
+    { id:'cap', slot:'head', emoji:'\ud83e\udde2', label:'Cap' },
+    { id:'compass', slot:'hand', emoji:'\ud83e\udded', label:'Compass' },
+    { id:'scarf', slot:'neck', emoji:'\ud83e\udde3', label:'Scarf' },
+    { id:'summit', slot:'bg', color:'#d9ecf5', label:'Summit sky' },
+    { id:'parrot', slot:'friend', emoji:'\ud83e\udd9c', label:'Parrot' },
+    { id:'shades', slot:'eyes', emoji:'\ud83d\udd76\ufe0f', label:'Shades' },
+    { id:'map', slot:'hand', emoji:'\ud83d\uddfa\ufe0f', label:'Map' },
+    { id:'helmet', slot:'head', emoji:'\u26d1\ufe0f', label:'Helmet' },
+    { id:'rope', slot:'neck', emoji:'\ud83e\udea2', label:'Rope' },
+    { id:'butterfly', slot:'friend', emoji:'\ud83e\udd8b', label:'Butterfly' },
+    { id:'starlight', slot:'bg', color:'#e6e3f5', label:'Starlight' },
+    { id:'torch', slot:'hand', emoji:'\ud83d\udd26', label:'Torch' },
+    { id:'sunhat', slot:'head', emoji:'\ud83d\udc52', label:'Sun hat' },
+    { id:'medal', slot:'neck', emoji:'\ud83c\udfc5', label:'Medal' },
+    { id:'pickaxe', slot:'hand', emoji:'\u26cf\ufe0f', label:'Pick axe' },
+    { id:'crown', slot:'head', emoji:'\ud83d\udc51', label:'Summit crown' }
   ];
   var SLOT_ORDER = ['head','eyes','neck','hand','friend','bg'];
   var SLOT_LABELS = { head:'Head', eyes:'Eyes', neck:'Neck', hand:'Holding', friend:'Friend', bg:'Background' };
@@ -481,8 +481,8 @@ const DAY_ID   = "week4-day2";
     if (fresh.length > 0){
       w.seen = unlocked.map(function(it){ return it.id; }); setWardrobe(w);
       showToast(fresh.length === 1
-        ? 'You unlocked ' + fresh[0].label + '. Tap your avatar to try it on.'
-        : 'You unlocked ' + fresh.length + ' new things. Tap your avatar to try them on.');
+        ? 'You found ' + fresh[0].label + '. Tap your avatar to add it.'
+        : 'You found ' + fresh.length + ' new things. Tap your avatar to add them.');
     }
   }
 
