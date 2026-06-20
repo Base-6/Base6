@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stained Glass Fashion Designer · Aesthetic and Creative · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.9; max-width: 580px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 900px; margin: 0 auto; padding: 1.6rem 1.5rem 4rem; }
+
+  .steps { background: #fff7f0; border: 2px solid #fcd8bc; border-radius: 12px; padding: 0.9rem 1.2rem; margin-bottom: 1.4rem; font-size: 0.9rem; line-height: 1.7; color: #444; }
+  .steps strong { color: #c2185b; }
+
+  .studio { display: grid; grid-template-columns: minmax(220px, 340px) 1fr; gap: 1.2rem; align-items: start; }
+  @media (max-width: 680px) { .studio { grid-template-columns: 1fr; } }
+
+  .stage { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 0.8rem; text-align: center; position: sticky; top: 0.8rem; }
+  .stage svg { width: 100%; height: auto; max-height: 64vh; }
+  .stage .hint { font-size: 0.82rem; color: #888; margin-top: 0.4rem; min-height: 1.2em; }
+
+  .panel { display: flex; flex-direction: column; gap: 1.2rem; }
+  .panel h2 { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #007291; margin-bottom: 0.6rem; }
+  .panel .sub { font-size: 0.82rem; color: #888; margin: -0.4rem 0 0.6rem; }
+
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)); gap: 0.5rem; }
+  .swatch { position: relative; aspect-ratio: 1 / 1; border-radius: 10px; border: 3px solid #e0d8d0; cursor: pointer; overflow: hidden; transition: transform 0.1s; padding: 0; }
+  .swatch:hover { transform: translateY(-2px); }
+  .swatch.sel { border-color: #c2185b; box-shadow: 0 0 0 2px #fbe4ed; }
+  .swatch .label { position: absolute; left: 0; right: 0; bottom: 0; font-size: 0.58rem; font-weight: 700; background: rgba(255,255,255,0.85); color: #333; padding: 1px 0; }
+  .swatch svg { width: 100%; height: 100%; display: block; }
+
+  .zone { stroke: #1a1a1a; stroke-width: 3; stroke-linejoin: round; cursor: pointer; transition: opacity 0.1s; }
+  .zone:hover { opacity: 0.78; }
+
+  .reflect { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.2rem 1.4rem; margin-top: 1.8rem; }
+  .reflect h2 { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #007291; margin-bottom: 0.5rem; }
+  .reflect p { font-size: 0.92rem; color: #555; line-height: 1.6; margin-bottom: 0.8rem; }
+  textarea { width: 100%; min-height: 90px; padding: 0.7rem 0.9rem; font-family: inherit; font-size: 0.92rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #fffaf6; color: #1a1a1a; outline: none; resize: vertical; line-height: 1.6; }
+  textarea:focus { border-color: #c2185b; }
+
+  .btn-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem; }
+  .action-btn { font-family: inherit; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.3rem; border-radius: 8px; cursor: pointer; border: none; color: #fff; }
+  .action-btn.teal { background: #007291; } .action-btn.teal:hover { background: #005a73; }
+  .action-btn.pink { background: #c2185b; } .action-btn.pink:hover { background: #911343; }
+  .action-btn.ghost { background: #fff; color: #007291; border: 2px solid #007291; }
+  .action-btn.ghost:hover { background: #e6f5f8; }
+  .notify { display: none; margin-top: 0.9rem; font-size: 0.88rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.65rem 1rem; line-height: 1.5; }
+  .notify.show { display: block; }
+
+  a:focus-visible, button:focus-visible, textarea:focus-visible { outline: 3px solid #007291; outline-offset: 2px; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Aesthetic and Creative</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Aesthetic and Creative · Week 4</p>
+  <h1>🪟 Stained Glass Fashion Designer</h1>
+  <p>Fill this outfit like a stained glass window. Choose a colour or material, then click each part to fill it. Make the jacket one fabric and the sleeves another — it is your design to plan.</p>
+</div>
+
+<main class="main">
+
+  <div class="steps">
+    <strong>How it works:</strong> 1) Tap a colour or material below to load your <strong>brush</strong>. 2) Click any part of the outfit — or the background panels — to fill it in. 3) Change brush and keep going. Use <strong>White</strong> to undo a fill.
+  </div>
+
+  <div class="studio">
+
+    <!-- STAGE -->
+    <div class="stage">
+      <svg id="art-svg" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Outfit to design">
+        <defs>
+          <pattern id="pat-denim" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="14" height="14" fill="#3b6ea5"/>
+            <line x1="0" y1="0" x2="0" y2="14" stroke="#5b8ec9" stroke-width="2"/>
+            <line x1="7" y1="0" x2="7" y2="14" stroke="#2f5b86" stroke-width="1"/>
+          </pattern>
+          <pattern id="pat-polka" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect width="20" height="20" fill="#f5a9c8"/>
+            <circle cx="5" cy="5" r="3" fill="#ffffff"/>
+            <circle cx="15" cy="15" r="3" fill="#ffffff"/>
+          </pattern>
+          <pattern id="pat-stripes" width="16" height="16" patternUnits="userSpaceOnUse">
+            <rect width="16" height="16" fill="#007291"/>
+            <rect width="8" height="16" fill="#ffffff"/>
+          </pattern>
+          <pattern id="pat-check" width="22" height="22" patternUnits="userSpaceOnUse">
+            <rect width="22" height="22" fill="#ffffff"/>
+            <rect width="11" height="22" fill="#c0392b" opacity="0.45"/>
+            <rect width="22" height="11" fill="#c0392b" opacity="0.45"/>
+          </pattern>
+          <linearGradient id="pat-silk" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#f4d58d"/>
+            <stop offset="50%" stop-color="#fbeed0"/>
+            <stop offset="100%" stop-color="#e6b84e"/>
+          </linearGradient>
+          <pattern id="pat-floral" width="24" height="24" patternUnits="userSpaceOnUse">
+            <rect width="24" height="24" fill="#e6f3e6"/>
+            <circle cx="12" cy="9" r="2.5" fill="#ef7724"/>
+            <circle cx="9" cy="12" r="2.5" fill="#f5a9c8"/>
+            <circle cx="15" cy="12" r="2.5" fill="#f5a9c8"/>
+            <circle cx="12" cy="15" r="2.5" fill="#f5a9c8"/>
+            <circle cx="12" cy="12" r="2" fill="#f4c542"/>
+          </pattern>
+          <pattern id="pat-stars" width="24" height="24" patternUnits="userSpaceOnUse">
+            <rect width="24" height="24" fill="#2a2a55"/>
+            <polygon points="12,4 13.8,9.2 19.2,9.2 14.7,12.6 16.5,18 12,14.6 7.5,18 9.3,12.6 4.8,9.2 10.2,9.2" fill="#f4c542"/>
+          </pattern>
+        </defs>
+
+        <!-- BACKGROUND PANELS -->
+        <polygon class="zone" data-zone="bg-top"    data-label="Background" points="0,0 300,0 150,230"    fill="#f3eef8"/>
+        <polygon class="zone" data-zone="bg-right"  data-label="Background" points="300,0 300,460 150,230" fill="#efe6f3"/>
+        <polygon class="zone" data-zone="bg-bottom" data-label="Background" points="300,460 0,460 150,230" fill="#f3eef8"/>
+        <polygon class="zone" data-zone="bg-left"   data-label="Background" points="0,460 0,0 150,230"    fill="#efe6f3"/>
+
+        <!-- HAT -->
+        <ellipse class="zone" data-zone="hat-brim"  data-label="Hat brim" cx="150" cy="68" rx="54" ry="10" fill="#ffffff"/>
+        <rect    class="zone" data-zone="hat-crown" data-label="Hat"      x="118" y="30" width="64" height="38" rx="10" fill="#ffffff"/>
+
+        <!-- FACE (skin) -->
+        <rect class="skin" x="140" y="124" width="20" height="18" fill="#f1c9a5" stroke="#1a1a1a" stroke-width="3"/>
+        <ellipse class="zone" data-zone="face" data-label="Face" cx="150" cy="98" rx="30" ry="34" fill="#f1c9a5"/>
+        <circle cx="140" cy="96" r="3" fill="#1a1a1a"/>
+        <circle cx="160" cy="96" r="3" fill="#1a1a1a"/>
+        <path d="M139 110 Q150 118 161 110" stroke="#1a1a1a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+        <!-- SLEEVES -->
+        <polygon class="zone" data-zone="sleeve-l" data-label="Sleeves" points="105,152 88,160 78,252 100,252" fill="#ffffff"/>
+        <polygon class="zone" data-zone="sleeve-r" data-label="Sleeves" points="195,152 212,160 222,252 200,252" fill="#ffffff"/>
+
+        <!-- JACKET BODY -->
+        <polygon class="zone" data-zone="jacket" data-label="Jacket" points="105,150 195,150 205,252 95,252" fill="#ffffff"/>
+
+        <!-- SHIRT (centre) -->
+        <polygon class="zone" data-zone="shirt" data-label="Shirt" points="150,150 138,250 162,250" fill="#ffffff"/>
+
+        <!-- LAPELS -->
+        <polygon class="zone" data-zone="lapel-l" data-label="Lapels" points="150,150 120,150 150,210" fill="#ffffff"/>
+        <polygon class="zone" data-zone="lapel-r" data-label="Lapels" points="150,150 180,150 150,210" fill="#ffffff"/>
+
+        <!-- BELT -->
+        <rect class="zone" data-zone="belt" data-label="Belt" x="95" y="252" width="110" height="18" fill="#ffffff"/>
+
+        <!-- TROUSERS -->
+        <polygon class="zone" data-zone="trouser-l" data-label="Trousers" points="96,270 147,270 141,420 100,420" fill="#ffffff"/>
+        <polygon class="zone" data-zone="trouser-r" data-label="Trousers" points="153,270 204,270 200,420 159,420" fill="#ffffff"/>
+
+        <!-- SHOES -->
+        <ellipse class="zone" data-zone="shoe-l" data-label="Shoes" cx="118" cy="430" rx="28" ry="15" fill="#ffffff"/>
+        <ellipse class="zone" data-zone="shoe-r" data-label="Shoes" cx="182" cy="430" rx="28" ry="15" fill="#ffffff"/>
+      </svg>
+      <p class="hint" id="stage-hint">Pick a colour or material, then click a part of the outfit.</p>
+    </div>
+
+    <!-- PANEL -->
+    <div class="panel">
+      <div>
+        <h2>Jewel colours</h2>
+        <p class="sub" id="brush-note">No brush picked yet.</p>
+        <div class="swatch-grid" id="jewels"></div>
+      </div>
+      <div>
+        <h2>Everyday colours</h2>
+        <div class="swatch-grid" id="colours"></div>
+      </div>
+      <div>
+        <h2>Materials</h2>
+        <div class="swatch-grid" id="materials"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFLECT + SAVE -->
+  <div class="reflect">
+    <h2>Tell us about your design</h2>
+    <p>What choices did you make about the colours and materials, and how do they suit the outfit? A sentence or two is plenty.</p>
+    <textarea id="reflect-text" placeholder="I made the... because..."></textarea>
+    <div class="btn-row">
+      <button class="action-btn pink" onclick="downloadDesign()">⬇ Save my design as a picture</button>
+      <button class="action-btn teal" onclick="emailDesign()">📧 Send my design to Jay</button>
+      <button class="action-btn ghost" onclick="resetAll()">Start again</button>
+    </div>
+    <div class="notify" id="notify"></div>
+  </div>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School · Aesthetic and Creative</footer>
+
+<script>
+const STORE_KEY = 'base6_w4_creative_stainedglass';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const JEWELS = [
+  { id:'ruby',     label:'Ruby',     fill:'#b3123c' },
+  { id:'sapphire', label:'Sapphire', fill:'#1b3aa3' },
+  { id:'emerald',  label:'Emerald',  fill:'#0f8a5f' },
+  { id:'amber',    label:'Amber',    fill:'#e08a1e' },
+  { id:'amethyst', label:'Amethyst', fill:'#6a2da8' },
+  { id:'gold',     label:'Gold',     fill:'#d4a017' },
+  { id:'rose',     label:'Rose',     fill:'#d44a8b' },
+  { id:'teal',     label:'Teal',     fill:'#007291' },
+];
+const COLOURS = [
+  { id:'coral',  label:'Coral',  fill:'#ef7724' },
+  { id:'green',  label:'Green',  fill:'#2e8b57' },
+  { id:'blue',   label:'Blue',   fill:'#4a6fa5' },
+  { id:'pink',   label:'Pink',   fill:'#f5a9c8' },
+  { id:'black',  label:'Black',  fill:'#333333' },
+  { id:'white',  label:'White',  fill:'#ffffff' },
+];
+const MATERIALS = [
+  { id:'denim',   label:'Denim',  fill:'url(#pat-denim)' },
+  { id:'polka',   label:'Polka',  fill:'url(#pat-polka)' },
+  { id:'stripes', label:'Stripes',fill:'url(#pat-stripes)' },
+  { id:'check',   label:'Check',  fill:'url(#pat-check)' },
+  { id:'silk',    label:'Silk',   fill:'url(#pat-silk)' },
+  { id:'floral',  label:'Floral', fill:'url(#pat-floral)' },
+  { id:'stars',   label:'Stars',  fill:'url(#pat-stars)' },
+];
+const ALL = JEWELS.concat(COLOURS).concat(MATERIALS);
+function fabricLabel(fill){ for (var i=0;i<ALL.length;i++){ if (ALL[i].fill===fill) return ALL[i].label; } return 'a fabric'; }
+
+let state = { fills:{}, reflect:'' };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+
+let activeFill = null;
+
+function makeSwatch(f, container) {
+  const b = document.createElement('button');
+  b.className = 'swatch';
+  b.title = f.label;
+  if (f.fill.indexOf('url(') === 0) {
+    b.innerHTML = '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="' + f.fill + '"/></svg><span class="label">' + f.label + '</span>';
+  } else {
+    b.style.background = f.fill;
+    if (f.fill === '#ffffff') b.style.boxShadow = 'inset 0 0 0 1px #e0d8d0';
+    b.innerHTML = '<span class="label">' + f.label + '</span>';
+  }
+  b.addEventListener('click', () => selectFabric(f.fill, b));
+  container.appendChild(b);
+}
+JEWELS.forEach(f => makeSwatch(f, document.getElementById('jewels')));
+COLOURS.forEach(f => makeSwatch(f, document.getElementById('colours')));
+MATERIALS.forEach(f => makeSwatch(f, document.getElementById('materials')));
+
+// give pattern swatches their own copy of the defs
+(function injectDefs(){
+  const mainDefs = document.querySelector('#art-svg defs');
+  document.querySelectorAll('.swatch svg').forEach(svg => {
+    svg.insertBefore(mainDefs.cloneNode(true), svg.firstChild);
+  });
+})();
+
+function selectFabric(fill, btn) {
+  activeFill = fill;
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('brush-note').textContent = 'Brush: ' + fabricLabel(fill) + '. Now click a part of the outfit.';
+  setHint('Click a part of the outfit to make it ' + fabricLabel(fill) + '.');
+}
+function setHint(t){ document.getElementById('stage-hint').textContent = t; }
+
+document.querySelectorAll('.zone').forEach(z => {
+  z.addEventListener('click', () => {
+    if (!activeFill) { setHint('Pick a colour or material first, then click the outfit.'); return; }
+    const id = z.dataset.zone;
+    z.setAttribute('fill', activeFill);
+    state.fills[id] = activeFill;
+    save();
+    setHint('Filled the ' + (z.dataset.label || 'part').toLowerCase() + ' with ' + fabricLabel(activeFill) + '.');
+  });
+});
+
+function render() {
+  document.querySelectorAll('.zone').forEach(z => {
+    const f = state.fills[z.dataset.zone];
+    if (f) z.setAttribute('fill', f);
+  });
+}
+
+function downloadDesign() {
+  const svg = document.getElementById('art-svg');
+  try {
+    const xml = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 600; canvas.height = 920;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fef8f4'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      const a = document.createElement('a');
+      a.download = 'my-stained-glass-design.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+      flash('✓ Saved. Look in your Downloads for the picture.');
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); window.print(); };
+    img.src = url;
+  } catch(e) { window.print(); }
+}
+
+function emailDesign() {
+  const reflect = document.getElementById('reflect-text').value.trim();
+  state.reflect = reflect; save();
+  // group filled zones by friendly label
+  const byLabel = {};
+  document.querySelectorAll('.zone').forEach(z => {
+    const f = state.fills[z.dataset.zone];
+    if (!f) return;
+    const lab = z.dataset.label || 'Part';
+    byLabel[lab] = fabricLabel(f);
+  });
+  const keys = Object.keys(byLabel);
+  if (keys.length === 0) { flash('Fill in a few parts of the outfit first, then send it over.'); return; }
+  let body = 'STAINED GLASS FASHION DESIGNER — AESTHETIC AND CREATIVE, WEEK 4\n';
+  body += 'Date: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'My design:\n';
+  keys.forEach(k => { body += '- ' + k + ': ' + byLabel[k] + '\n'; });
+  body += '\nWhy I chose these:\n' + (reflect || '(not written yet)') + '\n\n';
+  body += '—\nSent from Base 6. (Tip: you can save the picture and attach it too.)';
+  const su = encodeURIComponent('Base 6 · Stained Glass Fashion Designer');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + su + '&body=' + encodeURIComponent(body), '_blank');
+  flash('✓ Opening your email — your design choices are written out, ready to send.');
+}
+
+function resetAll() {
+  if (!confirm('Start again? This clears all your fills.')) return;
+  state = { fills:{}, reflect:'' };
+  save();
+  activeFill = null;
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('sel'));
+  document.getElementById('brush-note').textContent = 'No brush picked yet.';
+  document.getElementById('reflect-text').value = '';
+  // reset zone fills to defaults
+  document.querySelectorAll('.zone').forEach(z => {
+    const id = z.dataset.zone;
+    let def = '#ffffff';
+    if (id === 'face') def = '#f1c9a5';
+    if (id === 'bg-top' || id === 'bg-bottom') def = '#f3eef8';
+    if (id === 'bg-left' || id === 'bg-right') def = '#efe6f3';
+    z.setAttribute('fill', def);
+  });
+  setHint('Pick a colour or material, then click a part of the outfit.');
+}
+
+function flash(msg){ const n = document.getElementById('notify'); n.textContent = msg; n.classList.add('show'); }
+
+if (state.reflect) document.getElementById('reflect-text').value = state.reflect;
+render();
+</script>
+
+</body>
+</html>

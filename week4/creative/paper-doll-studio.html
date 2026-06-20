@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Paper Doll Studio · Aesthetic and Creative · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+
+  .hero { background-color: #007291; padding: 1.5rem 2rem 2.25rem; text-align: center; }
+  .hero .subject-label { font-size: 0.85rem; font-weight: 700; color: #fef8f4; opacity: 0.8; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .hero h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .hero p { font-size: 0.98rem; color: #fef8f4; opacity: 0.9; max-width: 580px; margin: 0.6rem auto 0; line-height: 1.6; }
+
+  .main { max-width: 900px; margin: 0 auto; padding: 1.6rem 1.5rem 4rem; }
+
+  .steps { background: #fff7f0; border: 2px solid #fcd8bc; border-radius: 12px; padding: 0.9rem 1.2rem; margin-bottom: 1.4rem; font-size: 0.9rem; line-height: 1.7; color: #444; }
+  .steps strong { color: #c2185b; }
+
+  .studio { display: grid; grid-template-columns: minmax(220px, 320px) 1fr; gap: 1.2rem; align-items: start; }
+  @media (max-width: 680px) { .studio { grid-template-columns: 1fr; } }
+
+  .stage { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 1rem; text-align: center; position: sticky; top: 0.8rem; }
+  .stage svg { width: 100%; height: auto; max-height: 60vh; }
+  .stage .hint { font-size: 0.82rem; color: #888; margin-top: 0.4rem; min-height: 1.2em; }
+
+  .panel { display: flex; flex-direction: column; gap: 1.3rem; }
+  .panel h2 { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #007291; margin-bottom: 0.6rem; }
+  .panel .sub { font-size: 0.82rem; color: #888; margin: -0.4rem 0 0.6rem; }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .wear-btn { font-family: inherit; font-size: 0.9rem; font-weight: 700; color: #007291; background: #fff; border: 2px solid #e0d8d0; border-radius: 10px; padding: 0.55rem 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; transition: border-color 0.12s, background 0.12s; }
+  .wear-btn:hover { border-color: #b8d8e0; }
+  .wear-btn.on { border-color: #007291; background: #e6f5f8; }
+
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 0.5rem; }
+  .swatch { position: relative; aspect-ratio: 1 / 1; border-radius: 10px; border: 3px solid #e0d8d0; cursor: pointer; overflow: hidden; transition: transform 0.1s; padding: 0; }
+  .swatch:hover { transform: translateY(-2px); }
+  .swatch.sel { border-color: #c2185b; box-shadow: 0 0 0 2px #fbe4ed; }
+  .swatch .label { position: absolute; left: 0; right: 0; bottom: 0; font-size: 0.6rem; font-weight: 700; background: rgba(255,255,255,0.85); color: #333; padding: 1px 0; }
+  .swatch svg { width: 100%; height: 100%; display: block; }
+
+  .reflect { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.2rem 1.4rem; margin-top: 1.8rem; }
+  .reflect h2 { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #007291; margin-bottom: 0.5rem; }
+  .reflect p { font-size: 0.92rem; color: #555; line-height: 1.6; margin-bottom: 0.8rem; }
+  textarea { width: 100%; min-height: 90px; padding: 0.7rem 0.9rem; font-family: inherit; font-size: 0.92rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #fffaf6; color: #1a1a1a; outline: none; resize: vertical; line-height: 1.6; }
+  textarea:focus { border-color: #c2185b; }
+
+  .btn-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem; }
+  .action-btn { font-family: inherit; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.3rem; border-radius: 8px; cursor: pointer; border: none; color: #fff; }
+  .action-btn.teal { background: #007291; } .action-btn.teal:hover { background: #005a73; }
+  .action-btn.pink { background: #c2185b; } .action-btn.pink:hover { background: #911343; }
+  .action-btn.ghost { background: #fff; color: #007291; border: 2px solid #007291; }
+  .action-btn.ghost:hover { background: #e6f5f8; }
+  .notify { display: none; margin-top: 0.9rem; font-size: 0.88rem; font-weight: 700; background: #e6f5e6; border: 1.5px solid #2d4a2d; color: #1a2e1a; border-radius: 8px; padding: 0.65rem 1rem; line-height: 1.5; }
+  .notify.show { display: block; }
+
+  .garment { cursor: pointer; }
+  .garment:hover .fillable { stroke: #c2185b; stroke-width: 2.5; }
+
+  a:focus-visible, button:focus-visible, textarea:focus-visible { outline: 3px solid #007291; outline-offset: 2px; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="back-link" href="index.html">← Aesthetic and Creative</a>
+</header>
+
+<div class="hero">
+  <p class="subject-label">Aesthetic and Creative · Week 4</p>
+  <h1>👗 The Paper Doll Studio</h1>
+  <p>Welcome to your studio. Dress your character, choose your fabrics, and design an outfit that feels like yours. There is no wrong answer here — it is your design.</p>
+</div>
+
+<main class="main">
+
+  <div class="steps">
+    <strong>How it works:</strong> 1) Tap clothes in the <strong>Wardrobe</strong> to put them on. 2) Tap a fabric in the <strong>Fabric Drawer</strong> to load it onto your brush. 3) Tap a piece of clothing on your character to give it that fabric. Tap clothes again to take them off.
+  </div>
+
+  <div class="studio">
+
+    <!-- STAGE -->
+    <div class="stage">
+      <svg id="doll-svg" viewBox="0 0 220 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Your character">
+        <defs>
+          <pattern id="pat-denim" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="14" height="14" fill="#3b6ea5"/>
+            <line x1="0" y1="0" x2="0" y2="14" stroke="#5b8ec9" stroke-width="2"/>
+            <line x1="7" y1="0" x2="7" y2="14" stroke="#2f5b86" stroke-width="1"/>
+          </pattern>
+          <pattern id="pat-polka" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect width="20" height="20" fill="#f5a9c8"/>
+            <circle cx="5" cy="5" r="3" fill="#ffffff"/>
+            <circle cx="15" cy="15" r="3" fill="#ffffff"/>
+          </pattern>
+          <pattern id="pat-stripes" width="16" height="16" patternUnits="userSpaceOnUse">
+            <rect width="16" height="16" fill="#007291"/>
+            <rect width="8" height="16" fill="#ffffff"/>
+          </pattern>
+          <pattern id="pat-check" width="22" height="22" patternUnits="userSpaceOnUse">
+            <rect width="22" height="22" fill="#ffffff"/>
+            <rect width="11" height="22" fill="#c0392b" opacity="0.45"/>
+            <rect width="22" height="11" fill="#c0392b" opacity="0.45"/>
+          </pattern>
+          <linearGradient id="pat-silk" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#f4d58d"/>
+            <stop offset="50%" stop-color="#fbeed0"/>
+            <stop offset="100%" stop-color="#e6b84e"/>
+          </linearGradient>
+          <pattern id="pat-floral" width="24" height="24" patternUnits="userSpaceOnUse">
+            <rect width="24" height="24" fill="#e6f3e6"/>
+            <circle cx="12" cy="9" r="2.5" fill="#ef7724"/>
+            <circle cx="9" cy="12" r="2.5" fill="#f5a9c8"/>
+            <circle cx="15" cy="12" r="2.5" fill="#f5a9c8"/>
+            <circle cx="12" cy="15" r="2.5" fill="#f5a9c8"/>
+            <circle cx="12" cy="12" r="2" fill="#f4c542"/>
+          </pattern>
+          <pattern id="pat-stars" width="24" height="24" patternUnits="userSpaceOnUse">
+            <rect width="24" height="24" fill="#2a2a55"/>
+            <polygon points="12,4 13.8,9.2 19.2,9.2 14.7,12.6 16.5,18 12,14.6 7.5,18 9.3,12.6 4.8,9.2 10.2,9.2" fill="#f4c542"/>
+          </pattern>
+        </defs>
+
+        <!-- BODY (skin) -->
+        <g id="body">
+          <ellipse class="skin" cx="87" cy="316" rx="18" ry="11" fill="#f1c9a5"/>
+          <ellipse class="skin" cx="133" cy="316" rx="18" ry="11" fill="#f1c9a5"/>
+          <rect class="skin" x="80" y="180" width="22" height="138" rx="10" fill="#f1c9a5"/>
+          <rect class="skin" x="118" y="180" width="22" height="138" rx="10" fill="#f1c9a5"/>
+          <rect class="skin" x="46" y="90" width="22" height="86" rx="11" fill="#f1c9a5"/>
+          <rect class="skin" x="152" y="90" width="22" height="86" rx="11" fill="#f1c9a5"/>
+          <rect class="skin" x="70" y="86" width="80" height="100" rx="16" fill="#f1c9a5"/>
+          <rect class="skin" x="100" y="74" width="20" height="16" fill="#f1c9a5"/>
+          <circle class="skin" cx="110" cy="48" r="30" fill="#f1c9a5"/>
+          <circle cx="100" cy="46" r="2.5" fill="#5a4636"/>
+          <circle cx="120" cy="46" r="2.5" fill="#5a4636"/>
+          <path d="M101 58 Q110 64 119 58" stroke="#5a4636" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </g>
+
+        <!-- TROUSERS -->
+        <g class="garment" data-garment="trousers" style="display:none;">
+          <rect class="fillable" x="78" y="176" width="26" height="142" rx="10" fill="#d9d2cb"/>
+          <rect class="fillable" x="116" y="176" width="26" height="142" rx="10" fill="#d9d2cb"/>
+        </g>
+
+        <!-- DRESS -->
+        <g class="garment" data-garment="dress" style="display:none;">
+          <rect class="fillable" x="44" y="88" width="26" height="42" rx="12" fill="#d9d2cb"/>
+          <rect class="fillable" x="150" y="88" width="26" height="42" rx="12" fill="#d9d2cb"/>
+          <rect class="fillable" x="66" y="84" width="88" height="70" rx="16" fill="#d9d2cb"/>
+          <polygon class="fillable" points="66,150 154,150 178,252 42,252" fill="#d9d2cb"/>
+        </g>
+
+        <!-- T-SHIRT -->
+        <g class="garment" data-garment="tshirt" style="display:none;">
+          <rect class="fillable" x="44" y="88" width="26" height="42" rx="12" fill="#d9d2cb"/>
+          <rect class="fillable" x="150" y="88" width="26" height="42" rx="12" fill="#d9d2cb"/>
+          <rect class="fillable" x="66" y="84" width="88" height="82" rx="16" fill="#d9d2cb"/>
+        </g>
+
+        <!-- SHOES -->
+        <g class="garment" data-garment="shoes" style="display:none;">
+          <ellipse class="fillable" cx="87" cy="316" rx="20" ry="12" fill="#d9d2cb"/>
+          <ellipse class="fillable" cx="133" cy="316" rx="20" ry="12" fill="#d9d2cb"/>
+        </g>
+
+        <!-- HAT -->
+        <g class="garment" data-garment="hat" style="display:none;">
+          <ellipse class="fillable" cx="110" cy="34" rx="44" ry="9" fill="#d9d2cb"/>
+          <rect class="fillable" x="80" y="6" width="60" height="30" rx="12" fill="#d9d2cb"/>
+        </g>
+      </svg>
+      <p class="hint" id="stage-hint">Pick some clothes to begin.</p>
+    </div>
+
+    <!-- PANEL -->
+    <div class="panel">
+
+      <div>
+        <h2>Wardrobe</h2>
+        <p class="sub">Tap to put on or take off.</p>
+        <div class="chip-row" id="wardrobe"></div>
+      </div>
+
+      <div>
+        <h2>Fabric Drawer — Colours</h2>
+        <p class="sub" id="brush-note">No fabric picked yet.</p>
+        <div class="swatch-grid" id="colours"></div>
+      </div>
+
+      <div>
+        <h2>Fabric Drawer — Materials</h2>
+        <div class="swatch-grid" id="materials"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- REFLECT + SAVE -->
+  <div class="reflect">
+    <h2>Tell us about your design</h2>
+    <p>Why did you choose these materials, colours and patterns? What suits the design, or what do you like about it? A sentence or two is plenty.</p>
+    <textarea id="reflect-text" placeholder="I chose..."></textarea>
+    <div class="btn-row">
+      <button class="action-btn pink" onclick="downloadDesign()">⬇ Save my design as a picture</button>
+      <button class="action-btn teal" onclick="emailDesign()">📧 Send my design to Jay</button>
+      <button class="action-btn ghost" onclick="resetAll()">Start again</button>
+    </div>
+    <div class="notify" id="notify"></div>
+  </div>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School · Aesthetic and Creative</footer>
+
+<script>
+const STORE_KEY = 'base6_w4_creative_paperdoll';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+const GARMENTS = [
+  { id:'hat',      label:'Hat',      emoji:'🎩' },
+  { id:'tshirt',   label:'T-shirt',  emoji:'👕' },
+  { id:'dress',    label:'Dress',    emoji:'👗' },
+  { id:'trousers', label:'Trousers', emoji:'👖' },
+  { id:'shoes',    label:'Shoes',    emoji:'👟' },
+];
+
+const COLOURS = [
+  { id:'coral',   label:'Coral',   fill:'#ef7724' },
+  { id:'teal',    label:'Teal',    fill:'#007291' },
+  { id:'magenta', label:'Pink',    fill:'#c2185b' },
+  { id:'green',   label:'Green',   fill:'#2e8b57' },
+  { id:'purple',  label:'Purple',  fill:'#7b5ea7' },
+  { id:'yellow',  label:'Yellow',  fill:'#f4c542' },
+  { id:'blue',    label:'Blue',    fill:'#4a6fa5' },
+  { id:'red',     label:'Red',     fill:'#c0392b' },
+  { id:'black',   label:'Black',   fill:'#333333' },
+  { id:'white',   label:'White',   fill:'#ffffff' },
+];
+
+const MATERIALS = [
+  { id:'denim',   label:'Denim',  fill:'url(#pat-denim)',   sw:'#3b6ea5' },
+  { id:'polka',   label:'Polka',  fill:'url(#pat-polka)',   sw:'#f5a9c8' },
+  { id:'stripes', label:'Stripes',fill:'url(#pat-stripes)', sw:'#007291' },
+  { id:'check',   label:'Check',  fill:'url(#pat-check)',   sw:'#c0392b' },
+  { id:'silk',    label:'Silk',   fill:'url(#pat-silk)',    sw:'#e6b84e' },
+  { id:'floral',  label:'Floral', fill:'url(#pat-floral)',  sw:'#e6f3e6' },
+  { id:'stars',   label:'Stars',  fill:'url(#pat-stars)',   sw:'#2a2a55' },
+];
+
+const ALL_FABRICS = COLOURS.concat(MATERIALS);
+function fabricLabel(fill) {
+  for (var i=0;i<ALL_FABRICS.length;i++){ if (ALL_FABRICS[i].fill === fill) return ALL_FABRICS[i].label; }
+  return 'a fabric';
+}
+
+let state = { worn:{}, fills:{}, reflect:'' };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e) {}
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+
+let activeFill = null;
+
+// ── Build wardrobe ──
+const wardrobe = document.getElementById('wardrobe');
+GARMENTS.forEach(g => {
+  const b = document.createElement('button');
+  b.className = 'wear-btn';
+  b.dataset.g = g.id;
+  b.innerHTML = '<span aria-hidden="true">' + g.emoji + '</span> ' + g.label;
+  b.addEventListener('click', () => toggleGarment(g.id));
+  wardrobe.appendChild(b);
+});
+
+// ── Build swatches ──
+function makeSwatch(f, container) {
+  const b = document.createElement('button');
+  b.className = 'swatch';
+  b.title = f.label;
+  b.dataset.fill = f.fill;
+  if (f.fill.indexOf('url(') === 0) {
+    // pattern preview via a tiny svg using the same pattern
+    b.innerHTML = '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="' + f.fill + '"/></svg>'
+                + '<span class="label">' + f.label + '</span>';
+  } else {
+    b.style.background = f.fill;
+    if (f.fill === '#ffffff') b.style.boxShadow = 'inset 0 0 0 1px #e0d8d0';
+    b.innerHTML = '<span class="label">' + f.label + '</span>';
+  }
+  b.addEventListener('click', () => selectFabric(f.fill, b));
+  container.appendChild(b);
+}
+// patterns need the defs available, so reuse the main svg defs by injecting same patterns into swatch svgs
+const coloursEl = document.getElementById('colours');
+const materialsEl = document.getElementById('materials');
+COLOURS.forEach(f => makeSwatch(f, coloursEl));
+MATERIALS.forEach(f => makeSwatch(f, materialsEl));
+
+// patterns referenced in swatch mini-svgs need their own defs; clone main defs into each pattern swatch svg
+(function injectDefs(){
+  const mainDefs = document.querySelector('#doll-svg defs');
+  document.querySelectorAll('.swatch svg').forEach(svg => {
+    svg.insertBefore(mainDefs.cloneNode(true), svg.firstChild);
+  });
+})();
+
+function selectFabric(fill, btn) {
+  activeFill = fill;
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('brush-note').textContent = 'Brush loaded: ' + fabricLabel(fill) + '. Now tap a piece of clothing.';
+  setHint('Tap the clothing you want to make ' + fabricLabel(fill) + '.');
+}
+
+function setHint(t){ document.getElementById('stage-hint').textContent = t; }
+
+// ── Garment logic ──
+function toggleGarment(id) {
+  const on = !state.worn[id];
+  if (on) {
+    state.worn[id] = true;
+    if (id === 'dress') { delete state.worn.tshirt; delete state.worn.trousers; }
+    if (id === 'tshirt' || id === 'trousers') { delete state.worn.dress; }
+  } else {
+    delete state.worn[id];
+  }
+  save();
+  render();
+}
+
+function applyFabric(id) {
+  if (!activeFill) { setHint('Pick a fabric from the drawer first, then tap the clothing.'); return; }
+  if (!state.worn[id]) return;
+  state.fills[id] = activeFill;
+  save();
+  render();
+  setHint('Nice — that is now ' + fabricLabel(activeFill) + '.');
+}
+
+function render() {
+  // wardrobe button states
+  document.querySelectorAll('.wear-btn').forEach(b => {
+    b.classList.toggle('on', !!state.worn[b.dataset.g]);
+  });
+  // garments visibility + fills + tap handlers
+  document.querySelectorAll('.garment').forEach(g => {
+    const id = g.dataset.garment;
+    const worn = !!state.worn[id];
+    g.style.display = worn ? '' : 'none';
+    const fill = state.fills[id] || '#d9d2cb';
+    g.querySelectorAll('.fillable').forEach(s => s.setAttribute('fill', fill));
+    g.onclick = worn ? () => applyFabric(id) : null;
+  });
+  if (Object.keys(state.worn).length === 0) setHint('Pick some clothes to begin.');
+}
+
+// ── Save image ──
+function downloadDesign() {
+  const svg = document.getElementById('doll-svg');
+  try {
+    const xml = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = function() {
+      const scale = 2;
+      const canvas = document.createElement('canvas');
+      canvas.width = 220 * scale; canvas.height = 360 * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fef8f4'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      const a = document.createElement('a');
+      a.download = 'my-paper-doll-design.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+      flash('✓ Saved. Look in your Downloads for the picture.');
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); window.print(); };
+    img.src = url;
+  } catch(e) { window.print(); }
+}
+
+// ── Email ──
+function emailDesign() {
+  const reflect = document.getElementById('reflect-text').value.trim();
+  state.reflect = reflect; save();
+  let lines = [];
+  GARMENTS.forEach(g => {
+    if (state.worn[g.id]) {
+      const f = state.fills[g.id];
+      lines.push('- ' + g.label + ': ' + (f ? fabricLabel(f) : 'no fabric chosen yet'));
+    }
+  });
+  if (lines.length === 0) { flash('Put some clothes on your character first, then send it over.'); return; }
+  let body = 'THE PAPER DOLL STUDIO — AESTHETIC AND CREATIVE, WEEK 4\n';
+  body += 'Date: ' + new Date().toLocaleDateString('en-GB') + '\n\n';
+  body += 'My outfit:\n' + lines.join('\n') + '\n\n';
+  body += 'Why I chose these:\n' + (reflect || '(not written yet)') + '\n\n';
+  body += '—\nSent from Base 6. (Tip: you can save the picture and attach it too.)';
+  const su = encodeURIComponent('Base 6 · Paper Doll Studio');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + su + '&body=' + encodeURIComponent(body), '_blank');
+  flash('✓ Opening your email — your outfit choices are written out, ready to send.');
+}
+
+function resetAll() {
+  if (!confirm('Start again? This clears your current outfit.')) return;
+  state = { worn:{}, fills:{}, reflect:'' };
+  save();
+  activeFill = null;
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('sel'));
+  document.getElementById('brush-note').textContent = 'No fabric picked yet.';
+  document.getElementById('reflect-text').value = '';
+  render();
+}
+
+function flash(msg) {
+  const n = document.getElementById('notify');
+  n.textContent = msg; n.classList.add('show');
+}
+
+// ── Init ──
+if (state.reflect) document.getElementById('reflect-text').value = state.reflect;
+render();
+</script>
+
+</body>
+</html>
