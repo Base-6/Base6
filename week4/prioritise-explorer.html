@@ -3,65 +3,524 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Word of the Week · Prioritise · Base 6</title>
+<title>Word of the Week · Prioritise · Interactive 45 Minute Activity · Base 6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
-  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; gap: 1rem; }
-  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
-  .back-link:hover { opacity: 1; }
-
-  .word-hero { background: linear-gradient(135deg, #007291 0%, #007291 60%, #ef7724 150%); padding: 2.4rem 2rem 2.6rem; text-align: center; color: #fef8f4; }
-  .word-hero .eyebrow { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.85; margin-bottom: 0.6rem; }
-  .word-hero h1 { font-size: 3rem; font-weight: 700; line-height: 1.1; margin-bottom: 0.5rem; }
-  .word-hero .say { font-size: 1rem; opacity: 0.9; }
+  :root {
+    --teal: #007291;
+    --teal-dark: #005d75;
+    --teal-light: #e6f5f8;
+    --orange: #ef7724;
+    --orange-dark: #c05a10;
+    --cream: #fef8f4;
+    --ink: #1a1a1a;
+    --soft-ink: #444;
+    --line: #e8e0d8;
+    --white: #ffffff;
+    --good: #0b7f51;
+    --warn: #9b5b00;
+  }
+  body {
+    font-family: 'Atkinson Hyperlegible', Arial, sans-serif;
+    background-color: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+  .site-header {
+    background-color: var(--teal);
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .back-link, .teacher-toggle-top {
+    color: var(--cream);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    opacity: 0.9;
+    background: transparent;
+    border: 2px solid rgba(254, 248, 244, 0.45);
+    border-radius: 999px;
+    padding: 0.45rem 0.85rem;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .back-link:hover, .teacher-toggle-top:hover { opacity: 1; background: rgba(255,255,255,0.12); }
+  .word-hero {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--teal) 58%, var(--orange) 150%);
+    padding: 2.4rem 2rem 2.6rem;
+    text-align: center;
+    color: var(--cream);
+  }
+  .word-hero .eyebrow {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-bottom: 0.6rem;
+  }
+  .word-hero h1 {
+    font-size: clamp(2.4rem, 8vw, 4.4rem);
+    font-weight: 700;
+    line-height: 1.05;
+    margin-bottom: 0.5rem;
+  }
+  .word-hero .say { font-size: 1rem; opacity: 0.95; }
   .word-hero .say strong { letter-spacing: 0.02em; }
-
-  .main { max-width: 720px; margin: 0 auto; padding: 2.2rem 1.5rem 4rem; }
-
-  .card { background: #ffffff; border: 2px solid #e8e0d8; border-radius: 14px; padding: 1.4rem 1.5rem; margin-bottom: 1.3rem; }
-  .card.teal { border-color: #007291; }
-  .card.orange { border-color: #ef7724; }
-  .card h2 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 0.7rem; }
-  .card.orange h2 { color: #c05a10; }
-  .meaning { font-size: 1.15rem; font-weight: 700; line-height: 1.5; color: #1a1a1a; }
-  .plain { font-size: 0.95rem; color: #444; line-height: 1.65; margin-top: 0.6rem; }
-
+  .main { max-width: 960px; margin: 0 auto; padding: 2.2rem 1.5rem 4rem; }
+  .card {
+    background: var(--white);
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    padding: 1.35rem 1.45rem;
+    margin-bottom: 1.3rem;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.03);
+  }
+  .card.teal { border-color: var(--teal); }
+  .card.orange { border-color: var(--orange); }
+  .card h2 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.7rem;
+  }
+  .card.orange h2 { color: var(--orange-dark); }
+  .meaning { font-size: 1.2rem; font-weight: 700; line-height: 1.5; color: var(--ink); }
+  .plain { font-size: 0.97rem; color: var(--soft-ink); line-height: 1.65; margin-top: 0.6rem; }
+  .mini-note { font-size: 0.86rem; color: #666; line-height: 1.5; margin-top: 0.55rem; }
   .family { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .family .chip { font-size: 0.9rem; font-weight: 700; color: #007291; background: #e6f5f8; border-radius: 20px; padding: 0.35rem 0.85rem; }
+  .family .chip, .time-chip {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--teal);
+    background: var(--teal-light);
+    border-radius: 20px;
+    padding: 0.35rem 0.85rem;
+  }
   .family .chip span { font-weight: 400; color: #555; }
-
   .examples { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
-  .examples li { font-size: 0.98rem; line-height: 1.6; color: #1a1a1a; padding-left: 1.1rem; position: relative; }
-  .examples li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 8px; height: 8px; border-radius: 50%; background: #ef7724; }
-  .examples .word { color: #c05a10; font-weight: 700; }
+  .examples li {
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: var(--ink);
+    padding-left: 1.1rem;
+    position: relative;
+  }
+  .examples li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--orange);
+  }
+  .examples .word { color: var(--orange-dark); font-weight: 700; }
+  .where { font-size: 0.95rem; color: var(--soft-ink); line-height: 1.65; }
+  .where strong { color: var(--teal); }
+  .activity-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+  .time-chip { background: #fff3e9; color: var(--orange-dark); }
+  .reflect-q { font-size: 1.08rem; font-weight: 700; line-height: 1.5; color: var(--ink); margin-bottom: 0.5rem; }
+  .reflect-sub { font-size: 0.94rem; color: #555; line-height: 1.6; margin-bottom: 1rem; }
+  textarea, input[type="text"] {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    border: 1.5px solid #e0d8d0;
+    border-radius: 10px;
+    background: #fffaf6;
+    color: var(--ink);
+    outline: none;
+    line-height: 1.55;
+  }
+  textarea { min-height: 92px; resize: vertical; }
+  textarea:focus, input[type="text"]:focus { border-color: var(--orange); }
+  .share-row, .button-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.9rem;
+  }
+  .share-row { justify-content: space-between; }
+  .share-note { font-size: 0.82rem; color: #777; line-height: 1.5; }
+  .send-status {
+    font-size: 0.9rem;
+    color: var(--teal-dark);
+    line-height: 1.5;
+    margin-top: 0.75rem;
+    font-weight: 700;
+  }
+  .send-status a { color: var(--teal-dark); text-decoration: underline; }
+  .single-field { margin-top: 0.9rem; }
+  .single-field label {
+    display: block;
+    color: var(--teal);
+    font-weight: 700;
+    font-size: 0.88rem;
+    margin-bottom: 0.35rem;
+  }
+  .btn {
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 700;
+    padding: 0.65rem 1.05rem;
+    background: var(--orange);
+    color: #ffffff;
+    border: 2px solid var(--orange);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s, border-color 0.15s;
+  }
+  .btn:hover { background: var(--orange-dark); border-color: var(--orange-dark); }
+  .btn:active { transform: translateY(1px); }
+  .btn.secondary { background: var(--white); color: var(--teal); border-color: var(--teal); }
+  .btn.secondary:hover { background: var(--teal); color: var(--white); }
+  .btn.ghost { background: transparent; color: var(--soft-ink); border-color: #d7cec5; }
+  .btn.ghost:hover { background: #f5eee8; color: var(--ink); border-color: #c8bdb1; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+  .btn:disabled:hover { transform: none; }
+  .btn.secondary:disabled:hover { background: var(--white); color: var(--teal); border-color: var(--teal); }
+  .btn.ghost:disabled:hover { background: transparent; color: var(--soft-ink); border-color: #d7cec5; }
+  .scenario-box {
+    border: 2px dashed var(--orange);
+    background: #fffaf6;
+    border-radius: 14px;
+    padding: 1rem;
+    margin-top: 0.8rem;
+  }
+  .scenario-text { font-size: 1.1rem; font-weight: 700; line-height: 1.55; color: var(--ink); }
+  .sentence-stem {
+    margin-top: 0.8rem;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    border-radius: 12px;
+    padding: 0.8rem 0.9rem;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  .quick-vote {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin-top: 0.8rem;
+  }
+  .vote-btn {
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 0.85rem;
+    background: var(--white);
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    text-align: center;
+    color: var(--ink);
+    min-height: 76px;
+  }
+  .vote-btn:hover, .vote-btn.selected { border-color: var(--orange); background: #fff3e9; }
+  .vote-result {
+    margin-top: 0.7rem;
+    font-size: 0.96rem;
+    line-height: 1.5;
+    color: var(--soft-ink);
+  }
+  .sorter-grid {
+    display: grid;
+    grid-template-columns: minmax(210px, 1fr) repeat(3, minmax(170px, 1fr));
+    gap: 0.85rem;
+    margin-top: 1rem;
+    align-items: stretch;
+  }
+  .task-bank, .drop-zone {
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 0.9rem;
+    background: #fffdfb;
+    min-height: 210px;
+  }
+  .drop-zone { background: #ffffff; }
+  .drop-zone[data-zone="first"] { border-color: var(--orange); }
+  .drop-zone[data-zone="next"] { border-color: var(--teal); }
+  .drop-zone[data-zone="wait"] { border-color: #b7aea6; }
+  .zone-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.7rem;
+    color: var(--soft-ink);
+  }
+  .drop-zone[data-zone="first"] .zone-title { color: var(--orange-dark); }
+  .drop-zone[data-zone="next"] .zone-title { color: var(--teal); }
+  .task-card {
+    display: block;
+    width: 100%;
+    border: 1.5px solid #ddd4ca;
+    background: #fffaf6;
+    border-radius: 10px;
+    padding: 0.62rem 0.7rem;
+    margin-bottom: 0.55rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-align: left;
+    color: var(--ink);
+    cursor: grab;
+    line-height: 1.35;
+  }
+  .task-card:hover, .task-card:focus { border-color: var(--orange); outline: none; }
+  .task-card.selected-for-move { background: var(--teal-light); border-color: var(--teal); }
+  .drop-zone.drag-over { outline: 3px solid rgba(239,119,36,0.35); outline-offset: 2px; }
+  .move-controls {
+    display: none;
+    border: 2px solid var(--teal);
+    background: var(--teal-light);
+    border-radius: 14px;
+    padding: 0.85rem;
+    margin-top: 0.9rem;
+  }
+  .move-controls.show { display: block; }
+  .move-controls p { font-weight: 700; color: var(--teal-dark); line-height: 1.4; margin-bottom: 0.55rem; }
+  .feedback-box {
+    background: #f7fbfc;
+    border: 1.5px solid #c7e7ef;
+    color: var(--teal-dark);
+    border-radius: 12px;
+    padding: 0.75rem 0.9rem;
+    line-height: 1.55;
+    margin-top: 0.9rem;
+    font-size: 0.94rem;
+  }
+  .consequence-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-top: 0.85rem;
+  }
+  .choice-card {
+    background: var(--white);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 1rem;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    min-height: 118px;
+  }
+  .choice-card:hover, .choice-card.selected { border-color: var(--orange); background: #fff3e9; }
+  .choice-card strong { display: block; color: var(--ink); margin-bottom: 0.35rem; }
+  .choice-card span { color: var(--soft-ink); line-height: 1.45; font-size: 0.9rem; }
+  .reveal {
+    display: none;
+    margin-top: 1rem;
+    border-radius: 14px;
+    padding: 1rem;
+    border: 2px solid var(--teal);
+    background: var(--teal-light);
+    line-height: 1.6;
+  }
+  .reveal.show { display: block; }
+  .reveal strong { color: var(--teal-dark); }
+  .planner-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+    margin-top: 0.9rem;
+  }
+  .planner-field label {
+    display: block;
+    color: var(--teal);
+    font-weight: 700;
+    font-size: 0.88rem;
+    margin-bottom: 0.35rem;
+  }
+  .teacher-panel {
+    display: none;
+    border-color: var(--teal);
+    background: #f7fbfc;
+  }
+  .teacher-panel.show { display: block; }
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin-top: 0.8rem;
+  }
+  .timeline-step {
+    border: 1.5px solid #c7e7ef;
+    background: var(--white);
+    border-radius: 12px;
+    padding: 0.8rem;
+  }
+  .timeline-step strong {
+    display: block;
+    color: var(--teal-dark);
+    margin-bottom: 0.3rem;
+  }
+  .timeline-step span { color: var(--soft-ink); font-size: 0.86rem; line-height: 1.45; display: block; }
+  .exit-ticket-preview {
+    white-space: pre-wrap;
+    background: #fffaf6;
+    border: 1.5px solid #e0d8d0;
+    border-radius: 12px;
+    padding: 0.85rem;
+    margin-top: 0.8rem;
+    color: var(--soft-ink);
+    line-height: 1.5;
+    min-height: 76px;
+  }
 
-  .where { font-size: 0.95rem; color: #444; line-height: 1.65; }
-  .where strong { color: #007291; }
-
-  .reflect-q { font-size: 1.05rem; font-weight: 700; line-height: 1.5; color: #1a1a1a; margin-bottom: 0.5rem; }
-  .reflect-sub { font-size: 0.92rem; color: #555; line-height: 1.6; margin-bottom: 1rem; }
-  textarea { width: 100%; min-height: 90px; padding: 0.7rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #fffaf6; color: #1a1a1a; outline: none; resize: vertical; line-height: 1.55; }
-  textarea:focus { border-color: #ef7724; }
-  .share-row { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; flex-wrap: wrap; margin-top: 0.8rem; }
-  .share-note { font-size: 0.82rem; color: #888; line-height: 1.5; }
-  .share-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.92rem; font-weight: 700; padding: 0.6rem 1.3rem; background: #ef7724; color: #ffffff; border: none; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
-  .share-btn:hover { background: #c05a10; }
+  .activity-tabs-wrap {
+    margin-top: 1.4rem;
+  }
+  .tabs-intro {
+    margin-bottom: 0.75rem;
+  }
+  .tabs-intro .meaning {
+    font-size: 1.08rem;
+  }
+  .tab-list {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin-bottom: 0.9rem;
+  }
+  .tab-button {
+    font-family: inherit;
+    border: 2px solid var(--line);
+    background: var(--white);
+    color: var(--soft-ink);
+    border-radius: 14px;
+    padding: 0.75rem 0.65rem;
+    text-align: left;
+    cursor: pointer;
+    min-height: 74px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.18rem;
+  }
+  .tab-button:hover {
+    border-color: var(--orange);
+    background: #fffaf6;
+  }
+  .tab-button[aria-selected="true"] {
+    border-color: var(--teal);
+    background: var(--teal-light);
+    color: var(--teal-dark);
+  }
+  .tab-number {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .tab-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .tab-time {
+    font-size: 0.78rem;
+    color: #666;
+    line-height: 1.25;
+  }
+  .tab-button[aria-selected="true"] .tab-time { color: var(--teal-dark); }
+  .tab-panel {
+    display: none;
+  }
+  .tab-panel.active {
+    display: block;
+  }
+  .tab-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin-top: -0.2rem;
+    margin-bottom: 1.3rem;
+  }
+  .tab-progress {
+    font-size: 0.9rem;
+    color: var(--soft-ink);
+    font-weight: 700;
+  }
+  .tab-hint {
+    background: #fffaf6;
+    border: 1.5px solid #e0d8d0;
+    border-radius: 12px;
+    padding: 0.75rem 0.9rem;
+    margin-bottom: 0.8rem;
+    color: var(--soft-ink);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+  .tab-hint strong { color: var(--teal-dark); }
 
   .page-footer { display: flex; justify-content: flex-start; margin-top: 2rem; }
-  .page-footer a { text-decoration: none; color: #007291; background: #ffffff; border: 2px solid #007291; border-radius: 10px; padding: 0.6rem 1.2rem; font-weight: 700; font-size: 0.9rem; }
-  .page-footer a:hover { background: #007291; color: #ffffff; }
-
-  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
-  a:focus-visible, button:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  .page-footer a {
+    text-decoration: none;
+    color: var(--teal);
+    background: var(--white);
+    border: 2px solid var(--teal);
+    border-radius: 10px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+  .page-footer a:hover { background: var(--teal); color: var(--white); }
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.8rem;
+    color: #888;
+    border-top: 1px solid #e0d8d0;
+  }
+  a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible {
+    outline: 3px solid var(--orange);
+    outline-offset: 2px;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  @media (max-width: 880px) {
+    .sorter-grid, .timeline, .tab-list { grid-template-columns: 1fr; }
+    .consequence-options, .quick-vote, .planner-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 </style>
 </head>
 <body>
 
 <header class="site-header">
   <a class="back-link" href="index.html">← Week 4</a>
+  <button class="teacher-toggle-top" type="button" onclick="toggleTeacherPanel()" aria-controls="teacherPanel" aria-expanded="false">Show teacher flow</button>
 </header>
 
 <div class="word-hero">
@@ -72,13 +531,28 @@
 
 <main class="main">
 
-  <div class="card teal">
+  <section class="card teacher-panel" id="teacherPanel" aria-live="polite">
+    <div class="activity-title">
+      <h2>45 minute teacher flow</h2>
+      <span class="time-chip">Base 6 activity plan</span>
+    </div>
+    <p class="meaning">The page is now built as a full lesson: vote, explore the word, spin a scenario, sort priorities, reveal consequences, then complete an exit ticket.</p>
+    <div class="timeline" aria-label="45 minute activity timeline">
+      <div class="timeline-step"><strong>0–5</strong><span>Quick vote: what comes first?</span></div>
+      <div class="timeline-step"><strong>5–10</strong><span>Word meaning and word family.</span></div>
+      <div class="timeline-step"><strong>10–18</strong><span>Scenario spinner and sentence stem.</span></div>
+      <div class="timeline-step"><strong>18–30</strong><span>Priority sorter: do first, next, or wait.</span></div>
+      <div class="timeline-step"><strong>30–45</strong><span>Consequence reveal, personal planner, exit ticket.</span></div>
+    </div>
+  </section>
+
+  <section class="card teal">
     <h2>What it means</h2>
     <p class="meaning">To prioritise is to decide what matters most, and do that first.</p>
-    <p class="plain">We prioritise when we cannot do everything at once. Instead of trying to do it all, we choose the thing that matters most right now, and start there. There is no single right answer - what you prioritise can depend on the day, the task, and you.</p>
-  </div>
+    <p class="plain">We prioritise when we cannot do everything at once. Instead of trying to do it all, we choose the thing that matters most right now, and start there. There is no single right answer — what you prioritise can depend on the day, the task, and you.</p>
+  </section>
 
-  <div class="card">
+  <section class="card">
     <h2>Word family</h2>
     <div class="family">
       <span class="chip">priority <span>· the thing that comes first</span></span>
@@ -86,30 +560,223 @@
       <span class="chip">prioritising <span>· doing it now</span></span>
       <span class="chip">prioritised <span>· already done</span></span>
     </div>
-  </div>
+  </section>
 
-  <div class="card orange">
+  <section class="card orange">
     <h2>In a sentence</h2>
     <ul class="examples">
       <li>On a busy morning, I <span class="word">prioritise</span> getting dressed before I check my phone.</li>
       <li>I <span class="word">prioritised</span> my reading task because it was due first.</li>
       <li>A good designer will <span class="word">prioritise</span> the parts of a plan that matter most.</li>
     </ul>
-  </div>
+  </section>
 
-  <div class="card">
+  <section class="card">
     <h2>Where you might meet it this week</h2>
     <p class="where">In your <strong>Project</strong>, when you choose which step to do first. In <strong>Preparation for Adulthood</strong>, when you plan your day or your free time. In <strong>Maths</strong>, when you work out which part of a problem to solve first. Noticing when you prioritise is a skill in itself.</p>
-  </div>
+  </section>
 
-  <div class="card teal">
-    <h2>Something to think about</h2>
+  <div class="activity-tabs-wrap" id="activityTabs">
+    <section class="card tabs-intro" aria-labelledby="tabsHeading">
+      <h2 id="tabsHeading">45 minute activity tabs</h2>
+      <p class="meaning">Work through one task at a time. Use the tabs or the Previous / Next buttons to keep the page calm and focused.</p>
+      <p class="plain">Each tab is one part of the lesson. You do not need to look at the whole activity at once.</p>
+    </section>
+
+    <div class="tab-list" role="tablist" aria-label="Prioritise activity tasks">
+      <button class="tab-button" id="tabQuickVote" type="button" role="tab" aria-selected="true" aria-controls="quickVote" onclick="showTab('quickVote')">
+        <span class="tab-number">Task 1</span><span class="tab-label">Quick vote</span><span class="tab-time">0–5 min</span>
+      </button>
+      <button class="tab-button" id="tabScenarioSpinner" type="button" role="tab" aria-selected="false" aria-controls="scenarioSpinner" onclick="showTab('scenarioSpinner')">
+        <span class="tab-number">Task 2</span><span class="tab-label">Scenario spinner</span><span class="tab-time">10–18 min</span>
+      </button>
+      <button class="tab-button" id="tabPrioritySorter" type="button" role="tab" aria-selected="false" aria-controls="prioritySorter" onclick="showTab('prioritySorter')">
+        <span class="tab-number">Task 3</span><span class="tab-label">Priority sorter</span><span class="tab-time">18–30 min</span>
+      </button>
+      <button class="tab-button" id="tabConsequenceReveal" type="button" role="tab" aria-selected="false" aria-controls="consequenceReveal" onclick="showTab('consequenceReveal')">
+        <span class="tab-number">Task 4</span><span class="tab-label">Consequence reveal</span><span class="tab-time">30–37 min</span>
+      </button>
+      <button class="tab-button" id="tabPlanner" type="button" role="tab" aria-selected="false" aria-controls="planner" onclick="showTab('planner')">
+        <span class="tab-number">Task 5</span><span class="tab-label">Priority planner</span><span class="tab-time">37–43 min</span>
+      </button>
+      <button class="tab-button" id="tabExitTicket" type="button" role="tab" aria-selected="false" aria-controls="exitTicket" onclick="showTab('exitTicket')">
+        <span class="tab-number">Task 6</span><span class="tab-label">Exit ticket</span><span class="tab-time">43–45 min</span>
+      </button>
+    </div>
+
+    <p class="tab-hint" id="tabHint"><strong>Focus:</strong> Start with one quick choice. Do not worry about the other tasks yet.</p>
+
+  <section class="card teal tab-panel active" id="quickVote" role="tabpanel" aria-labelledby="tabQuickVote">
+    <div class="activity-title">
+      <h2>1 · Quick vote</h2>
+      <span class="time-chip">0–5 minutes</span>
+    </div>
+    <p class="reflect-q">You have 10 minutes before school starts. What should you prioritise?</p>
+    <div class="quick-vote" role="group" aria-label="Quick vote options">
+      <button class="vote-btn" type="button" onclick="quickVote('checking your phone', this)">Check your phone</button>
+      <button class="vote-btn" type="button" onclick="quickVote('packing your bag', this)">Pack your bag</button>
+      <button class="vote-btn" type="button" onclick="quickVote('eating breakfast', this)">Eat breakfast</button>
+    </div>
+    <p class="vote-result" id="voteResult">Choose one, then explain your reason using the sentence stem below.</p>
+    <div class="sentence-stem">I would prioritise <span id="voteStemBlank">_____</span> because _____.</div>
+    <div class="single-field">
+      <label for="voteReason">My reason</label>
+      <textarea id="voteReason" placeholder="I would prioritise... because..."></textarea>
+    </div>
+  </section>
+
+  <section class="card orange tab-panel" id="scenarioSpinner" role="tabpanel" aria-labelledby="tabScenarioSpinner" hidden>
+    <div class="activity-title">
+      <h2>2 · Scenario spinner</h2>
+      <span class="time-chip">10–18 minutes</span>
+    </div>
+    <p class="reflect-q">Click for a situation. Decide what matters most right now.</p>
+    <div class="scenario-box" aria-live="polite">
+      <p class="scenario-text" id="scenarioText">Click “New scenario” to begin.</p>
+    </div>
+    <div class="sentence-stem">I would prioritise _____ because _____. This might change if _____.</div>
+    <div class="single-field">
+      <label for="scenarioAnswer">My scenario response</label>
+      <textarea id="scenarioAnswer" placeholder="I would prioritise... because... This might change if..."></textarea>
+    </div>
+    <div class="button-row">
+      <button class="btn" type="button" onclick="newScenario()">New scenario</button>
+      <button class="btn secondary" type="button" onclick="useScenarioForReflection()">Use this in my reflection</button>
+    </div>
+  </section>
+
+  <section class="card tab-panel" id="prioritySorter" role="tabpanel" aria-labelledby="tabPrioritySorter" hidden>
+    <div class="activity-title">
+      <h2>3 · Priority sorter</h2>
+      <span class="time-chip">18–30 minutes</span>
+    </div>
+    <p class="reflect-q">Sort the task cards into three groups.</p>
+    <p class="reflect-sub">Drag the cards, or click a card and choose where to move it. There is not always one perfect answer — explain your thinking.</p>
+
+    <div class="sorter-grid">
+      <div class="task-bank" id="taskBank" aria-label="Task cards">
+        <p class="zone-title">Task cards</p>
+      </div>
+      <div class="drop-zone" id="zoneFirst" data-zone="first" aria-label="Do first" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropTask(event, 'zoneFirst')">
+        <p class="zone-title">Do first</p>
+      </div>
+      <div class="drop-zone" id="zoneNext" data-zone="next" aria-label="Do next" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropTask(event, 'zoneNext')">
+        <p class="zone-title">Do next</p>
+      </div>
+      <div class="drop-zone" id="zoneWait" data-zone="wait" aria-label="Can wait" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="dropTask(event, 'zoneWait')">
+        <p class="zone-title">Can wait</p>
+      </div>
+    </div>
+
+    <div class="move-controls" id="moveControls" aria-live="polite">
+      <p id="selectedTaskText">Selected task</p>
+      <div class="button-row">
+        <button class="btn" type="button" onclick="moveSelectedTo('zoneFirst')">Move to Do first</button>
+        <button class="btn secondary" type="button" onclick="moveSelectedTo('zoneNext')">Move to Do next</button>
+        <button class="btn ghost" type="button" onclick="moveSelectedTo('zoneWait')">Move to Can wait</button>
+      </div>
+    </div>
+
+    <div class="single-field">
+      <label for="sorterReason">Explain one sorting choice</label>
+      <textarea id="sorterReason" placeholder="We prioritised... because... We put... in can wait because..."></textarea>
+    </div>
+
+    <div class="button-row">
+      <button class="btn secondary" type="button" onclick="checkSorter()">Check my sort</button>
+      <button class="btn ghost" type="button" onclick="resetSorter()">Reset cards</button>
+    </div>
+    <div class="feedback-box" id="sortFeedback">Teacher prompt: ask pupils to move one card and explain what situation would make its priority change.</div>
+  </section>
+
+  <section class="card orange tab-panel" id="consequenceReveal" role="tabpanel" aria-labelledby="tabConsequenceReveal" hidden>
+    <div class="activity-title">
+      <h2>4 · Consequence reveal</h2>
+      <span class="time-chip">30–37 minutes</span>
+    </div>
+    <p class="reflect-q">Your group project is due today. You still need to finish the main task, decorate it, check the brief, and tidy up. What do you prioritise?</p>
+    <div class="consequence-options" role="group" aria-label="Consequence reveal choices">
+      <button class="choice-card" type="button" onclick="showConsequence('brief', this)">
+        <strong>Check the brief</strong>
+        <span>Make sure you understand what the work needs to include.</span>
+      </button>
+      <button class="choice-card" type="button" onclick="showConsequence('decorate', this)">
+        <strong>Decorate it first</strong>
+        <span>Make it look colourful and finished before checking the content.</span>
+      </button>
+      <button class="choice-card" type="button" onclick="showConsequence('tidy', this)">
+        <strong>Tidy up first</strong>
+        <span>Clear the table before finishing the project.</span>
+      </button>
+    </div>
+    <div class="reveal" id="consequenceBox" aria-live="polite"></div>
+    <div class="single-field">
+      <label for="consequenceReason">What might change because of this choice?</label>
+      <textarea id="consequenceReason" placeholder="This choice might change... because..."></textarea>
+    </div>
+  </section>
+
+  <section class="card teal tab-panel" id="planner" role="tabpanel" aria-labelledby="tabPlanner" hidden>
+    <div class="activity-title">
+      <h2>5 · Personal priority planner</h2>
+      <span class="time-chip">37–43 minutes</span>
+    </div>
     <p class="reflect-q">Our big question is: how do our choices today shape the worlds of tomorrow?</p>
-    <p class="reflect-sub">When you prioritise, you are choosing what matters. What is one thing worth prioritising this week - and what might change because you did? You can jot a thought below if you would like. This is optional.</p>
-    <textarea id="reflect" placeholder="One thing I want to prioritise this week is..."></textarea>
+    <p class="reflect-sub">Choose one thing worth prioritising this week. You can write one idea, or complete all four boxes.</p>
+    <div class="planner-grid">
+      <div class="planner-field">
+        <label for="schoolPriority">School priority</label>
+        <input id="schoolPriority" type="text" placeholder="e.g. finishing reading before choosing time">
+      </div>
+      <div class="planner-field">
+        <label for="homePriority">Home priority</label>
+        <input id="homePriority" type="text" placeholder="e.g. packing my bag the night before">
+      </div>
+      <div class="planner-field">
+        <label for="selfPriority">Myself priority</label>
+        <input id="selfPriority" type="text" placeholder="e.g. sleep, calm time, asking for help">
+      </div>
+      <div class="planner-field">
+        <label for="othersPriority">Others priority</label>
+        <input id="othersPriority" type="text" placeholder="e.g. helping my group listen to each other">
+      </div>
+    </div>
+    <p class="mini-note">Sentence stem: If I prioritise _____ this week, tomorrow might be better because _____.</p>
+    <div class="single-field">
+      <label for="priorityBecause">Why might this make tomorrow better?</label>
+      <textarea id="priorityBecause" placeholder="If I prioritise... this week, tomorrow might be better because..."></textarea>
+    </div>
+  </section>
+
+  <section class="card tab-panel" id="exitTicket" role="tabpanel" aria-labelledby="tabExitTicket" hidden>
+    <div class="activity-title">
+      <h2>6 · Exit ticket</h2>
+      <span class="time-chip">43–45 minutes</span>
+    </div>
+    <p class="reflect-q">Finish the lesson by completing these two sentences.</p>
+    <div class="single-field">
+      <label for="studentName">Name</label>
+      <input id="studentName" type="text" placeholder="Type your name here">
+    </div>
+    <textarea id="reflect" placeholder="Prioritise means...
+Today I prioritised... because...
+One thing I want to prioritise this week is..."></textarea>
+    <div class="button-row">
+      <button class="btn secondary" type="button" onclick="buildExitTicket()">Preview all responses</button>
+      <button class="btn" type="button" onclick="sendToJay()">Send to Jay</button>
+    </div>
+    <div class="exit-ticket-preview" id="ticketPreview">Your preview will appear here.</div>
+    <p class="send-status" id="sendStatus" role="status" aria-live="polite"></p>
     <div class="share-row">
-      <span class="share-note">Nothing is sent unless you choose to share it.</span>
-      <button class="share-btn" onclick="shareReflection()">Share with Jay</button>
+      <span class="share-note">The Send to Jay button opens a ready-to-send Gmail draft in a new tab, so this page and the student’s progress stay open.</span>
+    </div>
+  </section>
+
+
+    <div class="tab-nav" aria-label="Activity tab navigation">
+      <button class="btn ghost" id="prevTabBtn" type="button" onclick="changeTab(-1)">← Previous task</button>
+      <span class="tab-progress" id="tabProgress" aria-live="polite">Task 1 of 6</span>
+      <button class="btn secondary" id="nextTabBtn" type="button" onclick="changeTab(1)">Next task →</button>
     </div>
   </div>
 
@@ -123,19 +790,354 @@
 
 <script>
 const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
-function shareReflection() {
-  var text = document.getElementById('reflect').value.trim();
-  if (!text) { document.getElementById('reflect').focus(); return; }
-  var subject = encodeURIComponent('Base 6 · Word of the Week — Prioritise');
-  var body = encodeURIComponent(
-    'BASE 6 · WORD OF THE WEEK\n\n' +
-    'Word: Prioritise\n' +
-    'Date: ' + new Date().toLocaleDateString('en-GB') + '\n\n' +
-    'One thing I want to prioritise this week:\n' + text + '\n\n' +
-    '—\nSent from the Word of the Week page'
-  );
-  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + subject + '&body=' + body, '_blank');
+
+const tabOrder = ['quickVote', 'scenarioSpinner', 'prioritySorter', 'consequenceReveal', 'planner', 'exitTicket'];
+const tabHints = {
+  quickVote: '<strong>Focus:</strong> Start with one quick choice. Do not worry about the other tasks yet.',
+  scenarioSpinner: '<strong>Focus:</strong> Practise saying “I would prioritise…” using one situation at a time.',
+  prioritySorter: '<strong>Focus:</strong> Sort tasks into “Do first”, “Do next”, and “Can wait”.',
+  consequenceReveal: '<strong>Focus:</strong> Choose one priority and see how that choice could change what happens next.',
+  planner: '<strong>Focus:</strong> Connect the word to real life by choosing something worth prioritising this week.',
+  exitTicket: '<strong>Focus:</strong> Finish with two sentences that show you understand and can use the word.'
+};
+
+function showTab(panelId, shouldScroll = true) {
+  const index = tabOrder.indexOf(panelId);
+  if (index === -1) return;
+
+  tabOrder.forEach(function(id) {
+    const panel = document.getElementById(id);
+    const tab = document.querySelector('[aria-controls="' + id + '"]');
+    const active = id === panelId;
+    panel.classList.toggle('active', active);
+    panel.hidden = !active;
+    if (tab) tab.setAttribute('aria-selected', String(active));
+  });
+
+  document.getElementById('tabHint').innerHTML = tabHints[panelId];
+  document.getElementById('tabProgress').textContent = 'Task ' + (index + 1) + ' of ' + tabOrder.length;
+  document.getElementById('prevTabBtn').disabled = index === 0;
+  document.getElementById('nextTabBtn').disabled = index === tabOrder.length - 1;
+
+  if (shouldScroll) {
+    const tabs = document.getElementById('activityTabs');
+    tabs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
+
+function changeTab(direction) {
+  const current = tabOrder.findIndex(function(id) {
+    return document.getElementById(id).classList.contains('active');
+  });
+  const next = Math.min(Math.max(current + direction, 0), tabOrder.length - 1);
+  showTab(tabOrder[next]);
+}
+
+
+const scenarios = [
+  'You are stuck on a maths problem. What should you prioritise next?',
+  'Your project is due today and it is not finished. What matters most?',
+  'You have 15 minutes before the taxi arrives. What should you do first?',
+  'Your group has a presentation tomorrow. What should you prioritise today?',
+  'You feel overwhelmed because there are five things to do. What could help first?',
+  'You want free time later. What should you prioritise now?',
+  'You have started decorating your work, but you have not checked the instructions. What matters most?',
+  'A friend wants to talk, but you also need to finish something important. What could you prioritise?',
+  'You have 20 minutes left in Project. Do you prioritise finishing, improving, or tidying?',
+  'You are planning your morning. What one choice could make tomorrow easier?'
+];
+
+const tasks = [
+  'Check the instructions',
+  'Ask for help',
+  'Finish the task due today',
+  'Decorate the page',
+  'Reply to a message',
+  'Drink some water',
+  'Tidy the table',
+  'Take a short break',
+  'Choose colours',
+  'Check the deadline',
+  'Start the easiest part',
+  'Make sure the work answers the question'
+];
+
+const consequenceText = {
+  brief: '<strong>You prioritised checking the brief.</strong><br>This can help your group make sure the work actually matches the task. It may save time because you know what matters before you continue. Tomorrow might be better because the finished work is more likely to meet the goal.',
+  decorate: '<strong>You prioritised decorating it first.</strong><br>The work may look attractive, but there is a risk that the important content is still missing. This choice might be useful later, but it may not matter most right now if the task itself is unfinished.',
+  tidy: '<strong>You prioritised tidying up first.</strong><br>This might help everyone feel calmer and more organised. But if the deadline is very close, tidying everything first could mean the main task stays unfinished. Priorities depend on the situation.'
+};
+
+let selectedTask = null;
+let lastScenario = '';
+let quickVoteChoice = '';
+let consequenceChoice = '';
+const consequenceLabels = {
+  brief: 'Check the brief',
+  decorate: 'Decorate it first',
+  tidy: 'Tidy up first'
+};
+
+function toggleTeacherPanel() {
+  const panel = document.getElementById('teacherPanel');
+  const button = document.querySelector('.teacher-toggle-top');
+  panel.classList.toggle('show');
+  const isOpen = panel.classList.contains('show');
+  button.textContent = isOpen ? 'Hide teacher flow' : 'Show teacher flow';
+  button.setAttribute('aria-expanded', String(isOpen));
+}
+
+function quickVote(choice, button) {
+  quickVoteChoice = choice;
+  document.querySelectorAll('.vote-btn').forEach(btn => btn.classList.remove('selected'));
+  button.classList.add('selected');
+  document.getElementById('voteStemBlank').textContent = choice;
+  document.getElementById('voteResult').textContent = 'Now explain: why does ' + choice + ' matter most right now?';
+  const reasonBox = document.getElementById('voteReason');
+  if (reasonBox && !reasonBox.value.trim()) {
+    reasonBox.placeholder = 'I would prioritise ' + choice + ' because...';
+  }
+}
+
+function newScenario() {
+  const random = scenarios[Math.floor(Math.random() * scenarios.length)];
+  lastScenario = random;
+  document.getElementById('scenarioText').textContent = random;
+}
+
+function useScenarioForReflection() {
+  const textArea = document.getElementById('reflect');
+  const scenarioAnswer = document.getElementById('scenarioAnswer');
+  const scenario = lastScenario || document.getElementById('scenarioText').textContent;
+  const starter = 'Scenario: ' + scenario + '\nI would prioritise _____ because _____. This might change if _____.\n\n';
+  if (scenarioAnswer && !scenarioAnswer.value.trim()) scenarioAnswer.value = starter.trim();
+  textArea.value = starter + textArea.value;
+  showTab('exitTicket');
+  textArea.focus();
+}
+
+function createTaskCard(text, index) {
+  const button = document.createElement('button');
+  button.className = 'task-card';
+  button.type = 'button';
+  button.id = 'task-' + index;
+  button.draggable = true;
+  button.textContent = text;
+  button.setAttribute('aria-label', 'Task card: ' + text);
+  button.addEventListener('dragstart', function(event) {
+    event.dataTransfer.setData('text/plain', button.id);
+  });
+  button.addEventListener('click', function() {
+    selectTask(button);
+  });
+  return button;
+}
+
+function resetSorter() {
+  const bank = document.getElementById('taskBank');
+  ['taskBank', 'zoneFirst', 'zoneNext', 'zoneWait'].forEach(function(id) {
+    const zone = document.getElementById(id);
+    Array.from(zone.querySelectorAll('.task-card')).forEach(card => card.remove());
+  });
+  tasks.forEach(function(task, index) {
+    bank.appendChild(createTaskCard(task, index));
+  });
+  selectedTask = null;
+  document.getElementById('moveControls').classList.remove('show');
+  document.getElementById('sortFeedback').textContent = 'Teacher prompt: ask pupils to move one card and explain what situation would make its priority change.';
+}
+
+function selectTask(button) {
+  document.querySelectorAll('.task-card').forEach(card => card.classList.remove('selected-for-move'));
+  selectedTask = button;
+  button.classList.add('selected-for-move');
+  document.getElementById('selectedTaskText').textContent = 'Selected: ' + button.textContent;
+  document.getElementById('moveControls').classList.add('show');
+}
+
+function moveSelectedTo(zoneId) {
+  if (!selectedTask) return;
+  document.getElementById(zoneId).appendChild(selectedTask);
+  selectedTask.classList.remove('selected-for-move');
+  selectedTask = null;
+  document.getElementById('moveControls').classList.remove('show');
+}
+
+function allowDrop(event) {
+  event.preventDefault();
+  event.currentTarget.classList.add('drag-over');
+}
+
+function dragLeave(event) {
+  event.currentTarget.classList.remove('drag-over');
+}
+
+function dropTask(event, zoneId) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('drag-over');
+  const id = event.dataTransfer.getData('text/plain');
+  const card = document.getElementById(id);
+  if (card) document.getElementById(zoneId).appendChild(card);
+}
+
+function countCards(zoneId) {
+  return document.getElementById(zoneId).querySelectorAll('.task-card').length;
+}
+
+function checkSorter() {
+  const first = countCards('zoneFirst');
+  const next = countCards('zoneNext');
+  const wait = countCards('zoneWait');
+  const bank = countCards('taskBank');
+  const feedback = document.getElementById('sortFeedback');
+  if (bank > 0) {
+    feedback.textContent = 'You still have ' + bank + ' card' + (bank === 1 ? '' : 's') + ' to sort. Keep going, then explain one choice.';
+    return;
+  }
+  if (first === 0) {
+    feedback.textContent = 'Choose at least one thing to do first. Prioritising means deciding what matters most right now.';
+    return;
+  }
+  feedback.textContent = 'Sorted. Now explain one choice: “We prioritised _____ because _____.” Challenge: move one card. What situation would make it more or less important?';
+}
+
+function showConsequence(choice, button) {
+  consequenceChoice = choice;
+  document.querySelectorAll('.choice-card').forEach(card => card.classList.remove('selected'));
+  button.classList.add('selected');
+  const box = document.getElementById('consequenceBox');
+  box.innerHTML = consequenceText[choice];
+  box.classList.add('show');
+}
+
+function fieldValue(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function getCardTexts(zoneId) {
+  const zone = document.getElementById(zoneId);
+  if (!zone) return [];
+  return Array.from(zone.querySelectorAll('.task-card')).map(card => card.textContent.trim());
+}
+
+function addLine(lines, label, value) {
+  if (value && value.trim()) lines.push(label + value.trim());
+}
+
+function buildExitTicket() {
+  const studentName = fieldValue('studentName');
+  const voteReason = fieldValue('voteReason');
+  const scenarioAnswer = fieldValue('scenarioAnswer');
+  const sorterReason = fieldValue('sorterReason');
+  const consequenceReason = fieldValue('consequenceReason');
+  const reflection = fieldValue('reflect');
+  const school = fieldValue('schoolPriority');
+  const home = fieldValue('homePriority');
+  const self = fieldValue('selfPriority');
+  const others = fieldValue('othersPriority');
+  const priorityBecause = fieldValue('priorityBecause');
+
+  const firstCards = getCardTexts('zoneFirst');
+  const nextCards = getCardTexts('zoneNext');
+  const waitCards = getCardTexts('zoneWait');
+  const chosenScenario = lastScenario || '';
+  const chosenConsequence = consequenceChoice ? consequenceLabels[consequenceChoice] : '';
+
+  const lines = [];
+  addLine(lines, 'Student: ', studentName);
+  lines.push('Word: Prioritise');
+  lines.push('Date: ' + new Date().toLocaleDateString('en-GB'));
+
+  if (quickVoteChoice || voteReason) {
+    lines.push('\nTask 1 — Quick vote');
+    addLine(lines, 'Choice: ', quickVoteChoice);
+    addLine(lines, 'Reason: ', voteReason);
+  }
+
+  if (chosenScenario || scenarioAnswer) {
+    lines.push('\nTask 2 — Scenario spinner');
+    addLine(lines, 'Scenario: ', chosenScenario);
+    addLine(lines, 'Response: ', scenarioAnswer);
+  }
+
+  if (firstCards.length || nextCards.length || waitCards.length || sorterReason) {
+    lines.push('\nTask 3 — Priority sorter');
+    if (firstCards.length) lines.push('Do first: ' + firstCards.join('; '));
+    if (nextCards.length) lines.push('Do next: ' + nextCards.join('; '));
+    if (waitCards.length) lines.push('Can wait: ' + waitCards.join('; '));
+    addLine(lines, 'Explanation: ', sorterReason);
+  }
+
+  if (chosenConsequence || consequenceReason) {
+    lines.push('\nTask 4 — Consequence reveal');
+    addLine(lines, 'Choice: ', chosenConsequence);
+    addLine(lines, 'What might change: ', consequenceReason);
+  }
+
+  if (school || home || self || others || priorityBecause) {
+    lines.push('\nTask 5 — Personal priority planner');
+    addLine(lines, 'School: ', school);
+    addLine(lines, 'Home: ', home);
+    addLine(lines, 'Myself: ', self);
+    addLine(lines, 'Others: ', others);
+    addLine(lines, 'Why it matters: ', priorityBecause);
+  }
+
+  if (reflection) {
+    lines.push('\nTask 6 — Exit ticket');
+    lines.push(reflection);
+  }
+
+  const meaningfulContent = lines.filter(line => !['Word: Prioritise'].includes(line) && !line.startsWith('Date:')).join('').trim();
+  const preview = meaningfulContent ? lines.join('\n') : 'Add at least one response, then preview or send your work to Jay.';
+  document.getElementById('ticketPreview').textContent = preview;
+  return preview;
+}
+
+function sendToJay() {
+  const text = buildExitTicket().trim();
+  const status = document.getElementById('sendStatus');
+  status.textContent = '';
+
+  if (!text || text === 'Add at least one response, then preview or send your work to Jay.') {
+    status.textContent = 'Add at least one response before sending.';
+    const firstEmpty = document.getElementById('reflect') || document.getElementById('voteReason');
+    if (firstEmpty) firstEmpty.focus();
+    return;
+  }
+
+  const subject = encodeURIComponent('Base 6 · Word of the Week — Prioritise');
+  const body = encodeURIComponent(
+    'BASE 6 · WORD OF THE WEEK\n\n' +
+    text + '\n\n' +
+    '—\nSent from the Word of the Week activity page'
+  );
+  const gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + subject + '&body=' + body;
+  const newTab = window.open(gmailUrl, '_blank');
+
+  if (newTab) {
+    try { newTab.opener = null; } catch (error) {}
+    status.textContent = 'Your email draft has opened in a new tab. Press Send in Gmail to finish.';
+    return;
+  }
+
+  status.textContent = 'Your browser blocked the new tab. ';
+  const link = document.createElement('a');
+  link.href = gmailUrl;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  link.textContent = 'Open the email to Jay in a new tab';
+  status.appendChild(link);
+  status.appendChild(document.createTextNode('.'));
+}
+
+function shareReflection() {
+  sendToJay();
+}
+
+resetSorter();
+showTab('quickVote', false);
 </script>
 
 </body>
