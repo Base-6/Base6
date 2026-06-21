@@ -15,43 +15,61 @@
   .hero .subject-label { font-size:0.85rem; font-weight:700; color:#fef8f4; opacity:0.8; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem; }
   .hero h1 { font-size:2.05rem; font-weight:700; color:#fef8f4; line-height:1.2; }
   .hero p { font-size:0.98rem; color:#fef8f4; opacity:0.9; max-width:640px; margin:0.6rem auto 0; line-height:1.6; }
-  .main { max-width:860px; margin:0 auto; padding:1.6rem 1.5rem 4rem; }
-  .progress { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.4rem; position:sticky; top:0; background:#fef8f4; padding:0.7rem 0; z-index:5; }
-  .pchip { font-size:0.72rem; font-weight:700; padding:5px 11px; border-radius:20px; background:#f0ede8; color:#999; border:1.5px solid #e0d8d0; }
-  .pchip.active { background:#fff3e8; color:#c05a10; border-color:#fcd8bc; }
-  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; }
-  .stage { display:none; } .stage.show { display:block; }
-  .stage-card { background:#fff; border:2px solid #e0d8d0; border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  
+  .main { max-width:1200px; margin:0 auto; padding:1.6rem 1.5rem 4rem; }
+  
+  .progress { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.4rem; position:sticky; top:0; background:#fef8f4; padding:0.7rem 0; z-index:10; border-bottom: 1px solid #e0d8d0; }
+  .pchip { font-family:inherit; font-size:0.72rem; font-weight:700; padding:6px 12px; border-radius:20px; background:#f0ede8; color:#777; border:1.5px solid #e0d8d0; cursor: not-allowed; display: inline-block; transition: all 0.2s; }
+  .pchip.active { background:#fff3e8; color:#c05a10; border-color:#fcd8bc; cursor: pointer; }
+  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; cursor: pointer; }
+  
+  /* Shared layout structure to avoid overlapping and out-of-frame clipping */
+  .layout-container { display: flex; flex-direction: column; gap: 1.5rem; width: 100%; margin-top: 1rem; }
+  @media(min-width: 992px) {
+    .layout-container { display: grid; grid-template-columns: 1fr 410px; gap: 2rem; align-items: start; }
+    .sim-side { position: sticky; top: 80px; z-index: 5; }
+  }
+
+  .stage { display:none; width: 100%; } 
+  .stage.show { display:block; }
+  .stage-card { background:#fff; border:2px solid #e0d8d0; border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; width: 100%; word-wrap: break-word; }
   .stage-eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#c05a10; margin-bottom:0.3rem; }
   .stage-card h2 { font-size:1.25rem; font-weight:700; color:#007291; line-height:1.25; margin-bottom:0.5rem; }
   .intro { font-size:0.95rem; color:#444; line-height:1.65; margin-bottom:1rem; }
+  
   .concept-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:0.75rem; margin:0.8rem 0; }
   .concept { background:#f7f4ee; border:1.5px solid #e0d8d0; border-radius:12px; padding:0.8rem 0.95rem; }
   .concept .big { font-size:1.45rem; margin-bottom:0.3rem; }
   .concept h3 { font-size:0.95rem; color:#007291; margin-bottom:0.25rem; }
   .concept p { font-size:0.86rem; line-height:1.55; color:#555; }
-  .sim-card { background:#101824; border:2px solid #283c55; border-radius:16px; padding:0.8rem; margin:0.8rem 0 1rem; color:#fef8f4; }
+  
+  .sim-card { background:#101824; border:2px solid #283c55; border-radius:16px; padding:1rem; color:#fef8f4; width: 100%; }
   .sim-top { display:flex; justify-content:space-between; gap:0.7rem; align-items:flex-start; flex-wrap:wrap; margin-bottom:0.65rem; }
   .readout { display:flex; gap:0.5rem; flex-wrap:wrap; }
   .pill { font-size:0.76rem; font-weight:700; padding:0.35rem 0.65rem; border-radius:20px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.18); }
   .pill.warn { background:#4b2e1a; border-color:#ef7724; }
-  #spaceCanvas { width:100%; height:420px; display:block; background:#08111f; border-radius:12px; border:1.5px solid #39546e; }
-  .controls { display:grid; grid-template-columns:repeat(3, minmax(70px, 1fr)); gap:0.5rem; max-width:360px; margin:0.75rem auto 0; }
-  .thruster { font-family:inherit; font-weight:700; font-size:0.86rem; border:none; border-radius:10px; cursor:pointer; color:#fff; background:#007291; padding:0.65rem 0.5rem; }
+  #spaceCanvas { width:100%; height:380px; display:block; background:#08111f; border-radius:12px; border:1.5px solid #39546e; }
+  
+  .controls { display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem; max-width:320px; margin:0.75rem auto 0; width: 100%; }
+  .thruster { font-family:inherit; font-weight:700; font-size:0.86rem; border:none; border-radius:10px; cursor:pointer; color:#fff; background:#007291; padding:0.65rem 0.5rem; width: 100%; transition: background 0.15s; text-align: center; }
   .thruster:hover { background:#005d76; }
   .thruster.up { grid-column:2; }
   .thruster.left { grid-column:1; }
   .thruster.stop { grid-column:2; background:#c0392b; }
+  .thruster.stop:hover { background:#992c21; }
   .thruster.right { grid-column:3; }
   .thruster.down { grid-column:2; }
-  .mission-grid { display:grid; grid-template-columns:1.15fr 0.85fr; gap:1rem; align-items:start; }
-  @media(max-width:760px){ .mission-grid { grid-template-columns:1fr; } #spaceCanvas { height:340px; } }
-  .panel { background:#fff7f0; border:2px solid #fcd8bc; border-radius:14px; padding:1rem; }
+  
+  .mission-grid { display:grid; grid-template-columns: 1fr; gap:1rem; align-items:start; margin: 1rem 0; }
+  @media(min-width:640px){ .mission-grid { grid-template-columns: 1fr 1fr; } }
+  .panel { background:#fff7f0; border:2px solid #fcd8bc; border-radius:14px; padding:1rem; height: 100%; }
   .panel h3 { color:#c05a10; font-size:1rem; margin-bottom:0.55rem; }
   .count-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.45rem; margin:0.6rem 0; }
   .count { background:#fff; border:1.5px solid #e0d8d0; border-radius:10px; padding:0.5rem 0.6rem; font-size:0.86rem; font-weight:700; display:flex; justify-content:space-between; }
+  
   .success { display:none; background:#e6f5e6; border:1.5px solid #2e8b57; color:#1a5e1a; border-radius:10px; padding:0.75rem 0.9rem; font-size:0.9rem; line-height:1.5; margin-top:0.7rem; }
   .success.show { display:block; }
+  
   .vector-lab { background:#f7f4ee; border:2px solid #e0d8d0; border-radius:14px; padding:1rem; margin:0.8rem 0; }
   .bar-wrap { height:42px; border-radius:24px; background:#e5ddd3; position:relative; overflow:hidden; margin:0.75rem 0; }
   .zero { position:absolute; left:50%; top:0; bottom:0; width:3px; background:#777; }
@@ -60,35 +78,38 @@
   .lab-buttons button, .next-btn, .check-btn, .action-btn { font-family:inherit; font-weight:700; border-radius:8px; cursor:pointer; }
   .lab-buttons button, .check-btn { font-size:0.84rem; padding:0.5rem 0.9rem; border:2px solid #007291; background:#fff; color:#007291; }
   .lab-buttons button:hover, .check-btn:hover { background:#e6f5f8; }
-  .next-btn { font-size:0.92rem; padding:0.7rem 1.5rem; border:none; background:#c0392b; color:#fff; margin-top:0.6rem; }
+  
+  .next-btn { font-size:0.92rem; padding:0.7rem 1.5rem; border:none; background:#c0392b; color:#fff; margin-top:0.6rem; transition: background 0.15s; }
   .next-btn:hover { background:#992c21; }
   .tip { font-size:0.84rem; color:#888; margin-top:0.5rem; line-height:1.5; }
   label.q { display:block; font-size:0.9rem; font-weight:700; line-height:1.5; margin:0.85rem 0 0.4rem; }
-  textarea, input[type=text] { width:100%; padding:0.7rem 0.9rem; font-family:inherit; font-size:0.92rem; border:1.5px solid #e0d8d0; border-radius:8px; background:#fffaf6; color:#1a1a1a; outline:none; line-height:1.6; }
+  textarea, input[type=text] { width:100%; padding:0.7rem 0.9rem; font-family:inherit; font-size:0.92rem; border:1.5px solid #e0d8d0; border-radius:8px; background:#fffaf6; color:#1a1a1a; outline:none; line-height:1.6; max-width:100%; }
   textarea { min-height:82px; resize:vertical; }
   textarea:focus, input[type=text]:focus { border-color:#007291; }
+  
   .checklist { display:flex; flex-direction:column; gap:0.5rem; margin:0.8rem 0; }
   .crow { display:flex; align-items:flex-start; gap:0.6rem; font-size:0.92rem; line-height:1.5; cursor:pointer; }
   .crow input { width:20px; height:20px; accent-color:#007291; margin-top:1px; flex-shrink:0; }
+  
   .send-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:16px; padding:1.4rem 1.5rem; margin-top:1rem; text-align:center; }
   .send-card p { font-size:0.92rem; color:#555; line-height:1.6; margin-bottom:0.9rem; }
   .action-btn { font-size:0.92rem; padding:0.7rem 1.5rem; border:none; color:#fff; background:#007291; }
   .action-btn:hover { background:#005a73; }
+  
   .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; line-height:1.5; }
   .notify.show { display:block; }
   a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline:3px solid #007291; outline-offset:2px; }
 
-  .visual-note { background:#f7fbfd; border:2px solid #a9d4e0; border-radius:14px; padding:0.85rem 1rem; margin:0.85rem 0 1rem; }
+  .visual-note { background:#f7fbfd; border:2px solid #a9d4e0; border-radius:14px; padding:0.85rem 1rem; margin:0.85rem 0 1rem; max-width: 100%; overflow: hidden; }
   .visual-note .caption { font-size:0.82rem; color:#555; line-height:1.5; margin-top:0.45rem; }
-  .diagram-svg { width:100%; height:auto; display:block; border-radius:10px; background:#fff; border:1px solid #e0d8d0; }
+  .diagram-svg { width:100%; height:auto; display:block; border-radius:10px; background:#fff; border:1px solid #e0d8d0; max-width:100%; }
+  
   .mini-visual-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:0.7rem; margin:0.85rem 0 1rem; }
   .mini-visual { background:#f7f4ee; border:1.5px solid #e0d8d0; border-radius:12px; padding:0.65rem; }
   .mini-visual svg { width:100%; height:auto; display:block; }
   .mini-visual p { font-size:0.84rem; line-height:1.45; color:#555; margin:0.45rem 0 0; }
-  .legend-row { display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:0.5rem; }
-  .legend-pill { font-size:0.72rem; font-weight:700; border-radius:999px; padding:3px 9px; background:#fff3e8; color:#c05a10; border:1px solid #fcd8bc; }
-
-  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+  
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; margin-top: 2rem; }
 </style>
 </head>
 <body>
@@ -98,62 +119,186 @@
   <h1>🚀 The Zero-Gravity Asteroid Miner</h1>
   <p>Pilot a drifting ship in deep space. There is no gravity and no friction, so a force does not simply move the ship - it changes the ship's velocity.</p>
 </div>
+
 <main class="main">
-  <div class="progress" id="progress"></div>
+  <nav class="progress" id="progress" aria-label="Lesson Progress"></nav>
 
-  <section class="stage" id="stage-1">
-    <div class="stage-card">
-      <p class="stage-eyebrow">Stage 1 of 5 · Mission briefing</p>
-      <h2>Newton's First Law</h2>
-      <p class="intro">In this mission the engines only fire for a short burst. After that, the ship keeps moving because there is no friction in space to slow it down.</p>
-      <div class="visual-note" aria-label="Diagram showing inertia and force changing velocity">
-        <svg class="diagram-svg" viewBox="0 0 620 210" role="img" aria-label="A ship keeps drifting unless an opposite force changes its velocity">
-          <defs>
-            <marker id="zg-arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#007291"/></marker>
-            <marker id="zg-arrow-orange" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker>
-            <radialGradient id="zg-ship" cx="35%" cy="30%"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#a9d4e0"/></radialGradient>
-          </defs>
-          <rect width="620" height="210" rx="12" fill="#15212d"/>
-          <g fill="#fff" opacity="0.65"><circle cx="45" cy="35" r="1.8"/><circle cx="98" cy="128" r="1.4"/><circle cx="180" cy="55" r="1.2"/><circle cx="275" cy="165" r="1.5"/><circle cx="390" cy="44" r="1.7"/><circle cx="520" cy="92" r="1.4"/><circle cx="585" cy="162" r="1.8"/></g>
-          <path d="M70 118 C160 78, 255 78, 350 118" stroke="#456" stroke-width="3" fill="none" stroke-dasharray="7 8"/>
-          <g transform="translate(110 118)"><polygon points="0,-20 40,0 0,20 8,0" fill="url(#zg-ship)" stroke="#dbeef5" stroke-width="2"/><circle cx="14" cy="0" r="6" fill="#007291"/></g>
-          <path d="M170 118 L288 118" stroke="#007291" stroke-width="8" marker-end="url(#zg-arrow-blue)"/>
-          <text x="205" y="102" font-family="Atkinson Hyperlegible" font-size="16" font-weight="700" fill="#a9d4e0">current velocity</text>
-          <path d="M350 118 L438 78" stroke="#ef7724" stroke-width="8" marker-end="url(#zg-arrow-orange)"/>
-          <text x="395" y="60" font-family="Atkinson Hyperlegible" font-size="16" font-weight="700" fill="#ffd2b2">new force changes direction</text>
-          <g transform="translate(515 118)"><polygon points="0,-20 40,0 0,20 8,0" fill="#fff3e8" stroke="#ef7724" stroke-width="2"/><circle cx="14" cy="0" r="6" fill="#ef7724"/></g>
-          <text x="62" y="186" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700" fill="#fff">No friction = the ship keeps the motion it already has.</text>
-        </svg>
-        <p class="caption"><strong>Picture it:</strong> in deep space the dotted path does not fade away by itself. A force changes the ship's velocity vector.</p>
-      </div>
+  <div class="layout-container">
+    
+    <div class="stages-side">
+      
+      <section class="stage" id="stage-1">
+        <div class="stage-card">
+          <p class="stage-eyebrow">Stage 1 of 5 · Mission briefing</p>
+          <h2>Newton's First Law</h2>
+          <p class="intro">In this mission the engines only fire for a short burst. After that, the ship keeps moving because there is no friction in space to slow it down.</p>
+          <div class="visual-note" aria-label="Diagram showing inertia and force changing velocity">
+            <svg class="diagram-svg" viewBox="0 0 620 210" role="img" aria-label="A ship keeps drifting unless an opposite force changes its velocity">
+              <defs>
+                <marker id="zg-arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#007291"/></marker>
+                <marker id="zg-arrow-orange" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker>
+                <radialGradient id="zg-ship" cx="35%" cy="30%"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#a9d4e0"/></radialGradient>
+              </defs>
+              <rect width="620" height="210" rx="12" fill="#15212d"/>
+              <g fill="#fff" opacity="0.65"><circle cx="45" cy="35" r="1.8"/><circle cx="98" cy="128" r="1.4"/><circle cx="180" cy="55" r="1.2"/><circle cx="275" cy="165" r="1.5"/><circle cx="390" cy="44" r="1.7"/><circle cx="520" cy="92" r="1.4"/><circle cx="585" cy="162" r="1.8"/></g>
+              <path d="M70 118 C160 78, 255 78, 350 118" stroke="#456" stroke-width="3" fill="none" stroke-dasharray="7 8"/>
+              <g transform="translate(110 118)"><polygon points="0,-20 40,0 0,20 8,0" fill="url(#zg-ship)" stroke="#dbeef5" stroke-width="2"/><circle cx="14" cy="0" r="6" fill="#007291"/></g>
+              <path d="M170 118 L288 118" stroke="#007291" stroke-width="8" marker-end="url(#zg-arrow-blue)"/>
+              <text x="230" y="102" font-family="Atkinson Hyperlegible" font-size="16" font-weight="700" fill="#a9d4e0" text-anchor="middle">current velocity</text>
+              <path d="M350 118 L438 78" stroke="#ef7724" stroke-width="8" marker-end="url(#zg-arrow-orange)"/>
+              <text x="440" y="60" font-family="Atkinson Hyperlegible" font-size="16" font-weight="700" fill="#ffd2b2" text-anchor="middle">force changes direction</text>
+              <g transform="translate(515 118)"><polygon points="0,-20 40,0 0,20 8,0" fill="#fff3e8" stroke="#ef7724" stroke-width="2"/><circle cx="14" cy="0" r="6" fill="#ef7724"/></g>
+              <text x="310" y="186" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700" fill="#fff" text-anchor="middle">No friction = the ship keeps the motion it already has.</text>
+            </svg>
+            <p class="caption"><strong>Picture it:</strong> in deep space the dotted path does not fade away by itself. A force changes the ship's velocity vector.</p>
+          </div>
 
-      <div class="concept-grid">
-        <div class="concept"><div class="big">🧊</div><h3>Inertia</h3><p>Objects keep doing what they are already doing unless a force changes them.</p></div>
-        <div class="concept"><div class="big">➡️</div><h3>Velocity</h3><p>Velocity means speed in a direction. A force can change speed, direction, or both.</p></div>
-        <div class="concept"><div class="big">🛑</div><h3>No friction</h3><p>The ship will not slow down by itself. To stop, use an equal force in the opposite direction.</p></div>
-      </div>
-      <label class="q" for="s1q">Before you fly: if you click Right Thruster once, what do you predict will happen after the engine turns off?</label>
-      <textarea id="s1q" data-save="s1q" placeholder="I predict the ship will..."></textarea>
-      <button class="next-btn" onclick="goStage(2)">Start training →</button>
+          <div class="concept-grid">
+            <div class="concept"><div class="big">🧊</div><h3>Inertia</h3><p>Objects keep doing what they are already doing unless a force changes them.</p></div>
+            <div class="concept"><div class="big">➡️</div><h3>Velocity</h3><p>Velocity means speed in a direction. A force can change speed, direction, or both.</p></div>
+            <div class="concept"><div class="big">🛑</div><h3>No friction</h3><p>The ship will not slow down by itself. To stop, use an equal force in the opposite direction.</p></div>
+          </div>
+          <label class="q" for="s1q">Before you fly: if you click Right Thruster once, what do you predict will happen after the engine turns off?</label>
+          <textarea id="s1q" data-save="s1q" placeholder="I predict the ship will..."></textarea>
+          <button class="next-btn" onclick="goStage(2)">Start training →</button>
+        </div>
+      </section>
+
+      <section class="stage" id="stage-2">
+        <div class="stage-card">
+          <p class="stage-eyebrow">Stage 2 of 5 · Thruster training</p>
+          <h2>Try one burst at a time</h2>
+          <p class="intro">Tap a thruster on the right panel or use your keyboard keys. The ship does not forget the force you gave it. Opposite thrusters subtract from velocity.</p>
+          <div class="mini-visual-grid" aria-label="Thruster training diagrams">
+            <div class="mini-visual"><svg viewBox="0 0 210 120" role="img" aria-label="Right thrust adds right velocity"><rect width="210" height="120" rx="12" fill="#e8f4f7"/><polygon points="68,60 98,42 98,78" fill="#007291"/><path d="M104 60 L165 60" stroke="#ef7724" stroke-width="9" marker-end="url(#zg-mini-a)"/><text x="105" y="101" font-family="Atkinson Hyperlegible" font-size="14" font-weight="700" fill="#333" text-anchor="middle">Right burst adds right speed</text><defs><marker id="zg-mini-a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker></defs></svg><p>One burst adds to the motion. It does not switch itself off.</p></div>
+            <div class="mini-visual"><svg viewBox="0 0 210 120" role="img" aria-label="Opposite thrust cancels velocity"><rect width="210" height="120" rx="12" fill="#fff7f0"/><path d="M105 60 L165 60" stroke="#ef7724" stroke-width="8" marker-end="url(#zg-mini-b)"/><path d="M105 60 L45 60" stroke="#007291" stroke-width="8" marker-end="url(#zg-mini-c)"/><circle cx="105" cy="60" r="15" fill="#fff" stroke="#555" stroke-width="2"/><text x="105" y="102" font-family="Atkinson Hyperlegible" font-size="14" font-weight="700" fill="#333" text-anchor="middle">Opposite forces cancel out</text><defs><marker id="zg-mini-b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker><marker id="zg-mini-c" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#007291"/></marker></defs></svg><p>To slow down, you need a force in the opposite direction.</p></div>
+          </div>
+          <label class="q" for="s2q">What did you notice about the ship after a thruster burst?</label>
+          <textarea id="s2q" data-save="s2q" placeholder="I noticed that..."></textarea>
+          <button class="next-btn" onclick="goStage(3)">Begin mining challenge →</button>
+        </div>
+      </section>
+
+      <section class="stage" id="stage-3">
+        <div class="stage-card">
+          <p class="stage-eyebrow">Stage 3 of 5 · The challenge</p>
+          <h2>Dock at the Asteroid Mine</h2>
+          <p class="intro">Navigate from the starting zone to the asteroid mine. Your ship must be inside the mine zone and completely stopped. Record exactly how many times you clicked each thruster.</p>
+          <div class="visual-note">
+            <svg class="diagram-svg" viewBox="0 0 620 160" role="img" aria-label="Example docking path with acceleration, coasting, and braking">
+              <defs><marker id="zg-route" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#007291"/></marker></defs>
+              <rect width="620" height="160" rx="12" fill="#102230"/>
+              <rect x="32" y="54" width="70" height="52" rx="9" fill="#e6f5e6" stroke="#2e8b57" stroke-width="3"/><text x="67" y="86" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700" fill="#1a5e1a">START</text>
+              <circle cx="548" cy="80" r="34" fill="#fff3e8" stroke="#ef7724" stroke-width="4"/><text x="548" y="86" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="14" font-weight="700" fill="#8a3d06">MINE</text>
+              <path d="M105 80 C185 42, 250 45, 315 80 S450 118, 512 82" fill="none" stroke="#a9d4e0" stroke-width="4" stroke-dasharray="9 8"/>
+              <path d="M140 72 L205 52" stroke="#007291" stroke-width="7" marker-end="url(#zg-route)"/><text x="140" y="35" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700" fill="#fff">1 accelerate</text>
+              <path d="M330 82 L400 104" stroke="#c05a10" stroke-width="7" marker-end="url(#zg-route)"/><text x="320" y="137" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700" fill="#fff">2 coast + steer</text>
+              <path d="M515 82 L456 101" stroke="#2e8b57" stroke-width="7" marker-end="url(#zg-route)"/><text x="440" y="45" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700" fill="#fff">3 brake</text>
+            </svg>
+            <p class="caption">Plan your route: add horizontal velocity, steer to line up, then apply equal opposite forces to brake perfectly inside the mine.</p>
+          </div>
+
+          <div class="mission-grid">
+            <div class="panel">
+              <h3>Mission rules</h3>
+              <p class="intro" style="margin-bottom:0.5rem; font-size:0.88rem;">1. Use only the four thrusters.<br>2. Do not use Reset for your final attempt.<br>3. Stop inside the orange mine zone (Speed &lt; 0.10).</p>
+              <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                <button class="check-btn" onclick="checkDocking()">Check docking</button>
+                <button class="check-btn" onclick="clearCounts()">Clear log</button>
+              </div>
+              <div class="success" id="dockSuccess"></div>
+            </div>
+            <div class="panel">
+              <h3>Thruster count log</h3>
+              <div class="count-grid">
+                <div class="count"><span>Up (W / ↑)</span><span id="cUp">0</span></div>
+                <div class="count"><span>Down (S / ↓)</span><span id="cDown">0</span></div>
+                <div class="count"><span>Left (A / ←)</span><span id="cLeft">0</span></div>
+                <div class="count"><span>Right (D / →)</span><span id="cRight">0</span></div>
+              </div>
+            </div>
+          </div>
+
+          <label class="q" for="routeNote">Describe the route you used to dock safely.</label>
+          <textarea id="routeNote" data-save="routeNote" placeholder="First I accelerated, then I..."></textarea>
+
+          <label class="q" for="s3q">Why did you need to fire a thruster in the exact opposite direction to stop?</label>
+          <textarea id="s3q" data-save="s3q" placeholder="I needed the opposite force because..."></textarea>
+          <button class="next-btn" onclick="goStage(4)">Go to the 5-thrust test →</button>
+        </div>
+      </section>
+
+      <section class="stage" id="stage-4">
+        <div class="stage-card">
+          <p class="stage-eyebrow">Stage 4 of 5 · Analysis test</p>
+          <h2>Five right thrusts</h2>
+          <p class="intro">Set the test ship moving with exactly five Right thrusts. Your task is to get the horizontal velocity back to zero. The orange bar shows how much sideways velocity the ship has.</p>
+          <div class="visual-note">
+            <svg class="diagram-svg" viewBox="0 0 620 130" role="img" aria-label="Five right thrusts cancelled by five left thrusts">
+              <defs><marker id="zg-r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker><marker id="zg-l" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#007291"/></marker></defs>
+              <rect width="620" height="130" rx="12" fill="#fffaf6"/>
+              <text x="35" y="38" font-family="Atkinson Hyperlegible" font-size="20" font-weight="700" fill="#c05a10">5 right thrusts</text><path d="M190 34 L315 34" stroke="#ef7724" stroke-width="12" marker-end="url(#zg-r)"/>
+              <text x="35" y="84" font-family="Atkinson Hyperlegible" font-size="20" font-weight="700" fill="#007291">5 left thrusts</text><path d="M315 80 L190 80" stroke="#007291" stroke-width="12" marker-end="url(#zg-l)"/>
+              <text x="380" y="62" font-family="Atkinson Hyperlegible" font-size="24" font-weight="700" fill="#333">= velocity 0</text><circle cx="535" cy="58" r="21" fill="#e6f5e6" stroke="#2e8b57" stroke-width="3"/><text x="535" y="66" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="23" font-weight="700" fill="#1a5e1a">✓</text>
+            </svg>
+          </div>
+
+          <div class="vector-lab">
+            <div class="lab-buttons">
+              <button onclick="labReset()">Reset test</button>
+              <button onclick="labRight()">Right thrust →</button>
+              <button onclick="labLeft()">← Left thrust</button>
+            </div>
+            <div class="bar-wrap"><div class="zero"></div><div class="bar" id="xbar"></div></div>
+            <p class="intro" id="labRead" style="margin-bottom:0;">Horizontal velocity: 0. Right clicks: 0. Left clicks: 0.</p>
+            <div class="success" id="labSuccess"></div>
+          </div>
+          <label class="q" for="s4q">After 5 Right thrusts, how many Left thrusts stopped the ship? Explain why.</label>
+          <textarea id="s4q" data-save="s4q" placeholder="It took... because..."></textarea>
+          <button class="next-btn" onclick="goStage(5)">Write debrief →</button>
+        </div>
+      </section>
+
+      <section class="stage" id="stage-5">
+        <div class="stage-card">
+          <p class="stage-eyebrow">Stage 5 of 5 · Debrief</p>
+          <h2>Explain what forces did</h2>
+          <p class="intro">Use the checklist, then write a short mission debrief. A strong answer explains that a force changes existing motion - it does not just make something move for a moment.</p>
+          <div class="visual-note">
+            <svg class="diagram-svg" viewBox="0 0 620 150" role="img" aria-label="Debrief diagram showing balanced and unbalanced forces">
+              <rect width="620" height="150" rx="12" fill="#f7f4ee"/>
+              <text x="30" y="32" font-family="Atkinson Hyperlegible" font-size="18" font-weight="700" fill="#007291">Unbalanced force</text><path d="M52 72 L180 72" stroke="#ef7724" stroke-width="10" marker-end="url(#zg-u)"/><circle cx="205" cy="72" r="19" fill="#fff" stroke="#555" stroke-width="2"/><text x="118" y="116" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" fill="#555">velocity changes</text>
+              <text x="330" y="32" font-family="Atkinson Hyperlegible" font-size="18" font-weight="700" fill="#007291">Balanced forces</text><path d="M365 72 L455 72" stroke="#ef7724" stroke-width="9" marker-end="url(#zg-u)"/><path d="M455 72 L365 72" stroke="#007291" stroke-width="9" marker-end="url(#zg-v)"/><circle cx="410" cy="72" r="19" fill="#fff" stroke="#555" stroke-width="2"/><text x="410" y="116" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" fill="#555">velocity is constant or zero</text>
+              <defs><marker id="zg-u" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker><marker id="zg-v" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#007291"/></marker></defs>
+            </svg>
+          </div>
+
+          <div class="checklist" id="debriefCheck"></div>
+          <label class="q" for="finalDebrief">Mission debrief</label>
+          <textarea id="finalDebrief" data-save="finalDebrief" style="min-height:150px;" placeholder="In the asteroid miner mission, Newton's First Law means..."></textarea>
+        </div>
+        <div class="send-card">
+          <p>Send your thruster log and explanation to Jay.</p>
+          <button class="action-btn" onclick="emailWork()">📧 Send my mission debrief to Jay</button>
+          <div class="notify" id="notify"></div>
+        </div>
+      </section>
+
     </div>
-  </section>
-
-  <section class="stage" id="stage-2">
-    <div class="stage-card">
-      <p class="stage-eyebrow">Stage 2 of 5 · Thruster training</p>
-      <h2>Try one burst at a time</h2>
-      <p class="intro">Tap a thruster and watch the velocity readout. The ship does not forget the force you gave it. Opposite thrusters subtract from the current velocity.</p>
-      <div class="mini-visual-grid" aria-label="Thruster training diagrams">
-        <div class="mini-visual"><svg viewBox="0 0 210 120" role="img" aria-label="Right thrust adds right velocity"><rect width="210" height="120" rx="12" fill="#e8f4f7"/><polygon points="68,60 98,42 98,78" fill="#007291"/><path d="M104 60 L165 60" stroke="#ef7724" stroke-width="9" marker-end="url(#zg-mini-a)"/><text x="44" y="101" font-family="Atkinson Hyperlegible" font-size="14" font-weight="700" fill="#333">Right burst adds right velocity</text><defs><marker id="zg-mini-a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker></defs></svg><p>One burst adds to the motion. It does not switch itself off.</p></div>
-        <div class="mini-visual"><svg viewBox="0 0 210 120" role="img" aria-label="Opposite thrust cancels velocity"><rect width="210" height="120" rx="12" fill="#fff7f0"/><path d="M105 60 L165 60" stroke="#ef7724" stroke-width="8" marker-end="url(#zg-mini-b)"/><path d="M105 60 L45 60" stroke="#007291" stroke-width="8" marker-end="url(#zg-mini-c)"/><circle cx="105" cy="60" r="15" fill="#fff" stroke="#555" stroke-width="2"/><text x="49" y="102" font-family="Atkinson Hyperlegible" font-size="14" font-weight="700" fill="#333">Equal opposite bursts cancel</text><defs><marker id="zg-mini-b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker><marker id="zg-mini-c" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#007291"/></marker></defs></svg><p>To slow down, you need a force in the opposite direction.</p></div>
-      </div>
-
+    
+    <div class="sim-side" id="simSideContainer" style="display:none;">
       <div class="sim-card">
         <div class="sim-top">
-          <div><strong>Training field</strong><div class="tip" style="color:#cfdbe6;margin-top:0.2rem;">Green square = start zone. Orange circle = asteroid mine.</div></div>
-          <div class="readout"><span class="pill" id="velRead">Velocity: 0.0</span><span class="pill" id="statusRead">Drifting</span></div>
+          <div>
+            <strong style="font-size:0.95rem;color:#7ee0ff;">Flight Deck Simulator</strong>
+            <div class="tip" style="color:#cfdbe6;margin-top:0.15rem;font-size:0.78rem;">Green square = Start. Orange ring = Asteroid Mine.</div>
+          </div>
+          <div class="readout">
+            <span class="pill" id="velRead">Velocity: 0.0</span>
+            <span class="pill" id="statusRead">Drifting</span>
+          </div>
         </div>
-        <canvas id="spaceCanvas" aria-label="Top-down space simulation with a mining ship, start zone and asteroid target"></canvas>
+        <canvas id="spaceCanvas" aria-label="Top-down space simulation window"></canvas>
         <div class="controls" aria-label="Ship thruster controls">
           <button class="thruster up" onclick="fireThruster('up')">↑ Up</button>
           <button class="thruster left" onclick="fireThruster('left')">← Left</button>
@@ -161,155 +306,301 @@
           <button class="thruster right" onclick="fireThruster('right')">Right →</button>
           <button class="thruster down" onclick="fireThruster('down')">↓ Down</button>
         </div>
-      </div>
-      <label class="q" for="s2q">What did you notice about the ship after a thruster burst?</label>
-      <textarea id="s2q" data-save="s2q" placeholder="I noticed that..."></textarea>
-      <button class="next-btn" onclick="goStage(3)">Begin mining challenge →</button>
-    </div>
-  </section>
-
-  <section class="stage" id="stage-3">
-    <div class="stage-card">
-      <p class="stage-eyebrow">Stage 3 of 5 · The challenge</p>
-      <h2>Dock at the Asteroid Mine</h2>
-      <p class="intro">Navigate from the starting zone to the asteroid mine. To complete the mission, your ship must be inside the mine zone and almost stopped. Record exactly how many times you clicked each thruster.</p>
-      <div class="visual-note">
-        <svg class="diagram-svg" viewBox="0 0 620 160" role="img" aria-label="Example docking path with acceleration, coasting, and braking">
-          <defs><marker id="zg-route" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#007291"/></marker></defs>
-          <rect width="620" height="160" rx="12" fill="#102230"/>
-          <rect x="32" y="54" width="70" height="52" rx="9" fill="#e6f5e6" stroke="#2e8b57" stroke-width="3"/><text x="67" y="86" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700" fill="#1a5e1a">START</text>
-          <circle cx="548" cy="80" r="34" fill="#fff3e8" stroke="#ef7724" stroke-width="4"/><text x="548" y="86" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="14" font-weight="700" fill="#8a3d06">MINE</text>
-          <path d="M105 80 C185 42, 250 45, 315 80 S450 118, 512 82" fill="none" stroke="#a9d4e0" stroke-width="4" stroke-dasharray="9 8"/>
-          <path d="M140 72 L205 52" stroke="#007291" stroke-width="7" marker-end="url(#zg-route)"/><text x="148" y="35" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700" fill="#fff">1 accelerate</text>
-          <path d="M330 82 L400 104" stroke="#c05a10" stroke-width="7" marker-end="url(#zg-route)"/><text x="320" y="137" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700" fill="#fff">2 coast + steer</text>
-          <path d="M515 82 L456 101" stroke="#2e8b57" stroke-width="7" marker-end="url(#zg-route)"/><text x="440" y="45" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700" fill="#fff">3 brake</text>
-        </svg>
-        <p class="caption">Plan your route in three parts: add velocity, coast while moving, then use opposite thrusts to brake inside the mine zone.</p>
-      </div>
-
-      <div class="mission-grid">
-        <div class="panel">
-          <h3>Mission rules</h3>
-          <p class="intro" style="margin-bottom:0.5rem;">1. Use only the four thrusters.<br>2. Do not use Reset for your final attempt.<br>3. Stop inside the orange mine zone.</p>
-          <button class="check-btn" onclick="checkDocking()">Check docking</button>
-          <button class="check-btn" onclick="clearCounts()">Clear counts only</button>
-          <div class="success" id="dockSuccess"></div>
-        </div>
-        <div class="panel">
-          <h3>Thruster count log</h3>
-          <div class="count-grid">
-            <div class="count"><span>Up</span><span id="cUp">0</span></div>
-            <div class="count"><span>Down</span><span id="cDown">0</span></div>
-            <div class="count"><span>Left</span><span id="cLeft">0</span></div>
-            <div class="count"><span>Right</span><span id="cRight">0</span></div>
-          </div>
-          <label class="q" for="routeNote">Describe the route you used.</label>
-          <textarea id="routeNote" data-save="routeNote" placeholder="First I..., then I..."></textarea>
+        <div style="text-align:center; margin-top:0.6rem; font-size:0.78rem; opacity:0.85; color:#cfdbe6; line-height:1.4;">
+          💡 <strong>Keyboard Support Active:</strong> Use <strong>W, A, S, D</strong> or your computer's <strong>Arrow Keys</strong> to steer. Press <strong>R</strong> to quickly Reset.
         </div>
       </div>
-      <label class="q" for="s3q">Why did you sometimes need to fire a thruster in the opposite direction?</label>
-      <textarea id="s3q" data-save="s3q" placeholder="I needed the opposite force because..."></textarea>
-      <button class="next-btn" onclick="goStage(4)">Go to the 5-thrust test →</button>
     </div>
-  </section>
 
-  <section class="stage" id="stage-4">
-    <div class="stage-card">
-      <p class="stage-eyebrow">Stage 4 of 5 · Analysis test</p>
-      <h2>Five right thrusts</h2>
-      <p class="intro">Set the test ship moving with exactly five Right thrusts. Your task is to get the horizontal velocity back to zero. The orange bar shows how much sideways velocity the ship has.</p>
-      <div class="visual-note">
-        <svg class="diagram-svg" viewBox="0 0 620 130" role="img" aria-label="Five right thrusts cancelled by five left thrusts">
-          <defs><marker id="zg-r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker><marker id="zg-l" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#007291"/></marker></defs>
-          <rect width="620" height="130" rx="12" fill="#fffaf6"/>
-          <text x="35" y="38" font-family="Atkinson Hyperlegible" font-size="20" font-weight="700" fill="#c05a10">5 right thrusts</text><path d="M190 34 L315 34" stroke="#ef7724" stroke-width="12" marker-end="url(#zg-r)"/>
-          <text x="35" y="84" font-family="Atkinson Hyperlegible" font-size="20" font-weight="700" fill="#007291">5 left thrusts</text><path d="M315 80 L190 80" stroke="#007291" stroke-width="12" marker-end="url(#zg-l)"/>
-          <text x="380" y="62" font-family="Atkinson Hyperlegible" font-size="24" font-weight="700" fill="#333">= velocity 0</text><circle cx="535" cy="58" r="21" fill="#e6f5e6" stroke="#2e8b57" stroke-width="3"/><text x="535" y="66" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="23" font-weight="700" fill="#1a5e1a">✓</text>
-        </svg>
-      </div>
-
-      <div class="vector-lab">
-        <div class="lab-buttons">
-          <button onclick="labReset()">Reset test</button>
-          <button onclick="labRight()">Right thrust →</button>
-          <button onclick="labLeft()">← Left thrust</button>
-        </div>
-        <div class="bar-wrap"><div class="zero"></div><div class="bar" id="xbar"></div></div>
-        <p class="intro" id="labRead" style="margin-bottom:0;">Horizontal velocity: 0. Right clicks: 0. Left clicks: 0.</p>
-        <div class="success" id="labSuccess"></div>
-      </div>
-      <label class="q" for="s4q">After 5 Right thrusts, how many Left thrusts stopped the ship? Explain why.</label>
-      <textarea id="s4q" data-save="s4q" placeholder="It took... because..."></textarea>
-      <button class="next-btn" onclick="goStage(5)">Write debrief →</button>
-    </div>
-  </section>
-
-  <section class="stage" id="stage-5">
-    <div class="stage-card">
-      <p class="stage-eyebrow">Stage 5 of 5 · Debrief</p>
-      <h2>Explain what forces did</h2>
-      <p class="intro">Use the checklist, then write a short mission debrief. A strong answer explains that a force changes existing motion - it does not just make something move for a moment.</p>
-      <div class="visual-note">
-        <svg class="diagram-svg" viewBox="0 0 620 150" role="img" aria-label="Debrief diagram showing balanced and unbalanced forces">
-          <rect width="620" height="150" rx="12" fill="#f7f4ee"/>
-          <text x="30" y="32" font-family="Atkinson Hyperlegible" font-size="18" font-weight="700" fill="#007291">Unbalanced force</text><path d="M52 72 L180 72" stroke="#ef7724" stroke-width="10" marker-end="url(#zg-u)"/><circle cx="205" cy="72" r="19" fill="#fff" stroke="#555" stroke-width="2"/><text x="118" y="116" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" fill="#555">velocity changes</text>
-          <text x="330" y="32" font-family="Atkinson Hyperlegible" font-size="18" font-weight="700" fill="#007291">Balanced forces</text><path d="M365 72 L455 72" stroke="#ef7724" stroke-width="9" marker-end="url(#zg-u)"/><path d="M455 72 L365 72" stroke="#007291" stroke-width="9" marker-end="url(#zg-v)"/><circle cx="410" cy="72" r="19" fill="#fff" stroke="#555" stroke-width="2"/><text x="410" y="116" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" fill="#555">velocity stays the same or becomes zero</text>
-          <defs><marker id="zg-u" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker><marker id="zg-v" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#007291"/></marker></defs>
-        </svg>
-      </div>
-
-      <div class="checklist" id="debriefCheck"></div>
-      <label class="q" for="finalDebrief">Mission debrief</label>
-      <textarea id="finalDebrief" data-save="finalDebrief" style="min-height:150px;" placeholder="In the asteroid miner mission, Newton's First Law means..."></textarea>
-    </div>
-    <div class="send-card">
-      <p>Send your thruster log and explanation to Jay.</p>
-      <button class="action-btn" onclick="emailWork()">📧 Send my mission debrief to Jay</button>
-      <div class="notify" id="notify"></div>
-    </div>
-  </section>
+  </div>
 </main>
+
 <footer>Base 6 · Chilton Bridge School · Science</footer>
+
 <script>
 const STORE_KEY='base6_w4_science_asteroid_miner';
 const TEACHER_EMAIL='jay.raine@chiltonbridgeschool.co.uk';
 const PLABELS=['Briefing','Training','Challenge','Analysis','Debrief'];
 let state={stage:1,fields:{},counts:{up:0,down:0,left:0,right:0},checks:{},lab:{xv:0,right:0,left:0}};
+
 try{state=Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY))||{});}catch(e){}
 if(!state.fields)state.fields={}; if(!state.counts)state.counts={up:0,down:0,left:0,right:0}; if(!state.checks)state.checks={}; if(!state.lab)state.lab={xv:0,right:0,left:0};
-function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}}
-function renderProgress(){const p=document.getElementById('progress'); p.innerHTML=''; PLABELS.forEach((lab,i)=>{const n=i+1; const c=document.createElement('span'); c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':''); c.textContent=n+'. '+lab; p.appendChild(c);});}
-function goStage(n){state.stage=Math.max(state.stage,n); save(); for(let i=1;i<=5;i++){const el=document.getElementById('stage-'+i); if(el)el.classList.toggle('show',i<=n);} renderProgress(); const t=document.getElementById('stage-'+n); if(t)t.scrollIntoView({behavior:'smooth',block:'start'});}
-document.querySelectorAll('[data-save]').forEach(el=>{const k=el.dataset.save; if(state.fields[k]!==undefined)el.value=state.fields[k]; el.addEventListener('input',()=>{state.fields[k]=el.value; save();});});
-const checkItems=['I used the word inertia or Newton\'s First Law.','I explained that there is no friction in space to slow the ship.','I explained that opposite forces can slow or stop existing motion.','I used evidence from my thruster count log.'];
-const dc=document.getElementById('debriefCheck'); checkItems.forEach((t,i)=>{const l=document.createElement('label'); l.className='crow'; l.innerHTML='<input type="checkbox" data-check="'+i+'"> '+t; dc.appendChild(l); const cb=l.querySelector('input'); cb.checked=!!state.checks[i]; cb.addEventListener('change',()=>{state.checks[i]=cb.checked; save();});});
 
-const canvas=document.getElementById('spaceCanvas'); const ctx=canvas.getContext('2d'); let W=800,H=420; let stars=[]; let ship={x:110,y:210,vx:0.55,vy:0.08,trail:[]}; let flash=null;
-function resize(){const rect=canvas.getBoundingClientRect(); W=Math.max(500,Math.floor(rect.width*devicePixelRatio)); H=Math.max(300,Math.floor(rect.height*devicePixelRatio)); canvas.width=W; canvas.height=H; stars=[]; for(let i=0;i<90;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+0.4,a:Math.random()*0.7+0.25});}
-window.addEventListener('resize',resize); resize();
-function resetShip(){ship={x:W*0.14,y:H*0.5,vx:0.55*devicePixelRatio,vy:0.08*devicePixelRatio,trail:[]}; flash=null; setStatus('Reset: ship is already drifting slowly.');}
-function fireThruster(dir){const a=0.34*devicePixelRatio; if(dir==='up')ship.vy-=a; if(dir==='down')ship.vy+=a; if(dir==='left')ship.vx-=a; if(dir==='right')ship.vx+=a; state.counts[dir]=(state.counts[dir]||0)+1; flash={dir,life:18}; updateCounts(); save();}
-function updateCounts(){document.getElementById('cUp').textContent=state.counts.up||0; document.getElementById('cDown').textContent=state.counts.down||0; document.getElementById('cLeft').textContent=state.counts.left||0; document.getElementById('cRight').textContent=state.counts.right||0;}
-function clearCounts(){state.counts={up:0,down:0,left:0,right:0}; updateCounts(); save();}
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}}
+
+// Renders progress chips dynamically as buttons to browse between unlocked steps easily
+function renderProgress(){
+  const p=document.getElementById('progress'); 
+  p.innerHTML=''; 
+  PLABELS.forEach((lab,i)=>{
+    const n=i+1; 
+    const c=document.createElement('button');
+    c.type = 'button';
+    c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':''); 
+    c.textContent=n+'. '+lab;
+    
+    if(n <= state.stage) {
+      c.style.cursor = 'pointer';
+      c.onclick = () => showStageLayout(n);
+    } else {
+      c.style.cursor = 'not-allowed';
+    }
+    p.appendChild(c);
+  });
+}
+
+// Controls layout switching and handles workspace visibility rules cleanly
+function showStageLayout(n) {
+  for(let i=1;i<=5;i++){
+    const el=document.getElementById('stage-'+i); 
+    if(el) el.classList.toggle('show', i === n);
+  }
+  
+  const simContainer = document.getElementById('simSideContainer');
+  if (simContainer) {
+    if (n === 2 || n === 3) {
+      simContainer.style.display = 'block';
+      setTimeout(resize, 35); 
+    } else {
+      simContainer.style.display = 'none';
+    }
+  }
+  
+  document.querySelectorAll('.pchip').forEach((chip, idx) => {
+    chip.classList.toggle('active', (idx + 1) === n);
+  });
+  
+  const t=document.getElementById('stage-'+n); 
+  if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function goStage(n){
+  state.stage=Math.max(state.stage,n); 
+  save(); 
+  renderProgress();
+  showStageLayout(n);
+}
+
+document.querySelectorAll('[data-save]').forEach(el=>{
+  const k=el.dataset.save; 
+  if(state.fields[k]!==undefined)el.value=state.fields[k]; 
+  el.addEventListener('input',()=>{state.fields[k]=el.value; save();});
+});
+
+const checkItems=['I used the word inertia or Newton\'s First Law.','I explained that there is no friction in space to slow the ship.','I explained that opposite forces can slow or stop existing motion.','I used evidence from my thruster count log.'];
+const dc=document.getElementById('debriefCheck'); 
+checkItems.forEach((t,i)=>{
+  const l=document.createElement('label'); 
+  l.className='crow'; 
+  l.innerHTML='<input type="checkbox" data-check="'+i+'"> '+t; 
+  dc.appendChild(l); 
+  const cb=l.querySelector('input'); 
+  cb.checked=!!state.checks[i]; 
+  cb.addEventListener('change',()=>{state.checks[i]=cb.checked; save();});
+});
+
+const canvas=document.getElementById('spaceCanvas'); 
+const ctx=canvas.getContext('2d'); 
+let W=800,H=380; 
+let stars=[]; 
+let ship={x:110,y:190,vx:0.68,vy:0,trail:[]}; 
+let flash=null;
+
+function resize(){
+  const rect=canvas.getBoundingClientRect(); 
+  W=Math.max(400,Math.floor(rect.width*devicePixelRatio)); 
+  H=Math.max(300,Math.floor(rect.height*devicePixelRatio)); 
+  canvas.width=W; 
+  canvas.height=H; 
+  stars=[]; 
+  for(let i=0;i<75;i++) stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+0.4,a:Math.random()*0.7+0.25});
+}
+window.addEventListener('resize',resize); 
+resize();
+
+// Reset positions using clean, divisible vector starting math (0.68 vx, 0 vy)
+function resetShip(){
+  ship={x:W*0.14,y:H*0.5,vx:0.68*devicePixelRatio,vy:0,trail:[]}; 
+  flash=null; 
+  setStatus('Drifting at 0.68 speed. Tap Left twice to balance forces!');
+}
+
+function fireThruster(dir){
+  const a=0.34*devicePixelRatio; 
+  if(dir==='up')ship.vy-=a; 
+  if(dir==='down')ship.vy+=a; 
+  if(dir==='left')ship.vx-=a; 
+  if(dir==='right')ship.vx+=a; 
+  state.counts[dir]=(state.counts[dir]||0)+1; 
+  flash={dir,life:18}; 
+  updateCounts(); 
+  save();
+}
+
+// Global window event listener to catch smooth keyboard navigation inputs
+window.addEventListener('keydown', (e) => {
+  if (document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'INPUT') return;
+  
+  switch(e.key.toLowerCase()) {
+    case 'arrowup':
+    case 'w':
+      e.preventDefault(); fireThruster('up'); break;
+    case 'arrowdown':
+    case 's':
+      e.preventDefault(); fireThruster('down'); break;
+    case 'arrowleft':
+    case 'a':
+      e.preventDefault(); fireThruster('left'); break;
+    case 'arrowright':
+    case 'd':
+      e.preventDefault(); fireThruster('right'); break;
+    case 'r':
+      e.preventDefault(); resetShip(); break;
+  }
+});
+
+function updateCounts(){
+  if(document.getElementById('cUp')) {
+    document.getElementById('cUp').textContent=state.counts.up||0; 
+    document.getElementById('cDown').textContent=state.counts.down||0; 
+    document.getElementById('cLeft').textContent=state.counts.left||0; 
+    document.getElementById('cRight').textContent=state.counts.right||0;
+  }
+}
+
+function clearCounts(){
+  state.counts={up:0,down:0,left:0,right:0}; 
+  updateCounts(); 
+  save();
+}
+
 function setStatus(t){const s=document.getElementById('statusRead'); if(s)s.textContent=t;}
-function drawShip(){const ang=Math.atan2(ship.vy,ship.vx); ctx.save(); ctx.translate(ship.x,ship.y); ctx.rotate(ang||0); ctx.fillStyle='#fef8f4'; ctx.strokeStyle='#00c2e0'; ctx.lineWidth=2*devicePixelRatio; ctx.beginPath(); ctx.moveTo(18*devicePixelRatio,0); ctx.lineTo(-12*devicePixelRatio,-10*devicePixelRatio); ctx.lineTo(-7*devicePixelRatio,0); ctx.lineTo(-12*devicePixelRatio,10*devicePixelRatio); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.fillStyle='#ef7724'; ctx.beginPath(); ctx.arc(0,0,4*devicePixelRatio,0,Math.PI*2); ctx.fill(); ctx.restore();}
-function draw(){ctx.clearRect(0,0,W,H); ctx.fillStyle='#08111f'; ctx.fillRect(0,0,W,H); stars.forEach(s=>{ctx.globalAlpha=s.a; ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(s.x,s.y,s.r*devicePixelRatio,0,Math.PI*2); ctx.fill();}); ctx.globalAlpha=1;
-  const start={x:W*0.14,y:H*0.5,w:90*devicePixelRatio,h:90*devicePixelRatio}; const target={x:W*0.84,y:H*0.48,r:52*devicePixelRatio};
+
+function drawShip(){
+  const ang=Math.atan2(ship.vy,ship.vx); 
+  ctx.save(); 
+  ctx.translate(ship.x,ship.y); 
+  ctx.rotate(ang||0); 
+  ctx.fillStyle='#fef8f4'; 
+  ctx.strokeStyle='#00c2e0'; 
+  ctx.lineWidth=2*devicePixelRatio; 
+  ctx.beginPath(); 
+  ctx.moveTo(18*devicePixelRatio,0); 
+  ctx.lineTo(-12*devicePixelRatio,-10*devicePixelRatio); 
+  ctx.lineTo(-7*devicePixelRatio,0); 
+  ctx.lineTo(-12*devicePixelRatio,10*devicePixelRatio); 
+  ctx.closePath(); 
+  ctx.fill(); 
+  ctx.stroke(); 
+  ctx.fillStyle='#ef7724'; 
+  ctx.beginPath(); 
+  ctx.arc(0,0,4*devicePixelRatio,0,Math.PI*2); 
+  ctx.fill(); 
+  ctx.restore();
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H); 
+  ctx.fillStyle='#08111f'; 
+  ctx.fillRect(0,0,W,H); 
+  stars.forEach(s=>{ctx.globalAlpha=s.a; ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(s.x,s.y,s.r*devicePixelRatio,0,Math.PI*2); ctx.fill();}); 
+  ctx.globalAlpha=1;
+  
+  const start={x:W*0.14,y:H*0.5,w:90*devicePixelRatio,h:90*devicePixelRatio}; 
+  const target={x:W*0.82,y:H*0.5,r:52*devicePixelRatio};
+  
   ctx.fillStyle='rgba(46,139,87,0.22)'; ctx.strokeStyle='#67d58a'; ctx.lineWidth=2*devicePixelRatio; ctx.strokeRect(start.x-start.w/2,start.y-start.h/2,start.w,start.h); ctx.fillRect(start.x-start.w/2,start.y-start.h/2,start.w,start.h); ctx.fillStyle='#bdecc7'; ctx.font=(13*devicePixelRatio)+'px Atkinson Hyperlegible'; ctx.fillText('START',start.x-24*devicePixelRatio,start.y+4*devicePixelRatio);
-  ctx.fillStyle='rgba(239,119,36,0.22)'; ctx.strokeStyle='#ef7724'; ctx.beginPath(); ctx.arc(target.x,target.y,target.r,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.fillStyle='#ffd0a8'; ctx.fillText('ASTEROID MINE',target.x-55*devicePixelRatio,target.y+4*devicePixelRatio);
+  
+  ctx.fillStyle='rgba(239,119,36,0.22)'; ctx.strokeStyle='#ef7724'; ctx.beginPath(); ctx.arc(target.x,target.y,target.r,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.fillStyle='#ffd0a8'; ctx.fillText('MINE ZONE',target.x-36*devicePixelRatio,target.y+4*devicePixelRatio);
+  
   ctx.strokeStyle='rgba(255,255,255,0.23)'; ctx.beginPath(); ship.trail.forEach((p,i)=>{if(i===0)ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y);}); ctx.stroke();
-  const vx=ship.vx, vy=ship.vy; ctx.strokeStyle='#7ee0ff'; ctx.lineWidth=3*devicePixelRatio; ctx.beginPath(); ctx.moveTo(ship.x,ship.y); ctx.lineTo(ship.x+vx*35,ship.y+vy*35); ctx.stroke(); ctx.fillStyle='#7ee0ff'; ctx.fillText('velocity',ship.x+vx*35+6*devicePixelRatio,ship.y+vy*35);
+  
+  const vx=ship.vx, vy=ship.vy; ctx.strokeStyle='#7ee0ff'; ctx.lineWidth=3*devicePixelRatio; ctx.beginPath(); ctx.moveTo(ship.x,ship.y); ctx.lineTo(ship.x+vx*35,ship.y+vy*35); ctx.stroke(); ctx.fillStyle='#7ee0ff'; ctx.fillText('velocity vector',ship.x+vx*35+6*devicePixelRatio,ship.y+vy*35);
+  
   if(flash&&flash.life>0){ctx.save();ctx.globalAlpha=flash.life/18;ctx.strokeStyle='#ffdf7a';ctx.lineWidth=5*devicePixelRatio;ctx.beginPath();ctx.moveTo(ship.x,ship.y);let dx=0,dy=0;if(flash.dir==='up')dy=26;if(flash.dir==='down')dy=-26;if(flash.dir==='left')dx=26;if(flash.dir==='right')dx=-26;ctx.lineTo(ship.x+dx*devicePixelRatio,ship.y+dy*devicePixelRatio);ctx.stroke();ctx.restore();flash.life--;}
   drawShip();
 }
-function tick(){ship.x+=ship.vx; ship.y+=ship.vy; if(ship.x<14*devicePixelRatio||ship.x>W-14*devicePixelRatio){ship.vx*=-0.85; setStatus('Boundary force bounced you.');} if(ship.y<14*devicePixelRatio||ship.y>H-14*devicePixelRatio){ship.vy*=-0.85; setStatus('Boundary force bounced you.');} ship.x=Math.max(14*devicePixelRatio,Math.min(W-14*devicePixelRatio,ship.x)); ship.y=Math.max(14*devicePixelRatio,Math.min(H-14*devicePixelRatio,ship.y)); ship.trail.push({x:ship.x,y:ship.y}); if(ship.trail.length>90)ship.trail.shift(); const sp=Math.sqrt(ship.vx*ship.vx+ship.vy*ship.vy)/devicePixelRatio; const vr=document.getElementById('velRead'); if(vr)vr.textContent='Velocity: '+sp.toFixed(2); draw(); requestAnimationFrame(tick);} tick(); resetShip(); updateCounts();
-function checkDocking(){const target={x:W*0.84,y:H*0.48,r:52*devicePixelRatio}; const dist=Math.hypot(ship.x-target.x,ship.y-target.y); const sp=Math.sqrt(ship.vx*ship.vx+ship.vy*ship.vy)/devicePixelRatio; const box=document.getElementById('dockSuccess'); box.classList.add('show'); if(dist<target.r && sp<0.10){box.textContent='✓ Successful docking. Your ship is inside the mine and almost stopped. Thruster log saved.'; state.fields.docking='successful';} else {box.textContent='Not safe yet. You need to be inside the asteroid mine and moving very slowly. Current speed: '+sp.toFixed(2)+'.'; state.fields.docking='not yet';} save();}
-function labPaint(){const max=8; const x=Math.max(-max,Math.min(max,state.lab.xv)); const bar=document.getElementById('xbar'); const pct=Math.abs(x)/max*50; if(x>=0){bar.style.left='50%'; bar.style.width=pct+'%';} else {bar.style.left=(50-pct)+'%'; bar.style.width=pct+'%';} document.getElementById('labRead').textContent='Horizontal velocity: '+state.lab.xv+'. Right clicks: '+state.lab.right+'. Left clicks: '+state.lab.left+'.'; const msg=document.getElementById('labSuccess'); if(state.lab.right===5 && state.lab.xv===0 && state.lab.left===5){msg.classList.add('show'); msg.textContent='✓ Exactly. Five Left thrusts cancelled five Right thrusts.';} else {msg.classList.remove('show');}}
+
+function tick(){
+  ship.x+=ship.vx; 
+  ship.y+=ship.vy; 
+  if(ship.x<14*devicePixelRatio||ship.x>W-14*devicePixelRatio){ship.vx*=-0.85; setStatus('Boundary bounced you.');} 
+  if(ship.y<14*devicePixelRatio||ship.y>H-14*devicePixelRatio){ship.vy*=-0.85; setStatus('Boundary bounced you.');} 
+  ship.x=Math.max(14*devicePixelRatio,Math.min(W-14*devicePixelRatio,ship.x)); 
+  ship.y=Math.max(14*devicePixelRatio,Math.min(H-14*devicePixelRatio,ship.y)); 
+  ship.trail.push({x:ship.x,y:ship.y}); 
+  if(ship.trail.length>90)ship.trail.shift(); 
+  
+  const sp=Math.sqrt(ship.vx*ship.vx+ship.vy*ship.vy)/devicePixelRatio; 
+  const vr=document.getElementById('velRead'); 
+  if(vr)vr.textContent='Velocity: '+sp.toFixed(2); 
+  draw(); 
+  requestAnimationFrame(tick);
+} 
+
+tick(); 
+resetShip(); 
+updateCounts();
+
+function checkDocking(){
+  const target={x:W*0.82,y:H*0.5,r:52*devicePixelRatio}; 
+  const dist=Math.hypot(ship.x-target.x,ship.y-target.y); 
+  const sp=Math.sqrt(ship.vx*ship.vx+ship.vy*ship.vy)/devicePixelRatio; 
+  const box=document.getElementById('dockSuccess'); 
+  box.classList.add('show'); 
+  
+  if(dist<target.r && sp<0.10){
+    box.textContent='✓ Successful docking. Your balanced force operations stopped the ship safely inside the mine. Configuration locked!'; 
+    state.fields.docking='successful';
+  } else {
+    box.textContent='Docking conditions failed. You must guide the ship inside the orange circle and fire thrusters to decelerate to 0.00 speed. Current speed: '+sp.toFixed(2)+'.'; 
+    state.fields.docking='not yet';
+  } 
+  save();
+}
+
+function labPaint(){
+  const max=8; 
+  const x=Math.max(-max,Math.min(max,state.lab.xv)); 
+  const bar=document.getElementById('xbar'); 
+  const pct=Math.abs(x)/max*50; 
+  if(x>=0){bar.style.left='50%'; bar.style.width=pct+'%';} else {bar.style.left=(50-pct)+'%'; bar.style.width=pct+'%';} 
+  document.getElementById('labRead').textContent='Horizontal velocity: '+state.lab.xv+'. Right clicks: '+state.lab.right+'. Left clicks: '+state.lab.left+'.'; 
+  const msg=document.getElementById('labSuccess'); 
+  if(state.lab.right===5 && state.lab.xv===0 && state.lab.left===5){
+    msg.classList.add('show'); 
+    msg.textContent='✓ Exactly! Five Left forces perfectly balanced and cancelled out your five Right forces.';
+  } else {
+    msg.classList.remove('show');
+  }
+}
+
 function labReset(){state.lab={xv:0,right:0,left:0}; save(); labPaint();}
 function labRight(){if(state.lab.right<5){state.lab.xv++; state.lab.right++; save(); labPaint();}}
 function labLeft(){state.lab.xv--; state.lab.left++; save(); labPaint();}
 labPaint();
-function emailWork(){const f=state.fields; let b='ZERO-GRAVITY ASTEROID MINER — Science Week 4\n'; b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n'; b+='STAGE 1 Prediction:\n'+((f.s1q||'').trim()||'(no answer)')+'\n\n'; b+='STAGE 2 Observation:\n'+((f.s2q||'').trim()||'(no answer)')+'\n\n'; b+='STAGE 3 Thruster count log:\nUp: '+(state.counts.up||0)+' | Down: '+(state.counts.down||0)+' | Left: '+(state.counts.left||0)+' | Right: '+(state.counts.right||0)+'\n'; b+='Route used: '+((f.routeNote||'').trim()||'(no route note)')+'\n'; b+='Why opposite force was needed: '+((f.s3q||'').trim()||'(no answer)')+'\n\n'; b+='STAGE 4 Five-right test:\nRight clicks: '+state.lab.right+' | Left clicks: '+state.lab.left+' | Final horizontal velocity: '+state.lab.xv+'\n'; b+='Explanation: '+((f.s4q||'').trim()||'(no answer)')+'\n\n'; b+='STAGE 5 Debrief checklist: '+Object.values(state.checks).filter(Boolean).length+' / '+checkItems.length+'\n'; b+='Final debrief:\n'+((f.finalDebrief||'').trim()||'(no answer)')+'\n\n—\nSent from Base 6'; const su=encodeURIComponent('Base 6 · Zero-Gravity Asteroid Miner'); window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank'); const n=document.getElementById('notify'); n.textContent='✓ Opening your email — your mission debrief is ready to send.'; n.classList.add('show');}
+
+function emailWork(){
+  const f=state.fields; 
+  let b='ZERO-GRAVITY ASTEROID MINER — Science Week 4\n'; 
+  b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n'; 
+  b+='STAGE 1 Prediction:\n'+((f.s1q||'').trim()||'(no answer)')+'\n\n'; 
+  b+='STAGE 2 Observation:\n'+((f.s2q||'').trim()||'(no answer)')+'\n\n'; 
+  b+='STAGE 3 Thruster count log:\nUp: '+(state.counts.up||0)+' | Down: '+(state.counts.down||0)+' | Left: '+(state.counts.left||0)+' | Right: '+(state.counts.right||0)+'\n'; 
+  b+='Route used: '+((f.routeNote||'').trim()||'(no route note)')+'\n'; 
+  b+='Why opposite force was needed: '+((f.s3q||'').trim()||'(no answer)')+'\n\n'; 
+  b+='STAGE 4 Five-right test:\nRight clicks: '+state.lab.right+' | Left clicks: '+state.lab.left+' | Final horizontal velocity: '+state.lab.xv+'\n'; 
+  b+='Explanation: '+((f.s4q||'').trim()||'(no answer)')+'\n\n'; 
+  b+='STAGE 5 Debrief checklist: '+Object.values(state.checks).filter(Boolean).length+' / '+checkItems.length+'\n'; 
+  b+='Final debrief:\n'+((f.finalDebrief||'').trim()||'(no answer)')+'\n\n—\nSent from Base 6'; 
+  const su=encodeURIComponent('Base 6 · Zero-Gravity Asteroid Miner'); 
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank'); 
+  const n=document.getElementById('notify'); 
+  n.textContent='✓ Opening your email browser — your mission debrief log has been formatted successfully.'; 
+  n.classList.add('show');
+}
+
+// Boot setup
 goStage(state.stage||1);
 </script>
 </body>
