@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mindful Body Scan · PSHE · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:#eef6f4; color:#1a1a1a; min-height:100vh; }
+  .site-header { background:#2f7d76; padding:1.25rem 2rem; }
+  .back-link { color:#fff; font-size:0.9rem; font-weight:700; text-decoration:none; opacity:0.9; }
+  .hero { background:#2f7d76; padding:1.3rem 2rem 2rem; text-align:center; }
+  .hero .day-pill { display:inline-block; font-size:0.74rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; color:#fff; background:#ef7724; padding:0.3rem 0.8rem; border-radius:20px; margin-bottom:0.6rem; }
+  .hero h1 { font-size:1.85rem; font-weight:700; color:#fff; line-height:1.2; }
+  .hero p { font-size:0.95rem; color:#fff; opacity:0.93; max-width:540px; margin:0.55rem auto 0; line-height:1.55; }
+  .main { max-width:620px; margin:0 auto; padding:1.5rem 1.5rem 4rem; }
+
+  .card { background:#fff; border:2px solid #d6e8e4; border-radius:18px; padding:1.5rem 1.5rem; margin-bottom:1.2rem; }
+  .eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#ef7724; margin-bottom:0.3rem; }
+  .card h2 { font-size:1.2rem; font-weight:700; color:#2f7d76; margin-bottom:0.5rem; }
+  .intro { font-size:0.95rem; color:#444; line-height:1.7; }
+  .reassure { font-size:0.9rem; color:#3a7068; line-height:1.65; background:#e7f3f0; border:1.5px solid #bcdcd5; border-radius:12px; padding:0.85rem 1.05rem; margin-top:0.9rem; }
+
+  .start-btn { font-family:inherit; font-size:1rem; font-weight:700; padding:0.85rem 1.8rem; border-radius:12px; cursor:pointer; border:none; color:#fff; background:#2f7d76; margin-top:1.1rem; }
+  .start-btn:hover { background:#26645e; }
+
+  /* scan stage */
+  .scan { display:none; text-align:center; }
+  .scan.show { display:block; }
+  .breath-wrap { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0.5rem 0 0.3rem; }
+  .breath { width:150px; height:150px; border-radius:50%; background:radial-gradient(circle at 50% 40%, #bfe3dc, #6fb6ac); display:flex; align-items:center; justify-content:center; color:#1d4d47; font-weight:700; font-size:0.95rem; animation:breathe 10s ease-in-out infinite; box-shadow:0 8px 30px rgba(47,125,118,0.25); }
+  @keyframes breathe { 0%,100% { transform:scale(0.78); } 50% { transform:scale(1.12); } }
+  .breath-label { font-size:0.82rem; font-weight:700; color:#6a8e89; margin-top:0.7rem; letter-spacing:0.03em; }
+
+  .prompt { font-size:1.2rem; font-weight:700; color:#2f7d76; line-height:1.5; margin:1.4rem auto 0.4rem; max-width:460px; }
+  .prompt-sub { font-size:0.96rem; color:#555; line-height:1.65; max-width:460px; margin:0 auto; }
+  .step-dots { display:flex; gap:0.4rem; justify-content:center; margin:1.3rem 0 0.2rem; }
+  .dot { width:9px; height:9px; border-radius:50%; background:#cfe3df; }
+  .dot.on { background:#2f7d76; }
+  .dot.done { background:#8fc3bb; }
+
+  .scan-controls { display:flex; gap:0.6rem; justify-content:center; flex-wrap:wrap; margin-top:1.3rem; }
+  .next-btn { font-family:inherit; font-size:0.95rem; font-weight:700; padding:0.7rem 1.6rem; border-radius:10px; cursor:pointer; border:none; color:#fff; background:#2f7d76; }
+  .next-btn:hover { background:#26645e; }
+  .skip-btn { font-family:inherit; font-size:0.88rem; font-weight:700; padding:0.7rem 1.2rem; border-radius:10px; cursor:pointer; border:2px solid #b9d6d0; background:#fff; color:#3a7068; }
+  .skip-btn:hover { background:#eef6f4; }
+  .auto-row { display:flex; align-items:center; justify-content:center; gap:0.5rem; margin-top:1rem; font-size:0.84rem; color:#6a8e89; font-weight:700; }
+  .auto-row input { width:18px; height:18px; accent-color:#2f7d76; }
+
+  /* close stage */
+  .close { display:none; text-align:center; }
+  .close.show { display:block; }
+  textarea { font-family:inherit; font-size:0.98rem; width:100%; min-height:70px; padding:0.65rem 0.85rem; border:2px solid #2f7d76; border-radius:12px; background:#fff; outline:none; line-height:1.6; resize:vertical; margin-top:0.7rem; text-align:left; }
+  textarea:focus { border-color:#ef7724; }
+  .saved-tag { display:none; font-size:0.8rem; font-weight:700; color:#1a5e1a; margin-top:0.5rem; }
+  .saved-tag.show { display:inline-block; }
+  .private-note { font-size:0.84rem; color:#3a7068; line-height:1.6; background:#e7f3f0; border:1px dashed #a8d0c8; border-radius:8px; padding:0.6rem 0.8rem; margin-top:0.7rem; text-align:left; }
+  a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline:3px solid #2f7d76; outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#7a9a95; border-top:1px solid #d6e8e4; }
+</style>
+</head>
+<body>
+
+<header class="site-header"><a class="back-link" href="index.html">← PSHE</a></header>
+
+<div class="hero">
+  <span class="day-pill">Therapeutic Thursday</span>
+  <h1>🌿 Mindful Body Scan</h1>
+  <p>A few quiet minutes to thank your body for everything it does for you — not how it looks, but what it helps you do.</p>
+</div>
+
+<main class="main">
+
+  <!-- intro -->
+  <div class="card" id="introCard">
+    <p class="eyebrow">Before we begin</p>
+    <h2>Getting comfy</h2>
+    <p class="intro">Sit or rest however feels good. You can close your eyes, or keep them softly open looking at the calm circle. We'll move slowly through the body, one part at a time, noticing the helpful things each part does.</p>
+    <div class="reassure">🌱 This is your time. There's no right way to do it. If any part feels uncomfortable, you can skip it or just breathe. You can stop whenever you like.</div>
+    <button class="start-btn" onclick="startScan()">Begin →</button>
+  </div>
+
+  <!-- scan -->
+  <div class="scan" id="scanStage">
+    <div class="card">
+      <div class="breath-wrap">
+        <div class="breath" id="breath">breathe</div>
+        <div class="breath-label" id="breathLabel">in… and out…</div>
+      </div>
+      <div class="step-dots" id="dots"></div>
+      <p class="prompt" id="prompt">…</p>
+      <p class="prompt-sub" id="promptSub">…</p>
+      <div class="scan-controls">
+        <button class="skip-btn" onclick="nextStep(true)">Skip</button>
+        <button class="next-btn" id="nextBtn" onclick="nextStep(false)">Next →</button>
+      </div>
+      <div class="auto-row">
+        <input type="checkbox" id="autoChk"> <label for="autoChk">Move along gently on its own</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- close -->
+  <div class="close" id="closeStage">
+    <div class="card">
+      <p class="eyebrow">To finish</p>
+      <h2>A small thank you</h2>
+      <p class="intro">Take one more slow breath. When you're ready, you might like to finish this thought — just for you.</p>
+      <textarea id="grat" placeholder="One thing my body helped me do recently was…"></textarea>
+      <span class="saved-tag" id="savedTag">✓ Saved on this device</span>
+      <div class="private-note">🔒 This stays private on this device. You don't have to share it with anyone — though you're always welcome to tell Jay if you'd like to.</div>
+      <button class="start-btn" onclick="restartScan()">Do it again</button>
+    </div>
+  </div>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School · PSHE</footer>
+
+<script>
+const STORE_KEY='base6_w4_pshe_scan';
+let state={ grat:'' };
+try { state=Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY))||{}); } catch(e){}
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+
+const STEPS=[
+  { p:"Your feet and legs", s:"They carry you everywhere you go — to your friends, around the room, out into the world. Quietly say thank you to your legs." },
+  { p:"Your tummy", s:"It turns your breakfast into the energy that keeps you going all morning. A quiet thank you for looking after you." },
+  { p:"Your heart", s:"It has been beating, gently and steadily, every second of your life — even right now without you asking. Thank you, heart." },
+  { p:"Your hands", s:"They let you create, hold, build and wave hello. Think of one kind thing your hands did this week." },
+  { p:"Your lungs and breath", s:"They fill you with air over and over, all day long. Notice your breath now, soft and steady, doing its job." },
+  { p:"Your shoulders", s:"Let them drop, just a little. They work hard holding you up — give them permission to soften." },
+  { p:"Your mind", s:"It learns, imagines, remembers and dreams. Thank your mind for everything it figures out for you." },
+  { p:"Your whole self", s:"Picture your whole body working together as a team, just for you. However your body is today, it is doing its best — and that is enough." }
+];
+let idx=0, autoTimer=null;
+
+function showDots(){
+  const d=document.getElementById('dots'); d.innerHTML='';
+  STEPS.forEach((_,i)=>{ const sp=document.createElement('span'); sp.className='dot'+(i<idx?' done':'')+(i===idx?' on':''); d.appendChild(sp); });
+}
+function renderStep(){
+  document.getElementById('prompt').textContent=STEPS[idx].p;
+  document.getElementById('promptSub').textContent=STEPS[idx].s;
+  document.getElementById('nextBtn').textContent = idx===STEPS.length-1 ? 'Finish →' : 'Next →';
+  showDots();
+  if(document.getElementById('autoChk').checked) scheduleAuto();
+}
+function scheduleAuto(){ clearTimeout(autoTimer); autoTimer=setTimeout(()=>nextStep(false), 14000); }
+function nextStep(skip){
+  clearTimeout(autoTimer);
+  if(idx<STEPS.length-1){ idx++; renderStep(); }
+  else { finishScan(); }
+}
+function startScan(){
+  idx=0;
+  document.getElementById('introCard').style.display='none';
+  document.getElementById('closeStage').classList.remove('show');
+  document.getElementById('scanStage').classList.add('show');
+  renderStep();
+  document.getElementById('scanStage').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function finishScan(){
+  clearTimeout(autoTimer);
+  document.getElementById('scanStage').classList.remove('show');
+  document.getElementById('closeStage').classList.add('show');
+  document.getElementById('closeStage').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function restartScan(){
+  document.getElementById('closeStage').classList.remove('show');
+  document.getElementById('introCard').style.display='block';
+  document.getElementById('introCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+document.getElementById('autoChk').addEventListener('change',e=>{ if(e.target.checked) scheduleAuto(); else clearTimeout(autoTimer); });
+
+// breathing label cycle
+const bl=document.getElementById('breathLabel');
+let inhale=true; setInterval(()=>{ inhale=!inhale; bl.textContent = inhale ? 'breathe in…' : 'and out…'; }, 5000);
+
+// gratitude box (private)
+const grat=document.getElementById('grat'); const tag=document.getElementById('savedTag');
+grat.value=state.grat||'';
+let gt=null;
+grat.addEventListener('input',()=>{ state.grat=grat.value; save(); tag.classList.add('show'); clearTimeout(gt); gt=setTimeout(()=>tag.classList.remove('show'),1500); });
+</script>
+
+</body>
+</html>

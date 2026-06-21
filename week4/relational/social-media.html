@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bodies &amp; Social Media · PSHE · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:#fef8f4; color:#1a1a1a; min-height:100vh; }
+  .site-header { background:#007291; padding:1.25rem 2rem; }
+  .back-link { color:#fff; font-size:0.9rem; font-weight:700; text-decoration:none; opacity:0.9; }
+  .hero { background:#007291; padding:1.3rem 2rem 2rem; text-align:center; }
+  .hero .day-pill { display:inline-block; font-size:0.74rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; color:#fff; background:#ef7724; padding:0.3rem 0.8rem; border-radius:20px; margin-bottom:0.6rem; }
+  .hero h1 { font-size:1.85rem; font-weight:700; color:#fff; line-height:1.2; }
+  .hero p { font-size:0.95rem; color:#fff; opacity:0.92; max-width:560px; margin:0.55rem auto 0; line-height:1.55; }
+  .main { max-width:680px; margin:0 auto; padding:1.5rem 1.5rem 4rem; }
+
+  .card { background:#fff; border:2px solid #e0d8d0; border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#ef7724; margin-bottom:0.3rem; }
+  .card h2 { font-size:1.2rem; font-weight:700; color:#007291; margin-bottom:0.5rem; }
+  .intro { font-size:0.95rem; color:#444; line-height:1.65; margin-bottom:0.6rem; }
+  .big-q { font-size:1.1rem; font-weight:700; color:#c05a10; line-height:1.5; background:#fff7f0; border:2px solid #fcd8bc; border-radius:12px; padding:1rem 1.2rem; }
+
+  .slider-wrap { margin:1.2rem 0 0.4rem; }
+  input[type=range] { width:100%; accent-color:#007291; height:30px; }
+  .scale-row { display:flex; justify-content:space-between; font-size:0.78rem; font-weight:700; color:#888; }
+  .slider-val { text-align:center; font-size:1.6rem; font-weight:700; color:#007291; margin-top:0.4rem; }
+  .slider-fb { text-align:center; font-size:0.9rem; color:#555; line-height:1.5; min-height:2.6em; margin-top:0.3rem; }
+
+  .consider { font-size:0.9rem; font-weight:700; margin:1rem 0 0.5rem; }
+  .chip-row { display:flex; gap:0.5rem; flex-wrap:wrap; }
+  .chip { font-family:inherit; font-size:0.86rem; font-weight:700; padding:0.55rem 1rem; border-radius:14px; cursor:pointer; border:2px solid #cbb9a8; background:#fff; color:#6a5a4a; text-align:left; }
+  .chip:hover { border-color:#007291; }
+  .chip.on { background:#e8f4f7; border-color:#007291; color:#075066; }
+
+  label.fl { display:block; font-size:0.9rem; font-weight:700; color:#c05a10; margin:1rem 0 0.3rem; }
+  textarea { font-family:inherit; font-size:0.97rem; width:100%; min-height:60px; padding:0.6rem 0.8rem; border:2px solid #007291; border-radius:10px; background:#fff; outline:none; line-height:1.6; resize:vertical; }
+  textarea:focus { border-color:#ef7724; }
+
+  .action-btn { font-family:inherit; font-size:0.9rem; font-weight:700; padding:0.7rem 1.4rem; border-radius:9px; cursor:pointer; border:none; color:#fff; background:#007291; margin-top:0.4rem; }
+  .action-btn:hover { background:#00576e; }
+  .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; }
+  .notify.show { display:block; }
+  a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline:3px solid #007291; outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header"><a class="back-link" href="index.html">← PSHE</a></header>
+
+<div class="hero">
+  <span class="day-pill">Wondering Wednesday</span>
+  <h1>📱 Bodies &amp; Social Media</h1>
+  <p>There's no right or wrong answer today — just your honest thinking. Take a moment to wonder about this big question.</p>
+</div>
+
+<main class="main">
+
+  <div class="card">
+    <p class="eyebrow">Today's wondering</p>
+    <p class="big-q">How much of the pressure people feel about their changing bodies comes from social media?</p>
+  </div>
+
+  <div class="card">
+    <p class="eyebrow">Step 1</p>
+    <h2>What's your gut feeling?</h2>
+    <p class="intro">Slide to show how much of that pressure you think comes from social media.</p>
+    <div class="slider-wrap">
+      <input type="range" id="slider" min="0" max="100" step="5" value="50">
+      <div class="scale-row"><span>None of it</span><span>All of it</span></div>
+      <div class="slider-val" id="sval">50%</div>
+      <div class="slider-fb" id="sfb"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="eyebrow">Step 2</p>
+    <h2>Things to consider</h2>
+    <p class="intro">Tap any you think are true. These might help your thinking.</p>
+    <p class="consider">Tap to agree:</p>
+    <div class="chip-row" id="considerRow"></div>
+  </div>
+
+  <div class="card">
+    <p class="eyebrow">Step 3</p>
+    <h2>Share your thinking</h2>
+    <label class="fl">I think…</label>
+    <textarea id="think" data-save="think" placeholder="I think the pressure comes from…"></textarea>
+    <label class="fl">One reason is…</label>
+    <textarea id="reason" data-save="reason" placeholder="One reason I think this is…"></textarea>
+    <label class="fl">One thing that could help is…</label>
+    <textarea id="help" data-save="help" placeholder="Something that could help people feel better is…"></textarea>
+
+    <button class="action-btn" onclick="emailWork()">📧 Send my thinking to Jay</button>
+    <div class="notify" id="notify"></div>
+  </div>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School · PSHE</footer>
+
+<script>
+const STORE_KEY='base6_w4_pshe_social';
+const TEACHER_EMAIL='jay.raine@chiltonbridgeschool.co.uk';
+let state={ slider:50, consider:[], fields:{} };
+try { state=Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY))||{}); } catch(e){}
+if(!state.fields) state.fields={}; if(!Array.isArray(state.consider)) state.consider=[];
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+
+const slider=document.getElementById('slider'), sval=document.getElementById('sval'), sfb=document.getElementById('sfb');
+function sliderFb(v){
+  if(v<=20) return "You feel most of the pressure comes from other places — like comparing in real life, or our own thoughts.";
+  if(v<=45) return "You feel social media plays a part, but it isn't the whole story.";
+  if(v<=70) return "You feel social media is a big part of the pressure people feel.";
+  return "You feel social media is behind almost all of that pressure. Why do you think that is?";
+}
+function renderSlider(){ slider.value=state.slider; sval.textContent=state.slider+'%'; sfb.textContent=sliderFb(+state.slider); }
+slider.addEventListener('input',()=>{ state.slider=+slider.value; save(); renderSlider(); });
+
+const CONSIDER=['Filters and editing can make people look "perfect"','Everyone\'s body changes at a different time','People mostly post their best moments, not normal ones','You can choose who you follow and how it makes you feel','Real friends like you for who you are, not how you look'];
+function buildConsider(){
+  const row=document.getElementById('considerRow'); row.innerHTML='';
+  CONSIDER.forEach(c=>{
+    const b=document.createElement('button'); b.className='chip'+(state.consider.includes(c)?' on':''); b.textContent=c;
+    b.onclick=()=>{ const i=state.consider.indexOf(c); if(i>-1) state.consider.splice(i,1); else state.consider.push(c); save(); buildConsider(); };
+    row.appendChild(b);
+  });
+}
+document.querySelectorAll('[data-save]').forEach(el=>{ const k=el.dataset.save; if(state.fields[k]!==undefined) el.value=state.fields[k];
+  el.addEventListener('input',()=>{ state.fields[k]=el.value; save(); }); });
+
+function emailWork(){
+  const f=state.fields; const g=k=>(f[k]&&f[k].trim()?f[k].trim():'—');
+  let b='WONDERING WEDNESDAY: BODIES & SOCIAL MEDIA — PSHE, WEEK 4\n';
+  b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n';
+  b+='Question: How much of the pressure about changing bodies comes from social media?\n';
+  b+='My answer on the slider: '+state.slider+'%\n\n';
+  b+='Points I agreed with:\n'+(state.consider.length?state.consider.map(c=>' - '+c).join('\n'):' -')+'\n\n';
+  b+='I think: '+g('think')+'\n\n';
+  b+='One reason: '+g('reason')+'\n\n';
+  b+='One thing that could help: '+g('help')+'\n\n—\nSent from Base 6';
+  const su=encodeURIComponent('Base 6 · Wondering Wednesday');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank');
+  const n=document.getElementById('notify'); n.textContent='✓ Opening your email — your thinking is ready to send.'; n.classList.add('show');
+}
+
+renderSlider(); buildConsider();
+</script>
+
+</body>
+</html>
