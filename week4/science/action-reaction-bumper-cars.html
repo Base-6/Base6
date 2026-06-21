@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Action-Reaction Bumper Cars · Science · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:#fef8f4; color:#1a1a1a; min-height:100vh; }
+  .site-header { background:#007291; padding:1.25rem 2rem; }
+  .back-link { color:#fef8f4; font-size:0.9rem; font-weight:700; text-decoration:none; opacity:0.85; }
+  .back-link:hover { opacity:1; }
+  .hero { background:#007291; padding:1.5rem 2rem 2.25rem; text-align:center; }
+  .hero .subject-label { font-size:0.85rem; font-weight:700; color:#fef8f4; opacity:0.8; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem; }
+  .hero h1 { font-size:2.05rem; font-weight:700; color:#fef8f4; line-height:1.2; }
+  .hero p { font-size:0.98rem; color:#fef8f4; opacity:0.9; max-width:640px; margin:0.6rem auto 0; line-height:1.6; }
+  .main { max-width:860px; margin:0 auto; padding:1.6rem 1.5rem 4rem; }
+  .progress { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.4rem; position:sticky; top:0; background:#fef8f4; padding:0.7rem 0; z-index:5; }
+  .pchip { font-size:0.72rem; font-weight:700; padding:5px 11px; border-radius:20px; background:#f0ede8; color:#999; border:1.5px solid #e0d8d0; }
+  .pchip.active { background:#fff3e8; color:#c05a10; border-color:#fcd8bc; }
+  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; }
+  .stage { display:none; } .stage.show { display:block; }
+  .stage-card { background:#fff; border:2px solid #e0d8d0; border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .stage-eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#c05a10; margin-bottom:0.3rem; }
+  .stage-card h2 { font-size:1.25rem; font-weight:700; color:#007291; line-height:1.25; margin-bottom:0.5rem; }
+  .intro { font-size:0.95rem; color:#444; line-height:1.65; margin-bottom:1rem; }
+  .law-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:14px; padding:1rem 1.15rem; margin:0.8rem 0; }
+  .law-card strong { color:#c05a10; }
+  .twocol { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; }
+  @media(max-width:700px){ .twocol { grid-template-columns:1fr; } }
+  .mini { background:#f7f4ee; border:1.5px solid #e0d8d0; border-radius:12px; padding:0.85rem 1rem; }
+  .mini h3 { font-size:0.95rem; color:#007291; margin-bottom:0.35rem; }
+  .mini p { font-size:0.88rem; color:#555; line-height:1.55; }
+  .lab-card { background:#fff; border:2px solid #e0d8d0; border-radius:16px; padding:1rem; margin:0.8rem 0 1rem; }
+  .controls { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:0.75rem; margin-bottom:0.9rem; }
+  .control { background:#f7f4ee; border:1.5px solid #e0d8d0; border-radius:12px; padding:0.75rem 0.9rem; }
+  .control label { display:flex; justify-content:space-between; gap:0.5rem; font-weight:700; font-size:0.86rem; color:#333; margin-bottom:0.45rem; }
+  input[type=range] { width:100%; accent-color:#007291; }
+  .arena { position:relative; height:235px; border-radius:14px; border:2px solid #26374d; background:linear-gradient(#1d2c42,#152235); overflow:hidden; margin:0.8rem 0; }
+  .track { position:absolute; left:3%; right:3%; top:50%; height:5px; background:rgba(255,255,255,0.22); }
+  .car { position:absolute; top:50%; width:82px; height:46px; margin-top:-23px; border-radius:16px 18px 18px 16px; border:3px solid rgba(255,255,255,0.75); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; box-shadow:0 6px 15px rgba(0,0,0,0.25); }
+  .red { background:#c0392b; left:60px; }
+  .blue { background:#007291; left:500px; }
+  .wheel { position:absolute; width:15px; height:15px; background:#111; border-radius:50%; bottom:-7px; }
+  .w1 { left:12px; } .w2 { right:12px; }
+  .arrow { position:absolute; top:55px; height:8px; background:#ffd84d; border-radius:10px; display:none; }
+  .arrow::after { content:''; position:absolute; top:-7px; border-top:11px solid transparent; border-bottom:11px solid transparent; }
+  .arrow.left::after { left:-12px; border-right:14px solid #ffd84d; }
+  .arrow.right::after { right:-12px; border-left:14px solid #ffd84d; }
+  .force-label { position:absolute; top:28px; color:#ffe9a4; font-weight:700; font-size:0.82rem; display:none; white-space:nowrap; }
+  .impact-banner { position:absolute; left:50%; top:12px; transform:translateX(-50%); background:#fff7f0; color:#c05a10; border:2px solid #ef7724; border-radius:12px; padding:0.45rem 0.85rem; font-weight:700; display:none; text-align:center; }
+  .readouts { display:flex; flex-wrap:wrap; gap:0.45rem; }
+  .pill { font-size:0.76rem; font-weight:700; padding:0.35rem 0.65rem; border-radius:20px; background:#e6f5f8; color:#075066; border:1.5px solid #b8d8e0; }
+  button, .next-btn, .check-btn, .action-btn { font-family:inherit; font-weight:700; border-radius:8px; cursor:pointer; }
+  .lab-buttons { display:flex; gap:0.5rem; flex-wrap:wrap; margin:0.7rem 0; }
+  .check-btn { font-size:0.84rem; padding:0.5rem 0.9rem; border:2px solid #007291; background:#fff; color:#007291; }
+  .check-btn:hover { background:#e6f5f8; }
+  .next-btn { font-size:0.92rem; padding:0.7rem 1.5rem; border:none; background:#c0392b; color:#fff; margin-top:0.6rem; }
+  .next-btn:hover { background:#992c21; }
+  .tip { font-size:0.84rem; color:#888; margin-top:0.5rem; line-height:1.5; }
+  table { width:100%; border-collapse:collapse; margin:0.8rem 0; font-size:0.82rem; }
+  th,td { border:1px solid #e0d8d0; padding:0.45rem 0.35rem; text-align:center; }
+  th { background:#f3ece4; color:#444; font-size:0.75rem; }
+  td input { width:100%; border:0; background:transparent; font-family:inherit; text-align:center; font-size:0.82rem; }
+  label.q { display:block; font-size:0.9rem; font-weight:700; line-height:1.5; margin:0.85rem 0 0.4rem; }
+  textarea { width:100%; padding:0.7rem 0.9rem; font-family:inherit; font-size:0.92rem; border:1.5px solid #e0d8d0; border-radius:8px; background:#fffaf6; color:#1a1a1a; outline:none; line-height:1.6; min-height:82px; resize:vertical; }
+  textarea:focus { border-color:#007291; }
+  .choice-row { display:flex; gap:0.5rem; flex-wrap:wrap; }
+  .choice { font-family:inherit; font-size:0.86rem; font-weight:700; padding:0.5rem 0.9rem; border-radius:18px; border:2px solid #cbb9a8; background:#fff; color:#6a5a4a; cursor:pointer; }
+  .choice.on { background:#fff3e6; border-color:#ef7724; color:#8a3d06; }
+  .feedback { display:none; margin-top:0.65rem; padding:0.65rem 0.85rem; border-radius:9px; font-size:0.88rem; font-weight:700; line-height:1.5; }
+  .feedback.show { display:block; }
+  .feedback.good { background:#e6f5e6; border:1.5px solid #2e8b57; color:#1a5e1a; }
+  .feedback.try { background:#fff3e6; border:1.5px solid #e8a020; color:#7a4a00; }
+  .checklist { display:flex; flex-direction:column; gap:0.5rem; margin:0.8rem 0; }
+  .crow { display:flex; align-items:flex-start; gap:0.6rem; font-size:0.92rem; line-height:1.5; cursor:pointer; }
+  .crow input { width:20px; height:20px; accent-color:#007291; margin-top:1px; flex-shrink:0; }
+  .send-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:16px; padding:1.4rem 1.5rem; margin-top:1rem; text-align:center; }
+  .send-card p { font-size:0.92rem; color:#555; line-height:1.6; margin-bottom:0.9rem; }
+  .action-btn { font-size:0.92rem; padding:0.7rem 1.5rem; border:none; color:#fff; background:#007291; }
+  .action-btn:hover { background:#005a73; }
+  .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; line-height:1.5; }
+  .notify.show { display:block; }
+  a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline:3px solid #007291; outline-offset:2px; }
+
+  .visual-note { background:#f7fbfd; border:2px solid #a9d4e0; border-radius:14px; padding:0.85rem 1rem; margin:0.85rem 0 1rem; }
+  .visual-note .caption { font-size:0.82rem; color:#555; line-height:1.5; margin-top:0.45rem; }
+  .diagram-svg { width:100%; height:auto; display:block; border-radius:10px; background:#fff; border:1px solid #e0d8d0; }
+  .mini-visual-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:0.7rem; margin:0.85rem 0 1rem; }
+  .mini-visual { background:#f7f4ee; border:1.5px solid #e0d8d0; border-radius:12px; padding:0.65rem; }
+  .mini-visual svg { width:100%; height:auto; display:block; }
+  .mini-visual p { font-size:0.84rem; line-height:1.45; color:#555; margin:0.45rem 0 0; }
+  .legend-row { display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:0.5rem; }
+  .legend-pill { font-size:0.72rem; font-weight:700; border-radius:999px; padding:3px 9px; background:#fff3e8; color:#c05a10; border:1px solid #fcd8bc; }
+
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+<header class="site-header"><a class="back-link" href="index.html">← Science</a></header>
+<div class="hero">
+  <p class="subject-label">Science · Week 4</p>
+  <h1>🏎️ Action-Reaction Bumper Cars</h1>
+  <p>Crash two bumper cars, freeze the impact, and collect evidence for Newton's Third Law: for every action, there is an equal and opposite reaction.</p>
+</div>
+<main class="main">
+  <div class="progress" id="progress"></div>
+
+  <section class="stage" id="stage-1">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 1 of 5 · Big idea</p>
+      <h2>Every collision has a pair of forces</h2>
+      <div class="law-card"><p class="intro" style="margin-bottom:0;"><strong>Newton's Third Law:</strong> when object A pushes object B, object B pushes back on object A with an equal force in the opposite direction.</p></div>
+      <div class="visual-note">
+        <svg class="diagram-svg" viewBox="0 0 620 210" role="img" aria-label="Two bumper cars exerting equal and opposite forces">
+          <defs><marker id="ar-red" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#c0392b"/></marker><marker id="ar-blue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#007291"/></marker></defs>
+          <rect width="620" height="210" rx="12" fill="#f7f4ee"/>
+          <rect x="115" y="85" width="120" height="54" rx="18" fill="#ffd6d2" stroke="#c0392b" stroke-width="4"/><circle cx="142" cy="144" r="13" fill="#444"/><circle cx="208" cy="144" r="13" fill="#444"/><text x="175" y="118" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="18" font-weight="700" fill="#8d241b">RED</text>
+          <rect x="385" y="85" width="120" height="54" rx="18" fill="#d9f4ff" stroke="#007291" stroke-width="4"/><circle cx="412" cy="144" r="13" fill="#444"/><circle cx="478" cy="144" r="13" fill="#444"/><text x="445" y="118" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="18" font-weight="700" fill="#005a73">BLUE</text>
+          <path d="M300 112 L240 112" stroke="#007291" stroke-width="11" marker-end="url(#ar-blue)"/><path d="M320 112 L380 112" stroke="#c0392b" stroke-width="11" marker-end="url(#ar-red)"/>
+          <text x="310" y="42" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="22" font-weight="700" fill="#333">same size forces</text>
+          <text x="310" y="66" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="16" fill="#555">opposite directions, at the same moment</text>
+          <text x="310" y="185" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700" fill="#c05a10">The forces match. The movement changes can be different.</text>
+        </svg>
+      </div>
+
+      <div class="twocol">
+        <div class="mini"><h3>Same size force</h3><p>The force on the red car and the force on the blue car are equal at the moment of impact.</p></div>
+        <div class="mini"><h3>Different motion change</h3><p>A smaller mass can change motion more, even though the force pair is the same size.</p></div>
+      </div>
+      <label class="q" for="s1q">Prediction: if a heavy car crashes into a tiny car, which car has the bigger force on it?</label>
+      <textarea id="s1q" data-save="s1q" placeholder="I think..."></textarea>
+      <button class="next-btn" onclick="goStage(2)">Build a collision →</button>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-2">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 2 of 5 · Set up</p>
+      <h2>Choose mass and speed</h2>
+      <p class="intro">Set the masses and the red car's starting speed. The blue car begins stationary. Then write a quick prediction before you collide.</p>
+      <div class="mini-visual-grid">
+        <div class="mini-visual"><svg viewBox="0 0 230 130" role="img" aria-label="Heavy red car hits light blue car"><rect width="230" height="130" rx="12" fill="#fff7f0"/><rect x="28" y="54" width="85" height="40" rx="12" fill="#ffd6d2" stroke="#c0392b" stroke-width="4"/><text x="70" y="48" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700">large mass</text><rect x="150" y="62" width="52" height="32" rx="10" fill="#d9f4ff" stroke="#007291" stroke-width="3"/><text x="176" y="48" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700">small mass</text><path d="M118 74 L147 74" stroke="#ef7724" stroke-width="8" marker-end="url(#ar2a)"/><defs><marker id="ar2a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker></defs></svg><p>The small car usually changes motion more.</p></div>
+        <div class="mini-visual"><svg viewBox="0 0 230 130" role="img" aria-label="Light red car hits heavy blue car"><rect width="230" height="130" rx="12" fill="#e8f4f7"/><rect x="36" y="62" width="52" height="32" rx="10" fill="#ffd6d2" stroke="#c0392b" stroke-width="3"/><text x="62" y="48" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700">small mass</text><rect x="135" y="54" width="85" height="40" rx="12" fill="#d9f4ff" stroke="#007291" stroke-width="4"/><text x="178" y="48" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700">large mass</text><path d="M91 74 L132 74" stroke="#ef7724" stroke-width="8" marker-end="url(#ar2b)"/><defs><marker id="ar2b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker></defs></svg><p>The force pair is still equal, even when the masses are different.</p></div>
+      </div>
+
+      <div class="lab-card">
+        <div class="controls">
+          <div class="control"><label for="redMass"><span>Red car mass</span><span id="redMassRead">5 kg</span></label><input id="redMass" type="range" min="1" max="10" value="5"></div>
+          <div class="control"><label for="blueMass"><span>Blue car mass</span><span id="blueMassRead">5 kg</span></label><input id="blueMass" type="range" min="1" max="10" value="5"></div>
+          <div class="control"><label for="redSpeed"><span>Red car speed</span><span id="redSpeedRead">5</span></label><input id="redSpeed" type="range" min="1" max="10" value="5"></div>
+        </div>
+        <div class="readouts"><span class="pill" id="forceRead">Impact force: not tested yet</span><span class="pill" id="motionRead">Motion change: not tested yet</span></div>
+      </div>
+      <label class="q" for="s2q">Before you collide: what do you think will happen to the blue car?</label>
+      <textarea id="s2q" data-save="s2q" placeholder="I predict the blue car will..."></textarea>
+      <button class="next-btn" onclick="goStage(3)">Run the bumper car lab →</button>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-3">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 3 of 5 · Exploration</p>
+      <h2>Collide and watch the force arrows</h2>
+      <p class="intro">At impact the simulation pauses and two force arrows appear. Check whether they are the same size or different sizes.</p>
+      <div class="visual-note">
+        <svg class="diagram-svg" viewBox="0 0 620 170" role="img" aria-label="Collision pause diagram with equal force arrows">
+          <defs><marker id="ar3r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#c0392b"/></marker><marker id="ar3b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#007291"/></marker></defs>
+          <rect width="620" height="170" rx="12" fill="#20242b"/><line x1="310" y1="26" x2="310" y2="144" stroke="#fff" stroke-dasharray="8 8" opacity="0.35"/>
+          <rect x="218" y="70" width="86" height="42" rx="13" fill="#ffd6d2" stroke="#c0392b" stroke-width="3"/><rect x="316" y="70" width="86" height="42" rx="13" fill="#d9f4ff" stroke="#007291" stroke-width="3"/>
+          <path d="M310 91 L230 91" stroke="#007291" stroke-width="11" marker-end="url(#ar3b)"/><path d="M310 91 L390 91" stroke="#c0392b" stroke-width="11" marker-end="url(#ar3r)"/>
+          <text x="310" y="38" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="19" font-weight="700" fill="#fff">Impact moment: arrows are identical length</text>
+          <text x="310" y="148" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="14" fill="#cfdbe6">Pause the simulation here and compare the arrow sizes.</text>
+        </svg>
+      </div>
+
+      <div class="lab-card">
+        <div class="arena" id="arena">
+          <div class="track"></div>
+          <div class="impact-banner" id="impactBanner">Impact: equal and opposite forces</div>
+          <div class="arrow left" id="arrowLeft"></div><div class="arrow right" id="arrowRight"></div>
+          <div class="force-label" id="labA"></div><div class="force-label" id="labB"></div>
+          <div class="car red" id="redCar">RED<div class="wheel w1"></div><div class="wheel w2"></div></div>
+          <div class="car blue" id="blueCar">BLUE<div class="wheel w1"></div><div class="wheel w2"></div></div>
+        </div>
+        <div class="lab-buttons"><button class="check-btn" onclick="runCollision()">▶ Collide</button><button class="check-btn" onclick="resetCars()">Reset cars</button><button class="check-btn" onclick="saveTrial()">Save this collision to notebook</button></div>
+        <p class="tip">Try at least three: heavy red into light blue, light red into heavy blue, and equal masses.</p>
+      </div>
+      <label class="q" for="s3q">What did you notice about the two force arrows at the moment of impact?</label>
+      <textarea id="s3q" data-save="s3q" placeholder="The arrows were..."></textarea>
+      <button class="next-btn" onclick="goStage(4)">Collect evidence →</button>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-4">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 4 of 5 · Evidence notebook</p>
+      <h2>Record three collisions</h2>
+      <p class="intro">Use your saved trials or type your results. The key evidence is the force on the red car and the force on the blue car during the same collision.</p>
+      <div class="visual-note">
+        <svg class="diagram-svg" viewBox="0 0 620 150" role="img" aria-label="Table diagram showing forces stay equal but acceleration changes">
+          <rect width="620" height="150" rx="12" fill="#fffaf6"/>
+          <text x="34" y="34" font-family="Atkinson Hyperlegible" font-size="18" font-weight="700" fill="#007291">Record this pattern:</text>
+          <line x1="40" y1="58" x2="580" y2="58" stroke="#e0d8d0" stroke-width="2"/>
+          <text x="90" y="85" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700">Collision</text><text x="260" y="85" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700">Red force</text><text x="420" y="85" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700">Blue force</text><text x="535" y="85" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700">Same?</text>
+          <text x="90" y="119" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15">A / B / C</text><text x="260" y="119" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15">same length arrow</text><text x="420" y="119" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15">same length arrow</text><text x="535" y="119" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="22" font-weight="700" fill="#2e8b57">✓</text>
+        </svg>
+      </div>
+
+      <div style="overflow-x:auto;"><table id="trialTable"><tr><th>Trial</th><th>Red mass</th><th>Blue mass</th><th>Speed</th><th>Force on red</th><th>Force on blue</th><th>What changed most?</th></tr></table></div>
+      <label class="q" for="s4q">What pattern do you see in the force numbers?</label>
+      <textarea id="s4q" data-save="s4q" placeholder="In every trial, the force on red was... and the force on blue was..."></textarea>
+      <button class="next-btn" onclick="goStage(5)">Review the misconception →</button>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-5">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 5 of 5 · Review</p>
+      <h2>Does the bigger object apply more force?</h2>
+      <p class="intro">Choose the best statement, then write a final explanation using the evidence from your collisions.</p>
+      <div class="choice-row">
+        <button class="choice" data-choice="wrong" onclick="chooseMis(this)">The heavier car always applies more force.</button>
+        <button class="choice" data-choice="right" onclick="chooseMis(this)">The forces are equal, but the smaller mass changes motion more.</button>
+        <button class="choice" data-choice="wrong" onclick="chooseMis(this)">The moving car has a force, but the still car has none.</button>
+      </div>
+      <div class="feedback" id="misFb"></div>
+      <div class="checklist" id="finalCheck"></div>
+      <label class="q" for="finalExplain">Final explanation</label>
+      <textarea id="finalExplain" data-save="finalExplain" style="min-height:150px;" placeholder="Newton's Third Law means..."></textarea>
+    </div>
+    <div class="send-card">
+      <p>Send your collision evidence and explanation to Jay.</p>
+      <button class="action-btn" onclick="emailWork()">📧 Send my bumper car investigation to Jay</button>
+      <div class="notify" id="notify"></div>
+    </div>
+  </section>
+</main>
+<footer>Base 6 · Chilton Bridge School · Science</footer>
+<script>
+const STORE_KEY='base6_w4_science_bumper_cars';
+const TEACHER_EMAIL='jay.raine@chiltonbridgeschool.co.uk';
+const PLABELS=['Law','Setup','Collide','Evidence','Review'];
+let state={stage:1,fields:{},trials:[],checks:{},choice:null};
+try{state=Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY))||{});}catch(e){}
+if(!state.fields)state.fields={}; if(!state.trials)state.trials=[]; if(!state.checks)state.checks={};
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}}
+function renderProgress(){const p=document.getElementById('progress'); p.innerHTML=''; PLABELS.forEach((lab,i)=>{const n=i+1; const c=document.createElement('span'); c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':''); c.textContent=n+'. '+lab; p.appendChild(c);});}
+function goStage(n){state.stage=Math.max(state.stage,n); save(); for(let i=1;i<=5;i++){const el=document.getElementById('stage-'+i); if(el)el.classList.toggle('show',i<=n);} renderProgress(); const t=document.getElementById('stage-'+n); if(t)t.scrollIntoView({behavior:'smooth',block:'start'});}
+document.querySelectorAll('[data-save]').forEach(el=>{const k=el.dataset.save; if(state.fields[k]!==undefined)el.value=state.fields[k]; el.addEventListener('input',()=>{state.fields[k]=el.value; save();});});
+const redMass=document.getElementById('redMass'), blueMass=document.getElementById('blueMass'), redSpeed=document.getElementById('redSpeed');
+function vals(){return {rm:+redMass.value,bm:+blueMass.value,sp:+redSpeed.value};}
+function updateSliders(){const v=vals(); document.getElementById('redMassRead').textContent=v.rm+' kg'; document.getElementById('blueMassRead').textContent=v.bm+' kg'; document.getElementById('redSpeedRead').textContent=v.sp;}
+[redMass,blueMass,redSpeed].forEach(r=>r.addEventListener('input',()=>{updateSliders(); resetCars();})); updateSliders();
+let last={force:0,redAfter:0,blueAfter:0,changed:''}; let anim=null;
+function resetCars(){if(anim)cancelAnimationFrame(anim); const arena=document.getElementById('arena'); const w=arena.clientWidth; redCar.style.left='55px'; blueCar.style.left=(w-140)+'px'; hideArrows(); document.getElementById('forceRead').textContent='Impact force: not tested yet'; document.getElementById('motionRead').textContent='Motion change: not tested yet';}
+function hideArrows(){['arrowLeft','arrowRight','labA','labB','impactBanner'].forEach(id=>document.getElementById(id).style.display='none');}
+function showArrows(force){const arena=document.getElementById('arena'); const mid=arena.clientWidth/2; const len=Math.max(70,Math.min(170,force/2)); const al=document.getElementById('arrowLeft'), ar=document.getElementById('arrowRight'); al.style.display='block'; ar.style.display='block'; al.style.left=(mid-len-10)+'px'; al.style.width=len+'px'; ar.style.left=(mid+10)+'px'; ar.style.width=len+'px'; document.getElementById('labA').style.display='block'; document.getElementById('labB').style.display='block'; document.getElementById('labA').style.left=(mid-len-20)+'px'; document.getElementById('labB').style.left=(mid+20)+'px'; document.getElementById('labA').textContent='Force on red: '+force+' N'; document.getElementById('labB').textContent='Force on blue: '+force+' N'; document.getElementById('impactBanner').style.display='block';}
+function runCollision(){if(anim)cancelAnimationFrame(anim); resetCars(); const v=vals(); const arena=document.getElementById('arena'); const w=arena.clientWidth; let rx=55, bx=w-140; let phase='approach'; const u1=v.sp*1.25; const force=Math.round((v.sp*(v.rm+v.bm))*4); const v1=((v.rm-v.bm)/(v.rm+v.bm))*u1; const v2=((2*v.rm)/(v.rm+v.bm))*u1; last={force, redAfter:v1, blueAfter:v2, changed:Math.abs(v2)>Math.abs(v1)?'Blue changed most':(Math.abs(v1)>Math.abs(v2)?'Red changed most':'Both changed similarly'), rm:v.rm,bm:v.bm,sp:v.sp};
+  function step(){if(phase==='approach'){rx+=u1; if(rx+82>=bx){rx=bx-82; phase='pause'; showArrows(force); document.getElementById('forceRead').textContent='Impact force: '+force+' N on each car'; document.getElementById('motionRead').textContent=last.changed; setTimeout(()=>{hideArrows(); phase='bounce'; anim=requestAnimationFrame(step);},1550);} }
+    else if(phase==='bounce'){rx+=v1; bx+=v2; if(rx<-110||rx>w+20||bx<-20||bx>w+110){return;}}
+    redCar.style.left=rx+'px'; blueCar.style.left=bx+'px'; if(phase!=='pause')anim=requestAnimationFrame(step);} step();}
+function saveTrial(){if(!last.force){alert('Run a collision first.'); return;} state.trials.push({rm:last.rm,bm:last.bm,sp:last.sp,fr:last.force,fb:last.force,chg:last.changed}); if(state.trials.length>3)state.trials=state.trials.slice(-3); save(); renderTrials();}
+function renderTrials(){const t=document.getElementById('trialTable'); t.innerHTML='<tr><th>Trial</th><th>Red mass</th><th>Blue mass</th><th>Speed</th><th>Force on red</th><th>Force on blue</th><th>What changed most?</th></tr>'; for(let i=0;i<3;i++){const tr=state.trials[i]||{}; const row=document.createElement('tr'); row.innerHTML='<td>'+(i+1)+'</td><td><input value="'+(tr.rm||'')+'" data-trial="'+i+'" data-k="rm"></td><td><input value="'+(tr.bm||'')+'" data-trial="'+i+'" data-k="bm"></td><td><input value="'+(tr.sp||'')+'" data-trial="'+i+'" data-k="sp"></td><td><input value="'+(tr.fr||'')+'" data-trial="'+i+'" data-k="fr"></td><td><input value="'+(tr.fb||'')+'" data-trial="'+i+'" data-k="fb"></td><td><input value="'+(tr.chg||'')+'" data-trial="'+i+'" data-k="chg"></td>'; t.appendChild(row);} t.querySelectorAll('input[data-trial]').forEach(inp=>inp.addEventListener('input',()=>{const i=+inp.dataset.trial,k=inp.dataset.k; if(!state.trials[i])state.trials[i]={}; state.trials[i][k]=inp.value; save();}));}
+renderTrials(); setTimeout(resetCars,100);
+function chooseMis(btn){document.querySelectorAll('.choice').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); state.choice=btn.dataset.choice; save(); const fb=document.getElementById('misFb'); fb.className='feedback show '+(state.choice==='right'?'good':'try'); fb.textContent=state.choice==='right'?'✓ Correct. The forces are equal and opposite. The smaller mass usually has the bigger change in motion.':'Not quite. Look back at your force numbers: the force on each car during the same collision is equal.';}
+const checkItems=['I used the phrase equal and opposite.','I included force evidence from at least one collision.','I explained that mass affects the change in motion.','I corrected the idea that the bigger object always applies more force.'];
+const fc=document.getElementById('finalCheck'); checkItems.forEach((t,i)=>{const l=document.createElement('label'); l.className='crow'; l.innerHTML='<input type="checkbox" data-check="'+i+'"> '+t; fc.appendChild(l); const cb=l.querySelector('input'); cb.checked=!!state.checks[i]; cb.addEventListener('change',()=>{state.checks[i]=cb.checked; save();});});
+if(state.choice){const btn=document.querySelector('.choice[data-choice="'+state.choice+'"]'); if(btn)chooseMis(btn);}
+function emailWork(){const f=state.fields; let b='ACTION-REACTION BUMPER CARS — Science Week 4\n'; b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n'; b+='STAGE 1 Prediction:\n'+((f.s1q||'').trim()||'(no answer)')+'\n\n'; b+='STAGE 2 Prediction:\n'+((f.s2q||'').trim()||'(no answer)')+'\n\n'; b+='STAGE 3 Observation:\n'+((f.s3q||'').trim()||'(no answer)')+'\n\n'; b+='STAGE 4 Evidence trials:\n'; state.trials.forEach((tr,i)=>{b+='Trial '+(i+1)+': red mass '+(tr.rm||'')+', blue mass '+(tr.bm||'')+', speed '+(tr.sp||'')+', force on red '+(tr.fr||'')+', force on blue '+(tr.fb||'')+', changed most '+(tr.chg||'')+'\n';}); b+='Pattern noticed: '+((f.s4q||'').trim()||'(no answer)')+'\n\n'; b+='Review choice: '+(state.choice||'(not chosen)')+'\n'; b+='Checklist: '+Object.values(state.checks).filter(Boolean).length+' / '+checkItems.length+'\n'; b+='Final explanation:\n'+((f.finalExplain||'').trim()||'(no answer)')+'\n\n—\nSent from Base 6'; const su=encodeURIComponent('Base 6 · Action-Reaction Bumper Cars'); window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank'); const n=document.getElementById('notify'); n.textContent='✓ Opening your email — your bumper car investigation is ready to send.'; n.classList.add('show');}
+goStage(state.stage||1);
+</script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forces and Magnetism Mission · Science · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:#fef8f4; color:#1a1a1a; min-height:100vh; }
+  .site-header { background:#007291; padding:1.25rem 2rem; }
+  .back-link { color:#fef8f4; font-size:0.9rem; font-weight:700; text-decoration:none; opacity:0.85; }
+  .back-link:hover { opacity:1; }
+  .hero { background:#007291; padding:1.5rem 2rem 2.25rem; text-align:center; }
+  .hero .subject-label { font-size:0.85rem; font-weight:700; color:#fef8f4; opacity:0.8; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem; }
+  .hero h1 { font-size:2.0rem; font-weight:700; color:#fef8f4; line-height:1.2; }
+  .hero p { font-size:0.98rem; color:#fef8f4; opacity:0.9; max-width:640px; margin:0.6rem auto 0; line-height:1.6; }
+  .main { max-width:820px; margin:0 auto; padding:1.6rem 1.5rem 4rem; }
+  .progress { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.4rem; position:sticky; top:0; background:#fef8f4; padding:0.7rem 0; z-index:5; }
+  .pchip { font-size:0.72rem; font-weight:700; padding:5px 11px; border-radius:20px; background:#f0ede8; color:#999; border:1.5px solid #e0d8d0; }
+  .pchip.active { background:#fff3e8; color:#c05a10; border-color:#fcd8bc; }
+  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; }
+  .stage { display:none; } .stage.show { display:block; }
+  .stage-card { background:#fff; border:2px solid #e0d8d0; border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .stage-eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#c05a10; margin-bottom:0.3rem; }
+  .stage-card h2 { font-size:1.25rem; font-weight:700; color:#007291; line-height:1.25; margin-bottom:0.5rem; }
+  .intro { font-size:0.95rem; color:#444; line-height:1.65; margin-bottom:1rem; }
+  .question { background:#fffaf6; border:1.5px solid #e0d8d0; border-radius:12px; padding:0.85rem 1rem; margin:0.7rem 0; }
+  .question p { font-size:0.92rem; line-height:1.55; margin-bottom:0.55rem; }
+  .choice-row { display:flex; gap:0.45rem; flex-wrap:wrap; }
+  .chip { font-family:inherit; font-size:0.84rem; font-weight:700; padding:0.45rem 0.8rem; border-radius:18px; cursor:pointer; border:2px solid #cbb9a8; background:#fff; color:#6a5a4a; }
+  .chip:hover { border-color:#ef7724; }
+  .chip.on { background:#fff3e6; border-color:#ef7724; color:#8a3d06; }
+  .chip.right { background:#e6f5e6; border-color:#2e8b57; color:#1a5e1a; }
+  .chip.wrong { background:#fff3e6; border-color:#e8a020; color:#7a4a00; }
+  .feedback { display:none; margin-top:0.55rem; padding:0.55rem 0.75rem; border-radius:8px; font-size:0.84rem; font-weight:700; line-height:1.5; }
+  .feedback.show.good { display:block; background:#e6f5e6; color:#1a5e1a; border:1.5px solid #2e8b57; }
+  .feedback.show.try { display:block; background:#fff3e6; color:#7a4a00; border:1.5px solid #e8a020; }
+  .word-bank { background:#e8f4f7; border:2px solid #a9d4e0; border-radius:12px; padding:0.8rem 1rem; margin:0.7rem 0 1rem; font-size:0.9rem; color:#0b5a72; line-height:1.6; }
+  .word-bank b { color:#075066; }
+  .forces-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:0.75rem; }
+  .force-card { background:#f7f4ee; border:1.5px solid #e0d8d0; border-radius:12px; padding:0.75rem; text-align:center; }
+  .force-card svg { width:100%; height:95px; display:block; margin-bottom:0.35rem; }
+  .force-card p { font-size:0.86rem; font-weight:700; color:#333; margin-bottom:0.4rem; }
+  .sort-area { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-top:0.8rem; }
+  @media(max-width:660px){ .sort-area { grid-template-columns:1fr; } }
+  .bucket { background:#f7f4ee; border:2px dashed #cbb9a8; border-radius:14px; padding:0.85rem; min-height:150px; }
+  .bucket h3 { font-size:0.95rem; color:#007291; margin-bottom:0.55rem; }
+  .object-bank { display:flex; flex-wrap:wrap; gap:0.45rem; margin:0.7rem 0; }
+  .obj { font-family:inherit; font-size:0.84rem; font-weight:700; padding:0.45rem 0.75rem; border-radius:18px; cursor:pointer; border:2px solid #e0d8d0; background:#fff; color:#333; }
+  .obj.selected { border-color:#ef7724; background:#fff3e6; }
+  .bucket .obj { margin:0.2rem; }
+  .magnet-lab { background:#f7f4ee; border:2px solid #e0d8d0; border-radius:14px; padding:1rem; margin:0.8rem 0; }
+  .magrow { display:flex; gap:0.7rem; align-items:center; flex-wrap:wrap; margin:0.7rem 0; }
+  .magnet { width:86px; height:54px; border-radius:10px; border:3px solid #333; display:flex; overflow:hidden; box-shadow:0 5px 0 rgba(0,0,0,0.08); }
+  .magnet span { flex:1; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; }
+  .magnet .n { background:#c0392b; } .magnet .s { background:#007291; }
+  .paperclips { font-size:1.6rem; letter-spacing:0.1rem; min-height:35px; }
+  .sentence { display:flex; gap:0.45rem; align-items:center; flex-wrap:wrap; font-size:0.95rem; line-height:1.8; margin:0.55rem 0; }
+  .blank { min-width:150px; max-width:240px; }
+  label.q { display:block; font-size:0.9rem; font-weight:700; line-height:1.5; margin:0.85rem 0 0.4rem; }
+  textarea, input[type=text] { width:100%; padding:0.65rem 0.85rem; font-family:inherit; font-size:0.92rem; border:1.5px solid #e0d8d0; border-radius:8px; background:#fffaf6; color:#1a1a1a; outline:none; line-height:1.6; }
+  textarea { min-height:82px; resize:vertical; }
+  textarea:focus, input[type=text]:focus { border-color:#007291; }
+  .next-btn, .check-btn, .action-btn { font-family:inherit; font-weight:700; border-radius:8px; cursor:pointer; }
+  .check-btn { font-size:0.84rem; padding:0.5rem 0.9rem; border:2px solid #007291; background:#fff; color:#007291; margin-top:0.4rem; }
+  .check-btn:hover { background:#e6f5f8; }
+  .next-btn { font-size:0.92rem; padding:0.7rem 1.5rem; border:none; background:#c0392b; color:#fff; margin-top:0.8rem; }
+  .next-btn:hover { background:#992c21; }
+  .send-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:16px; padding:1.4rem 1.5rem; margin-top:1rem; text-align:center; }
+  .send-card p { font-size:0.92rem; color:#555; line-height:1.6; margin-bottom:0.9rem; }
+  .action-btn { font-size:0.92rem; padding:0.7rem 1.5rem; border:none; color:#fff; background:#007291; }
+  .action-btn:hover { background:#005a73; }
+  .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; line-height:1.5; }
+  .notify.show { display:block; }
+  a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline:3px solid #007291; outline-offset:2px; }
+
+  .visual-note { background:#f7fbfd; border:2px solid #a9d4e0; border-radius:14px; padding:0.85rem 1rem; margin:0.85rem 0 1rem; }
+  .visual-note .caption { font-size:0.82rem; color:#555; line-height:1.5; margin-top:0.45rem; }
+  .diagram-svg { width:100%; height:auto; display:block; border-radius:10px; background:#fff; border:1px solid #e0d8d0; }
+  .mini-visual-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:0.7rem; margin:0.85rem 0 1rem; }
+  .mini-visual { background:#f7f4ee; border:1.5px solid #e0d8d0; border-radius:12px; padding:0.65rem; }
+  .mini-visual svg { width:100%; height:auto; display:block; }
+  .mini-visual p { font-size:0.84rem; line-height:1.45; color:#555; margin:0.45rem 0 0; }
+  .legend-row { display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:0.5rem; }
+  .legend-pill { font-size:0.72rem; font-weight:700; border-radius:999px; padding:3px 9px; background:#fff3e8; color:#c05a10; border:1px solid #fcd8bc; }
+
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+<header class="site-header"><a class="back-link" href="index.html">← Science</a></header>
+<div class="hero">
+  <p class="subject-label">Science · Week 4</p>
+  <h1>🧲 Forces and Magnetism Mission</h1>
+  <p>Complete the mission to show what you know about pushes, pulls, friction, resistance, upthrust and magnets.</p>
+</div>
+<main class="main">
+  <div class="progress" id="progress"></div>
+
+  <section class="stage" id="stage-1">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 1 of 5 · Fact check</p>
+      <h2>True or false?</h2>
+      <p class="intro">Read each statement and choose True or False. Use the feedback to fix mistakes.</p>
+      <div class="mini-visual-grid">
+        <div class="mini-visual"><svg viewBox="0 0 200 120" role="img" aria-label="Gravity pulls down"><rect width="200" height="120" rx="12" fill="#e6f5e6"/><circle cx="100" cy="38" r="16" fill="#ef7724"/><path d="M100 57 L100 100" stroke="#2e8b57" stroke-width="9" marker-end="url(#mag1g)"/><text x="100" y="24" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="14" font-weight="700">gravity</text><defs><marker id="mag1g" markerWidth="10" markerHeight="10" refX="5" refY="7" orient="auto"><path d="M0,0 L5,8 L10,0 z" fill="#2e8b57"/></marker></defs></svg><p>Gravity pulls down towards Earth.</p></div>
+        <div class="mini-visual"><svg viewBox="0 0 200 120" role="img" aria-label="Magnet pulls without touching"><rect width="200" height="120" rx="12" fill="#fff7f0"/><path d="M46 38 h34 v44 h-34 q-18 0-18-22 q0-22 18-22" fill="none" stroke="#c0392b" stroke-width="14"/><path d="M46 38 h34" stroke="#007291" stroke-width="14"/><circle cx="142" cy="60" r="13" fill="#bbb" stroke="#555" stroke-width="2"/><path d="M126 60 C105 38, 88 38, 78 50 M126 60 C105 82, 88 82, 78 70" fill="none" stroke="#ef7724" stroke-width="3" stroke-dasharray="5 5"/><text x="100" y="108" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700">no touch needed</text></svg><p>Magnets can pull magnetic objects at a distance.</p></div>
+        <div class="mini-visual"><svg viewBox="0 0 200 120" role="img" aria-label="Parachute air resistance"><rect width="200" height="120" rx="12" fill="#e8f4f7"/><path d="M55 55 Q100 18 145 55 Z" fill="#ef7724" stroke="#c05a10" stroke-width="3"/><line x1="65" y1="55" x2="100" y2="95" stroke="#555"/><line x1="135" y1="55" x2="100" y2="95" stroke="#555"/><circle cx="100" cy="100" r="8" fill="#333"/><path d="M100 75 L100 35" stroke="#007291" stroke-width="7"/><text x="100" y="20" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700">air resistance</text></svg><p>A parachute catches air and slows a fall.</p></div>
+      </div>
+
+      <div id="factCheck"></div>
+      <button class="next-btn" onclick="goStage(2)">Next: spot the force →</button>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-2">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 2 of 5 · Spot the force</p>
+      <h2>Which force is acting?</h2>
+      <div class="word-bank"><b>Word Bank:</b> Gravity · Friction · Air resistance · Water resistance · Upthrust</div>
+      <div class="visual-note">
+        <svg class="diagram-svg" viewBox="0 0 620 160" role="img" aria-label="Five common forces shown with small pictures">
+          <rect width="620" height="160" rx="12" fill="#f7f4ee"/>
+          <g font-family="Atkinson Hyperlegible" font-size="13" font-weight="700" text-anchor="middle" fill="#333">
+            <circle cx="62" cy="68" r="25" fill="#fff" stroke="#2e8b57" stroke-width="3"/><path d="M62 96 L62 126" stroke="#2e8b57" stroke-width="7"/><text x="62" y="145">Gravity</text>
+            <rect x="145" y="78" width="65" height="22" rx="5" fill="#d8a77a"/><circle cx="177" cy="65" r="18" fill="#fff" stroke="#555" stroke-width="3"/><text x="177" y="145">Friction</text>
+            <path d="M288 38 Q324 70 288 102" fill="none" stroke="#007291" stroke-width="8"/><path d="M258 80 L208 80" stroke="#007291" stroke-width="7"/><text x="270" y="145">Air resistance</text>
+            <path d="M385 95 q42 -30 84 0" fill="none" stroke="#007291" stroke-width="10" opacity="0.65"/><path d="M427 100 L427 42" stroke="#007291" stroke-width="8"/><text x="427" y="145">Upthrust</text>
+            <path d="M520 110 q36 -42 72 0" fill="none" stroke="#007291" stroke-width="9"/><path d="M557 70 L505 70" stroke="#007291" stroke-width="7"/><text x="556" y="145">Water resistance</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="forces-grid" id="forceCards"></div>
+      <label class="q" for="s2q">Choose one picture and explain how the force affects the movement.</label>
+      <textarea id="s2q" data-save="s2q" placeholder="In the picture of..., the force..."></textarea>
+      <button class="next-btn" onclick="goStage(3)">Next: magnetic sorting →</button>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-3">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 3 of 5 · Sort</p>
+      <h2>Magnetic or non-magnetic?</h2>
+      <p class="intro">Tap an object, then choose which group it belongs in. Magnetic objects are attracted to a magnet.</p>
+      <div class="visual-note">
+        <svg class="diagram-svg" viewBox="0 0 620 180" role="img" aria-label="Magnet attracts iron, steel and nickel objects but not plastic, glass or aluminium">
+          <rect width="620" height="180" rx="12" fill="#fffaf6"/>
+          <path d="M76 52 h58 v76 h-58 q-34 0-34-38 q0-38 34-38" fill="none" stroke="#c0392b" stroke-width="20"/><path d="M76 52 h58" stroke="#007291" stroke-width="20"/><text x="84" y="37" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700" fill="#333">magnet</text>
+          <g font-family="Atkinson Hyperlegible" font-size="14" font-weight="700" fill="#333"><circle cx="240" cy="68" r="14" fill="#aaa"/><text x="240" y="112" text-anchor="middle">iron nail</text><rect x="315" y="55" width="42" height="26" rx="5" fill="#bbb"/><text x="336" y="112" text-anchor="middle">steel clip</text><circle cx="430" cy="68" r="18" fill="#c5b358"/><text x="430" y="112" text-anchor="middle">nickel coin</text></g>
+          <path d="M148 78 C175 42, 205 42, 226 60 M148 95 C175 128, 205 128, 226 78" fill="none" stroke="#ef7724" stroke-width="4" stroke-dasharray="6 6"/>
+          <text x="382" y="151" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="16" font-weight="700" fill="#1a5e1a">Magnetic objects are usually iron, steel or nickel.</text>
+        </svg>
+      </div>
+
+      <div class="object-bank" id="objectBank"></div>
+      <div class="choice-row"><button class="check-btn" onclick="putSelected('magnetic')">Put in magnetic</button><button class="check-btn" onclick="putSelected('non')">Put in non-magnetic</button><button class="check-btn" onclick="checkSort()">Check sorting</button></div>
+      <div class="sort-area"><div class="bucket" id="magBucket"><h3>Magnetic (picks up)</h3></div><div class="bucket" id="nonBucket"><h3>Non-magnetic (does not pick up)</h3></div></div>
+      <div class="feedback" id="fb-sort"></div>
+      <label class="q" for="s3q">What do the magnetic objects have in common?</label>
+      <textarea id="s3q" data-save="s3q" placeholder="The magnetic objects are made from..."></textarea>
+      <button class="next-btn" onclick="goStage(4)">Next: friction on ice →</button>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-4">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 4 of 5 · Friction in action</p>
+      <h2>Why is ice slippery?</h2>
+      <div class="visual-note">
+        <svg class="diagram-svg" viewBox="0 0 620 170" role="img" aria-label="Ice has little friction, winter boots have more grip">
+          <rect width="620" height="170" rx="12" fill="#e8f4f7"/>
+          <text x="155" y="35" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="18" font-weight="700" fill="#007291">smooth ice</text><rect x="45" y="105" width="220" height="20" rx="5" fill="#bdefff"/><path d="M80 77 L145 77" stroke="#333" stroke-width="11" stroke-linecap="round"/><path d="M145 77 L178 105" stroke="#333" stroke-width="11" stroke-linecap="round"/><path d="M70 130 L230 130" stroke="#007291" stroke-width="4" stroke-dasharray="8 8"/><text x="155" y="153" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="14" fill="#555">little friction = easy to slip</text>
+          <text x="465" y="35" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="18" font-weight="700" fill="#c05a10">rough boot grips</text><rect x="345" y="105" width="230" height="20" rx="5" fill="#8dbf69"/><path d="M383 75 L453 75" stroke="#333" stroke-width="13" stroke-linecap="round"/><path d="M453 75 L493 105" stroke="#333" stroke-width="13" stroke-linecap="round"/><path d="M430 108 l10 14 l10 -14 l10 14 l10 -14" fill="none" stroke="#ef7724" stroke-width="4"/><text x="465" y="153" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="14" fill="#555">more friction = more grip</text>
+        </svg>
+      </div>
+
+      <div class="question"><p>Ice is very smooth, so there is...</p><div class="choice-row"><button class="chip" onclick="choose('ice','little',this)">very little friction</button><button class="chip" onclick="choose('ice','lots',this)">lots of friction</button></div><div class="feedback" id="fb-ice"></div></div>
+      <div class="question"><p>Winter boots have rough grips. Complete the sentence.</p><div class="sentence">The rough grips create <input class="blank" id="boot1" data-save="boot1" placeholder="more or less"> friction. This helps the boots to <input class="blank" id="boot2" data-save="boot2" placeholder="grip or slip"> on the ground.</div><button class="check-btn" onclick="checkBoots()">Check sentence</button><div class="feedback" id="fb-boots"></div></div>
+      <label class="q" for="s4q">Give another example where friction is helpful.</label>
+      <textarea id="s4q" data-save="s4q" placeholder="Friction is helpful when..."></textarea>
+      <button class="next-btn" onclick="goStage(5)">Final challenge: testing magnets →</button>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-5">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 5 of 5 · Challenge</p>
+      <h2>Which magnet is stronger?</h2>
+      <p class="intro">You have two magnets and a box of paperclips. Run a simple virtual test, then complete the fair-test steps.</p>
+      <div class="visual-note">
+        <svg class="diagram-svg" viewBox="0 0 620 170" role="img" aria-label="Fair magnet test with two magnets and paperclips">
+          <rect width="620" height="170" rx="12" fill="#f7f4ee"/>
+          <text x="310" y="32" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="19" font-weight="700" fill="#007291">Keep the test the same: only the magnet changes</text>
+          <g transform="translate(95 58)"><path d="M0 10 h56 v44 h-56 q-22 0-22-22 q0-22 22-22" fill="none" stroke="#c0392b" stroke-width="12"/><text x="18" y="82" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="14" font-weight="700">Magnet A</text><g fill="#aaa" stroke="#555"><circle cx="100" cy="30" r="7"/><circle cx="120" cy="47" r="7"/><circle cx="142" cy="33" r="7"/></g></g>
+          <g transform="translate(375 58)"><path d="M0 10 h56 v44 h-56 q-22 0-22-22 q0-22 22-22" fill="none" stroke="#007291" stroke-width="12"/><text x="18" y="82" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="14" font-weight="700">Magnet B</text><g fill="#aaa" stroke="#555"><circle cx="100" cy="30" r="7"/><circle cx="120" cy="47" r="7"/><circle cx="142" cy="33" r="7"/><circle cx="160" cy="50" r="7"/><circle cx="178" cy="34" r="7"/></g></g>
+          <text x="310" y="150" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" fill="#555">Count the paperclips. More paperclips = stronger magnet.</text>
+        </svg>
+      </div>
+
+      <div class="magnet-lab">
+        <div class="magrow"><div class="magnet"><span class="n">N</span><span class="s">S</span></div><button class="check-btn" onclick="testMagnet('A')">Test Magnet A</button><span id="countA">Paperclips: ?</span><span class="paperclips" id="clipsA"></span></div>
+        <div class="magrow"><div class="magnet"><span class="n">N</span><span class="s">S</span></div><button class="check-btn" onclick="testMagnet('B')">Test Magnet B</button><span id="countB">Paperclips: ?</span><span class="paperclips" id="clipsB"></span></div>
+      </div>
+      <div class="question"><p>Complete the missing steps.</p>
+        <div class="sentence"><strong>Step 1:</strong> Dip the first magnet into the box of paperclips.</div>
+        <div class="sentence"><strong>Step 2:</strong> Count how many paperclips it <input class="blank" id="step2" data-save="step2" placeholder="_____"> up.</div>
+        <div class="sentence"><strong>Step 3:</strong> Do the same thing with the <input class="blank" id="step3" data-save="step3" placeholder="_____"> magnet.</div>
+        <div class="sentence"><strong>Result:</strong> The magnet that picks up the <input class="blank" id="step4" data-save="step4" placeholder="_____"> paperclips is the strongest.</div>
+        <button class="check-btn" onclick="checkSteps()">Check steps</button><div class="feedback" id="fb-steps"></div>
+      </div>
+      <label class="q" for="finalQ">Why is counting paperclips a fair way to compare magnet strength?</label>
+      <textarea id="finalQ" data-save="finalQ" style="min-height:130px;" placeholder="Counting paperclips is fair because..."></textarea>
+    </div>
+    <div class="send-card"><p>Send your forces and magnetism mission to Jay.</p><button class="action-btn" onclick="emailWork()">📧 Send my worksheet to Jay</button><div class="notify" id="notify"></div></div>
+  </section>
+</main>
+<footer>Base 6 · Chilton Bridge School · Science</footer>
+<script>
+const STORE_KEY='base6_w4_science_forces_magnetism';
+const TEACHER_EMAIL='jay.raine@chiltonbridgeschool.co.uk';
+const PLABELS=['Facts','Forces','Magnets','Friction','Test'];
+let state={stage:1,fields:{},answers:{},sort:{},mag:{}};
+try{state=Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY))||{});}catch(e){}
+if(!state.fields)state.fields={}; if(!state.answers)state.answers={}; if(!state.sort)state.sort={}; if(!state.mag)state.mag={};
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}}
+function renderProgress(){const p=document.getElementById('progress'); p.innerHTML=''; PLABELS.forEach((lab,i)=>{const n=i+1; const c=document.createElement('span'); c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':''); c.textContent=n+'. '+lab; p.appendChild(c);});}
+function goStage(n){state.stage=Math.max(state.stage,n); save(); for(let i=1;i<=5;i++){const el=document.getElementById('stage-'+i); if(el)el.classList.toggle('show',i<=n);} renderProgress(); const t=document.getElementById('stage-'+n); if(t)t.scrollIntoView({behavior:'smooth',block:'start'});}
+document.querySelectorAll('[data-save]').forEach(el=>{const k=el.dataset.save; if(state.fields[k]!==undefined)el.value=state.fields[k]; el.addEventListener('input',()=>{state.fields[k]=el.value; save();});});
+const correct={f1:'true',f2:'false',f3:'true',f4:'false',f5:'true',boat:'upthrust',tyre:'friction',parachute:'air resistance',swimmer:'water resistance',ice:'little'};
+const facts=[['f1','Gravity pulls things down towards the Earth.'],['f2','Magnets must touch an object to pull it.'],['f3','A parachute uses air resistance to slow down.'],['f4','A North pole and a North pole will pull together.'],['f5','Forces are measured in Newtons (N).']];
+const factWrap=document.getElementById('factCheck'); facts.forEach(([id,text])=>{const q=document.createElement('div'); q.className='question'; q.innerHTML='<p>'+text+'</p><div class="choice-row"><button class="chip" onclick="choose(\''+id+'\',\'true\',this)">True</button><button class="chip" onclick="choose(\''+id+'\',\'false\',this)">False</button></div><div class="feedback" id="fb-'+id+'"></div>'; factWrap.appendChild(q);});
+const svgs={boat:'<svg viewBox="0 0 160 100"><rect width="160" height="100" fill="#cceefa"/><path d="M20 58 Q80 82 140 58 L124 82 H36 Z" fill="#9b5a25"/><path d="M30 66 Q80 86 130 66" stroke="#007291" stroke-width="4" fill="none"/><path d="M80 78 L80 36" stroke="#2e8b57" stroke-width="8" marker-end="url(#u1)"/><defs><marker id="u1" markerWidth="8" markerHeight="8" refX="4" refY="0" orient="auto"><path d="M0,8 L4,0 L8,8 z" fill="#2e8b57"/></marker></defs></svg>',tyre:'<svg viewBox="0 0 160 100"><rect width="160" height="100" fill="#dbeed5"/><circle cx="78" cy="55" r="32" fill="#222"/><circle cx="78" cy="55" r="18" fill="#b6cbd4"/><path d="M110 80 L54 80" stroke="#c0392b" stroke-width="7" marker-end="url(#l1)"/><defs><marker id="l1" markerWidth="8" markerHeight="8" refX="0" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 z" fill="#c0392b"/></marker></defs></svg>',parachute:'<svg viewBox="0 0 160 100"><rect width="160" height="100" fill="#dff5ff"/><path d="M28 38 Q80 0 132 38 Z" fill="#ef7724"/><line x1="50" y1="38" x2="80" y2="70" stroke="#555"/><line x1="110" y1="38" x2="80" y2="70" stroke="#555"/><circle cx="80" cy="76" r="10" fill="#333"/><path d="M80 52 L80 18" stroke="#c0392b" stroke-width="8" marker-end="url(#u2)"/><defs><marker id="u2" markerWidth="8" markerHeight="8" refX="4" refY="0" orient="auto"><path d="M0,8 L4,0 L8,8 z" fill="#c0392b"/></marker></defs></svg>',swimmer:'<svg viewBox="0 0 160 100"><rect width="160" height="100" fill="#9fe2f2"/><path d="M0 55 Q20 45 40 55 T80 55 T120 55 T160 55" stroke="#fff" stroke-width="4" fill="none"/><circle cx="92" cy="50" r="10" fill="#d68b52"/><path d="M55 60 Q88 35 126 62" stroke="#333" stroke-width="8" fill="none"/><path d="M116 80 L54 80" stroke="#007291" stroke-width="7" marker-end="url(#l2)"/><defs><marker id="l2" markerWidth="8" markerHeight="8" refX="0" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 z" fill="#007291"/></marker></defs></svg>'};
+const forceData=[['boat','Force keeping the boat up'],['tyre','Force rubbing on the tyre'],['parachute','Force pushing on the parachute'],['swimmer','Force slowing the swimmer']];
+const forceWrap=document.getElementById('forceCards'); forceData.forEach(([id,txt])=>{const c=document.createElement('div'); c.className='force-card'; c.innerHTML=svgs[id]+'<p>'+txt+'</p><div class="choice-row"><button class="chip" onclick="choose(\''+id+'\',\'gravity\',this)">Gravity</button><button class="chip" onclick="choose(\''+id+'\',\'friction\',this)">Friction</button><button class="chip" onclick="choose(\''+id+'\',\'air resistance\',this)">Air resistance</button><button class="chip" onclick="choose(\''+id+'\',\'water resistance\',this)">Water resistance</button><button class="chip" onclick="choose(\''+id+'\',\'upthrust\',this)">Upthrust</button></div><div class="feedback" id="fb-'+id+'"></div>'; forceWrap.appendChild(c);});
+function choose(q,v,btn){state.answers[q]=v; save(); const wrap=btn.parentElement; wrap.querySelectorAll('.chip').forEach(b=>b.classList.remove('on','right','wrong')); btn.classList.add(v===correct[q]?'right':'wrong'); const fb=document.getElementById('fb-'+q); if(fb){fb.className='feedback show '+(v===correct[q]?'good':'try'); fb.textContent=v===correct[q]?'✓ Correct.':'Have another think. Use the word bank and what the picture shows.';}}
+function restoreChoices(){Object.keys(state.answers).forEach(q=>{document.querySelectorAll('[onclick*="choose(\''+q+'\'"]').forEach(b=>{if(b.textContent.trim().toLowerCase()===state.answers[q])choose(q,state.answers[q],b);});});}
+const objects=['Iron nail','Plastic ruler','Aluminium can','Steel paperclip','Glass bottle','Nickel coin']; const magnetic={'Iron nail':true,'Steel paperclip':true,'Nickel coin':true,'Plastic ruler':false,'Aluminium can':false,'Glass bottle':false}; let selected=null;
+function renderObjects(){const bank=document.getElementById('objectBank'); const mb=document.getElementById('magBucket'); const nb=document.getElementById('nonBucket'); bank.innerHTML=''; mb.innerHTML='<h3>Magnetic (picks up)</h3>'; nb.innerHTML='<h3>Non-magnetic (does not pick up)</h3>'; objects.forEach(o=>{const place=state.sort[o]||'bank'; const b=document.createElement('button'); b.className='obj'+(selected===o?' selected':''); b.textContent=o; b.onclick=()=>{selected=o; renderObjects();}; if(place==='magnetic')mb.appendChild(b); else if(place==='non')nb.appendChild(b); else bank.appendChild(b);});}
+function putSelected(bucket){if(!selected)return; state.sort[selected]=bucket; selected=null; save(); renderObjects();}
+function checkSort(){let ok=true; objects.forEach(o=>{const right=magnetic[o]?'magnetic':'non'; if(state.sort[o]!==right)ok=false;}); const fb=document.getElementById('fb-sort'); fb.className='feedback show '+(ok?'good':'try'); fb.textContent=ok?'✓ Correct. Iron, steel and nickel are magnetic in this mission.':'Not quite. Look for objects made from iron, steel or nickel.';}
+function checkBoots(){const a=(document.getElementById('boot1').value||'').toLowerCase(); const b=(document.getElementById('boot2').value||'').toLowerCase(); const ok=a.includes('more')&&b.includes('grip'); const fb=document.getElementById('fb-boots'); fb.className='feedback show '+(ok?'good':'try'); fb.textContent=ok?'✓ Yes. Rough grips create more friction and help boots grip.':'Try: more friction and grip.';}
+function testMagnet(m){const count=m==='A'?5:8; state.mag[m]=count; document.getElementById('count'+m).textContent='Paperclips: '+count; document.getElementById('clips'+m).textContent='📎'.repeat(count); save();}
+function restoreMag(){['A','B'].forEach(m=>{if(state.mag[m]){document.getElementById('count'+m).textContent='Paperclips: '+state.mag[m]; document.getElementById('clips'+m).textContent='📎'.repeat(state.mag[m]);}});}
+function checkSteps(){const s2=(document.getElementById('step2').value||'').toLowerCase(), s3=(document.getElementById('step3').value||'').toLowerCase(), s4=(document.getElementById('step4').value||'').toLowerCase(); const ok=s2.includes('pick')&&s3.includes('second')&&s4.includes('most'); const fb=document.getElementById('fb-steps'); fb.className='feedback show '+(ok?'good':'try'); fb.textContent=ok?'✓ Correct: picks up, second, most.':'Try these words: picks, second, most.';}
+setTimeout(()=>{restoreChoices(); renderObjects(); restoreMag();},50);
+function emailWork(){const f=state.fields; let b='FORCES AND MAGNETISM MISSION — Science Week 4\n'; b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n'; b+='Fact check: '; facts.forEach(([id,text])=>{b+=id+'='+ (state.answers[id]||'')+'; ';}); b+='\n\nSpot the force: boat='+(state.answers.boat||'')+', tyre='+(state.answers.tyre||'')+', parachute='+(state.answers.parachute||'')+', swimmer='+(state.answers.swimmer||'')+'\n'; b+='Force explanation: '+((f.s2q||'').trim()||'(no answer)')+'\n\n'; b+='Magnetic sorting:\n'; objects.forEach(o=>{b+=o+': '+(state.sort[o]||'(not sorted)')+'\n';}); b+='What magnetic objects have in common: '+((f.s3q||'').trim()||'(no answer)')+'\n\n'; b+='Friction on ice answer: '+(state.answers.ice||'')+'; boots: '+(f.boot1||'')+' / '+(f.boot2||'')+'\n'; b+='Helpful friction example: '+((f.s4q||'').trim()||'(no answer)')+'\n\n'; b+='Magnet test counts: A='+(state.mag.A||'?')+', B='+(state.mag.B||'?')+'\n'; b+='Steps: picks blank='+(f.step2||'')+', second blank='+(f.step3||'')+', most blank='+(f.step4||'')+'\n'; b+='Fair test explanation:\n'+((f.finalQ||'').trim()||'(no answer)')+'\n\n—\nSent from Base 6'; const su=encodeURIComponent('Base 6 · Forces and Magnetism Mission'); window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank'); const n=document.getElementById('notify'); n.textContent='✓ Opening your email — your worksheet is ready to send.'; n.classList.add('show');}
+goStage(state.stage||1);
+</script>
+</body>
+</html>
