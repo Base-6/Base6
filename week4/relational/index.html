@@ -40,6 +40,18 @@
   .tick.on { background:#e6f5e6; border-color:#2e8b57; color:#1a5e1a; }
   a:focus-visible, button:focus-visible { outline:3px solid #007291; outline-offset:2px; }
   footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+  .collection { background:#fff; border:2px solid #e0d8d0; border-radius:16px; padding:1.2rem 1.3rem; margin-top:1.6rem; }
+  .collection h2 { font-size:1.05rem; color:#007291; margin-bottom:0.3rem; }
+  .collection > p { font-size:0.85rem; color:#777; margin-bottom:1rem; line-height:1.5; }
+  .coll-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:0.7rem; }
+  .coll-tile { text-align:center; border:2px solid #e8e0d8; border-radius:14px; padding:0.9rem 0.5rem; background:#fbf6f1; }
+  .coll-tile.got { border-color:#ef7724; background:#fff3e6; }
+  .coll-emoji { font-size:1.7rem; line-height:1; filter:grayscale(1) opacity(0.4); }
+  .coll-tile.got .coll-emoji { filter:none; }
+  .coll-day { font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#ef7724; margin-top:0.4rem; }
+  .coll-label { font-size:0.82rem; font-weight:700; color:#444; margin-top:0.1rem; }
+  .coll-state { font-size:0.72rem; font-weight:700; margin-top:0.25rem; color:#aaa; }
+  .coll-tile.got .coll-state { color:#1a5e1a; }
 </style>
 </head>
 <body>
@@ -94,6 +106,12 @@
     <p class="go">Start →</p>
   </a>
 
+  <div class="collection">
+    <h2>This week's avatar unlocks</h2>
+    <p>Each morning task unlocks one unique cosmetic. Collect all five, then tap your avatar on the <a href="../index.html" style="color:#007291;font-weight:700;">Week 4 home page</a> to wear them.</p>
+    <div class="coll-grid" id="collGrid"></div>
+  </div>
+
   <div class="tracker">
     <h2>Completion (teacher view)</h2>
     <p>Tap a day when a student has finished it. Saved on this device only.</p>
@@ -126,6 +144,26 @@ function buildTracker(){
   });
 }
 buildTracker();
+
+const PSHE_UNLOCKS=[
+  {day:'Mon',id:'truthlens',emoji:'\uD83D\uDD0D',label:'Truth Finder'},
+  {day:'Tue',id:'helperbadge',emoji:'\uD83C\uDF97\uFE0F',label:'Helper Badge'},
+  {day:'Wed',id:'brightidea',emoji:'\uD83D\uDCA1',label:'Bright Idea'},
+  {day:'Thu',id:'calmaura',emoji:'\uD83C\uDF3F',label:'Calm'},
+  {day:'Fri',id:'sprout',emoji:'\uD83C\uDF31',label:'Growing Sprout'}
+];
+function psheUnlockedIds(){ try{ var w=JSON.parse(localStorage.getItem('base6Avatar-week4')||'null'); return (w&&Array.isArray(w.unlocked))?w.unlocked:[]; }catch(e){ return []; } }
+function buildCollection(){
+  var got=psheUnlockedIds(); var grid=document.getElementById('collGrid'); grid.innerHTML='';
+  PSHE_UNLOCKS.forEach(function(u){
+    var has=got.indexOf(u.id)!==-1;
+    var t=document.createElement('div'); t.className='coll-tile'+(has?' got':'');
+    t.innerHTML='<div class="coll-emoji">'+u.emoji+'</div><div class="coll-day">'+u.day+'</div>'+
+      '<div class="coll-label">'+u.label+'</div><div class="coll-state">'+(has?'\u2713 Unlocked':'\uD83D\uDD12 Locked')+'</div>';
+    grid.appendChild(t);
+  });
+}
+buildCollection();
 </script>
 
 </body>
