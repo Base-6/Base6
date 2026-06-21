@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 4 Projects · Base 6</title>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Atkinson Hyperlegible', Arial, sans-serif;
+      background: #fef8f4;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    .back {
+      background: #00637d;
+      padding: 0.7rem 1rem;
+    }
+
+    .back a {
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.86rem;
+    }
+
+    .top {
+      background: #007291;
+      color: white;
+      text-align: center;
+      padding: 1.6rem 1rem 2rem;
+    }
+
+    .top .tag {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.8;
+      margin-bottom: 0.45rem;
+    }
+
+    .top h1 {
+      font-size: 2rem;
+      line-height: 1.2;
+    }
+
+    .top p {
+      font-size: 0.92rem;
+      opacity: 0.88;
+      line-height: 1.45;
+      margin-top: 0.5rem;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 4rem;
+    }
+
+    .label {
+      font-size: 0.78rem;
+      color: #007291;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+
+    .student-card {
+      background: white;
+      border: 2px solid var(--card);
+      border-radius: 16px;
+      padding: 1.2rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      min-height: 190px;
+      transition: transform 0.12s, box-shadow 0.12s;
+    }
+
+    .student-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .icon {
+      font-size: 2rem;
+    }
+
+    .initials {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #888;
+    }
+
+    .name {
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: var(--card);
+      line-height: 1.3;
+    }
+
+    .desc {
+      font-size: 0.88rem;
+      color: #555;
+      line-height: 1.45;
+      flex: 1;
+    }
+
+    .go {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--card);
+      margin-top: 0.5rem;
+    }
+
+    a:focus-visible {
+      outline: 3px solid #007291;
+      outline-offset: 3px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.2rem;
+      font-size: 0.78rem;
+      color: #888;
+      border-top: 1px solid #e0d8d0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="back">
+    <a href="../index.html">← Back to Week 4</a>
+  </div>
+
+  <header class="top">
+    <p class="tag">Base 6 · Week 4</p>
+    <h1>🛠️ Project Spaces</h1>
+    <p>Choose your initials. Each project opens after the password screen.</p>
+  </header>
+
+  <main>
+    <p class="label">Students</p>
+
+    <div class="grid">
+      <a class="student-card" href="lw.html" style="--card: #007291;">
+        <span class="icon">🎨</span>
+        <span class="initials">LW</span>
+        <span class="name">Canva Project</span>
+        <span class="desc">Open the Canva work space after unlocking.</span>
+        <span class="go">Open project →</span>
+      </a>
+
+      <a class="student-card" href="ap.html" style="--card: #7b5ea7;">
+        <span class="icon">🎬</span>
+        <span class="initials">AP</span>
+        <span class="name">Music Video Storyboard</span>
+        <span class="desc">Continue the storyboard project.</span>
+        <span class="go">Open project →</span>
+      </a>
+
+      <a class="student-card" href="ls.html" style="--card: #ef7724;">
+        <span class="icon">💡</span>
+        <span class="initials">LS</span>
+        <span class="name">Project Idea Lab</span>
+        <span class="desc">Brainstorm, sort and choose a possible project.</span>
+        <span class="go">Open project →</span>
+      </a>
+
+      <a class="student-card" href="lc.html" style="--card: #ef7724;">
+        <span class="icon">🧁</span>
+        <span class="initials">LC</span>
+        <span class="name">Charity Bake Sale</span>
+        <span class="desc">Continue the bake sale project.</span>
+        <span class="go">Open project →</span>
+      </a>
+
+      <a class="student-card" href="hk.html" style="--card: #2e6b3e;">
+        <span class="icon">🎣</span>
+        <span class="initials">HK</span>
+        <span class="name">Recycled Fishing Rod</span>
+        <span class="desc">Improve the rod and plan how to present it.</span>
+        <span class="go">Open project →</span>
+      </a>
+
+      <a class="student-card" href="jtk.html" style="--card: #1a5276;">
+        <span class="icon">⚽</span>
+        <span class="initials">JTK</span>
+        <span class="name">Football Kit Design Studio</span>
+        <span class="desc">Research, design and export a football shirt idea.</span>
+        <span class="go">Open project →</span>
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    Base 6 · Chilton Bridge School · Week 4 Project
+  </footer>
+
+</body>
+</html>
