@@ -44,6 +44,18 @@
   .notify.show { display:block; }
   a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline:3px solid #007291; outline-offset:2px; }
   footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+  .reward-card { background:linear-gradient(135deg,#fff7f0,#e8f4f7); border:2px solid #fcd8bc; border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .reward-card h2 { font-size:1.2rem; font-weight:700; color:#c05a10; margin-bottom:0.4rem; }
+  .reward-card .eyebrow { color:#ef7724; }
+  .reward-item { display:flex; align-items:center; gap:0.9rem; background:#fff; border:2px solid #e0d8d0; border-radius:14px; padding:0.9rem 1.1rem; margin:0.9rem 0; }
+  .reward-emoji { font-size:1.9rem; width:54px; height:54px; border-radius:50%; background:#fff3e6; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .reward-name { font-size:1.05rem; font-weight:700; color:#1a1a1a; }
+  .reward-slot { font-size:0.82rem; color:#888; }
+  .claim-btn { font-family:inherit; font-size:0.95rem; font-weight:700; padding:0.75rem 1.5rem; border-radius:10px; cursor:pointer; border:none; color:#fff; background:#ef7724; margin-top:0.2rem; }
+  .claim-btn:hover { background:#c05a10; }
+  .claim-btn:disabled { background:#9ec9b0; cursor:default; }
+  .claimed-msg { display:none; margin-top:0.8rem; font-size:0.9rem; font-weight:700; line-height:1.55; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.7rem 1rem; }
+  .claimed-msg.show { display:block; }
 </style>
 </head>
 <body>
@@ -97,6 +109,22 @@
     <div class="notify" id="notify"></div>
   </div>
 
+
+  <div class="reward-card">
+    <p class="eyebrow">Your reward</p>
+    <h2>Unlock an avatar cosmetic</h2>
+    <p class="intro" style="margin-bottom:0;">Finished this morning? Claim today's unique item for your Base 6 avatar.</p>
+    <div class="reward-item">
+      <span class="reward-emoji">💡</span>
+      <div>
+        <div class="reward-name">Bright Idea</div>
+        <div class="reward-slot">Wednesday · worn on the head</div>
+      </div>
+    </div>
+    <button class="claim-btn" id="claimBtn" onclick="claimReward()">Claim my cosmetic ✨</button>
+    <div class="claimed-msg" id="claimedMsg">✓ Unlocked <b>Bright Idea</b>! Tap your avatar on the <a href="../index.html" style="color:#1a5e1a;font-weight:700;">Week 4 home page</a> to wear it.</div>
+  </div>
+
 </main>
 
 <footer>Base 6 · Chilton Bridge School · PSHE</footer>
@@ -147,6 +175,22 @@ function emailWork(){
 }
 
 renderSlider(); buildConsider();
+
+/* ---- PSHE avatar unlock (writes into the shared Week 4 wardrobe) ---- */
+function claimReward(){
+  var KEY='base6Avatar-week4';
+  var w; try{ w=JSON.parse(localStorage.getItem(KEY)||'null')||{worn:{},seen:[]}; }catch(e){ w={worn:{},seen:[]}; }
+  if(!Array.isArray(w.unlocked)) w.unlocked=[];
+  if(w.unlocked.indexOf('brightidea')===-1) w.unlocked.push('brightidea');
+  try{ localStorage.setItem(KEY, JSON.stringify(w)); }catch(e){}
+  state.claimed=true; save();
+  showClaimed();
+}
+function showClaimed(){
+  var b=document.getElementById('claimBtn'); if(b){ b.disabled=true; b.textContent='Claimed ✓'; }
+  var m=document.getElementById('claimedMsg'); if(m) m.classList.add('show');
+}
+if(state.claimed) showClaimed();
 </script>
 
 </body>
