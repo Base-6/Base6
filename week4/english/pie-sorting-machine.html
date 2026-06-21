@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The PIE Sorting Machine · English · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:#fef8f4; color:#1a1a1a; min-height:100vh; }
+  .site-header { background:#ef7724; padding:1.25rem 2rem; }
+  .back-link { color:#fff; font-size:0.9rem; font-weight:700; text-decoration:none; opacity:0.9; }
+  .back-link:hover { opacity:1; }
+  .hero { background:#ef7724; padding:1.4rem 2rem 2.1rem; text-align:center; }
+  .hero .subject-label { font-size:0.85rem; font-weight:700; color:#fff; opacity:0.85; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.45rem; }
+  .hero h1 { font-size:1.95rem; font-weight:700; color:#fff; line-height:1.2; }
+  .hero p { font-size:0.96rem; color:#fff; opacity:0.92; max-width:560px; margin:0.55rem auto 0; line-height:1.55; }
+  .main { max-width:760px; margin:0 auto; padding:1.4rem 1.5rem 4rem; }
+
+  .progress { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.2rem; position:sticky; top:0; background:#fef8f4; padding:0.7rem 0; z-index:6; }
+  .pchip { font-size:0.72rem; font-weight:700; padding:5px 11px; border-radius:20px; background:#f0ede8; color:#999; border:1.5px solid #e0d8d0; }
+  .pchip.active { background:#fff3e6; color:#c05a10; border-color:#fcd8bc; }
+  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; }
+
+  .stage { display:none; } .stage.show { display:block; }
+  .stage-card { background:#fff; border:2px solid #e0d8d0; border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .stage-eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#ef7724; margin-bottom:0.3rem; }
+  .stage-card h2 { font-size:1.25rem; font-weight:700; color:#007291; line-height:1.25; margin-bottom:0.5rem; }
+  .stage-card .intro { font-size:0.95rem; color:#444; line-height:1.65; margin-bottom:1rem; }
+  .q { font-size:0.95rem; font-weight:700; line-height:1.55; margin:1.1rem 0 0.55rem; }
+
+  .pie-key { display:flex; gap:0.6rem; flex-wrap:wrap; margin:0.6rem 0 0.4rem; }
+  .pie-tag { flex:1; min-width:150px; border-radius:12px; padding:0.7rem 0.9rem; font-size:0.88rem; line-height:1.5; border:2px solid; }
+  .pie-tag b { display:block; font-size:1rem; margin-bottom:0.2rem; }
+  .pie-P { background:#fdeee6; border-color:#ef7724; color:#8a3d06; }
+  .pie-I { background:#e8f4f7; border-color:#007291; color:#0b5a72; }
+  .pie-E { background:#f3eaf6; border-color:#7b1d6a; color:#5e1652; }
+
+  .snippet-q { background:#faf6f1; border:1.5px solid #ece3da; border-radius:12px; padding:0.9rem 1rem; margin:0.8rem 0; }
+  .snippet-q .txt { font-size:0.96rem; line-height:1.55; margin-bottom:0.6rem; }
+  .pie-btns { display:flex; gap:0.45rem; flex-wrap:wrap; }
+  .pie-btn { font-family:inherit; font-size:0.82rem; font-weight:700; padding:0.45rem 0.9rem; border-radius:8px; cursor:pointer; border:2px solid #cbb9a8; background:#fff; color:#6a5a4a; }
+  .pie-btn:hover { border-color:#ef7724; }
+  .pie-btn.right { background:#e6f5e6; border-color:#2e8b57; color:#1a5e1a; }
+  .pie-btn.wrong { background:#fff3e6; border-color:#e0a050; color:#8a5a10; }
+  .fb { display:none; font-size:0.86rem; margin-top:0.5rem; padding:0.5rem 0.8rem; border-radius:8px; line-height:1.5; }
+  .fb.r { display:block; background:#e6f5e6; color:#1a5e1a; } .fb.w { display:block; background:#fff3e6; color:#7a4a00; }
+
+  /* sorting machine */
+  .belt { background:#f4ede5; border:2px dashed #d8c8b8; border-radius:12px; padding:0.8rem; min-height:64px; display:flex; gap:0.5rem; flex-wrap:wrap; margin:0.6rem 0 1rem; }
+  .belt-label { width:100%; font-size:0.74rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#a08a72; margin-bottom:0.2rem; }
+  .snip { font-size:0.86rem; line-height:1.4; background:#fff; border:2px solid #d8c8b8; border-radius:10px; padding:0.5rem 0.7rem; cursor:pointer; max-width:230px; user-select:none; }
+  .snip:hover { border-color:#ef7724; }
+  .snip.sel { border-color:#007291; box-shadow:0 0 0 3px #cdeaf0; }
+  .snip.placed { cursor:default; border-color:#2e8b57; background:#f0faf0; }
+  .buckets { display:grid; grid-template-columns:repeat(3,1fr); gap:0.6rem; }
+  .bucket { border-radius:12px; padding:0.7rem; min-height:120px; border:2px solid; display:flex; flex-direction:column; gap:0.4rem; }
+  .bucket.P { background:#fff7f1; border-color:#ef7724; }
+  .bucket.I { background:#f0f8fa; border-color:#007291; }
+  .bucket.E { background:#f8f1fa; border-color:#7b1d6a; }
+  .bucket.hot { box-shadow:0 0 0 3px rgba(0,114,145,0.25); }
+  .bucket h3 { font-size:0.95rem; }
+  .bucket.P h3 { color:#8a3d06; } .bucket.I h3 { color:#0b5a72; } .bucket.E h3 { color:#5e1652; }
+  .sort-count { font-size:0.9rem; font-weight:700; color:#007291; margin:0.4rem 0; }
+
+  /* viewpoint */
+  .review { background:#faf6f1; border:1.5px solid #ece3da; border-radius:12px; padding:0.9rem 1rem; margin:0.7rem 0; }
+  .review .rname { font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#a08a72; margin-bottom:0.4rem; }
+  .review .rtext { font-size:0.98rem; line-height:1.7; }
+  .pw { cursor:pointer; border-bottom:2px dotted #c8b6a4; padding:0 1px; }
+  .pw:hover { background:#fff0d8; }
+  .pw.on { background:#ffe3a8; border-bottom-color:#e0a050; border-radius:3px; }
+  .slide-row { margin:0.7rem 0; }
+  .slide-row label { font-size:0.88rem; font-weight:700; display:block; margin-bottom:0.35rem; }
+  input[type=range] { width:100%; accent-color:#ef7724; }
+  .slide-scale { display:flex; justify-content:space-between; font-size:0.72rem; color:#888; margin-top:0.15rem; }
+  .slide-val { font-size:0.88rem; font-weight:700; color:#007291; }
+
+  select, input[type=text] { font-family:inherit; font-size:0.95rem; padding:0.45rem 0.6rem; border:2px solid #007291; border-radius:8px; background:#fff; outline:none; max-width:100%; }
+  select:focus, input[type=text]:focus { border-color:#ef7724; }
+  textarea { font-family:inherit; font-size:0.98rem; width:100%; min-height:130px; padding:0.7rem 0.85rem; border:2px solid #007291; border-radius:10px; background:#fff; outline:none; line-height:1.6; resize:vertical; }
+  textarea:focus { border-color:#ef7724; }
+  .inline-row { display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin:0.5rem 0; font-size:0.94rem; }
+
+  .checklist { list-style:none; margin:0.8rem 0 0; }
+  .checklist li { font-size:0.9rem; line-height:1.6; padding:0.3rem 0 0.3rem 1.7rem; position:relative; color:#888; }
+  .checklist li::before { content:"○"; position:absolute; left:0; font-weight:700; color:#c8b6a4; }
+  .checklist li.met { color:#1a5e1a; }
+  .checklist li.met::before { content:"✓"; color:#2e8b57; }
+
+  .next-btn { font-family:inherit; font-size:0.92rem; font-weight:700; padding:0.65rem 1.4rem; border-radius:9px; cursor:pointer; border:none; color:#fff; background:#007291; margin-top:1rem; }
+  .next-btn:hover { background:#00576e; }
+  .reveal-btn { font-family:inherit; font-size:0.82rem; font-weight:700; padding:0.45rem 1rem; border-radius:8px; cursor:pointer; border:2px solid #007291; background:#fff; color:#007291; margin-top:0.6rem; }
+  .reveal-btn:hover { background:#e6f5f8; }
+  .eg-block { display:none; margin-top:0.6rem; font-size:0.88rem; line-height:1.6; color:#1a5e1a; background:#f0faf0; border:1px solid #b6dfc0; border-radius:8px; padding:0.6rem 0.85rem; }
+  .eg-block.show { display:block; }
+
+  .send-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:14px; padding:1.3rem 1.5rem; margin-top:1.2rem; text-align:center; }
+  .send-card p { font-size:0.92rem; color:#555; line-height:1.6; margin-bottom:0.9rem; }
+  .action-btn { font-family:inherit; font-size:0.92rem; font-weight:700; padding:0.7rem 1.5rem; border-radius:8px; cursor:pointer; border:none; color:#fff; background:#007291; }
+  .action-btn:hover { background:#00576e; }
+  .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; line-height:1.5; }
+  .notify.show { display:block; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:3px solid #007291; outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header"><a class="back-link" href="index.html">← English</a></header>
+
+<div class="hero">
+  <p class="subject-label">English · Week 4</p>
+  <h1>🥧 The PIE Sorting Machine</h1>
+  <p>Every piece of writing has a job. PIE stands for Persuade, Inform, Entertain. Learn to spot the job, then write with a job of your own.</p>
+</div>
+
+<main class="main">
+  <div class="progress" id="progress"></div>
+
+  <!-- STAGE 1 -->
+  <section class="stage" id="stage-1">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 1 of 5 · Meet PIE</p>
+      <h2>The three jobs of writing</h2>
+      <p class="intro">When a writer sits down, they pick a job first. Here are the three jobs you will look for this week.</p>
+      <div class="pie-key">
+        <div class="pie-tag pie-P"><b>Persuade</b>Make you want to do or buy something. (Adverts, posters, "you should…")</div>
+        <div class="pie-tag pie-I"><b>Inform</b>Give you true facts. (Instructions, signs, the news.)</div>
+        <div class="pie-tag pie-E"><b>Entertain</b>Make you smile, laugh or enjoy a story. (Jokes, comics, tales.)</div>
+      </div>
+      <p class="q">Warm-up: read each one and tap its job.</p>
+
+      <div class="snippet-q" data-mini="m1" data-ans="P">
+        <div class="txt">"You should definitely come to my party — it will be amazing!"</div>
+        <div class="pie-btns">
+          <button class="pie-btn" onclick="mini('m1','P',this)">Persuade</button>
+          <button class="pie-btn" onclick="mini('m1','I',this)">Inform</button>
+          <button class="pie-btn" onclick="mini('m1','E',this)">Entertain</button>
+        </div>
+        <div class="fb" id="m1f"></div>
+      </div>
+
+      <div class="snippet-q" data-mini="m2" data-ans="I">
+        <div class="txt">"The library is open from 9am until 4pm."</div>
+        <div class="pie-btns">
+          <button class="pie-btn" onclick="mini('m2','P',this)">Persuade</button>
+          <button class="pie-btn" onclick="mini('m2','I',this)">Inform</button>
+          <button class="pie-btn" onclick="mini('m2','E',this)">Entertain</button>
+        </div>
+        <div class="fb" id="m2f"></div>
+      </div>
+
+      <div class="snippet-q" data-mini="m3" data-ans="E">
+        <div class="txt">"My dog ate my homework… and then asked for pudding!"</div>
+        <div class="pie-btns">
+          <button class="pie-btn" onclick="mini('m3','P',this)">Persuade</button>
+          <button class="pie-btn" onclick="mini('m3','I',this)">Inform</button>
+          <button class="pie-btn" onclick="mini('m3','E',this)">Entertain</button>
+        </div>
+        <div class="fb" id="m3f"></div>
+      </div>
+
+      <button class="next-btn" onclick="goStage(2)">Start the machine →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 2 -->
+  <section class="stage" id="stage-2">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 2 of 5 · The Sorting Machine</p>
+      <h2>Sort the conveyor belt</h2>
+      <p class="intro"><strong>Tap a text</strong> to pick it up, then <strong>tap a bucket</strong> to drop it in. (You can also drag if you prefer.) A correct text turns green and stays. A wrong one comes back so you can try again.</p>
+      <div class="belt" id="belt"><span class="belt-label">Conveyor belt</span></div>
+      <p class="sort-count" id="sortCount">Sorted: 0 / 8</p>
+      <div class="buckets">
+        <div class="bucket P" data-purpose="P"><h3>Persuade</h3></div>
+        <div class="bucket I" data-purpose="I"><h3>Inform</h3></div>
+        <div class="bucket E" data-purpose="E"><h3>Entertain</h3></div>
+      </div>
+      <div class="fb" id="sortFb"></div>
+      <button class="next-btn" onclick="goStage(3)">Continue →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 3 -->
+  <section class="stage" id="stage-3">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 3 of 5 · The Viewpoint Slider</p>
+      <h2>Two people, one café</h2>
+      <p class="intro">Here are two reviews of the same place — The Cosy Cabin. The writers do not agree at all. That difference is their <strong>viewpoint</strong>. Read each one, then slide to show how positive or negative the writer feels.</p>
+
+      <div class="review">
+        <div class="rname">Review A</div>
+        <div class="rtext" id="revA">The Cosy Cabin is <span class="pw" data-pw="a1">wonderful</span>. The food was <span class="pw" data-pw="a2">delicious</span> and the staff were so <span class="pw" data-pw="a3">kind</span>. It was the <span class="pw" data-pw="a4">best</span> dinner I have ever had.</div>
+        <div class="slide-row">
+          <label for="sA">How positive is Review A? <span class="slide-val" id="sAval">5</span> / 10</label>
+          <input type="range" min="1" max="10" value="5" id="sA">
+          <div class="slide-scale"><span>1 · very negative</span><span>10 · very positive</span></div>
+        </div>
+        <div class="fb" id="sAfb"></div>
+      </div>
+
+      <div class="review">
+        <div class="rname">Review B</div>
+        <div class="rtext" id="revB">The Cosy Cabin was <span class="pw" data-pw="b1">awful</span>. My dinner was <span class="pw" data-pw="b2">cold</span> and the waiter was <span class="pw" data-pw="b3">rude</span>. I will <span class="pw" data-pw="b4">never</span> go back again.</div>
+        <div class="slide-row">
+          <label for="sB">How positive is Review B? <span class="slide-val" id="sBval">5</span> / 10</label>
+          <input type="range" min="1" max="10" value="5" id="sB">
+          <div class="slide-scale"><span>1 · very negative</span><span>10 · very positive</span></div>
+        </div>
+        <div class="fb" id="sBfb"></div>
+      </div>
+
+      <p class="q">Now <strong>tap the words</strong> in each review that proved your rating. (The dotted words are clickable.)</p>
+      <p class="sort-count" id="pwCount">Proof words chosen: 0</p>
+
+      <button class="next-btn" onclick="goStage(4)">Continue →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 4 -->
+  <section class="stage" id="stage-4">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 4 of 5 · Spot the Spin</p>
+      <h2>One fact, three jobs</h2>
+      <p class="intro">Here is a plain fact: <strong>"It rained today."</strong> A writer can use the same fact for any job — it is the <em>words they choose</em> that change. Match each version to its job, then write the word that gave it away.</p>
+
+      <div class="snippet-q" data-spin="r1" data-ans="P">
+        <div class="txt">"Rainy days are the best — grab your wellies and come and splash in the puddles with me!"</div>
+        <div class="inline-row">
+          <select id="spin-r1" onchange="spinCheck('r1','P')">
+            <option value="">choose the job…</option>
+            <option value="P">Persuade</option>
+            <option value="I">Inform</option>
+            <option value="E">Entertain</option>
+          </select>
+        </div>
+        <div class="inline-row">Word that gave it away: <input type="text" id="give-r1" placeholder="one word" style="width:140px"></div>
+        <div class="fb" id="r1f"></div>
+      </div>
+
+      <div class="snippet-q" data-spin="r2" data-ans="I">
+        <div class="txt">"It rained for three hours this afternoon. The temperature was eleven degrees."</div>
+        <div class="inline-row">
+          <select id="spin-r2" onchange="spinCheck('r2','I')">
+            <option value="">choose the job…</option>
+            <option value="P">Persuade</option>
+            <option value="I">Inform</option>
+            <option value="E">Entertain</option>
+          </select>
+        </div>
+        <div class="inline-row">Word that gave it away: <input type="text" id="give-r2" placeholder="one word" style="width:140px"></div>
+        <div class="fb" id="r2f"></div>
+      </div>
+
+      <div class="snippet-q" data-spin="r3" data-ans="E">
+        <div class="txt">"The sky cried big fat tears today and even the ducks looked fed up!"</div>
+        <div class="inline-row">
+          <select id="spin-r3" onchange="spinCheck('r3','E')">
+            <option value="">choose the job…</option>
+            <option value="P">Persuade</option>
+            <option value="I">Inform</option>
+            <option value="E">Entertain</option>
+          </select>
+        </div>
+        <div class="inline-row">Word that gave it away: <input type="text" id="give-r3" placeholder="one word" style="width:140px"></div>
+        <div class="fb" id="r3f"></div>
+      </div>
+
+      <button class="next-btn" onclick="goStage(5)">Last stage →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 5 -->
+  <section class="stage" id="stage-5">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 5 of 5 · Purposeful Composition</p>
+      <h2>Now you choose the job</h2>
+      <p class="intro">Pick a goal, then write about <strong>school lunches</strong> in a way that does that job. The checklist ticks itself as you hit each target — it is a helper, not a test.</p>
+      <div class="inline-row">
+        <label for="goal" style="font-weight:700">My goal:</label>
+        <select id="goal" onchange="updateChecklist()">
+          <option value="">choose a goal…</option>
+          <option value="P">Persuade the head teacher to change the lunch menu</option>
+          <option value="I">Inform a new pupil about what school lunch is like</option>
+          <option value="E">Entertain a friend with a funny story about lunch</option>
+        </select>
+      </div>
+      <textarea id="comp" data-save="comp" placeholder="Write at least three sentences here…" oninput="updateChecklist()"></textarea>
+      <ul class="checklist" id="checklist">
+        <li data-ck="goal">Choose a goal above</li>
+        <li data-ck="len">Write at least three sentences</li>
+        <li data-ck="job">Use words that match your job</li>
+      </ul>
+      <button class="reveal-btn" onclick="toggleEg(this,'comp-eg')">Show an example for each job</button>
+      <div class="eg-block" id="comp-eg">
+        <strong>Persuade:</strong> "We really should have more choice at lunch. Please could we add a pasta bar? It would be the best change ever and everyone would eat more." <br>
+        <strong>Inform:</strong> "Lunch is at 12 o'clock in the hall. You line up, choose a hot meal or a sandwich, then sit with your class." <br>
+        <strong>Entertain:</strong> "Today my jelly escaped! It wobbled off my tray, bounced twice, and landed right on Mr Cook's shoe!"
+      </div>
+    </div>
+    <div class="send-card">
+      <p>Great work spotting the job and writing your own. Send everything to Jay.</p>
+      <button class="action-btn" onclick="emailWork()">📧 Send my work to Jay</button>
+      <div class="notify" id="notify"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School · English</footer>
+
+<script>
+const STORE_KEY = 'base6_w4_english_pie';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+const JOBNAME = { P:'Persuade', I:'Inform', E:'Entertain' };
+
+let state = { stage:1, mini:{}, sort:{}, slider:{sA:5,sB:5}, proof:{}, spin:{}, give:{}, goal:'', fields:{} };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e){}
+['mini','sort','slider','proof','spin','give','fields'].forEach(k=>{ if(!state[k]) state[k]={}; });
+if(state.slider.sA===undefined) state.slider.sA=5;
+if(state.slider.sB===undefined) state.slider.sB=5;
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+
+/* progress */
+const PLABELS=['Meet PIE','Sort','Viewpoint','Spot Spin','Write'];
+function renderProgress(){ const p=document.getElementById('progress'); p.innerHTML='';
+  PLABELS.forEach((lab,i)=>{ const n=i+1; const c=document.createElement('span');
+    c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':''); c.textContent=n+'. '+lab; p.appendChild(c); }); }
+function goStage(n){ state.stage=Math.max(state.stage,n); save();
+  for(let i=1;i<=5;i++){ const el=document.getElementById('stage-'+i); if(el) el.classList.toggle('show', i<=n); }
+  renderProgress(); const t=document.getElementById('stage-'+n); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }
+
+/* STAGE 1 mini */
+function mini(id, choice, btn){
+  const ans = btn.closest('.snippet-q').dataset.ans;
+  state.mini[id]=choice; save();
+  btn.parentElement.querySelectorAll('.pie-btn').forEach(b=>b.classList.remove('right','wrong'));
+  const fb=document.getElementById(id+'f');
+  if(choice===ans){ btn.classList.add('right'); fb.className='fb r'; fb.textContent='✓ Yes — that one is '+JOBNAME[ans]+'.'; }
+  else { btn.classList.add('wrong'); fb.className='fb w'; fb.textContent='Have another look — what is the writer trying to do?'; }
+}
+
+/* STAGE 2 sorting */
+const BELT=[
+  {id:'s1', t:'Buy GLOW toothpaste today — your smile will thank you!', p:'P'},
+  {id:'s2', t:'Water boils at 100 degrees Celsius.', p:'I'},
+  {id:'s3', t:'Why did the scarecrow win a prize? He was out-standing in his field!', p:'E'},
+  {id:'s4', t:'Our cafe opens at 8am and closes at 5pm.', p:'I'},
+  {id:'s5', t:"Don't miss out — join the football club before places run out!", p:'P'},
+  {id:'s6', t:'Knock knock! Who is there? Boo. Boo who? Do not cry, it is only a joke!', p:'E'},
+  {id:'s7', t:'The recycling bin is emptied every Thursday morning.', p:'I'},
+  {id:'s8', t:'Vote for me and I promise the best school disco ever!', p:'P'}
+];
+let selectedId=null;
+const beltEl=document.getElementById('belt');
+function renderBelt(){
+  // remove existing snips (keep label)
+  beltEl.querySelectorAll('.snip').forEach(n=>n.remove());
+  document.querySelectorAll('.bucket .snip').forEach(n=>n.remove());
+  BELT.forEach(o=>{
+    const div=document.createElement('div'); div.className='snip'; div.textContent=o.t; div.dataset.id=o.id;
+    div.setAttribute('draggable','true');
+    if(state.sort[o.id]){ // already placed correctly
+      div.classList.add('placed'); div.textContent=o.t+' ✓';
+      const b=document.querySelector('.bucket[data-purpose="'+o.p+'"]'); b.appendChild(div);
+    } else {
+      div.addEventListener('click',()=>selectSnip(o.id,div));
+      div.addEventListener('dragstart',e=>{ selectedId=o.id; e.dataTransfer.setData('text/plain',o.id); });
+      beltEl.appendChild(div);
+    }
+  });
+  updateSortCount();
+}
+function selectSnip(id,div){
+  if(state.sort[id]) return;
+  selectedId = (selectedId===id)?null:id;
+  document.querySelectorAll('.snip').forEach(n=>n.classList.remove('sel'));
+  if(selectedId) div.classList.add('sel');
+}
+function placeSnip(id, purpose){
+  const o=BELT.find(x=>x.id===id); if(!o || state.sort[id]) return;
+  const fb=document.getElementById('sortFb');
+  if(o.p===purpose){
+    state.sort[id]=purpose; save(); selectedId=null; renderBelt();
+    fb.className='fb r'; fb.textContent='✓ Correct — that is a '+JOBNAME[purpose]+' text.';
+  } else {
+    fb.className='fb w'; fb.textContent='Not that bucket — think about the writer\u2019s job, then try again.';
+    const node=document.querySelector('.snip[data-id="'+id+'"]');
+    if(node){ node.style.borderColor='#e0a050'; setTimeout(()=>{node.style.borderColor='';},700); }
+  }
+}
+function updateSortCount(){
+  const n=Object.keys(state.sort).length;
+  document.getElementById('sortCount').textContent='Sorted: '+n+' / '+BELT.length;
+  if(n===BELT.length){ const fb=document.getElementById('sortFb'); fb.className='fb r'; fb.textContent='✓ Belt cleared — every text is in the right bucket!'; }
+}
+document.querySelectorAll('.bucket').forEach(b=>{
+  b.addEventListener('click',()=>{ if(selectedId) placeSnip(selectedId,b.dataset.purpose); });
+  b.addEventListener('dragover',e=>{ e.preventDefault(); b.classList.add('hot'); });
+  b.addEventListener('dragleave',()=>b.classList.remove('hot'));
+  b.addEventListener('drop',e=>{ e.preventDefault(); b.classList.remove('hot'); const id=e.dataTransfer.getData('text/plain')||selectedId; if(id) placeSnip(id,b.dataset.purpose); });
+});
+
+/* STAGE 3 sliders + proof words */
+function slider(id){
+  const el=document.getElementById(id); const v=parseInt(el.value,10);
+  state.slider[id]=v; save();
+  document.getElementById(id+'val').textContent=v;
+  const fb=document.getElementById(id+'fb');
+  const wantHigh = (id==='sA');
+  if(wantHigh){ if(v>=7){fb.className='fb r'; fb.textContent='✓ Review A sounds very happy — high is right.';} else if(v<=4){fb.className='fb w'; fb.textContent='Read it again — does "wonderful" and "best" sound negative?';} else {fb.className='fb w'; fb.textContent='Closer — but this writer really loved it. Try higher.';} }
+  else { if(v<=4){fb.className='fb r'; fb.textContent='✓ Review B sounds very unhappy — low is right.';} else if(v>=7){fb.className='fb w'; fb.textContent='Read it again — "awful" and "rude" are not positive.';} else {fb.className='fb w'; fb.textContent='Closer — but this writer really disliked it. Try lower.';} }
+}
+['sA','sB'].forEach(id=>{ const el=document.getElementById(id); el.value=state.slider[id]; document.getElementById(id+'val').textContent=state.slider[id];
+  el.addEventListener('input',()=>slider(id)); });
+document.querySelectorAll('.pw').forEach(w=>{
+  const k=w.dataset.pw; if(state.proof[k]) w.classList.add('on');
+  w.addEventListener('click',()=>{ state.proof[k]=!state.proof[k]; w.classList.toggle('on',state.proof[k]); save(); updatePwCount(); });
+});
+function updatePwCount(){ const n=Object.values(state.proof).filter(Boolean).length; document.getElementById('pwCount').textContent='Proof words chosen: '+n; }
+
+/* STAGE 4 spot the spin */
+function spinCheck(id, ans){
+  const v=document.getElementById('spin-'+id).value;
+  state.spin[id]=v; save();
+  const fb=document.getElementById(id+'f');
+  if(!v){ fb.className='fb'; fb.textContent=''; return; }
+  if(v===ans){ fb.className='fb r'; fb.textContent='✓ Yes — this version is doing the '+JOBNAME[ans]+' job.'; }
+  else { fb.className='fb w'; fb.textContent='Not quite — read it once more and listen to the words.'; }
+}
+
+/* STAGE 5 composition */
+function countSentences(t){ return (t.match(/[.!?]+/g)||[]).length; }
+function updateChecklist(){
+  state.goal=document.getElementById('goal').value;
+  state.fields.comp=document.getElementById('comp').value; save();
+  const goal=state.goal, t=(state.fields.comp||'').toLowerCase();
+  const words=(state.fields.comp||'').trim().split(/\s+/).filter(Boolean).length;
+  const sentences=countSentences(state.fields.comp||'');
+  const li=k=>document.querySelector('.checklist li[data-ck="'+k+'"]');
+  li('goal').classList.toggle('met', !!goal);
+  li('goal').textContent = goal ? 'Goal chosen: '+({P:'Persuade',I:'Inform',E:'Entertain'}[goal]) : 'Choose a goal above';
+  li('len').classList.toggle('met', sentences>=3 || words>=25);
+  let jobMet=false, jobText='Use words that match your job';
+  if(goal==='P'){ jobMet=/\b(should|must|please|best|need|imagine|really|change)\b/.test(t); jobText='Use a persuading word (should, please, best, need…)'; }
+  else if(goal==='I'){ jobMet=/\b(is|are|at|every|o.?clock|usually|first|then|in the)\b/.test(t)|| /\d/.test(t); jobText='Use a fact word (is, at, every, a time or number…)'; }
+  else if(goal==='E'){ jobMet=/!/.test(t) || /\b(funny|laugh|suddenly|once|wobbl|escap|bounce)\b/.test(t); jobText='Use a fun touch (a joke, "suddenly", or a "!")'; }
+  li('job').classList.toggle('met', jobMet);
+  li('job').textContent=jobText;
+}
+
+/* reveals */
+function toggleEg(btn,id){ const eg=document.getElementById(id); const showing=eg.classList.contains('show'); eg.classList.toggle('show',!showing); btn.textContent=showing?'Show an example for each job':'Hide examples'; }
+
+/* save plain fields */
+document.querySelectorAll('[data-save]').forEach(el=>{ const k=el.dataset.save; if(state.fields[k]!==undefined) el.value=state.fields[k];
+  el.addEventListener('input',()=>{ state.fields[k]=el.value; save(); }); });
+['r1','r2','r3'].forEach(id=>{ const g=document.getElementById('give-'+id); if(state.give[id]!==undefined) g.value=state.give[id];
+  g.addEventListener('input',()=>{ state.give[id]=g.value; save(); }); });
+['r1','r2','r3'].forEach(id=>{ const s=document.getElementById('spin-'+id); if(state.spin[id]) s.value=state.spin[id]; });
+if(state.goal){ document.getElementById('goal').value=state.goal; }
+
+/* email */
+function emailWork(){
+  const g=k=>(state.fields[k]&&state.fields[k].trim()?state.fields[k].trim():'(not written)');
+  const sortDone=Object.keys(state.sort).length;
+  const proofWords=Object.entries(state.proof).filter(([k,v])=>v).map(([k])=>k);
+  let b='THE PIE SORTING MACHINE — ENGLISH, WEEK 4\n';
+  b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n';
+  b+='Stage 1 — warm-up: '+['m1','m2','m3'].map(m=>m+'='+(state.mini[m]||'—')).join(', ')+' (answers P, I, E)\n';
+  b+='Stage 2 — texts sorted correctly: '+sortDone+' / 8\n';
+  b+='Stage 3 — Review A rating: '+state.slider.sA+'/10; Review B rating: '+state.slider.sB+'/10; proof words tapped: '+(proofWords.length||0)+'\n';
+  b+='Stage 4 — Spot the spin: '+['r1','r2','r3'].map(r=>r+'='+(state.spin[r]||'—')+' ('+({P:'Persuade',I:'Inform',E:'Entertain'}[state.spin[r]]||'?')+'), gave it away: "'+(state.give[r]||'—')+'"').join('; ')+'\n';
+  b+='   (Answers: r1 Persuade, r2 Inform, r3 Entertain)\n\n';
+  b+='Stage 5 — Composition\nGoal: '+({P:'Persuade the head teacher',I:'Inform a new pupil',E:'Entertain a friend'}[state.goal]||'(no goal chosen)')+'\n';
+  b+='Writing:\n'+g('comp')+'\n\n—\nSent from Base 6';
+  const su=encodeURIComponent('Base 6 · PIE Sorting Machine');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank');
+  const n=document.getElementById('notify'); n.textContent='✓ Opening your email — your work is ready to send.'; n.classList.add('show');
+}
+
+/* init */
+renderBelt();
+updatePwCount();
+updateChecklist();
+goStage(state.stage||1);
+</script>
+
+</body>
+</html>

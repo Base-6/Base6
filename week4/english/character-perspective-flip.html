@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Character Perspective Flip · English · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:#fef8f4; color:#1a1a1a; min-height:100vh; }
+  .site-header { background:#ef7724; padding:1.25rem 2rem; }
+  .back-link { color:#fff; font-size:0.9rem; font-weight:700; text-decoration:none; opacity:0.9; }
+  .back-link:hover { opacity:1; }
+  .hero { background:#ef7724; padding:1.4rem 2rem 2.1rem; text-align:center; }
+  .hero .subject-label { font-size:0.85rem; font-weight:700; color:#fff; opacity:0.85; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.45rem; }
+  .hero h1 { font-size:1.9rem; font-weight:700; color:#fff; line-height:1.2; }
+  .hero p { font-size:0.96rem; color:#fff; opacity:0.92; max-width:560px; margin:0.55rem auto 0; line-height:1.55; }
+  .main { max-width:760px; margin:0 auto; padding:1.4rem 1.5rem 4rem; }
+
+  .progress { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.2rem; position:sticky; top:0; background:#fef8f4; padding:0.7rem 0; z-index:6; }
+  .pchip { font-size:0.72rem; font-weight:700; padding:5px 11px; border-radius:20px; background:#f0ede8; color:#999; border:1.5px solid #e0d8d0; }
+  .pchip.active { background:#fff3e6; color:#c05a10; border-color:#fcd8bc; }
+  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; }
+
+  .stage { display:none; } .stage.show { display:block; }
+  .stage-card { background:#fff; border:2px solid #e0d8d0; border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .stage-eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#ef7724; margin-bottom:0.3rem; }
+  .stage-card h2 { font-size:1.25rem; font-weight:700; color:#007291; line-height:1.25; margin-bottom:0.5rem; }
+  .stage-card .intro { font-size:0.95rem; color:#444; line-height:1.65; margin-bottom:1rem; }
+  .q { font-size:0.95rem; font-weight:700; line-height:1.55; margin:1.1rem 0 0.55rem; }
+  .scene-img { width:100%; border-radius:12px; border:2px solid #e0d8d0; display:block; margin:0.4rem 0 1rem; }
+
+  .scene-box { background:#e8f4f7; border:2px solid #a9d4e0; border-radius:12px; padding:0.95rem 1.15rem; margin:0.4rem 0 1rem; font-size:0.95rem; line-height:1.7; color:#0b5a72; }
+  .scene-box b { color:#075066; }
+
+  .chip-row { display:flex; gap:0.45rem; flex-wrap:wrap; margin:0.5rem 0 0.4rem; }
+  .chip { font-family:inherit; font-size:0.86rem; font-weight:700; padding:0.45rem 0.9rem; border-radius:18px; cursor:pointer; border:2px solid #cbb9a8; background:#fff; color:#6a5a4a; }
+  .chip:hover { border-color:#ef7724; }
+  .chip.on { background:#fff3e6; border-color:#ef7724; color:#8a3d06; }
+  .pick-note { font-size:0.82rem; color:#888; margin-top:0.2rem; }
+  .picked-box { background:#f0faf0; border:1.5px solid #b6dfc0; border-radius:10px; padding:0.6rem 0.85rem; margin-top:0.6rem; font-size:0.9rem; color:#1a5e1a; min-height:40px; }
+
+  /* tap-to-check questions (stage 1) */
+  .tfq { border:2px solid #e0d8d0; border-radius:12px; padding:0.85rem 1rem; margin:0.7rem 0; background:#fffdfb; }
+  .tfq .qt { font-size:0.93rem; font-weight:700; line-height:1.5; margin-bottom:0.55rem; }
+  .opt-row { display:flex; gap:0.45rem; flex-wrap:wrap; }
+  .opt { font-family:inherit; font-size:0.86rem; font-weight:700; padding:0.45rem 0.95rem; border-radius:10px; cursor:pointer; border:2px solid #cbb9a8; background:#fff; color:#5a4a3a; }
+  .opt:hover { border-color:#007291; }
+  .opt.correct { background:#e6f5e6; border-color:#2e8b57; color:#1a5e1a; }
+  .opt.wrong { background:#fdecec; border-color:#d98a8a; color:#a23a3a; }
+  .fb { font-size:0.85rem; font-weight:700; margin-top:0.5rem; min-height:1.1em; }
+  .fb.ok { color:#1a5e1a; } .fb.no { color:#b45309; }
+
+  /* character cards (stage 2) */
+  .char-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:0.7rem; margin:0.6rem 0; }
+  .char-card { border:2px solid #cbb9a8; border-radius:14px; padding:0.9rem 1rem; cursor:pointer; background:#fff; text-align:left; font-family:inherit; }
+  .char-card:hover { border-color:#ef7724; }
+  .char-card.on { border-color:#ef7724; background:#fff3e6; }
+  .char-card .cname { font-size:1rem; font-weight:700; color:#c05a10; margin-bottom:0.25rem; }
+  .char-card .cq { font-size:0.84rem; color:#6a5a4a; line-height:1.5; }
+  .hint-box { background:#fff7f0; border:1.5px solid #fcd8bc; border-radius:10px; padding:0.7rem 0.95rem; margin-top:0.6rem; font-size:0.88rem; color:#8a3d06; line-height:1.6; display:none; }
+  .hint-box.show { display:block; }
+  .sent-line { display:flex; gap:0.4rem; align-items:center; flex-wrap:wrap; font-size:0.98rem; margin:0.6rem 0; line-height:1.8; }
+  input[type=text] { font-family:inherit; font-size:0.96rem; padding:0.4rem 0.6rem; border:2px solid #007291; border-radius:8px; background:#fff; outline:none; min-width:140px; }
+  input[type=text]:focus { border-color:#ef7724; }
+
+  /* word bank insert (stage 4) */
+  .bank-label { font-size:0.85rem; font-weight:700; color:#c05a10; margin:0.8rem 0 0.4rem; }
+  .bank-row { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.6rem; }
+  .ins { font-family:inherit; font-size:0.82rem; font-weight:700; padding:0.4rem 0.8rem; border-radius:16px; cursor:pointer; border:2px solid #a9d4e0; background:#e8f4f7; color:#0b5a72; }
+  .ins:hover { background:#d5ecf2; border-color:#007291; }
+  .starter-row { display:flex; gap:0.4rem; flex-wrap:wrap; margin:0.3rem 0 0.7rem; }
+  .starter-btn { font-family:inherit; font-size:0.82rem; font-weight:700; padding:0.45rem 0.85rem; border-radius:8px; cursor:pointer; border:2px solid #ef7724; background:#fff7f0; color:#c05a10; text-align:left; }
+  .starter-btn:hover { background:#ffeede; }
+  textarea { font-family:inherit; font-size:0.98rem; width:100%; min-height:140px; padding:0.6rem 0.85rem; border:2px solid #007291; border-radius:10px; background:#fff; outline:none; line-height:1.7; resize:vertical; }
+  textarea:focus { border-color:#ef7724; }
+
+  .checklist { list-style:none; margin:0.8rem 0 0; }
+  .checklist li { font-size:0.9rem; line-height:1.6; padding:0.3rem 0 0.3rem 1.7rem; position:relative; color:#888; }
+  .checklist li::before { content:"○"; position:absolute; left:0; font-weight:700; color:#c8b6a4; }
+  .checklist li.met { color:#1a5e1a; } .checklist li.met::before { content:"✓"; color:#2e8b57; }
+
+  .reveal-btn { font-family:inherit; font-size:0.82rem; font-weight:700; padding:0.45rem 1rem; border-radius:8px; cursor:pointer; border:2px solid #007291; background:#fff; color:#007291; margin-top:0.7rem; }
+  .reveal-btn:hover { background:#e6f5f8; }
+  .eg-block { display:none; margin-top:0.6rem; font-size:0.9rem; line-height:1.7; color:#1a5e1a; background:#f0faf0; border:1px solid #b6dfc0; border-radius:8px; padding:0.7rem 0.95rem; }
+  .eg-block.show { display:block; }
+
+  .next-btn { font-family:inherit; font-size:0.92rem; font-weight:700; padding:0.65rem 1.4rem; border-radius:9px; cursor:pointer; border:none; color:#fff; background:#007291; margin-top:1rem; }
+  .next-btn:hover { background:#00576e; }
+  .send-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:14px; padding:1.3rem 1.5rem; margin-top:1.2rem; text-align:center; }
+  .send-card p { font-size:0.92rem; color:#555; line-height:1.6; margin-bottom:0.9rem; }
+  .action-btn { font-family:inherit; font-size:0.92rem; font-weight:700; padding:0.7rem 1.5rem; border-radius:8px; cursor:pointer; border:none; color:#fff; background:#007291; }
+  .action-btn:hover { background:#00576e; }
+  .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; line-height:1.5; }
+  .notify.show { display:block; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline:3px solid #007291; outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header"><a class="back-link" href="index.html">← English</a></header>
+
+<div class="hero">
+  <p class="subject-label">English · Week 4</p>
+  <h1>🎭 Character Perspective Flip</h1>
+  <p>The same story can feel very different depending on who is telling it. We will pick one character and tell the story through their eyes.</p>
+</div>
+
+<main class="main">
+  <div class="progress" id="progress"></div>
+
+  <!-- STAGE 1 -->
+  <section class="stage" id="stage-1">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 1 of 5 · The scene</p>
+      <h2>What is happening here?</h2>
+      <img class="scene-img" src="data:image/jpeg;base64,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" alt="A watercolour of three brown bears standing beside a small bed, looking surprised" style="max-width:340px; margin-left:auto; margin-right:auto;">
+      <div class="scene-box">
+        The Three Bears come home from their walk. They go upstairs and find a girl named <b>Goldilocks</b> asleep in Baby Bear's bed!
+      </div>
+      <p class="intro">Let's make sure we understand the scene before we write. Tap your answer — there is no rush, and you can try again.</p>
+
+      <div class="tfq" data-q="who">
+        <p class="qt">Who is asleep in the bed?</p>
+        <div class="opt-row">
+          <button class="opt" onclick="ans('who',this,false)">Daddy Bear</button>
+          <button class="opt" onclick="ans('who',this,true)">Goldilocks</button>
+          <button class="opt" onclick="ans('who',this,false)">Mummy Bear</button>
+        </div>
+        <div class="fb"></div>
+      </div>
+
+      <div class="tfq" data-q="whose">
+        <p class="qt">Whose bed is she in?</p>
+        <div class="opt-row">
+          <button class="opt" onclick="ans('whose',this,true)">Baby Bear's bed</button>
+          <button class="opt" onclick="ans('whose',this,false)">Daddy Bear's bed</button>
+          <button class="opt" onclick="ans('whose',this,false)">Her own bed</button>
+        </div>
+        <div class="fb"></div>
+      </div>
+
+      <div class="tfq" data-q="where">
+        <p class="qt">Where do the bears find her?</p>
+        <div class="opt-row">
+          <button class="opt" onclick="ans('where',this,false)">In the kitchen</button>
+          <button class="opt" onclick="ans('where',this,false)">In the garden</button>
+          <button class="opt" onclick="ans('where',this,true)">Upstairs</button>
+        </div>
+        <div class="fb"></div>
+      </div>
+
+      <button class="next-btn" onclick="goStage(2)">Continue →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 2 -->
+  <section class="stage" id="stage-2">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 2 of 5 · Plan your story</p>
+      <h2>Choose your character</h2>
+      <p class="intro">Pick <strong>one</strong> character. You will tell the story through their eyes — what they see, and how they feel.</p>
+
+      <div class="char-grid">
+        <button class="char-card" data-char="Baby Bear" onclick="pickChar('Baby Bear',this)">
+          <div class="cname">Baby Bear</div>
+          <div class="cq">Is he sad that his bed is being used?</div>
+        </button>
+        <button class="char-card" data-char="Daddy Bear" onclick="pickChar('Daddy Bear',this)">
+          <div class="cname">Daddy Bear</div>
+          <div class="cq">Is he cross, or surprised?</div>
+        </button>
+        <button class="char-card" data-char="Goldilocks" onclick="pickChar('Goldilocks',this)">
+          <div class="cname">Goldilocks</div>
+          <div class="cq">What does she see when she opens her eyes?</div>
+        </button>
+      </div>
+      <div class="hint-box" id="charHint"></div>
+
+      <p class="q">Who is reading this? (your audience)</p>
+      <div class="sent-line">I am writing for my <input type="text" id="audience" data-save="audience" placeholder="class"></div>
+      <p class="pick-note">A good writer thinks about who they are writing for, and why.</p>
+
+      <p class="q">What is your goal? (your purpose) — how do you want your reader to feel?</p>
+      <div class="chip-row" data-group="goal">
+        <button class="chip" onclick="pickOne('goal','happy',this)">happy</button>
+        <button class="chip" onclick="pickOne('goal','sad',this)">sad</button>
+        <button class="chip" onclick="pickOne('goal','scared',this)">scared</button>
+        <button class="chip" onclick="pickOne('goal','cross',this)">cross</button>
+      </div>
+
+      <button class="next-btn" onclick="goStage(3)">Continue →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 3 -->
+  <section class="stage" id="stage-3">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 3 of 5 · Word bank warm-up</p>
+      <h2>Gather your words</h2>
+      <p class="intro">Tap any words you might want to use in your story. Pick as many as you like — they will be waiting for you on the next page.</p>
+
+      <div class="chip-row" data-cap="bank">
+        <button class="chip" onclick="pickBank('surprised',this)">surprised</button>
+        <button class="chip" onclick="pickBank('angry',this)">angry</button>
+        <button class="chip" onclick="pickBank('tiny',this)">tiny</button>
+        <button class="chip" onclick="pickBank('yellow hair',this)">yellow hair</button>
+        <button class="chip" onclick="pickBank('soft',this)">soft</button>
+        <button class="chip" onclick="pickBank('growled',this)">growled</button>
+        <button class="chip" onclick="pickBank('snoring',this)">snoring</button>
+        <button class="chip" onclick="pickBank('heart beating',this)">heart beating</button>
+        <button class="chip" onclick="pickBank('sleepy',this)">sleepy</button>
+      </div>
+      <p class="q">My chosen words:</p>
+      <div class="picked-box" id="bankBox">…</div>
+
+      <button class="next-btn" onclick="goStage(4)">Continue →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 4 -->
+  <section class="stage" id="stage-4">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 4 of 5 · Rewrite the scene</p>
+      <h2>Tell the story through their eyes</h2>
+      <p class="intro" id="writeIntro">Write your story below using the word "I" — because your character is telling it. Tap a sentence starter to begin, and tap any word to drop it into your writing.</p>
+
+      <p class="bank-label">Sentence starters — tap to add one:</p>
+      <div class="starter-row">
+        <button class="starter-btn" onclick="insertText('I walked slowly up the stairs and ')">"I walked slowly up the stairs and…"</button>
+        <button class="starter-btn" onclick="insertText('I couldn\'t believe my eyes when I saw ')">"I couldn't believe my eyes when I saw…"</button>
+      </div>
+
+      <p class="bank-label">Your words — tap to add:</p>
+      <div class="bank-row" id="insBank"></div>
+
+      <textarea id="story" data-save="story" placeholder="Start your story here. Remember to write as if you are the character."></textarea>
+
+      <ul class="checklist" id="checklist">
+        <li data-ck="i">Used the word "I" so the character is telling it</li>
+        <li data-ck="bank">Used at least one word from your word bank</li>
+        <li data-ck="feel">Described a feeling (like surprised, cross, or sleepy)</li>
+        <li data-ck="length">Wrote a few sentences</li>
+      </ul>
+
+      <button class="next-btn" onclick="goStage(5)">Last stage →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 5 -->
+  <section class="stage" id="stage-5">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 5 of 5 · Check your writing</p>
+      <h2>Read it back and reflect</h2>
+      <p class="intro">Read your story back to yourself. How did your character feel? Finish the sentence below.</p>
+
+      <div class="sent-line">My character felt <input type="text" id="feltWord" data-save="feltWord" placeholder="…how?"></div>
+      <div class="sent-line">because <input type="text" id="feltWhy" data-save="feltWhy" placeholder="…why?" style="min-width:220px;"></div>
+
+      <p class="q">Final check — tick what you did:</p>
+      <ul class="checklist" id="checklist2">
+        <li data-ck="i2">I used the word "I" to show the character is talking</li>
+        <li data-ck="bank2">I used a word from the word bank</li>
+        <li data-ck="feel2">I described a feeling</li>
+      </ul>
+
+      <button class="reveal-btn" onclick="toggleEg(this,'final-eg')">Show an example</button>
+      <div class="eg-block" id="final-eg">A good story is written from your chosen character's point of view, using "I" and "me", with details about what they see and how they feel.<br><br>For example: "My character felt sad because their bed was messy."<br>(Yours will be your own — there is no single right answer.)</div>
+    </div>
+    <div class="send-card">
+      <p>Brilliant work flipping the story. Send your plan and writing to Jay.</p>
+      <button class="action-btn" onclick="emailWork()">📧 Send my work to Jay</button>
+      <div class="notify" id="notify"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School · English</footer>
+
+<script>
+const STORE_KEY = 'base6_w4_english_perspective';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+let state = { stage:1, char:'', goal:'', bank:[], checks:{}, fields:{} };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e){}
+if(!state.fields) state.fields={}; if(!state.checks) state.checks={}; if(!Array.isArray(state.bank)) state.bank=[];
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+
+const PLABELS=['Scene','Plan','Words','Write','Check'];
+function renderProgress(){ const p=document.getElementById('progress'); p.innerHTML='';
+  PLABELS.forEach((lab,i)=>{ const n=i+1; const c=document.createElement('span');
+    c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':''); c.textContent=n+'. '+lab; p.appendChild(c); }); }
+function goStage(n){ state.stage=Math.max(state.stage,n); save();
+  for(let i=1;i<=5;i++){ const el=document.getElementById('stage-'+i); if(el) el.classList.toggle('show', i<=n); }
+  renderProgress(); const t=document.getElementById('stage-'+n); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); updateChecklist(); }
+
+/* STAGE 1 tap-to-check */
+function ans(q, btn, correct){
+  const wrap=btn.closest('.tfq'); const fb=wrap.querySelector('.fb');
+  wrap.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','wrong'));
+  if(correct){ btn.classList.add('correct'); fb.textContent='✓ That\'s right.'; fb.className='fb ok'; state.checks[q]=true; }
+  else { btn.classList.add('wrong'); fb.textContent='Not quite — have another look at the scene, then try again.'; fb.className='fb no'; state.checks[q]=false; }
+  save();
+}
+
+/* STAGE 2 character + goal */
+const CHAR_HINTS={
+  'Baby Bear':'You are Baby Bear. It is your bed! You might feel surprised, a little sad, or worried. What do you see when you peek at your bed?',
+  'Daddy Bear':'You are Daddy Bear. You are big and your voice is deep. You might feel cross or shocked. You could "growl" your words.',
+  'Goldilocks':'You are Goldilocks. You were fast asleep and warm. You open your eyes and see three bears looking at you! How does your heart feel?'
+};
+function pickChar(name, btn){
+  state.char=name; save();
+  document.querySelectorAll('.char-card').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  const h=document.getElementById('charHint'); h.textContent=CHAR_HINTS[name]||''; h.classList.add('show');
+  updateWriteIntro(); updateChecklist();
+}
+function pickOne(group, val, btn){
+  state[group]=val; save();
+  btn.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on'); updateChecklist();
+}
+
+/* STAGE 3 word bank multi-pick */
+function pickBank(val, btn){
+  const arr=state.bank; const idx=arr.indexOf(val);
+  if(idx>-1){ arr.splice(idx,1); btn.classList.remove('on'); }
+  else { arr.push(val); btn.classList.add('on'); }
+  save(); renderBank(); renderInsBank();
+}
+function renderBank(){
+  const box=document.getElementById('bankBox');
+  box.textContent = state.bank.length ? state.bank.join(', ') : '(no words chosen yet — that is okay, tap a few above)';
+}
+
+/* STAGE 4 insert helpers + intro */
+function updateWriteIntro(){
+  const el=document.getElementById('writeIntro'); if(!el) return;
+  if(state.char){ el.innerHTML='You are <strong>'+state.char+'</strong>. Write the story using the word "I" — because your character is telling it. Tap a sentence starter to begin, and tap any word to drop it into your writing.'; }
+}
+function renderInsBank(){
+  const row=document.getElementById('insBank'); if(!row) return; row.innerHTML='';
+  const words = state.bank.length ? state.bank : ['surprised','soft','sleepy'];
+  words.forEach(w=>{ const b=document.createElement('button'); b.className='ins'; b.textContent=w; b.onclick=()=>insertText(w+' '); row.appendChild(b); });
+}
+function insertText(t){
+  const ta=document.getElementById('story'); if(!ta) return;
+  const s=ta.selectionStart??ta.value.length, e=ta.selectionEnd??ta.value.length;
+  ta.value = ta.value.slice(0,s) + t + ta.value.slice(e);
+  ta.focus(); const pos=s+t.length; ta.setSelectionRange(pos,pos);
+  state.fields.story=ta.value; save(); updateChecklist();
+}
+
+/* reveals */
+function toggleEg(btn,id){ const eg=document.getElementById(id); const showing=eg.classList.contains('show'); eg.classList.toggle('show',!showing);
+  btn.textContent=showing?'Show an example':'Hide example'; }
+
+/* checklist */
+const FEELING_WORDS=['surprised','angry','cross','sad','happy','scared','sleepy','soft','worried','shocked','glad','afraid','upset','calm'];
+function updateChecklist(){
+  const story=(state.fields.story||'').toLowerCase();
+  const usedI = /\bi\b/.test(story) || /\bi'?[a-z]/.test(story);
+  const usedBank = state.bank.some(w=>story.includes(w.toLowerCase()));
+  const usedFeel = FEELING_WORDS.some(w=>story.includes(w));
+  const longEnough = story.trim().split(/\s+/).filter(Boolean).length>=12;
+  const set=(sel,k,v)=>{ const li=document.querySelector(sel+' li[data-ck="'+k+'"]'); if(li) li.classList.toggle('met',v); };
+  set('#checklist','i',usedI); set('#checklist','bank',usedBank); set('#checklist','feel',usedFeel); set('#checklist','length',longEnough);
+  set('#checklist2','i2',usedI); set('#checklist2','bank2',usedBank); set('#checklist2','feel2',usedFeel);
+}
+
+/* save fields + restore */
+document.querySelectorAll('[data-save]').forEach(el=>{ const k=el.dataset.save; if(state.fields[k]!==undefined) el.value=state.fields[k];
+  el.addEventListener('input',()=>{ state.fields[k]=el.value; save(); updateChecklist(); }); });
+function restore(){
+  if(state.char){ const b=[...document.querySelectorAll('.char-card')].find(c=>c.dataset.char===state.char);
+    if(b){ b.classList.add('on'); const h=document.getElementById('charHint'); h.textContent=CHAR_HINTS[state.char]||''; h.classList.add('show'); } updateWriteIntro(); }
+  if(state.goal){ const b=[...document.querySelectorAll('[data-group="goal"] .chip')].find(c=>c.textContent===state.goal); if(b) b.classList.add('on'); }
+  state.bank.forEach(v=>{ const b=[...document.querySelectorAll('[data-cap="bank"] .chip')].find(c=>c.textContent===v); if(b) b.classList.add('on'); });
+  // restore stage 1 answers
+  Object.keys(state.checks).forEach(q=>{ if(state.checks[q]===true){ const wrap=document.querySelector('.tfq[data-q="'+q+'"]'); if(wrap){ const fb=wrap.querySelector('.fb'); fb.textContent='✓ That\'s right.'; fb.className='fb ok'; } } });
+  renderBank(); renderInsBank();
+}
+
+/* email */
+function emailWork(){
+  const f=state.fields; const g=k=>(f[k]&&f[k].trim()?f[k].trim():'—');
+  let b='CHARACTER PERSPECTIVE FLIP — ENGLISH, WEEK 4\n';
+  b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n';
+  b+='Character (telling the story): '+(state.char||'—')+'\n';
+  b+='Audience: my '+g('audience')+'\n';
+  b+='Goal (how the reader should feel): '+(state.goal||'—')+'\n';
+  b+='Words chosen: '+(state.bank.join(', ')||'—')+'\n\n';
+  b+='MY STORY\n'+g('story')+'\n\n';
+  b+='My character felt '+g('feltWord')+' because '+g('feltWhy')+'.\n\n—\nSent from Base 6';
+  const su=encodeURIComponent('Base 6 · Character Perspective Flip');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank');
+  const n=document.getElementById('notify'); n.textContent='✓ Opening your email — your work is ready to send.'; n.classList.add('show');
+}
+
+/* init */
+restore();
+goStage(state.stage||1);
+updateChecklist();
+</script>
+
+</body>
+</html>

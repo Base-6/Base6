@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Alien Tour Guide · English · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:#fef8f4; color:#1a1a1a; min-height:100vh; }
+  .site-header { background:#ef7724; padding:1.25rem 2rem; }
+  .back-link { color:#fff; font-size:0.9rem; font-weight:700; text-decoration:none; opacity:0.9; }
+  .back-link:hover { opacity:1; }
+  .hero { background:#ef7724; padding:1.4rem 2rem 2.1rem; text-align:center; }
+  .hero .subject-label { font-size:0.85rem; font-weight:700; color:#fff; opacity:0.85; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.45rem; }
+  .hero h1 { font-size:1.95rem; font-weight:700; color:#fff; line-height:1.2; }
+  .hero p { font-size:0.96rem; color:#fff; opacity:0.92; max-width:560px; margin:0.55rem auto 0; line-height:1.55; }
+  .main { max-width:760px; margin:0 auto; padding:1.4rem 1.5rem 4rem; }
+
+  .progress { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.2rem; position:sticky; top:0; background:#fef8f4; padding:0.7rem 0; z-index:6; }
+  .pchip { font-size:0.72rem; font-weight:700; padding:5px 11px; border-radius:20px; background:#f0ede8; color:#999; border:1.5px solid #e0d8d0; }
+  .pchip.active { background:#fff3e6; color:#c05a10; border-color:#fcd8bc; }
+  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; }
+
+  .stage { display:none; } .stage.show { display:block; }
+  .stage-card { background:#fff; border:2px solid #e0d8d0; border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .stage-eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#ef7724; margin-bottom:0.3rem; }
+  .stage-card h2 { font-size:1.25rem; font-weight:700; color:#007291; line-height:1.25; margin-bottom:0.5rem; }
+  .stage-card .intro { font-size:0.95rem; color:#444; line-height:1.65; margin-bottom:1rem; }
+  .q { font-size:0.95rem; font-weight:700; line-height:1.55; margin:1.1rem 0 0.55rem; }
+
+  .alien-say { display:flex; gap:0.7rem; align-items:flex-start; background:#eef6e9; border:2px solid #b9d99b; border-radius:14px; padding:0.85rem 1rem; margin:0.7rem 0 1rem; }
+  .alien-face { font-size:2rem; line-height:1; }
+  .alien-say .bubble { font-size:0.98rem; line-height:1.55; color:#2c4a18; }
+
+  .desc-card { background:#faf6f1; border:1.5px solid #ece3da; border-radius:12px; padding:0.9rem 1rem; margin:0.7rem 0; }
+  .desc-card .txt { font-size:0.96rem; line-height:1.55; margin-bottom:0.6rem; }
+  .opt-btns { display:flex; gap:0.45rem; flex-wrap:wrap; }
+  .opt-btn { font-family:inherit; font-size:0.82rem; font-weight:700; padding:0.45rem 0.9rem; border-radius:8px; cursor:pointer; border:2px solid #cbb9a8; background:#fff; color:#6a5a4a; }
+  .opt-btn:hover { border-color:#ef7724; }
+  .opt-btn.right { background:#e6f5e6; border-color:#2e8b57; color:#1a5e1a; }
+  .opt-btn.wrong { background:#fff3e6; border-color:#e0a050; color:#8a5a10; }
+  .fb { display:none; font-size:0.86rem; margin-top:0.5rem; padding:0.5rem 0.8rem; border-radius:8px; line-height:1.5; }
+  .fb.r { display:block; background:#e6f5e6; color:#1a5e1a; } .fb.w { display:block; background:#fff3e6; color:#7a4a00; }
+
+  /* venn */
+  .wordpool { display:flex; gap:0.5rem; flex-wrap:wrap; background:#f4ede5; border:2px dashed #d8c8b8; border-radius:12px; padding:0.8rem; margin:0.6rem 0 1rem; min-height:52px; }
+  .pool-label { width:100%; font-size:0.74rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#a08a72; }
+  .word { font-size:0.86rem; font-weight:700; background:#fff; border:2px solid #d8c8b8; border-radius:18px; padding:0.4rem 0.8rem; cursor:pointer; user-select:none; }
+  .word:hover { border-color:#ef7724; }
+  .word.sel { border-color:#007291; box-shadow:0 0 0 3px #cdeaf0; }
+  .word.placed { cursor:default; }
+  .venn { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.5rem; }
+  .zone { border-radius:12px; padding:0.7rem; min-height:110px; border:2px solid; display:flex; flex-direction:column; gap:0.35rem; }
+  .zone h3 { font-size:0.86rem; }
+  .zone.alien { background:#eef6e9; border-color:#7aa84c; } .zone.alien h3 { color:#3c5a1c; }
+  .zone.both { background:#fef4e8; border-color:#ef7724; } .zone.both h3 { color:#8a3d06; }
+  .zone.human { background:#e8f2f7; border-color:#007291; } .zone.human h3 { color:#0b5a72; }
+  .zone.hot { box-shadow:0 0 0 3px rgba(239,119,36,0.3); }
+  .venn-count { font-size:0.9rem; font-weight:700; color:#007291; margin:0.5rem 0; }
+
+  /* toggle + branch */
+  .toggle-row { display:flex; gap:0.5rem; margin:0.7rem 0; }
+  .toggle-btn { flex:1; font-family:inherit; font-size:0.95rem; font-weight:700; padding:0.7rem; border-radius:10px; cursor:pointer; border:2px solid #cbb9a8; background:#fff; color:#6a5a4a; }
+  .toggle-btn.on { background:#007291; border-color:#007291; color:#fff; }
+  .wordbank { display:flex; gap:0.4rem; flex-wrap:wrap; margin:0.6rem 0; }
+  .bank-btn { font-family:inherit; font-size:0.8rem; font-weight:700; padding:0.4rem 0.75rem; border-radius:18px; cursor:pointer; border:1.5px solid #fcd8bc; background:#fff7f0; color:#c05a10; }
+  .bank-btn:hover { background:#ffeede; }
+  textarea { font-family:inherit; font-size:0.98rem; width:100%; min-height:110px; padding:0.7rem 0.85rem; border:2px solid #007291; border-radius:10px; background:#fff; outline:none; line-height:1.6; resize:vertical; }
+  textarea:focus { border-color:#ef7724; }
+  .mini-label { font-size:0.85rem; font-weight:700; color:#555; margin:0.6rem 0 0.3rem; }
+
+  select, input[type=text] { font-family:inherit; font-size:0.95rem; padding:0.45rem 0.6rem; border:2px solid #007291; border-radius:8px; background:#fff; outline:none; max-width:100%; }
+  select:focus, input[type=text]:focus { border-color:#ef7724; }
+  .inline-row { display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin:0.5rem 0; font-size:0.94rem; }
+  .checklist { list-style:none; margin:0.8rem 0 0; }
+  .checklist li { font-size:0.9rem; line-height:1.6; padding:0.3rem 0 0.3rem 1.7rem; position:relative; color:#888; }
+  .checklist li::before { content:"○"; position:absolute; left:0; font-weight:700; color:#c8b6a4; }
+  .checklist li.met { color:#1a5e1a; } .checklist li.met::before { content:"✓"; color:#2e8b57; }
+
+  .next-btn { font-family:inherit; font-size:0.92rem; font-weight:700; padding:0.65rem 1.4rem; border-radius:9px; cursor:pointer; border:none; color:#fff; background:#007291; margin-top:1rem; }
+  .next-btn:hover { background:#00576e; }
+  .send-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:14px; padding:1.3rem 1.5rem; margin-top:1.2rem; text-align:center; }
+  .send-card p { font-size:0.92rem; color:#555; line-height:1.6; margin-bottom:0.9rem; }
+  .action-btn { font-family:inherit; font-size:0.92rem; font-weight:700; padding:0.7rem 1.5rem; border-radius:8px; cursor:pointer; border:none; color:#fff; background:#007291; }
+  .action-btn:hover { background:#00576e; }
+  .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; line-height:1.5; }
+  .notify.show { display:block; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:3px solid #007291; outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<header class="site-header"><a class="back-link" href="index.html">← English</a></header>
+
+<div class="hero">
+  <p class="subject-label">English · Week 4</p>
+  <h1>👽 The Alien Tour Guide</h1>
+  <p>An alien has landed and understands nothing. You are its guide. Change your purpose and watch how your writing has to change too.</p>
+</div>
+
+<main class="main">
+  <div class="progress" id="progress"></div>
+
+  <!-- STAGE 1 -->
+  <section class="stage" id="stage-1">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 1 of 5 · First Contact</p>
+      <h2>The alien points at a bicycle</h2>
+      <div class="alien-say"><span class="alien-face">👽</span><span class="bubble">"Greetings, Earth-friend. What… is THIS round-legged metal beast?"</span></div>
+      <p class="intro">Three humans each describe the bicycle, but each has a different <strong>purpose</strong>. Read each one and tap the job it is doing.</p>
+
+      <div class="desc-card" data-fc="d1" data-ans="W">
+        <div class="txt">"Careful! It has sharp pedals and it can fall over. Always wear a helmet!"</div>
+        <div class="opt-btns">
+          <button class="opt-btn" onclick="fc('d1','W',this)">Warn</button>
+          <button class="opt-btn" onclick="fc('d1','I',this)">Inform</button>
+          <button class="opt-btn" onclick="fc('d1','E',this)">Entertain</button>
+        </div>
+        <div class="fb" id="d1f"></div>
+      </div>
+
+      <div class="desc-card" data-fc="d2" data-ans="I">
+        <div class="txt">"A bicycle has two wheels, a seat and pedals. You push the pedals with your feet to move."</div>
+        <div class="opt-btns">
+          <button class="opt-btn" onclick="fc('d2','W',this)">Warn</button>
+          <button class="opt-btn" onclick="fc('d2','I',this)">Inform</button>
+          <button class="opt-btn" onclick="fc('d2','E',this)">Entertain</button>
+        </div>
+        <div class="fb" id="d2f"></div>
+      </div>
+
+      <div class="desc-card" data-fc="d3" data-ans="E">
+        <div class="txt">"Vroom! It is a two-wheeled tickle-machine that makes your hair go WHOOSH and your tummy go wheee!"</div>
+        <div class="opt-btns">
+          <button class="opt-btn" onclick="fc('d3','W',this)">Warn</button>
+          <button class="opt-btn" onclick="fc('d3','I',this)">Inform</button>
+          <button class="opt-btn" onclick="fc('d3','E',this)">Entertain</button>
+        </div>
+        <div class="fb" id="d3f"></div>
+      </div>
+
+      <button class="next-btn" onclick="goStage(2)">Continue →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 2 -->
+  <section class="stage" id="stage-2">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 2 of 5 · Opposing Viewpoints</p>
+      <h2>The alien and the human disagree</h2>
+      <div class="alien-say"><span class="alien-face">👽</span><span class="bubble">"This metal trap looks dangerous! I do not trust it."</span></div>
+      <div class="alien-say" style="background:#e8f2f7;border-color:#9ccbe0;"><span class="alien-face">🧒</span><span class="bubble" style="color:#0b5a72;">"A bike? It is a fun way to travel fast! I love mine."</span></div>
+      <p class="intro">Same bike, two <strong>viewpoints</strong>. <strong>Tap a word</strong>, then tap the zone where it belongs: just the alien, just the human, or <em>both</em> can agree.</p>
+
+      <div class="wordpool" id="pool"><span class="pool-label">Feeling and fact words</span></div>
+      <div class="venn">
+        <div class="zone alien" data-zone="alien"><h3>👽 Alien only</h3></div>
+        <div class="zone both" data-zone="both"><h3>🤝 Both agree</h3></div>
+        <div class="zone human" data-zone="human"><h3>🧒 Human only</h3></div>
+      </div>
+      <p class="venn-count" id="vennCount">Placed: 0 / 9</p>
+      <div class="fb" id="vennFb"></div>
+      <button class="next-btn" onclick="goStage(3)">Continue →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 3 -->
+  <section class="stage" id="stage-3">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 3 of 5 · Choose Your Path</p>
+      <h2>The alien picks up a pencil</h2>
+      <div class="alien-say"><span class="alien-face">👽</span><span class="bubble">"A thin wooden stick. Tell me about it, guide. But first — what is your purpose?"</span></div>
+      <p class="intro">Pick a purpose. The alien will react differently, and <strong>your writing has to change to match</strong>. Try one path, then go back and try the other — see how different they sound.</p>
+      <div class="toggle-row">
+        <button class="toggle-btn" id="tg-warn" onclick="setBranch('warn')">⚠️ Warn the alien</button>
+        <button class="toggle-btn" id="tg-inform" onclick="setBranch('inform')">📘 Inform the alien</button>
+      </div>
+      <div id="branchBox" style="display:none">
+        <div class="alien-say" id="branchReact"><span class="alien-face">👽</span><span class="bubble" id="branchBubble"></span></div>
+        <p class="mini-label" id="branchPrompt"></p>
+        <div class="wordbank" id="branchBank"></div>
+        <textarea id="branchText" placeholder="Write two sentences here…"></textarea>
+        <ul class="checklist" id="branchCheck"><li data-ck="match">Match your purpose</li><li data-ck="len2">Write at least two sentences</li></ul>
+      </div>
+      <button class="next-btn" onclick="goStage(4)">Continue →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 4 -->
+  <section class="stage" id="stage-4">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 4 of 5 · One Object, Three Jobs</p>
+      <h2>Now describe a spoon</h2>
+      <div class="alien-say"><span class="alien-face">👽</span><span class="bubble">"A shiny scooping tool! Describe it three ways so I truly understand."</span></div>
+      <p class="intro">Write one short line for each job. Notice how the same spoon sounds completely different each time.</p>
+
+      <p class="mini-label">📘 Inform — give the alien a plain fact:</p>
+      <textarea id="spoonI" data-save="spoonI" placeholder="A spoon is…"></textarea>
+      <p class="mini-label">📣 Persuade — make the alien want one:</p>
+      <textarea id="spoonP" data-save="spoonP" placeholder="You really need a spoon because…"></textarea>
+      <p class="mini-label">😄 Entertain — make the alien laugh:</p>
+      <textarea id="spoonE" data-save="spoonE" placeholder="The spoon is a tiny…"></textarea>
+
+      <button class="next-btn" onclick="goStage(5)">Last stage →</button>
+    </div>
+  </section>
+
+  <!-- STAGE 5 -->
+  <section class="stage" id="stage-5">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 5 of 5 · Write the Guidebook</p>
+      <h2>Your guidebook entry</h2>
+      <div class="alien-say"><span class="alien-face">👽</span><span class="bubble">"Before I leave, write me a guidebook entry. Choose a thing, choose your purpose, and make every word match it."</span></div>
+      <div class="inline-row">
+        <label for="object" style="font-weight:700">My object:</label>
+        <select id="object" onchange="saveField('object')">
+          <option value="">choose a thing…</option>
+          <option value="a dog">a dog</option>
+          <option value="an umbrella">an umbrella</option>
+          <option value="a cup of tea">a cup of tea</option>
+          <option value="a torch">a torch</option>
+        </select>
+      </div>
+      <div class="toggle-row">
+        <button class="toggle-btn" id="gtg-inform" onclick="setGuide('inform')">📘 Inform</button>
+        <button class="toggle-btn" id="gtg-warn" onclick="setGuide('warn')">⚠️ Warn</button>
+      </div>
+      <div class="wordbank" id="guideBank"></div>
+      <textarea id="guideText" data-save="guideText" placeholder="Dear alien, this is…" oninput="updateGuideCheck()"></textarea>
+      <ul class="checklist" id="guideCheck">
+        <li data-ck="obj">Choose an object</li>
+        <li data-ck="purp">Choose Inform or Warn</li>
+        <li data-ck="gmatch">Use words that match your purpose</li>
+        <li data-ck="glen">Write at least three sentences</li>
+      </ul>
+    </div>
+    <div class="send-card">
+      <p>Brilliant guiding. Send your whole adventure to Jay.</p>
+      <button class="action-btn" onclick="emailWork()">📧 Send my work to Jay</button>
+      <div class="notify" id="notify"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Base 6 · Chilton Bridge School · English</footer>
+
+<script>
+const STORE_KEY = 'base6_w4_english_alien';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+const JOBN = { W:'Warn', I:'Inform', E:'Entertain' };
+
+let state = { stage:1, fc:{}, venn:{}, branch:{active:'', warn:'', inform:''}, guide:{purpose:'', object:''}, fields:{} };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY)) || {}); } catch(e){}
+['fc','venn','fields'].forEach(k=>{ if(!state[k]) state[k]={}; });
+if(!state.branch) state.branch={active:'',warn:'',inform:''};
+if(!state.guide) state.guide={purpose:'',object:''};
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+
+const PLABELS=['First Contact','Viewpoints','Choose Path','Three Jobs','Guidebook'];
+function renderProgress(){ const p=document.getElementById('progress'); p.innerHTML='';
+  PLABELS.forEach((lab,i)=>{ const n=i+1; const c=document.createElement('span');
+    c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':''); c.textContent=n+'. '+lab; p.appendChild(c); }); }
+function goStage(n){ state.stage=Math.max(state.stage,n); save();
+  for(let i=1;i<=5;i++){ const el=document.getElementById('stage-'+i); if(el) el.classList.toggle('show', i<=n); }
+  renderProgress(); const t=document.getElementById('stage-'+n); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }
+
+/* STAGE 1 first contact */
+function fc(id, choice, btn){
+  const ans=btn.closest('.desc-card').dataset.ans; state.fc[id]=choice; save();
+  btn.parentElement.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('right','wrong'));
+  const fb=document.getElementById(id+'f');
+  if(choice===ans){ btn.classList.add('right'); fb.className='fb r'; fb.textContent='✓ Yes — that one is doing the '+JOBN[ans]+' job.'; }
+  else { btn.classList.add('wrong'); fb.className='fb w'; fb.textContent='Have another look — listen to the writer\u2019s words.'; }
+}
+
+/* STAGE 2 venn */
+const WORDS=[
+  {w:'scary', z:'alien'}, {w:'dangerous', z:'alien'}, {w:'strange', z:'alien'},
+  {w:'fast', z:'both'}, {w:'interesting', z:'both'},
+  {w:'fun', z:'human'}, {w:'useful', z:'human'}, {w:'exciting', z:'human'}, {w:'normal', z:'human'}
+];
+let selWord=null;
+const poolEl=document.getElementById('pool');
+function renderPool(){
+  poolEl.querySelectorAll('.word').forEach(n=>n.remove());
+  document.querySelectorAll('.zone .word').forEach(n=>n.remove());
+  WORDS.forEach(o=>{
+    const d=document.createElement('div'); d.className='word'; d.textContent=o.w; d.dataset.w=o.w;
+    d.setAttribute('draggable','true');
+    if(state.venn[o.w]){ d.classList.add('placed'); d.textContent=o.w+' ✓';
+      const z=document.querySelector('.zone[data-zone="'+o.z+'"]'); z.appendChild(d);
+    } else {
+      d.addEventListener('click',()=>{ selWord=(selWord===o.w)?null:o.w; document.querySelectorAll('.word').forEach(x=>x.classList.remove('sel')); if(selWord) d.classList.add('sel'); });
+      d.addEventListener('dragstart',e=>{ selWord=o.w; e.dataTransfer.setData('text/plain',o.w); });
+      poolEl.appendChild(d);
+    }
+  });
+  updateVenn();
+}
+function placeWord(w, zone){
+  const o=WORDS.find(x=>x.w===w); if(!o || state.venn[w]) return;
+  const fb=document.getElementById('vennFb');
+  if(o.z===zone){ state.venn[w]=zone; save(); selWord=null; renderPool();
+    fb.className='fb r'; fb.textContent='✓ Good thinking — "'+w+'" belongs there.';
+  } else {
+    fb.className='fb w'; fb.textContent='Not quite — would only the alien think that, only the human, or both? Try again.';
+    const node=document.querySelector('.word[data-w="'+w+'"]'); if(node){ node.style.borderColor='#e0a050'; setTimeout(()=>node.style.borderColor='',700); }
+  }
+}
+document.querySelectorAll('.zone').forEach(z=>{
+  z.addEventListener('click',()=>{ if(selWord) placeWord(selWord,z.dataset.zone); });
+  z.addEventListener('dragover',e=>{ e.preventDefault(); z.classList.add('hot'); });
+  z.addEventListener('dragleave',()=>z.classList.remove('hot'));
+  z.addEventListener('drop',e=>{ e.preventDefault(); z.classList.remove('hot'); const w=e.dataTransfer.getData('text/plain')||selWord; if(w) placeWord(w,z.dataset.zone); });
+});
+function updateVenn(){ const n=Object.keys(state.venn).length; document.getElementById('vennCount').textContent='Placed: '+n+' / '+WORDS.length;
+  if(n===WORDS.length){ const fb=document.getElementById('vennFb'); fb.className='fb r'; fb.textContent='✓ All sorted — you can see exactly where the alien and the human agree and disagree.'; } }
+
+/* STAGE 3 branch */
+const BRANCH={
+  warn:{ bubble:'"Oh! You are warning me. I am listening very carefully…"', prompt:'Warn the alien about the pencil. What is risky about it?', bank:['sharp','point','careful','poke','do not'] },
+  inform:{ bubble:'"Ah, you will inform me. Please, give me the facts."', prompt:'Inform the alien about the pencil. What is it and what does it do?', bank:['wood','write','lead','paper','draw'] }
+};
+function setBranch(which){
+  state.branch.active=which; save();
+  document.getElementById('tg-warn').classList.toggle('on', which==='warn');
+  document.getElementById('tg-inform').classList.toggle('on', which==='inform');
+  document.getElementById('branchBox').style.display='block';
+  document.getElementById('branchBubble').textContent=BRANCH[which].bubble;
+  document.getElementById('branchPrompt').textContent=BRANCH[which].prompt;
+  const bank=document.getElementById('branchBank'); bank.innerHTML='';
+  BRANCH[which].bank.forEach(wd=>{ const b=document.createElement('button'); b.className='bank-btn'; b.type='button'; b.textContent='+ '+wd;
+    b.onclick=()=>insertWord('branchText',wd); bank.appendChild(b); });
+  const ta=document.getElementById('branchText'); ta.value=state.branch[which]||'';
+  updateBranchCheck();
+}
+document.getElementById('branchText').addEventListener('input',function(){
+  if(state.branch.active){ state.branch[state.branch.active]=this.value; save(); updateBranchCheck(); }
+});
+function updateBranchCheck(){
+  const which=state.branch.active; if(!which) return;
+  const t=(state.branch[which]||'').toLowerCase();
+  const sentences=(t.match(/[.!?]+/g)||[]).length;
+  let match=false;
+  if(which==='warn') match=/\b(careful|sharp|point|poke|danger|do not|don.t|watch|hurt)\b/.test(t)||/!/.test(t);
+  else match=/\b(is|has|wood|write|lead|paper|draw|used|made|it)\b/.test(t);
+  const li=k=>document.querySelector('#branchCheck li[data-ck="'+k+'"]');
+  li('match').classList.toggle('met', match);
+  li('match').textContent = which==='warn' ? 'Use a warning word (careful, sharp, do not…)' : 'Use a fact word (is, has, used to…)';
+  li('len2').classList.toggle('met', sentences>=2);
+}
+
+/* STAGE 5 guide */
+const GUIDEBANK={
+  inform:['It is','It has','You use it','made of','helps you'],
+  warn:['Careful','Do not','It can','sharp','hot','watch out']
+};
+function setGuide(which){
+  state.guide.purpose=which; save();
+  document.getElementById('gtg-inform').classList.toggle('on', which==='inform');
+  document.getElementById('gtg-warn').classList.toggle('on', which==='warn');
+  const bank=document.getElementById('guideBank'); bank.innerHTML='';
+  GUIDEBANK[which].forEach(wd=>{ const b=document.createElement('button'); b.className='bank-btn'; b.type='button'; b.textContent='+ '+wd;
+    b.onclick=()=>insertWord('guideText',wd); bank.appendChild(b); });
+  updateGuideCheck();
+}
+function updateGuideCheck(){
+  state.fields.guideText=document.getElementById('guideText').value; save();
+  const t=(state.fields.guideText||'').toLowerCase();
+  const sentences=(t.match(/[.!?]+/g)||[]).length;
+  const li=k=>document.querySelector('#guideCheck li[data-ck="'+k+'"]');
+  li('obj').classList.toggle('met', !!state.guide.object);
+  li('obj').textContent = state.guide.object ? 'Object chosen: '+state.guide.object : 'Choose an object';
+  li('purp').classList.toggle('met', !!state.guide.purpose);
+  li('purp').textContent = state.guide.purpose ? 'Purpose: '+(state.guide.purpose==='warn'?'Warn':'Inform') : 'Choose Inform or Warn';
+  let gm=false, gt='Use words that match your purpose';
+  if(state.guide.purpose==='warn'){ gm=/\b(careful|do not|don.t|can|sharp|hot|watch|danger|hurt)\b/.test(t)||/!/.test(t); gt='Use a warning word (careful, can, sharp…)'; }
+  else if(state.guide.purpose==='inform'){ gm=/\b(is|has|use|used|made|helps|it)\b/.test(t); gt='Use a fact word (is, has, used to…)'; }
+  li('gmatch').classList.toggle('met', gm); li('gmatch').textContent=gt;
+  li('glen').classList.toggle('met', sentences>=3);
+}
+
+/* helpers */
+function insertWord(taId, word){
+  const ta=document.getElementById(taId);
+  const v=ta.value; const needSpace=v.length && !/\s$/.test(v);
+  ta.value=v+(needSpace?' ':'')+word+' '; ta.focus();
+  ta.dispatchEvent(new Event('input'));
+}
+function saveField(id){
+  if(id==='object'){ state.guide.object=document.getElementById('object').value; save(); updateGuideCheck(); return; }
+}
+document.querySelectorAll('[data-save]').forEach(el=>{ const k=el.dataset.save; if(state.fields[k]!==undefined) el.value=state.fields[k];
+  el.addEventListener('input',()=>{ state.fields[k]=el.value; save(); }); });
+
+/* restore */
+function restore(){
+  Object.keys(state.fc).forEach(id=>{ const card=document.querySelector('.desc-card[data-fc="'+id+'"]'); if(!card) return;
+    const ans=card.dataset.ans, choice=state.fc[id];
+    card.querySelectorAll('.opt-btn').forEach(b=>{ if(b.textContent.charAt(0)===({W:'W',I:'I',E:'E'}[choice])){} });
+  });
+  if(state.guide.object) document.getElementById('object').value=state.guide.object;
+  if(state.guide.purpose) setGuide(state.guide.purpose);
+  if(state.branch.active) setBranch(state.branch.active);
+}
+
+/* email */
+function emailWork(){
+  const g=k=>(state.fields[k]&&state.fields[k].trim()?state.fields[k].trim():'(not written)');
+  let b='THE ALIEN TOUR GUIDE — ENGLISH, WEEK 4\n';
+  b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n';
+  b+='Stage 1 — First Contact (answers: Warn, Inform, Entertain): '+['d1','d2','d3'].map(d=>d+'='+(JOBN[state.fc[d]]||'—')).join(', ')+'\n';
+  b+='Stage 2 — Viewpoints placed: '+Object.keys(state.venn).length+' / 9\n\n';
+  b+='Stage 3 — The pencil\n  Warn version: '+((state.branch.warn||'').trim()||'(not written)')+'\n  Inform version: '+((state.branch.inform||'').trim()||'(not written)')+'\n\n';
+  b+='Stage 4 — The spoon\n  Inform: '+g('spoonI')+'\n  Persuade: '+g('spoonP')+'\n  Entertain: '+g('spoonE')+'\n\n';
+  b+='Stage 5 — Guidebook entry\n  Object: '+(state.guide.object||'(none)')+'\n  Purpose: '+(state.guide.purpose?(state.guide.purpose==='warn'?'Warn':'Inform'):'(none)')+'\n  Writing: '+g('guideText')+'\n\n—\nSent from Base 6';
+  const su=encodeURIComponent('Base 6 · Alien Tour Guide');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank');
+  const n=document.getElementById('notify'); n.textContent='✓ Opening your email — your work is ready to send.'; n.classList.add('show');
+}
+
+/* init */
+renderPool();
+restore();
+goStage(state.stage||1);
+</script>
+
+</body>
+</html>
