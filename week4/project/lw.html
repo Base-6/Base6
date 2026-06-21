@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LW's Canva Project · Base 6</title>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Atkinson Hyperlegible', Arial, sans-serif;
+      background: #fef8f4;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    .lock {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #007291, #005a73);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      z-index: 10;
+    }
+
+    .lock-card {
+      background: #fffaf6;
+      border: 2px solid #fcd8bc;
+      border-radius: 18px;
+      padding: 1.6rem;
+      width: min(430px, 100%);
+      text-align: center;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.18);
+    }
+
+    .icon {
+      font-size: 3rem;
+      margin-bottom: 0.6rem;
+    }
+
+    h1 {
+      font-size: 1.55rem;
+      color: #007291;
+      line-height: 1.25;
+      margin-bottom: 0.4rem;
+    }
+
+    p {
+      font-size: 0.92rem;
+      color: #555;
+      line-height: 1.55;
+      margin-bottom: 1rem;
+    }
+
+    input {
+      width: 100%;
+      max-width: 280px;
+      padding: 0.75rem 1rem;
+      border: 2px solid #d8d0c8;
+      border-radius: 12px;
+      background: #fff;
+      color: #1a1a1a;
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.8rem;
+    }
+
+    input:focus {
+      outline: 3px solid #fcd8bc;
+      border-color: #007291;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      border: none;
+      border-radius: 12px;
+      background: #007291;
+      color: #fff;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.96rem;
+      padding: 0.75rem 1.25rem;
+      text-decoration: none;
+      cursor: pointer;
+      min-height: 44px;
+    }
+
+    .btn:hover {
+      background: #005a73;
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: #007291;
+      border: 2px solid #007291;
+    }
+
+    .err {
+      display: none;
+      background: #fdecea;
+      border: 2px solid #c0392b;
+      color: #7a1f17;
+      border-radius: 10px;
+      padding: 0.65rem 0.8rem;
+      font-size: 0.86rem;
+      font-weight: 700;
+      margin-top: 0.8rem;
+    }
+
+    .err.show {
+      display: block;
+    }
+
+    .page {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .site-header {
+      background: #007291;
+      color: #fff;
+      text-align: center;
+      padding: 1.5rem 1rem 2rem;
+    }
+
+    .site-header .tag {
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.8;
+      margin-bottom: 0.45rem;
+    }
+
+    .site-header h1 {
+      color: #fff;
+    }
+
+    .site-header p {
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 0;
+    }
+
+    .back-bar {
+      background: #005a73;
+      padding: 0.65rem 1rem;
+    }
+
+    .back-link {
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.86rem;
+    }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 4rem;
+    }
+
+    .card {
+      background: #fff;
+      border: 2px solid #b2d8e4;
+      border-radius: 16px;
+      padding: 1.4rem;
+      text-align: center;
+    }
+
+    .note {
+      background: #e3f1f5;
+      border: 2px solid #b2d8e4;
+      border-radius: 12px;
+      color: #005a73;
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.5;
+      padding: 0.8rem;
+      margin: 1rem 0;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.8rem;
+      color: #888;
+      border-top: 1px solid #e0d8d0;
+    }
+  </style>
+</head>
+<body>
+  <div class="lock" id="lockScreen">
+    <div class="lock-card">
+      <div class="icon">🎨</div>
+      <h1>LW's Canva Project</h1>
+      <p>Enter your password to open the Canva project.</p>
+      <input
+        type="password"
+        id="passwordInput"
+        placeholder="Password..."
+        autocomplete="off"
+        onkeydown="if(event.key === 'Enter') unlock()"
+      >
+      <br>
+      <button class="btn" onclick="unlock()">Unlock Canva →</button>
+      <div class="err" id="lockError">That password doesn't match — try again.</div>
+    </div>
+  </div>
+
+  <div class="page" id="mainContent">
+    <header class="site-header">
+      <p class="tag">Week 4 · Project</p>
+      <h1>🎨 LW's Canva Project</h1>
+      <p>Unlocked. The Canva project should open now.</p>
+    </header>
+
+    <div class="back-bar">
+      <a class="back-link" href="index.html">← Back to Project Index</a>
+    </div>
+
+    <main>
+      <section class="card">
+        <h2>Open Canva</h2>
+        <p>The project opens in Canva after the password step.</p>
+        <div class="note">If it does not open automatically, use the button below.</div>
+        <div class="btn-row">
+          <a class="btn" href="https://canva.link/l52j5zmqtt53ti3" target="_blank" rel="noopener">Open Canva project →</a>
+          <a class="btn secondary" href="index.html">Back to projects</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>Base 6 · Chilton Bridge School · Week 4 Project</footer>
+  </div>
+
+  <script>
+    const PASSWORD = 'lw';
+    const CANVA_URL = 'https://canva.link/l52j5zmqtt53ti3';
+
+    function unlock() {
+      const input = document.getElementById('passwordInput');
+      const error = document.getElementById('lockError');
+      const answer = (input.value || '').trim().toLowerCase();
+
+      if (answer === PASSWORD) {
+        error.classList.remove('show');
+        document.getElementById('lockScreen').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        window.open(CANVA_URL, '_blank', 'noopener');
+        setTimeout(function() {
+          window.location.href = CANVA_URL;
+        }, 700);
+      } else {
+        error.classList.add('show');
+        input.select();
+      }
+    }
+  </script>
+</body>
+</html>
