@@ -1,25 +1,757 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>JTK&#x27;s Project Space</title><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet"><style>
-*{box-sizing:border-box;margin:0;padding:0} :root{--accent:#007291;--accent2:#ef7724;--cream:#fef8f4;--dark:#1a1a1a;--muted:#555;--line:#e0d8d0;--green:#2e8b57;--greenlight:#eaf7f0;--gold:#b8860b;--goldlight:#fff8e1;--red:#c0392b;--redlight:#fdecea;--purple:#7b5ea7;--purplelight:#f5eef8;--blue:#1a5276;--bluelight:#eaf4fb;--pink:#c2185b;--pinklight:#fbe4ed}
-body{font-family:'Atkinson Hyperlegible',Arial,sans-serif;background:var(--cream);color:var(--dark);min-height:100vh}.lock{position:fixed;inset:0;background:linear-gradient(135deg,var(--accent),#00495c);display:flex;align-items:center;justify-content:center;text-align:center;padding:1.5rem;z-index:999}.lock-card{max-width:430px;width:100%;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.3);border-radius:18px;padding:1.6rem}.lock .icon{font-size:3.2rem;margin-bottom:.6rem}.lock h1{color:white;font-size:1.75rem;line-height:1.2;margin-bottom:.5rem}.lock p{color:rgba(255,255,255,.86);line-height:1.45;margin-bottom:1.1rem}.lock input{width:100%;max-width:260px;padding:.75rem 1rem;border-radius:12px;border:3px solid rgba(255,255,255,.4);background:rgba(255,255,255,.2);color:white;font:inherit;font-weight:700;text-align:center;margin-bottom:.8rem}.lock input::placeholder{color:rgba(255,255,255,.55)}.lock button,.btn{font:inherit;font-weight:700;border:0;border-radius:10px;padding:.72rem 1.25rem;cursor:pointer}.lock button{background:white;color:var(--accent)}.err{display:none;color:white;background:rgba(0,0,0,.2);border-radius:8px;padding:.45rem .7rem;margin-top:.7rem;font-weight:700}.page{display:none}.site-header{background:linear-gradient(135deg,var(--accent),#00495c);color:white;text-align:center;padding:1.5rem 1rem}.tag{font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.82;margin-bottom:.35rem}.site-header h1{font-size:1.8rem;line-height:1.2}.site-header p{font-size:.92rem;opacity:.88;margin-top:.45rem;line-height:1.5}.back-bar{background:rgba(0,0,0,.18);padding:.6rem 1rem}.back-link{color:white;text-decoration:none;font-weight:700;font-size:.85rem;opacity:.88}.tabs{position:sticky;top:0;z-index:20;background:white;border-bottom:2px solid var(--line);display:flex;overflow-x:auto}.tab{font:inherit;font-weight:700;font-size:.84rem;color:var(--muted);padding:.88rem 1rem;border:0;background:white;border-bottom:3px solid transparent;white-space:nowrap;cursor:pointer}.tab.active{color:var(--accent);border-bottom-color:var(--accent)}main{max-width:940px;margin:0 auto;padding:1.5rem 1rem 4rem}.panel{display:none}.panel.active{display:block}.card{background:white;border:2px solid var(--line);border-radius:16px;padding:1.2rem;margin-bottom:1rem}.card h2{font-size:1.08rem;color:var(--accent);margin-bottom:.8rem}.card h3{font-size:.96rem;color:var(--dark);margin-bottom:.45rem}.body{font-size:.9rem;color:var(--muted);line-height:1.55;margin-bottom:.8rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.75rem}.tile,.chip{border:2px solid var(--line);background:white;border-radius:12px;font:inherit;font-weight:700;cursor:pointer}.tile{padding:.9rem;text-align:left}.tile .big{font-size:1.65rem;display:block;margin-bottom:.35rem}.tile .small{font-size:.78rem;color:var(--muted);display:block;line-height:1.35;margin-top:.25rem}.tile.sel,.chip.sel{border-color:var(--accent);background:#e3f1f5;color:var(--accent)}.chips{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}.chip{padding:.5rem .85rem}.check{display:flex;gap:.65rem;align-items:flex-start;background:#fafaf8;border:2px solid var(--line);border-radius:12px;padding:.75rem .85rem;margin:.5rem 0;font-size:.92rem;font-weight:700;line-height:1.4;cursor:pointer}.check input{width:22px;height:22px;accent-color:var(--green);flex-shrink:0}label{display:block;font-size:.86rem;font-weight:700;margin:.9rem 0 .35rem}textarea,input[type=text],select{width:100%;font:inherit;font-size:.94rem;line-height:1.55;background:#fffaf6;border:2px solid var(--line);border-radius:10px;padding:.75rem;min-height:74px}input[type=text],select{min-height:unset}.hint{font-size:.78rem;color:var(--muted);line-height:1.4;margin-top:.25rem}.btn-row{display:flex;gap:.65rem;flex-wrap:wrap;margin-top:1rem}.btn{background:var(--accent);color:white;text-decoration:none;display:inline-block}.btn.alt{background:var(--accent2)}.btn.ghost{background:white;color:var(--accent);border:2px solid var(--accent)}.note{background:#e3f1f5;border:2px solid #b2d8e4;border-radius:12px;padding:.85rem 1rem;font-size:.88rem;line-height:1.5;color:#00516a;margin:.6rem 0}.success{display:none;background:var(--greenlight);border:2px solid var(--green);color:#1a5c37;border-radius:12px;padding:.85rem 1rem;margin-top:.8rem;font-weight:700}.photo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.8rem}.photo-card{background:#fafaf8;border:2px solid var(--line);border-radius:14px;overflow:hidden}.photo-card img{width:100%;display:block}.photo-card p{font-size:.82rem;line-height:1.45;color:var(--muted);padding:.75rem}.meter{height:12px;background:#e0d8d0;border-radius:999px;overflow:hidden;margin:.4rem 0}.meter span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .2s}.pill{display:inline-flex;border-radius:999px;border:1.5px solid var(--line);padding:.25rem .6rem;font-size:.72rem;font-weight:700;color:var(--muted);background:white;margin:.2rem}.swatches{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}.swatch{width:42px;height:42px;border-radius:10px;border:3px solid var(--line);cursor:pointer}.swatch.sel{border-color:var(--dark);box-shadow:0 0 0 2px white,0 0 0 5px var(--accent)}footer{text-align:center;padding:1.2rem;font-size:.78rem;color:#888;border-top:1px solid var(--line)}@media(max-width:640px){.site-header h1{font-size:1.45rem}.card{padding:1rem}.tab{font-size:.8rem;padding:.75rem .85rem}}
-:root{--accent:#1a5276;}</style></head><body>
-<div class="lock" id="lockScreen"><div class="lock-card"><div class="icon">⚽</div><h1>JTK&#x27;s Project Space</h1><p>Enter your password to open your project space.</p><input type="password" id="passwordInput" placeholder="Password..." autocomplete="off" onkeydown="if(event.key==='Enter')unlock('jtk')"><br><button onclick="unlock('jtk')">Unlock →</button><div class="err" id="lockError">That password doesn't match — try again.</div></div></div>
-<div class="page" id="mainContent"><header class="site-header"><p class="tag">Week 4 · Project</p><h1>⚽ JTK&#x27;s Football Kit Design Studio</h1><p>Research football kits, design a shirt, export it and send the idea to Jay.</p></header><div class="back-bar"><a class="back-link" href="index.html">← Back to Project Index</a></div><nav class="tabs"><button class="tab active" data-tab="brief" onclick="showTab('brief')">⚽ Brief</button><button class="tab " data-tab="research" onclick="showTab('research')">🔎 Research</button><button class="tab " data-tab="design" onclick="showTab('design')">🎨 Design</button><button class="tab " data-tab="details" onclick="showTab('details')">🧩 Details</button><button class="tab " data-tab="export" onclick="showTab('export')">📄 Export</button></nav><main><section class="panel active" id="brief"><div class="card"><h2>⚽ Football kit brief</h2><p class="body">Design a football shirt with a clear identity. Use research, colour, pattern and details.</p><label>Team name</label><input id="teamName" data-save type="text" placeholder="e.g. JTK United" oninput="updateShirt()"/><label>Kit idea in one sentence</label><textarea id="kitIdea" data-save placeholder="This kit is for a team that feels..."></textarea><div class="grid"><div class="tile"><span class="big">🏟️</span>Home kit<span class="small">strong team identity</span></div><div class="tile"><span class="big">🚌</span>Away kit<span class="small">different colours</span></div><div class="tile"><span class="big">✨</span>Special kit<span class="small">bold or unusual design</span></div></div></div></section><section class="panel " id="research"><div class="card"><h2>🔎 Research board</h2><p class="body">Look at real kits or club badges. Add quick notes only.</p><div class="grid"><div class="card"><h3>Colour research</h3><label>Colours I noticed</label><textarea id="researchColours" data-save placeholder="e.g. red + white, black + gold..."></textarea></div><div class="card"><h3>Pattern research</h3><label>Patterns I noticed</label><textarea id="researchPatterns" data-save placeholder="e.g. stripes, hoops, fade, lightning..."></textarea></div><div class="card"><h3>Badge research</h3><label>Badge ideas</label><textarea id="researchBadge" data-save placeholder="e.g. shield, animal, initials, local symbol..."></textarea></div></div><div class="note">Research question: What makes a kit look connected to a team?</div></div></section><section class="panel " id="design"><div class="card"><h2>🎨 Shirt designer</h2><div style="display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:1rem;align-items:start"><div class="card" style="text-align:center"><svg id="shirtSvg" viewBox="0 0 260 300" role="img" aria-label="Football shirt preview" style="width:100%;max-width:320px"><defs><pattern id="stripes" width="34" height="34" patternUnits="userSpaceOnUse"><rect width="17" height="34" id="stripeA" fill="#1a5276"/><rect x="17" width="17" height="34" id="stripeB" fill="#ffffff"/></pattern><pattern id="hoops" width="34" height="34" patternUnits="userSpaceOnUse"><rect width="34" height="17" id="hoopA" fill="#1a5276"/><rect y="17" width="34" height="17" id="hoopB" fill="#ffffff"/></pattern><linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop id="fadeA" offset="0" stop-color="#1a5276"/><stop id="fadeB" offset="1" stop-color="#ffffff"/></linearGradient></defs><path id="shirtShape" d="M75 42 L110 25 L150 25 L185 42 L232 82 L203 121 L184 103 L184 264 L76 264 L76 103 L57 121 L28 82 Z" fill="#1a5276" stroke="#222" stroke-width="4"/><path d="M108 25 Q130 58 152 25" fill="none" stroke="#222" stroke-width="4"/><text id="shirtBadge" x="98" y="100" font-size="22" font-weight="700" text-anchor="middle" fill="#ffffff">JTK</text><text id="shirtSponsor" x="130" y="158" font-size="21" font-weight="700" text-anchor="middle" fill="#ffffff">BASE 6</text><text id="shirtNumber" x="130" y="224" font-size="52" font-weight="700" text-anchor="middle" fill="#ffffff">10</text></svg><p class="hint">Preview updates as you choose.</p></div><div><label>Main colour</label><div class="swatches" id="mainSwatches"></div><label>Second colour</label><div class="swatches" id="secondSwatches"></div><label>Pattern</label><select id="pattern" data-save onchange="updateShirt()"><option value="plain">Plain</option><option value="stripes">Vertical stripes</option><option value="hoops">Hoops</option><option value="fade">Fade</option></select><label>Badge text</label><input id="badgeText" data-save type="text" value="JTK" oninput="updateShirt()"/><label>Sponsor text</label><input id="sponsorText" data-save type="text" value="BASE 6" oninput="updateShirt()"/><label>Shirt number</label><input id="shirtNo" data-save type="text" value="10" oninput="updateShirt()"/></div></div></div></section><section class="panel " id="details"><div class="card"><h2>🧩 Design details</h2><div id="kitDetails" class="grid"><button class="tile"><span class="big">🛡️</span>Shield badge</button><button class="tile"><span class="big">🐺</span>Animal symbol</button><button class="tile"><span class="big">⚡</span>Lightning pattern</button><button class="tile"><span class="big">🌍</span>Place symbol</button><button class="tile"><span class="big">⭐</span>Stars / trophies</button><button class="tile"><span class="big">♻️</span>Eco kit idea</button></div><label>Why these colours?</label><textarea id="colourWhy" data-save placeholder="I chose these colours because..."></textarea><label>What makes it a good football kit?</label><textarea id="goodKit" data-save placeholder="It works because..."></textarea></div></section><section class="panel " id="export"><div class="card"><h2>📄 Export and email</h2><p class="body">Save a PDF design sheet, then email Jay your kit notes.</p><div class="btn-row"><button class="btn alt" onclick="downloadKitPDF()">Download kit PDF</button><button class="btn" onclick="sendJTK()">Email kit notes to Jay</button></div><div class="success" id="successMsg">Email window opened.</div></div></section></main><footer>Base 6 · Chilton Bridge School · Week 4 Project</footer></div>
-<script>
-function unlock(pass){var v=document.getElementById('passwordInput').value.trim().toLowerCase();if(v===pass){document.getElementById('lockScreen').style.display='none';document.getElementById('mainContent').style.display='block';try{localStorage.setItem('last_project_opened',pass)}catch(e){}}else{document.getElementById('lockError').style.display='block';document.getElementById('passwordInput').value='';}}
-function showTab(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');var btn=document.querySelector('[data-tab="'+id+'"]');if(btn)btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
-function saveFields(key){document.querySelectorAll('[data-save]').forEach(el=>{var k=key+'_'+el.id;var old=localStorage.getItem(k);if(old!==null)el.value=old;el.addEventListener('input',()=>localStorage.setItem(k,el.value));});}
-function selectedText(sel){return Array.from(document.querySelectorAll(sel+'.sel')).map(x=>x.textContent.trim()).join(', ')||'(not selected)'}
-function vals(ids){return ids.map(id=>{var el=document.getElementById(id);return (el&&el.value.trim())?el.value.trim():'(not filled in)'});}
-function openMail(subject,body){var url='https://mail.google.com/mail/?view=cm&to=jay.raine@chiltonbridgeschool.co.uk&su='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);window.open(url,'_blank');}
-function wireSelectables(scope){document.querySelectorAll(scope+' .tile,'+scope+' .chip').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('sel')));}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JTK's Football Kit Design Studio · Week 4 Project</title>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent: #1a5276;
+      --accent-dark: #0b2f4d;
+      --accent-light: #eaf4fb;
+      --accent-mid: #aed6f1;
+      --cream: #fef8f4;
+      --dark: #1a1a1a;
+      --muted: #555;
+      --line: #e0d8d0;
+      --green: #2e8b57;
+      --green-light: #eaf7f0;
+      --orange: #ef7724;
+      --orange-light: #fff3eb;
+      --gold: #b8860b;
+      --gold-light: #fff8e1;
+      --red: #c0392b;
+      --red-light: #fdecea;
+      --purple: #7b5ea7;
+      --purple-light: #f5eef8;
+      --pink: #c2185b;
+    }
+    body { font-family: 'Atkinson Hyperlegible', Arial, sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; }
+    #lockScreen { position: fixed; inset: 0; z-index: 999; background: radial-gradient(circle at 25% 20%, #2d77a8, var(--accent-dark)); display: flex; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; }
+    .lock-card { width: 100%; max-width: 430px; border: 2px solid rgba(255,255,255,0.32); border-radius: 18px; padding: 1.6rem; background: rgba(255,255,255,0.12); box-shadow: 0 16px 45px rgba(0,0,0,0.22); }
+    .lock-icon { font-size: 3.2rem; margin-bottom: 0.6rem; }
+    #lockScreen h1 { color: white; font-size: 1.75rem; line-height: 1.2; margin-bottom: 0.5rem; }
+    #lockScreen p { color: rgba(255,255,255,0.88); line-height: 1.45; margin-bottom: 1.1rem; }
+    #passwordInput { width: 100%; max-width: 260px; padding: 0.75rem 1rem; border-radius: 12px; border: 3px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.2); color: white; font: inherit; font-weight: 700; text-align: center; margin-bottom: 0.8rem; }
+    #passwordInput::placeholder { color: rgba(255,255,255,0.55); }
+    button, .btn { font: inherit; font-weight: 700; border: 0; border-radius: 10px; padding: 0.72rem 1.15rem; cursor: pointer; }
+    #unlockBtn { background: white; color: var(--accent); }
+    #lockError { display: none; color: white; background: rgba(0,0,0,0.22); border-radius: 8px; padding: 0.5rem 0.8rem; margin-top: 0.7rem; font-weight: 700; }
+    #mainContent { display: none; }
+    .site-header { background: radial-gradient(circle at 22% 20%, #2d77a8, var(--accent-dark)); color: white; text-align: center; padding: 1.5rem 1rem; }
+    .tag { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.84; margin-bottom: 0.35rem; }
+    .site-header h1 { font-size: 1.85rem; line-height: 1.2; }
+    .site-header p { font-size: 0.92rem; opacity: 0.9; margin: 0.45rem auto 0; line-height: 1.5; max-width: 620px; }
+    .back-bar { background: rgba(0,0,0,0.18); padding: 0.6rem 1rem; }
+    .back-link { color: white; text-decoration: none; font-weight: 700; font-size: 0.85rem; opacity: 0.88; }
+    .tabs { position: sticky; top: 0; z-index: 20; background: white; border-bottom: 2px solid var(--line); display: flex; overflow-x: auto; }
+    .tab { color: var(--muted); background: white; border-bottom: 3px solid transparent; white-space: nowrap; font-size: 0.84rem; padding: 0.88rem 1rem; }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .progress-bar { background: white; border-bottom: 1px solid var(--line); padding: 0.65rem 1rem; }
+    .progress-inner { max-width: 1100px; margin: 0 auto; }
+    .progress-text { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); font-weight: 700; margin-bottom: 0.35rem; gap: 1rem; }
+    .track { height: 10px; background: #e8e0d8; border-radius: 999px; overflow: hidden; }
+    .fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--orange)); border-radius: 999px; transition: width 0.25s; }
+    main { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .layout { display: grid; grid-template-columns: minmax(250px, 390px) 1fr; gap: 1rem; align-items: start; }
+    .preview-sticky { position: sticky; top: 92px; }
+    .card { background: white; border: 2px solid var(--line); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; }
+    .card h2 { font-size: 1.08rem; color: var(--accent); margin-bottom: 0.8rem; }
+    .card h3 { font-size: 0.96rem; color: var(--dark); margin-bottom: 0.45rem; }
+    .body { font-size: 0.9rem; color: var(--muted); line-height: 1.55; margin-bottom: 0.8rem; }
+    .note { background: var(--accent-light); border: 2px solid var(--accent-mid); border-radius: 12px; padding: 0.85rem 1rem; font-size: 0.88rem; line-height: 1.5; color: #123c5c; margin: 0.6rem 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 0.75rem; }
+    .tile, .chip { border: 2px solid var(--line); background: white; border-radius: 12px; font: inherit; font-weight: 700; cursor: pointer; }
+    .tile { padding: 0.9rem; text-align: left; min-height: 96px; }
+    .tile .big { font-size: 1.55rem; display: block; margin-bottom: 0.35rem; }
+    .tile .small { font-size: 0.78rem; color: var(--muted); display: block; line-height: 1.35; margin-top: 0.25rem; }
+    .tile.sel, .chip.sel { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+    .chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0; }
+    .chip { padding: 0.5rem 0.85rem; }
+    label { display: block; font-size: 0.86rem; font-weight: 700; margin: 0.9rem 0 0.35rem; }
+    textarea, input[type=text], select { width: 100%; font: inherit; font-size: 0.94rem; line-height: 1.55; background: #fffaf6; border: 2px solid var(--line); border-radius: 10px; padding: 0.75rem; min-height: 74px; resize: vertical; }
+    input[type=text], select { min-height: unset; }
+    textarea:focus, input:focus, select:focus, button:focus-visible, a:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+    .hint { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 0.25rem; }
+    .swatch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(42px, 1fr)); gap: 0.45rem; margin: 0.45rem 0 0.85rem; }
+    .swatch { height: 42px; border-radius: 10px; border: 3px solid var(--line); cursor: pointer; position: relative; }
+    .swatch.sel { border-color: #111; box-shadow: 0 0 0 2px white, 0 0 0 5px var(--accent); }
+    .kit-card { background: linear-gradient(180deg, white 0%, #f6fbff 100%); border: 2px solid var(--accent-mid); border-radius: 18px; padding: 1rem; text-align: center; }
+    #kitSvg { width: 100%; max-width: 380px; height: auto; display: block; margin: 0 auto; }
+    .mini-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; margin-top: 0.75rem; }
+    .mini-card { border: 2px solid var(--line); border-radius: 12px; padding: 0.7rem; background: white; font-size: 0.78rem; font-weight: 700; color: var(--muted); }
+    .research-links { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.6rem 0 1rem; }
+    .research-links a { text-decoration: none; background: white; color: var(--accent); border: 2px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.8rem; font-size: 0.82rem; font-weight: 700; }
+    .inspo-card { border: 2px solid var(--line); border-radius: 14px; padding: 0.9rem; background: #fffaf6; }
+    .inspo-top { display: flex; gap: 0.55rem; align-items: center; margin-bottom: 0.55rem; }
+    .inspo-icon { font-size: 1.45rem; }
+    .check { display: flex; gap: 0.65rem; align-items: flex-start; background: #fafaf8; border: 2px solid var(--line); border-radius: 12px; padding: 0.75rem 0.85rem; margin: 0.5rem 0; font-size: 0.92rem; font-weight: 700; line-height: 1.4; cursor: pointer; }
+    .check input { width: 22px; height: 22px; accent-color: var(--green); flex-shrink: 0; }
+    .btn-row { display: flex; gap: 0.65rem; flex-wrap: wrap; margin-top: 1rem; }
+    .btn { background: var(--accent); color: white; text-decoration: none; display: inline-block; }
+    .btn.alt { background: var(--orange); }
+    .btn.ghost { background: white; color: var(--accent); border: 2px solid var(--accent); }
+    .success { display: none; background: var(--green-light); border: 2px solid var(--green); color: #1a5c37; border-radius: 12px; padding: 0.85rem 1rem; margin-top: 0.8rem; font-weight: 700; }
+    .badge-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.55rem; }
+    .small-preview { background: white; border: 2px solid var(--line); border-radius: 14px; padding: 0.8rem; text-align: center; }
+    .print-sheet { display: none; }
+    footer { text-align: center; padding: 1.2rem; font-size: 0.78rem; color: #888; border-top: 1px solid var(--line); }
+    @media (max-width: 850px) { .layout { grid-template-columns: 1fr; } .preview-sticky { position: static; } }
+    @media (max-width: 640px) { .site-header h1 { font-size: 1.45rem; } .card { padding: 1rem; } .tab { font-size: 0.8rem; padding: 0.75rem 0.85rem; } }
+    @media print {
+      body { background: white; }
+      #lockScreen, .site-header, .back-bar, .tabs, .progress-bar, main, footer { display: none !important; }
+      .print-sheet { display: block; padding: 22mm 18mm; font-family: 'Atkinson Hyperlegible', Arial, sans-serif; color: #111; }
+      .print-title { font-size: 24pt; font-weight: 700; margin-bottom: 4mm; }
+      .print-sub { font-size: 11pt; color: #555; margin-bottom: 7mm; }
+      .print-grid { display: grid; grid-template-columns: 45% 55%; gap: 8mm; align-items: start; }
+      .print-box { border: 2px solid #ddd; border-radius: 8px; padding: 5mm; margin-bottom: 4mm; }
+      .print-box h2 { font-size: 13pt; margin-bottom: 3mm; color: #1a5276; }
+      .print-box p { font-size: 10.5pt; line-height: 1.45; margin: 0 0 2mm; }
+      #printSvgWrap svg { width: 100%; height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div id="lockScreen">
+    <div class="lock-card">
+      <div class="lock-icon">⚽</div>
+      <h1>JTK's Project Space</h1>
+      <p>Enter your password to open your kit studio.</p>
+      <input type="password" id="passwordInput" placeholder="Password..." autocomplete="off" onkeydown="if(event.key==='Enter') unlock()">
+      <br>
+      <button id="unlockBtn" onclick="unlock()">Unlock →</button>
+      <div id="lockError">That password doesn't match — try again.</div>
+    </div>
+  </div>
 
-saveFields('jtk');
-const COLOURS=['#1a5276','#ffffff','#c0392b','#ef7724','#2e8b57','#111111','#f4c542','#7b5ea7','#c2185b','#40a9c9'];let mainColour=localStorage.getItem('jtk_mainColour')||'#1a5276';let secondColour=localStorage.getItem('jtk_secondColour')||'#ffffff';function makeSwatches(){[['mainSwatches','mainColour'],['secondSwatches','secondColour']].forEach(([id,target])=>{const box=document.getElementById(id);if(!box)return;COLOURS.forEach(c=>{const b=document.createElement('button');b.className='swatch';b.style.background=c;b.title=c;b.onclick=()=>{if(target==='mainColour'){mainColour=c;localStorage.setItem('jtk_mainColour',c)}else{secondColour=c;localStorage.setItem('jtk_secondColour',c)}updateShirt();};box.appendChild(b);});});}
-function updateShirt(){document.querySelectorAll('#mainSwatches .swatch').forEach(b=>b.classList.toggle('sel',b.style.backgroundColor===hexToRgb(mainColour)));document.querySelectorAll('#secondSwatches .swatch').forEach(b=>b.classList.toggle('sel',b.style.backgroundColor===hexToRgb(secondColour)));['stripeA','hoopA','fadeA'].forEach(id=>document.getElementById(id).setAttribute(id==='fadeA'?'stop-color':'fill',mainColour));['stripeB','hoopB','fadeB'].forEach(id=>document.getElementById(id).setAttribute(id==='fadeB'?'stop-color':'fill',secondColour));const pat=document.getElementById('pattern').value;document.getElementById('shirtShape').setAttribute('fill',pat==='plain'?mainColour:'url(#'+pat+')');document.getElementById('shirtBadge').textContent=(document.getElementById('badgeText').value||'JTK').slice(0,5);document.getElementById('shirtSponsor').textContent=(document.getElementById('sponsorText').value||'BASE 6').slice(0,14);document.getElementById('shirtNumber').textContent=(document.getElementById('shirtNo').value||'10').slice(0,3);document.querySelectorAll('#shirtBadge,#shirtSponsor,#shirtNumber').forEach(t=>t.setAttribute('fill',bestText(mainColour)));}
-function hexToRgb(hex){const n=parseInt(hex.slice(1),16);return 'rgb('+((n>>16)&255)+', '+((n>>8)&255)+', '+(n&255)+')'}function bestText(hex){const n=parseInt(hex.slice(1),16),r=(n>>16)&255,g=(n>>8)&255,b=n&255;return (r*299+g*587+b*114)/1000>145?'#111111':'#ffffff'}
-function pdfEscape(s){return String(s||'').replace(/[\\()]/g,'\\$&').replace(/[\r\n]+/g,'  ').slice(0,95)}function rgbNums(hex){const n=parseInt(hex.slice(1),16);return [((n>>16)&255)/255,((n>>8)&255)/255,(n&255)/255].map(x=>x.toFixed(3)).join(' ')}
-function makePDF(textLines){let objects=[];function add(s){objects.push(s);return objects.length}let content='BT /F1 22 Tf 50 790 Td (JTK Football Kit Design) Tj ET\n';content+='BT /F1 12 Tf 50 762 Td (Team: '+pdfEscape(document.getElementById('teamName').value||'JTK United')+') Tj ET\n';content+=rgbNums(mainColour)+' rg 190 555 215 135 re f\n';content+='0 0 0 RG 190 555 215 135 re S\n';content+=rgbNums(secondColour)+' rg 205 570 185 35 re f\n';content+='BT /F1 28 Tf 270 622 Td ('+pdfEscape(document.getElementById('badgeText').value||'JTK')+') Tj ET\n';content+='BT /F1 18 Tf 250 600 Td ('+pdfEscape(document.getElementById('sponsorText').value||'BASE 6')+') Tj ET\n';content+='BT /F1 42 Tf 285 562 Td ('+pdfEscape(document.getElementById('shirtNo').value||'10')+') Tj ET\n';let y=520;textLines.forEach(line=>{content+='BT /F1 11 Tf 50 '+y+' Td ('+pdfEscape(line)+') Tj ET\n';y-=18;});let font=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');let stream=add('<< /Length '+content.length+' >>\nstream\n'+content+'endstream');let page=add('<< /Type /Page /Parent 4 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 '+font+' 0 R >> >> /Contents '+stream+' 0 R >>');let pages=add('<< /Type /Pages /Kids ['+page+' 0 R] /Count 1 >>');let catalog=add('<< /Type /Catalog /Pages '+pages+' 0 R >>');let pdf='%PDF-1.4\n';let offsets=[0];objects.forEach((obj,i)=>{offsets.push(pdf.length);pdf+=(i+1)+' 0 obj\n'+obj+'\nendobj\n';});let xref=pdf.length;pdf+='xref\n0 '+(objects.length+1)+'\n0000000000 65535 f \n';for(let i=1;i<offsets.length;i++)pdf+=String(offsets[i]).padStart(10,'0')+' 00000 n \n';pdf+='trailer << /Root '+catalog+' 0 R /Size '+(objects.length+1)+' >>\nstartxref\n'+xref+'\n%%EOF';return pdf;}
-function downloadKitPDF(){const lines=['Main colour: '+mainColour,'Second colour: '+secondColour,'Pattern: '+document.getElementById('pattern').value,'Idea: '+document.getElementById('kitIdea').value,'Research colours: '+document.getElementById('researchColours').value,'Research patterns: '+document.getElementById('researchPatterns').value,'Badge ideas: '+document.getElementById('researchBadge').value,'Design details: '+selectedText('#kitDetails .tile'),'Why these colours: '+document.getElementById('colourWhy').value,'Why it works: '+document.getElementById('goodKit').value];const blob=new Blob([makePDF(lines)],{type:'application/pdf'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='JTK-football-kit-design.pdf';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
-function sendJTK(){const body='JTK — Football Kit Design — Week 4\n\nTeam: '+(document.getElementById('teamName').value||'')+'\nMain colour: '+mainColour+'\nSecond colour: '+secondColour+'\nPattern: '+document.getElementById('pattern').value+'\nBadge: '+document.getElementById('badgeText').value+'\nSponsor: '+document.getElementById('sponsorText').value+'\nNumber: '+document.getElementById('shirtNo').value+'\n\nKit idea: '+document.getElementById('kitIdea').value+'\nResearch: '+document.getElementById('researchColours').value+' / '+document.getElementById('researchPatterns').value+' / '+document.getElementById('researchBadge').value+'\nDetails: '+selectedText('#kitDetails .tile')+'\nWhy colours: '+document.getElementById('colourWhy').value+'\nWhy it works: '+document.getElementById('goodKit').value+'\n\nPDF note: I used the Download kit PDF button on the project page.';openMail('JTK — Football Kit Design — Week 4',body);document.getElementById('successMsg').style.display='block';}
-makeSwatches();wireSelectables('main');setTimeout(updateShirt,50);
-</script></body></html>
+  <div id="mainContent">
+    <header class="site-header">
+      <p class="tag">Week 4 · Project</p>
+      <h1>⚽ JTK's Football Kit Design Studio</h1>
+      <p>Research a kit style, build a shirt design, explain the choices, then save a design sheet.</p>
+    </header>
+
+    <div class="back-bar"><a class="back-link" href="index.html">← Back to Project Index</a></div>
+
+    <nav class="tabs" aria-label="Project sections">
+      <button class="tab active" data-tab="brief" onclick="showTab('brief')">🎯 Brief</button>
+      <button class="tab" data-tab="research" onclick="showTab('research')">🔎 Research</button>
+      <button class="tab" data-tab="studio" onclick="showTab('studio')">🎨 Shirt Studio</button>
+      <button class="tab" data-tab="badge" onclick="showTab('badge')">🛡️ Badge</button>
+      <button class="tab" data-tab="review" onclick="showTab('review')">✅ Review</button>
+      <button class="tab" data-tab="export" onclick="showTab('export')">📄 Export</button>
+    </nav>
+
+    <div class="progress-bar">
+      <div class="progress-inner">
+        <div class="progress-text"><span>Design progress</span><span id="progressText">0 choices made</span></div>
+        <div class="track"><div class="fill" id="progressFill"></div></div>
+      </div>
+    </div>
+
+    <main>
+      <section class="panel active" id="brief">
+        <div class="layout">
+          <div class="preview-sticky">
+            <div class="kit-card">
+              <div id="livePreviewA"></div>
+              <div class="mini-row">
+                <div class="mini-card" id="miniIdentity">Identity: not chosen</div>
+                <div class="mini-card" id="miniPattern">Pattern: plain</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <h2>🎯 Kit design brief</h2>
+              <p class="body">Make a football kit with a clear team identity.</p>
+              <label>Team name</label>
+              <input id="teamName" data-save type="text" placeholder="e.g. JTK United" oninput="updateKit()">
+              <label>Kit type</label>
+              <div class="chips" id="kitType">
+                <button class="chip">🏠 Home</button>
+                <button class="chip">🚌 Away</button>
+                <button class="chip">✨ Third kit</button>
+                <button class="chip">🏋️ Training</button>
+              </div>
+              <label>Team personality</label>
+              <div class="grid" id="identityGrid">
+                <button class="tile"><span class="big">⚡</span>Fast<span class="small">sharp, bright, energetic</span></button>
+                <button class="tile"><span class="big">🛡️</span>Strong<span class="small">bold, solid, serious</span></button>
+                <button class="tile"><span class="big">🌊</span>Calm<span class="small">cool, clean, balanced</span></button>
+                <button class="tile"><span class="big">🔥</span>Fearless<span class="small">loud, brave, dramatic</span></button>
+              </div>
+              <label>One-sentence kit idea</label>
+              <textarea id="kitIdea" data-save placeholder="This kit is for a team that feels..."></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="research">
+        <div class="card">
+          <h2>🔎 Research board</h2>
+          <p class="body">Look for ideas. Save only the best bits.</p>
+          <div class="research-links">
+            <a target="_blank" rel="noopener" href="https://www.google.com/search?tbm=isch&q=football+kit+design+stripes">Striped kits</a>
+            <a target="_blank" rel="noopener" href="https://www.google.com/search?tbm=isch&q=football+kit+badge+design">Badge ideas</a>
+            <a target="_blank" rel="noopener" href="https://www.google.com/search?tbm=isch&q=football+kit+colour+palette">Colour palettes</a>
+            <a target="_blank" rel="noopener" href="https://www.google.com/search?tbm=isch&q=football+shirt+pattern+design">Pattern ideas</a>
+          </div>
+          <div class="grid">
+            <div class="inspo-card">
+              <div class="inspo-top"><span class="inspo-icon">🎨</span><strong>Colours</strong></div>
+              <textarea id="researchColours" data-save placeholder="Colours I noticed..."></textarea>
+            </div>
+            <div class="inspo-card">
+              <div class="inspo-top"><span class="inspo-icon">〰️</span><strong>Patterns</strong></div>
+              <textarea id="researchPatterns" data-save placeholder="Patterns I noticed..."></textarea>
+            </div>
+            <div class="inspo-card">
+              <div class="inspo-top"><span class="inspo-icon">🛡️</span><strong>Badges</strong></div>
+              <textarea id="researchBadges" data-save placeholder="Badge ideas..."></textarea>
+            </div>
+            <div class="inspo-card">
+              <div class="inspo-top"><span class="inspo-icon">👕</span><strong>Details</strong></div>
+              <textarea id="researchDetails" data-save placeholder="Collar, cuffs, sponsor, number..."></textarea>
+            </div>
+          </div>
+          <div class="note"><strong>Research question:</strong> what makes a kit look like it belongs to one team?</div>
+        </div>
+      </section>
+
+      <section class="panel" id="studio">
+        <div class="layout">
+          <div class="preview-sticky">
+            <div class="kit-card">
+              <div id="livePreviewB"></div>
+              <p class="hint">Preview updates as you choose.</p>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <h2>🎨 Shirt Studio</h2>
+              <label>Main colour</label>
+              <div class="swatch-grid" id="mainSwatches"></div>
+              <label>Second colour</label>
+              <div class="swatch-grid" id="secondSwatches"></div>
+              <label>Trim colour</label>
+              <div class="swatch-grid" id="trimSwatches"></div>
+              <label>Pattern</label>
+              <div class="chips" id="patternChips">
+                <button class="chip" data-pattern="plain">Plain</button>
+                <button class="chip" data-pattern="stripes">Stripes</button>
+                <button class="chip" data-pattern="hoops">Hoops</button>
+                <button class="chip" data-pattern="halves">Halves</button>
+                <button class="chip" data-pattern="sash">Sash</button>
+                <button class="chip" data-pattern="chevrons">Chevrons</button>
+                <button class="chip" data-pattern="pinstripes">Pinstripes</button>
+                <button class="chip" data-pattern="lightning">Lightning</button>
+              </div>
+              <label>Collar style</label>
+              <div class="chips" id="collarChips">
+                <button class="chip" data-collar="crew">Crew</button>
+                <button class="chip" data-collar="vneck">V-neck</button>
+                <button class="chip" data-collar="polo">Polo</button>
+              </div>
+              <label>Shirt number</label>
+              <input id="shirtNo" data-save type="text" value="10" maxlength="3" oninput="updateKit()">
+              <label>Sponsor / front text</label>
+              <input id="sponsorText" data-save type="text" value="BASE 6" maxlength="16" oninput="updateKit()">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="badge">
+        <div class="layout">
+          <div class="preview-sticky">
+            <div class="small-preview">
+              <svg id="badgePreview" viewBox="0 0 220 220" role="img" aria-label="Badge preview" style="width:100%;max-width:260px"></svg>
+              <p class="hint">Badge preview</p>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <h2>🛡️ Badge builder</h2>
+              <label>Badge text</label>
+              <input id="badgeText" data-save type="text" value="JTK" maxlength="5" oninput="updateKit()">
+              <label>Badge shape</label>
+              <div class="chips" id="badgeShapeChips">
+                <button class="chip" data-shape="shield">Shield</button>
+                <button class="chip" data-shape="circle">Circle</button>
+                <button class="chip" data-shape="diamond">Diamond</button>
+              </div>
+              <label>Badge symbol</label>
+              <div class="badge-options" id="symbolChips">
+                <button class="chip" data-symbol="⚽">⚽ Ball</button>
+                <button class="chip" data-symbol="⭐">⭐ Star</button>
+                <button class="chip" data-symbol="⚡">⚡ Bolt</button>
+                <button class="chip" data-symbol="🦁">🦁 Lion</button>
+                <button class="chip" data-symbol="👑">👑 Crown</button>
+                <button class="chip" data-symbol="🌊">🌊 Wave</button>
+              </div>
+              <label>Motto or tiny detail</label>
+              <input id="mottoText" data-save type="text" placeholder="e.g. Play Bold" maxlength="20" oninput="updateKit()">
+            </div>
+
+            <div class="card">
+              <h2>🧵 Kit details</h2>
+              <div class="grid" id="detailGrid">
+                <button class="tile"><span class="big">♻️</span>Recycled fabric<span class="small">eco design idea</span></button>
+                <button class="tile"><span class="big">💨</span>Breathable<span class="small">good for sport</span></button>
+                <button class="tile"><span class="big">🧦</span>Matching socks<span class="small">complete kit look</span></button>
+                <button class="tile"><span class="big">👕</span>Player fit<span class="small">comfortable movement</span></button>
+              </div>
+              <label>Why these colours?</label>
+              <textarea id="colourWhy" data-save placeholder="I chose these colours because..."></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="review">
+        <div class="card">
+          <h2>✅ Designer review</h2>
+          <p class="body">Check the design before exporting.</p>
+          <label class="check"><input type="checkbox" data-check="identity"> The kit has a clear team identity.</label>
+          <label class="check"><input type="checkbox" data-check="colours"> The colours work together.</label>
+          <label class="check"><input type="checkbox" data-check="pattern"> The pattern is clear from far away.</label>
+          <label class="check"><input type="checkbox" data-check="badge"> The badge links to the team idea.</label>
+          <label class="check"><input type="checkbox" data-check="sport"> The details make sense for football.</label>
+          <label>What makes this a strong kit?</label>
+          <textarea id="goodKit" data-save placeholder="It works because..."></textarea>
+          <label>One refinement I could make</label>
+          <textarea id="refinement" data-save placeholder="I could improve..."></textarea>
+        </div>
+      </section>
+
+      <section class="panel" id="export">
+        <div class="layout">
+          <div class="preview-sticky">
+            <div class="kit-card">
+              <div id="livePreviewC"></div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <h2>📄 Export and send</h2>
+              <p class="body">Save the design sheet, then email the notes to Jay.</p>
+              <div class="btn-row">
+                <button class="btn alt" onclick="exportPDF()">Print / save PDF sheet</button>
+                <button class="btn ghost" onclick="downloadSVG()">Download shirt SVG</button>
+                <button class="btn" onclick="sendJTK()">Email kit notes to Jay</button>
+              </div>
+              <div class="success" id="successMsg">Email window opened.</div>
+              <div class="note">Tip: choose “Save as PDF” in the print window.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>Base 6 · Chilton Bridge School · Week 4 Project</footer>
+  </div>
+
+  <div class="print-sheet" id="printSheet">
+    <div class="print-title">JTK Football Kit Design</div>
+    <div class="print-sub">Week 4 project design sheet</div>
+    <div class="print-grid">
+      <div class="print-box" id="printSvgWrap"></div>
+      <div>
+        <div class="print-box"><h2>Brief</h2><p id="printBrief"></p></div>
+        <div class="print-box"><h2>Research</h2><p id="printResearch"></p></div>
+        <div class="print-box"><h2>Design choices</h2><p id="printChoices"></p></div>
+        <div class="print-box"><h2>Review</h2><p id="printReview"></p></div>
+      </div>
+    </div>
+  </div>
+
+  <template id="kitTemplate">
+    <svg id="kitSvg" viewBox="0 0 360 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Football shirt preview">
+      <defs>
+        <clipPath id="shirtClip">
+          <path d="M83 88 L128 54 L153 76 L207 76 L232 54 L277 88 L252 151 L228 142 L228 350 L132 350 L132 142 L108 151 Z"/>
+        </clipPath>
+        <linearGradient id="shirtGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop id="gradA" offset="0" stop-color="#1a5276"/>
+          <stop id="gradB" offset="1" stop-color="#ffffff"/>
+        </linearGradient>
+        <pattern id="pinstripePattern" width="18" height="18" patternUnits="userSpaceOnUse">
+          <rect width="18" height="18" fill="transparent"/>
+          <rect x="8" width="2" height="18" fill="var(--secondColour, #ffffff)" opacity="0.75"/>
+        </pattern>
+      </defs>
+      <rect width="360" height="430" rx="24" fill="#f6fbff"/>
+      <ellipse cx="180" cy="372" rx="92" ry="12" fill="#d8e7ef" opacity="0.8"/>
+      <g id="shirtGroup">
+        <path id="shirtBase" d="M83 88 L128 54 L153 76 L207 76 L232 54 L277 88 L252 151 L228 142 L228 350 L132 350 L132 142 L108 151 Z" fill="#1a5276" stroke="#222" stroke-width="4" stroke-linejoin="round"/>
+        <g id="patternLayer" clip-path="url(#shirtClip)"></g>
+        <path id="leftSleeve" d="M83 88 L128 54 L139 88 L108 151 Z" fill="#1a5276" opacity="0.92" stroke="#222" stroke-width="3"/>
+        <path id="rightSleeve" d="M232 54 L277 88 L252 151 L221 88 Z" fill="#1a5276" opacity="0.92" stroke="#222" stroke-width="3"/>
+        <path id="sideLeft" d="M132 144 L150 150 L150 350 L132 350 Z" fill="#ffffff" opacity="0.22"/>
+        <path id="sideRight" d="M228 144 L210 150 L210 350 L228 350 Z" fill="#ffffff" opacity="0.22"/>
+        <path id="collarCrew" d="M153 76 Q180 96 207 76 L198 104 Q180 118 162 104 Z" fill="#ffffff" stroke="#222" stroke-width="3"/>
+        <path id="collarV" d="M153 76 L180 117 L207 76 L197 101 L180 132 L163 101 Z" fill="#ffffff" stroke="#222" stroke-width="3" style="display:none"/>
+        <path id="collarPolo" d="M153 76 L170 112 L180 96 L190 112 L207 76 L198 108 L180 128 L162 108 Z" fill="#ffffff" stroke="#222" stroke-width="3" style="display:none"/>
+        <rect id="cuffLeft" x="93" y="137" width="31" height="10" rx="4" fill="#ffffff" transform="rotate(-21 108 142)"/>
+        <rect id="cuffRight" x="237" y="137" width="31" height="10" rx="4" fill="#ffffff" transform="rotate(21 252 142)"/>
+        <g id="badgeOnShirt" transform="translate(145 132) scale(0.34)"></g>
+        <text id="sponsorTextSvg" x="180" y="213" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="700">BASE 6</text>
+        <text id="numberTextSvg" x="180" y="282" text-anchor="middle" fill="#ffffff" font-size="62" font-weight="700">10</text>
+      </g>
+    </svg>
+  </template>
+
+  <script>
+    const STORE_KEY = 'base6_w4_project_jtk_refined';
+    const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+    const colours = ['#1a5276', '#ffffff', '#111111', '#c0392b', '#ef7724', '#f4c542', '#2e8b57', '#40a9c9', '#7b5ea7', '#c2185b', '#8c6239', '#d9d2cb'];
+    const state = loadState();
+
+    function unlock() {
+      const value = document.getElementById('passwordInput').value.trim().toLowerCase();
+      if (value === 'jtk') {
+        document.getElementById('lockScreen').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        updateKit();
+      } else {
+        document.getElementById('lockError').style.display = 'block';
+        document.getElementById('passwordInput').value = '';
+      }
+    }
+
+    function showTab(id) {
+      document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      const btn = document.querySelector('[data-tab="' + id + '"]');
+      if (btn) btn.classList.add('active');
+      updateKit();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function loadState() {
+      try {
+        return Object.assign({
+          fields: {}, checks: {}, choices: {},
+          main: '#1a5276', second: '#ffffff', trim: '#ef7724',
+          pattern: 'plain', collar: 'crew', badgeShape: 'shield', symbol: '⚽'
+        }, JSON.parse(localStorage.getItem(STORE_KEY)) || {});
+      } catch (e) {
+        return { fields: {}, checks: {}, choices: {}, main: '#1a5276', second: '#ffffff', trim: '#ef7724', pattern: 'plain', collar: 'crew', badgeShape: 'shield', symbol: '⚽' };
+      }
+    }
+
+    function saveState() {
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+      updateProgress();
+    }
+
+    function installPreview(targetId) {
+      const target = document.getElementById(targetId);
+      if (!target) return;
+      target.innerHTML = '';
+      target.appendChild(document.getElementById('kitTemplate').content.firstElementChild.cloneNode(true));
+    }
+
+    function installPreviews() {
+      ['livePreviewA', 'livePreviewB', 'livePreviewC'].forEach(installPreview);
+    }
+
+    function makeSwatches(boxId, key) {
+      const box = document.getElementById(boxId);
+      if (!box) return;
+      box.innerHTML = '';
+      colours.forEach(colour => {
+        const button = document.createElement('button');
+        button.className = 'swatch';
+        button.type = 'button';
+        button.title = colour;
+        button.style.background = colour;
+        if (colour === '#ffffff') button.style.boxShadow = 'inset 0 0 0 1px #ccc';
+        button.addEventListener('click', () => {
+          state[key] = colour;
+          saveState();
+          updateKit();
+        });
+        box.appendChild(button);
+      });
+    }
+
+    function wireFields() {
+      document.querySelectorAll('[data-save]').forEach(el => {
+        if (state.fields[el.id] !== undefined) el.value = state.fields[el.id];
+        el.addEventListener('input', () => {
+          state.fields[el.id] = el.value;
+          saveState();
+        });
+      });
+
+      document.querySelectorAll('.tile').forEach(tile => {
+        const group = tile.parentElement.id || 'tiles';
+        const text = tile.textContent.trim();
+        if (!state.choices[group]) state.choices[group] = [];
+        tile.classList.toggle('sel', state.choices[group].includes(text));
+        tile.addEventListener('click', () => {
+          tile.classList.toggle('sel');
+          if (!state.choices[group]) state.choices[group] = [];
+          if (tile.classList.contains('sel') && !state.choices[group].includes(text)) state.choices[group].push(text);
+          if (!tile.classList.contains('sel')) state.choices[group] = state.choices[group].filter(item => item !== text);
+          saveState();
+          updateKit();
+        });
+      });
+
+      document.querySelectorAll('#kitType .chip').forEach(chip => multiChip(chip, 'kitType'));
+      document.querySelectorAll('#detailGrid .tile').forEach(tile => {});
+      document.querySelectorAll('#patternChips .chip').forEach(chip => singleChip(chip, 'pattern', chip.dataset.pattern));
+      document.querySelectorAll('#collarChips .chip').forEach(chip => singleChip(chip, 'collar', chip.dataset.collar));
+      document.querySelectorAll('#badgeShapeChips .chip').forEach(chip => singleChip(chip, 'badgeShape', chip.dataset.shape));
+      document.querySelectorAll('#symbolChips .chip').forEach(chip => singleChip(chip, 'symbol', chip.dataset.symbol));
+
+      document.querySelectorAll('[data-check]').forEach(cb => {
+        cb.checked = !!state.checks[cb.dataset.check];
+        cb.addEventListener('change', () => {
+          state.checks[cb.dataset.check] = cb.checked;
+          saveState();
+        });
+      });
+    }
+
+    function multiChip(chip, group) {
+      const text = chip.textContent.trim();
+      if (!state.choices[group]) state.choices[group] = [];
+      chip.classList.toggle('sel', state.choices[group].includes(text));
+      chip.addEventListener('click', () => {
+        chip.classList.toggle('sel');
+        if (chip.classList.contains('sel') && !state.choices[group].includes(text)) state.choices[group].push(text);
+        if (!chip.classList.contains('sel')) state.choices[group] = state.choices[group].filter(item => item !== text);
+        saveState();
+        updateKit();
+      });
+    }
+
+    function singleChip(chip, key, value) {
+      chip.classList.toggle('sel', state[key] === value);
+      chip.addEventListener('click', () => {
+        state[key] = value;
+        saveState();
+        updateKit();
+      });
+    }
+
+    function textColour(hex) {
+      const n = parseInt(hex.slice(1), 16);
+      const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+      return (r * 299 + g * 587 + b * 114) / 1000 > 145 ? '#111111' : '#ffffff';
+    }
+
+    function setAttrAll(selector, attr, value) {
+      document.querySelectorAll(selector).forEach(el => el.setAttribute(attr, value));
+    }
+
+    function updatePattern(svg) {
+      const layer = svg.querySelector('#patternLayer');
+      layer.innerHTML = '';
+      const main = state.main, second = state.second, trim = state.trim;
+      const add = markup => { layer.insertAdjacentHTML('beforeend', markup); };
+      if (state.pattern === 'stripes') {
+        for (let x = 75; x < 280; x += 32) add(`<rect x="${x}" y="54" width="16" height="300" fill="${second}" opacity="0.95"/>`);
+      }
+      if (state.pattern === 'hoops') {
+        for (let y = 88; y < 350; y += 42) add(`<rect x="82" y="${y}" width="196" height="21" fill="${second}" opacity="0.95"/>`);
+      }
+      if (state.pattern === 'halves') {
+        add(`<rect x="180" y="54" width="100" height="300" fill="${second}" opacity="0.95"/>`);
+      }
+      if (state.pattern === 'sash') {
+        add(`<polygon points="98,60 132,54 262,350 218,350" fill="${second}" opacity="0.95"/>`);
+        add(`<polygon points="116,60 130,54 260,350 242,350" fill="${trim}" opacity="0.8"/>`);
+      }
+      if (state.pattern === 'chevrons') {
+        for (let y = 128; y < 310; y += 54) add(`<polyline points="105,${y} 180,${y+30} 255,${y}" fill="none" stroke="${second}" stroke-width="18" opacity="0.9"/>`);
+      }
+      if (state.pattern === 'pinstripes') {
+        for (let x = 94; x < 265; x += 18) add(`<rect x="${x}" y="70" width="3" height="280" fill="${second}" opacity="0.75"/>`);
+      }
+      if (state.pattern === 'lightning') {
+        add(`<polygon points="195,72 137,210 177,210 147,342 232,178 190,178" fill="${second}" opacity="0.9"/>`);
+        add(`<polyline points="195,72 137,210 177,210 147,342" fill="none" stroke="${trim}" stroke-width="8" opacity="0.9"/>`);
+      }
+    }
+
+    function badgeMarkup(scaleForShirt) {
+      const shape = state.badgeShape;
+      const text = (document.getElementById('badgeText').value || 'JTK').slice(0, 5).toUpperCase();
+      const motto = (document.getElementById('mottoText').value || '').slice(0, 18);
+      const symbol = state.symbol || '⚽';
+      const stroke = '#111111';
+      let shapeMarkup = '';
+      if (shape === 'circle') shapeMarkup = `<circle cx="110" cy="110" r="86" fill="${state.trim}" stroke="${stroke}" stroke-width="8"/><circle cx="110" cy="110" r="68" fill="${state.second}" stroke="${stroke}" stroke-width="4"/>`;
+      if (shape === 'diamond') shapeMarkup = `<polygon points="110,18 202,110 110,202 18,110" fill="${state.trim}" stroke="${stroke}" stroke-width="8"/><polygon points="110,44 176,110 110,176 44,110" fill="${state.second}" stroke="${stroke}" stroke-width="4"/>`;
+      if (shape === 'shield') shapeMarkup = `<path d="M38 32 H182 V104 C182 152 151 184 110 202 C69 184 38 152 38 104 Z" fill="${state.trim}" stroke="${stroke}" stroke-width="8"/><path d="M60 56 H160 V108 C160 140 139 162 110 176 C81 162 60 140 60 108 Z" fill="${state.second}" stroke="${stroke}" stroke-width="4"/>`;
+      const symbolSize = scaleForShirt ? 46 : 50;
+      return `${shapeMarkup}<text x="110" y="104" text-anchor="middle" font-size="${symbolSize}" dominant-baseline="middle">${symbol}</text><text x="110" y="146" text-anchor="middle" font-size="32" font-weight="700" fill="${textColour(state.second)}">${escapeHtml(text)}</text><text x="110" y="170" text-anchor="middle" font-size="14" font-weight="700" fill="${textColour(state.second)}">${escapeHtml(motto)}</text>`;
+    }
+
+    function updateKit() {
+      document.querySelectorAll('.swatch').forEach(button => {
+        const bg = rgbToHex(getComputedStyle(button).backgroundColor);
+        const parentId = button.parentElement.id;
+        const selected = (parentId === 'mainSwatches' && bg === state.main) || (parentId === 'secondSwatches' && bg === state.second) || (parentId === 'trimSwatches' && bg === state.trim);
+        button.classList.toggle('sel', selected);
+      });
+
+      document.querySelectorAll('#patternChips .chip').forEach(chip => chip.classList.toggle('sel', state.pattern === chip.dataset.pattern));
+      document.querySelectorAll('#collarChips .chip').forEach(chip => chip.classList.toggle('sel', state.collar === chip.dataset.collar));
+      document.querySelectorAll('#badgeShapeChips .chip').forEach(chip => chip.classList.toggle('sel', state.badgeShape === chip.dataset.shape));
+      document.querySelectorAll('#symbolChips .chip').forEach(chip => chip.classList.toggle('sel', state.symbol === chip.dataset.symbol));
+
+      document.querySelectorAll('#kitSvg').forEach(svg => {
+        svg.querySelector('#shirtBase').setAttribute('fill', state.main);
+        svg.querySelector('#leftSleeve').setAttribute('fill', state.main);
+        svg.querySelector('#rightSleeve').setAttribute('fill', state.main);
+        svg.querySelector('#collarCrew').style.display = state.collar === 'crew' ? '' : 'none';
+        svg.querySelector('#collarV').style.display = state.collar === 'vneck' ? '' : 'none';
+        svg.querySelector('#collarPolo').style.display = state.collar === 'polo' ? '' : 'none';
+        ['#collarCrew', '#collarV', '#collarPolo', '#cuffLeft', '#cuffRight'].forEach(sel => svg.querySelector(sel).setAttribute('fill', state.trim));
+        svg.querySelector('#sideLeft').setAttribute('fill', state.second);
+        svg.querySelector('#sideRight').setAttribute('fill', state.second);
+        svg.querySelector('#sponsorTextSvg').textContent = (document.getElementById('sponsorText').value || 'BASE 6').slice(0, 16).toUpperCase();
+        svg.querySelector('#numberTextSvg').textContent = (document.getElementById('shirtNo').value || '10').slice(0, 3);
+        svg.querySelector('#sponsorTextSvg').setAttribute('fill', textColour(state.main));
+        svg.querySelector('#numberTextSvg').setAttribute('fill', textColour(state.main));
+        svg.querySelector('#badgeOnShirt').innerHTML = badgeMarkup(true);
+        updatePattern(svg);
+      });
+
+      document.querySelectorAll('#badgePreview').forEach(svg => { svg.innerHTML = badgeMarkup(false); });
+      document.getElementById('miniIdentity').textContent = 'Identity: ' + selectedList('identityGrid');
+      document.getElementById('miniPattern').textContent = 'Pattern: ' + state.pattern;
+      savePrintSheet();
+      updateProgress();
+    }
+
+    function rgbToHex(rgb) {
+      const m = rgb.match(/\d+/g);
+      if (!m) return rgb;
+      return '#' + m.slice(0, 3).map(x => Number(x).toString(16).padStart(2, '0')).join('');
+    }
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/[&<>"]/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[ch]));
+    }
+
+    function val(id) {
+      const el = document.getElementById(id);
+      return el && el.value.trim() ? el.value.trim() : '(not filled in)';
+    }
+
+    function selectedList(id) {
+      const group = state.choices[id] || [];
+      return group.length ? group.map(x => x.replace(/\s+/g, ' ')).join(', ') : 'not chosen';
+    }
+
+    function checkedList() {
+      const labels = [];
+      document.querySelectorAll('[data-check]').forEach(cb => {
+        if (cb.checked) labels.push(cb.parentElement.textContent.trim());
+      });
+      return labels.length ? labels.join(', ') : '(none ticked yet)';
+    }
+
+    function updateProgress() {
+      let count = 0;
+      ['teamName', 'kitIdea', 'researchColours', 'researchPatterns', 'researchBadges', 'colourWhy', 'goodKit'].forEach(id => { if (val(id) !== '(not filled in)') count++; });
+      ['kitType', 'identityGrid', 'detailGrid'].forEach(id => { if ((state.choices[id] || []).length) count++; });
+      if (state.pattern && state.pattern !== 'plain') count++;
+      if (state.badgeShape) count++;
+      if (state.symbol) count++;
+      Object.values(state.checks).forEach(BooleanVal => { if (BooleanVal) count++; });
+      const max = 18;
+      const pct = Math.min(100, Math.round((count / max) * 100));
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressText').textContent = count + ' choices made';
+    }
+
+    function savePrintSheet() {
+      const printWrap = document.getElementById('printSvgWrap');
+      const svg = document.querySelector('#livePreviewC #kitSvg') || document.querySelector('#livePreviewA #kitSvg');
+      if (svg) printWrap.innerHTML = svg.outerHTML;
+      document.getElementById('printBrief').textContent = 'Team: ' + val('teamName') + ' · Type: ' + selectedList('kitType') + ' · Idea: ' + val('kitIdea');
+      document.getElementById('printResearch').textContent = 'Colours: ' + val('researchColours') + ' · Patterns: ' + val('researchPatterns') + ' · Badges: ' + val('researchBadges');
+      document.getElementById('printChoices').textContent = 'Main: ' + state.main + ' · Second: ' + state.second + ' · Trim: ' + state.trim + ' · Pattern: ' + state.pattern + ' · Badge: ' + state.badgeShape + ' ' + state.symbol + ' · Details: ' + selectedList('detailGrid');
+      document.getElementById('printReview').textContent = 'Why colours: ' + val('colourWhy') + ' · Strong kit: ' + val('goodKit') + ' · Refinement: ' + val('refinement');
+    }
+
+    function exportPDF() {
+      updateKit();
+      setTimeout(() => window.print(), 60);
+    }
+
+    function downloadSVG() {
+      updateKit();
+      const svg = document.querySelector('#livePreviewB #kitSvg') || document.querySelector('#livePreviewA #kitSvg');
+      const blob = new Blob([svg.outerHTML], { type: 'image/svg+xml;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'JTK-football-kit-design.svg';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }
+
+    function sendJTK() {
+      const body = [
+        'JTK — Football Kit Design — Week 4',
+        '',
+        'Team name: ' + val('teamName'),
+        'Kit type: ' + selectedList('kitType'),
+        'Team identity: ' + selectedList('identityGrid'),
+        'Kit idea: ' + val('kitIdea'),
+        '',
+        'Research colours: ' + val('researchColours'),
+        'Research patterns: ' + val('researchPatterns'),
+        'Research badges: ' + val('researchBadges'),
+        'Research details: ' + val('researchDetails'),
+        '',
+        'Main colour: ' + state.main,
+        'Second colour: ' + state.second,
+        'Trim colour: ' + state.trim,
+        'Pattern: ' + state.pattern,
+        'Collar: ' + state.collar,
+        'Badge: ' + state.badgeShape + ' / ' + state.symbol + ' / ' + val('badgeText'),
+        'Sponsor: ' + val('sponsorText'),
+        'Number: ' + val('shirtNo'),
+        '',
+        'Details: ' + selectedList('detailGrid'),
+        'Why colours: ' + val('colourWhy'),
+        '',
+        'Review ticks: ' + checkedList(),
+        'Why it works: ' + val('goodKit'),
+        'Refinement: ' + val('refinement'),
+        '',
+        'PDF note: I used the Print / save PDF sheet button.'
+      ].join('\n');
+      const url = 'https://mail.google.com/mail/?view=cm&to=' + encodeURIComponent(TEACHER_EMAIL) + '&su=' + encodeURIComponent('JTK — Football Kit Design — Week 4') + '&body=' + encodeURIComponent(body);
+      window.open(url, '_blank');
+      document.getElementById('successMsg').style.display = 'block';
+    }
+
+    installPreviews();
+    makeSwatches('mainSwatches', 'main');
+    makeSwatches('secondSwatches', 'second');
+    makeSwatches('trimSwatches', 'trim');
+    wireFields();
+    updateKit();
+  </script>
+</body>
+</html>
