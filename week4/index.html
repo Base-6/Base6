@@ -657,7 +657,13 @@ function handleResetClick() {
     { id:'sunhat', slot:'head', emoji:'\ud83d\udc52', label:'Sun hat' },
     { id:'medal', slot:'neck', emoji:'\ud83c\udfc5', label:'Medal' },
     { id:'pickaxe', slot:'hand', emoji:'\u26cf\ufe0f', label:'Pick axe' },
-    { id:'crown', slot:'head', emoji:'\ud83d\udc51', label:'Summit crown' }
+    { id:'crown', slot:'head', emoji:'\ud83d\udc51', label:'Summit crown' },
+    /* ---- PSHE Week 4 unlocks (granted by completing each morning task) ---- */
+    { id:'truthlens',   slot:'hand',   emoji:'\ud83d\udd0d',           label:'Truth Finder' },
+    { id:'helperbadge', slot:'neck',   emoji:'\ud83c\udf97\ufe0f',     label:'Helper Badge' },
+    { id:'brightidea',  slot:'head',   emoji:'\ud83d\udca1',           label:'Bright Idea' },
+    { id:'calmaura',    slot:'bg',     color:'#e3f1ec',                  label:'Calm' },
+    { id:'sprout',      slot:'friend', emoji:'\ud83c\udf31',           label:'Growing Sprout' }
   ];
   var SLOT_ORDER = ['head','eyes','neck','hand','friend','bg'];
   var SLOT_LABELS = { head:'Head', eyes:'Eyes', neck:'Neck', hand:'Holding', friend:'Friend', bg:'Background' };
@@ -677,7 +683,11 @@ function handleResetClick() {
     }
     return t;
   }
-  function unlockedItems(){ var n = totalDone(); return ITEMS.filter(function(it,i){ return (i+1) <= n; }); }
+  function unlockedItems(){
+    var n = totalDone();
+    var w = getWardrobe(); var ex = Array.isArray(w.unlocked) ? w.unlocked : [];
+    return ITEMS.filter(function(it,i){ return (i+1) <= n || ex.indexOf(it.id) !== -1; });
+  }
 
   function renderBadge(el, size){
     var p = getProfile(); if (!p || !el) return;
