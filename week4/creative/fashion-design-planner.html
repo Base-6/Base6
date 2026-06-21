@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fashion Design Planner · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:#fef8f4; color:#1a1a1a; min-height:100vh; }
+  .site-header { background:#007291; padding:1.25rem 2rem; }
+  .back-link { color:#fef8f4; font-size:0.9rem; font-weight:700; text-decoration:none; opacity:0.88; }
+  .back-link:hover { opacity:1; }
+  .hero { background:#007291; padding:1.5rem 2rem 2.35rem; text-align:center; }
+  .hero .subject-label { font-size:0.85rem; font-weight:700; color:#fef8f4; opacity:0.82; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem; }
+  .hero h1 { font-size:2.05rem; font-weight:700; color:#fef8f4; line-height:1.2; }
+  .hero p { font-size:0.98rem; color:#fef8f4; opacity:0.92; max-width:720px; margin:0.65rem auto 0; line-height:1.6; }
+  .main { max-width:1180px; margin:0 auto; padding:1.5rem 1.5rem 4rem; }
+  .focus-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:16px; padding:1.1rem 1.3rem; margin-bottom:1rem; }
+  .focus-card .label, .stage-eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#c05a10; margin-bottom:0.35rem; }
+  .focus-card p, .intro { font-size:0.94rem; color:#444; line-height:1.65; }
+  .progress { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.25rem; position:sticky; top:0; background:#fef8f4; padding:0.7rem 0; z-index:20; border-bottom:1px solid #e0d8d0; }
+  .pchip { font-family:inherit; font-size:0.72rem; font-weight:700; padding:6px 12px; border-radius:20px; background:#f0ede8; color:#777; border:1.5px solid #e0d8d0; cursor:not-allowed; }
+  .pchip.active { background:#fff3e8; color:#c05a10; border-color:#fcd8bc; cursor:pointer; }
+  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; cursor:pointer; }
+  .layout { display:grid; grid-template-columns:minmax(0, 1fr) 420px; gap:1.4rem; align-items:start; }
+  @media(max-width:900px){ .layout { grid-template-columns:1fr; } .planner-side { position:static !important; } }
+  .stage { display:none; }
+  .stage.show { display:block; }
+  .stage-card, .template-card, .send-card { background:#fff; border:2px solid #e0d8d0; border-radius:16px; padding:1.25rem 1.35rem; margin-bottom:1rem; }
+  .stage-card h2 { font-size:1.25rem; font-weight:700; color:#007291; line-height:1.25; margin-bottom:0.55rem; }
+  .time-pill { display:inline-block; font-size:0.73rem; font-weight:700; color:#1a5e1a; background:#e6f5e6; border:1.5px solid #a9dfbf; border-radius:999px; padding:0.28rem 0.62rem; margin-bottom:0.7rem; }
+  label.q { display:block; font-size:0.9rem; font-weight:700; line-height:1.5; margin:0.85rem 0 0.35rem; color:#333; }
+  textarea, input[type=text], select { width:100%; padding:0.7rem 0.85rem; font-family:inherit; font-size:0.92rem; border:1.5px solid #e0d8d0; border-radius:9px; background:#fffaf6; color:#1a1a1a; outline:none; line-height:1.55; }
+  textarea { min-height:78px; resize:vertical; }
+  textarea:focus, input:focus, select:focus { border-color:#007291; }
+  .brief-grid, .factor-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:0.7rem; margin:0.85rem 0; }
+  .brief-btn, .factor { border:2px solid #e0d8d0; border-radius:12px; background:#fffaf6; padding:0.85rem; line-height:1.45; }
+  .brief-btn { font-family:inherit; text-align:left; color:#333; cursor:pointer; }
+  .brief-btn strong, .factor h3 { display:block; color:#c2185b; margin-bottom:0.25rem; font-size:0.95rem; }
+  .brief-btn.on { border-color:#c2185b; background:#fbe4ed; }
+  .factor { background:#f7f4ee; }
+  .factor p { font-size:0.84rem; color:#555; line-height:1.5; }
+  .planner-table { width:100%; border-collapse:collapse; margin:0.85rem 0; }
+  .planner-table th, .planner-table td { border:1.5px solid #e0d8d0; padding:0.55rem; vertical-align:top; }
+  .planner-table th { background:#f7f4ee; color:#007291; font-size:0.82rem; text-align:left; }
+  .planner-table td { background:#fff; }
+  .planner-table input { min-width:120px; }
+  .planner-side { position:sticky; top:78px; }
+  .template-card { text-align:center; }
+  .template-title { display:flex; justify-content:space-between; align-items:flex-start; text-align:left; gap:0.8rem; margin-bottom:0.55rem; }
+  .template-title strong { color:#007291; font-size:0.95rem; }
+  .mini-note { font-size:0.78rem; color:#777; line-height:1.4; }
+  #planner-svg { width:100%; height:auto; max-height:64vh; display:block; background:#fffaf6; border:1.5px solid #e0d8d0; border-radius:12px; }
+  .part { cursor:pointer; }
+  .part:hover { stroke:#c2185b; stroke-width:3; }
+  .tool-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:14px; padding:1rem; margin:0.9rem 0; }
+  .tool-card h3 { font-size:0.82rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#007291; margin-bottom:0.55rem; }
+  .swatch-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(58px,1fr)); gap:0.5rem; }
+  .swatch { position:relative; aspect-ratio:1/1; border-radius:10px; border:3px solid #e0d8d0; cursor:pointer; overflow:hidden; padding:0; background:#fff; }
+  .swatch.sel { border-color:#c2185b; box-shadow:0 0 0 2px #fbe4ed; }
+  .swatch .label { position:absolute; left:0; right:0; bottom:0; font-size:0.58rem; font-weight:700; background:rgba(255,255,255,0.88); color:#333; padding:1px 0; text-align:center; }
+  .hint { min-height:1.4em; font-size:0.83rem; color:#666; margin-top:0.45rem; line-height:1.45; }
+  .next-btn, .action-btn { font-family:inherit; font-weight:700; border-radius:9px; cursor:pointer; }
+  .next-btn { font-size:0.92rem; padding:0.7rem 1.35rem; border:none; background:#c2185b; color:#fff; margin-top:0.65rem; }
+  .next-btn:hover { background:#911343; }
+  .checklist { display:flex; flex-direction:column; gap:0.5rem; margin:0.8rem 0; }
+  .crow { display:flex; align-items:flex-start; gap:0.6rem; font-size:0.92rem; line-height:1.5; cursor:pointer; }
+  .crow input { width:20px; height:20px; accent-color:#007291; margin-top:1px; flex-shrink:0; }
+  .send-card { background:#fff7f0; border-color:#fcd8bc; text-align:center; }
+  .btn-row { display:flex; gap:0.6rem; flex-wrap:wrap; justify-content:center; margin-top:0.85rem; }
+  .action-btn { font-size:0.9rem; padding:0.65rem 1.2rem; border:none; color:#fff; background:#007291; }
+  .action-btn:hover { background:#005a73; }
+  .action-btn.pink { background:#c2185b; }
+  .action-btn.pink:hover { background:#911343; }
+  .action-btn.ghost { background:#fff; color:#007291; border:2px solid #007291; }
+  .action-btn.ghost:hover { background:#e6f5f8; }
+  .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; line-height:1.5; }
+  .notify.show { display:block; }
+  @media print { .site-header,.hero,.progress,.tool-card,.next-btn,.send-card,.btn-row { display:none !important; } body { background:#fff; } .main { padding:0; } .layout { display:block; } .stage { display:block !important; page-break-inside:avoid; } .stage-card,.template-card { border:1px solid #888; margin:0 0 10px; } textarea,input,select { border:1px solid #999; background:#fff; } }
+  a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-visible { outline:3px solid #007291; outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+<header class="site-header"><a class="back-link" href="index.html">← Aesthetic and Creative</a></header>
+<div class="hero">
+  <p class="subject-label">Aesthetic and Creative · Week 4 · Design: Textiles, Fabrics & Costume Design</p>
+  <h1>📝 Activity 2: Fashion Design Planner</h1>
+  <p>Plan a fashion design, colour the template, add material and pattern choices, then review the learning objective.</p>
+</div>
+<main class="main">
+  <div class="focus-card">
+    <p class="label">Learning objective</p>
+    <p><strong>Fashion:</strong> I can use a template to create a simple fashion design, considering the materials, colours, or patterns to use.</p>
+  </div>
+  <nav class="progress" id="progress" aria-label="Planner progress"></nav>
+  <div class="layout">
+    <div class="stages-side">
+      <section class="stage" id="stage-1">
+        <div class="stage-card">
+          <p class="stage-eyebrow">Stage 1 of 5 · Starter</p>
+          <h2>Pick a design brief</h2>
+          <p class="intro">Before drawing, choose what your outfit is for. This helps you make better choices about materials, colours and patterns.</p>
+          <div class="brief-grid" id="briefGrid"></div>
+          <label class="q" for="starterFactors">Name two factors your design must consider.</label>
+          <textarea id="starterFactors" data-save="starterFactors" placeholder="My design needs to consider..."></textarea>
+          <button class="next-btn" onclick="goStage(2)">Plan the factors →</button>
+        </div>
+      </section>
+
+      <section class="stage" id="stage-2">
+        <div class="stage-card">
+          <p class="stage-eyebrow">Stage 2 of 5 · Planning table</p>
+          <h2>Plan before you colour</h2>
+          <p class="intro">Use this planning table to organise your ideas. Aim to choose at least one material, one colour and one pattern.</p>
+          <table class="planner-table" aria-label="Fashion design planning table">
+            <thead><tr><th>Design factor</th><th>My choice</th><th>Why it fits the brief</th></tr></thead>
+            <tbody>
+              <tr><td>Material or fabric</td><td><input id="materialChoice" data-save="materialChoice" type="text" placeholder="e.g. cotton, denim, silk"></td><td><input id="materialWhy" data-save="materialWhy" type="text" placeholder="e.g. soft, strong, warm"></td></tr>
+              <tr><td>Colour</td><td><input id="colourChoice" data-save="colourChoice" type="text" placeholder="e.g. teal and yellow"></td><td><input id="colourWhy" data-save="colourWhy" type="text" placeholder="e.g. bright and cheerful"></td></tr>
+              <tr><td>Pattern</td><td><input id="patternChoice" data-save="patternChoice" type="text" placeholder="e.g. stripes, floral, stars"></td><td><input id="patternWhy" data-save="patternWhy" type="text" placeholder="e.g. bold and fun"></td></tr>
+              <tr><td>Practicality</td><td><input id="practicalChoice" data-save="practicalChoice" type="text" placeholder="e.g. easy to move"></td><td><input id="practicalWhy" data-save="practicalWhy" type="text" placeholder="e.g. useful for the wearer"></td></tr>
+            </tbody>
+          </table>
+          <div class="factor-grid">
+            <div class="factor"><h3>Material words</h3><p>soft, strong, warm, waterproof, stretchy, shiny, light, thick</p></div>
+            <div class="factor"><h3>Colour words</h3><p>bright, calm, bold, matching, contrasting, themed, visible</p></div>
+            <div class="factor"><h3>Pattern words</h3><p>striped, checked, spotted, floral, starry, plain, repeated</p></div>
+          </div>
+          <button class="next-btn" onclick="goStage(3)">Use the template →</button>
+        </div>
+      </section>
+
+      <section class="stage" id="stage-3">
+        <div class="stage-card">
+          <p class="stage-eyebrow">Stage 3 of 5 · Template design</p>
+          <h2>Colour the outfit template</h2>
+          <p class="intro">Choose a swatch, then tap a part of the outfit template. You can also print and draw on the planner if you prefer using pencils.</p>
+          <div class="tool-card">
+            <h3>Colour, fabric and pattern swatches</h3>
+            <p class="intro" id="brushNote" style="margin-bottom:0.55rem;font-size:0.88rem;">No swatch picked yet.</p>
+            <div class="swatch-grid" id="swatches"></div>
+          </div>
+          <label class="q" for="templateNotes">Annotate your template: what should we notice?</label>
+          <textarea id="templateNotes" data-save="templateNotes" placeholder="Look at the... because..."></textarea>
+          <button class="next-btn" onclick="goStage(4)">Write the explanation →</button>
+        </div>
+      </section>
+
+      <section class="stage" id="stage-4">
+        <div class="stage-card">
+          <p class="stage-eyebrow">Stage 4 of 5 · Explanation</p>
+          <h2>Explain the choices</h2>
+          <p class="intro">Use full sentences. Try to include the words <strong>material</strong>, <strong>colour</strong> and <strong>pattern</strong>.</p>
+          <label class="q" for="finalDesignText">My fashion design explanation</label>
+          <textarea id="finalDesignText" data-save="finalDesignText" style="min-height:145px;" placeholder="My outfit is for... I chose the material... The colours... The pattern..."></textarea>
+          <button class="next-btn" onclick="goStage(5)">Review the planner →</button>
+        </div>
+      </section>
+
+      <section class="stage" id="stage-5">
+        <div class="stage-card">
+          <p class="stage-eyebrow">Stage 5 of 5 · Review</p>
+          <h2>Check your fashion design</h2>
+          <p class="intro">Use the checklist before saving, printing or sending.</p>
+          <div class="checklist" id="reviewCheck"></div>
+          <label class="q" for="teacherComment">One thing I improved after checking</label>
+          <textarea id="teacherComment" data-save="teacherComment" placeholder="I improved..."></textarea>
+        </div>
+        <div class="send-card">
+          <p class="intro">Save, print or send your completed design planner.</p>
+          <div class="btn-row">
+            <button class="action-btn pink" onclick="window.print()">🖨 Print planner</button>
+            <button class="action-btn" onclick="emailPlanner()">📧 Send design notes to Jay</button>
+            <button class="action-btn ghost" onclick="resetAll()">Start again</button>
+          </div>
+          <div class="notify" id="notify"></div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="planner-side" aria-label="Fashion design template">
+      <div class="template-card">
+        <div class="template-title"><div><strong>Fashion design template</strong><div class="mini-note">Pick a swatch, then tap an outfit part.</div></div><span aria-hidden="true">✏️</span></div>
+        <svg id="planner-svg" viewBox="0 0 360 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fashion design design template">
+          <defs>
+            <pattern id="ws-denim" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="14" fill="#3b6ea5"/><line x1="0" y1="0" x2="0" y2="14" stroke="#5b8ec9" stroke-width="2"/></pattern>
+            <pattern id="ws-polka" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="20" fill="#f5a9c8"/><circle cx="5" cy="5" r="3" fill="#fff"/><circle cx="15" cy="15" r="3" fill="#fff"/></pattern>
+            <pattern id="ws-stripes" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#007291"/><rect width="8" height="16" fill="#fff"/></pattern>
+            <pattern id="ws-check" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="#fff"/><rect width="11" height="22" fill="#c0392b" opacity="0.45"/><rect width="22" height="11" fill="#c0392b" opacity="0.45"/></pattern>
+            <linearGradient id="ws-silk" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f4d58d"/><stop offset="50%" stop-color="#fbeed0"/><stop offset="100%" stop-color="#e6b84e"/></linearGradient>
+            <pattern id="ws-floral" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#e6f3e6"/><circle cx="12" cy="9" r="2.5" fill="#ef7724"/><circle cx="9" cy="12" r="2.5" fill="#f5a9c8"/><circle cx="15" cy="12" r="2.5" fill="#f5a9c8"/><circle cx="12" cy="15" r="2.5" fill="#f5a9c8"/></pattern>
+          </defs>
+          <rect x="18" y="18" width="324" height="464" rx="14" fill="#fff" stroke="#e0d8d0" stroke-width="2"/>
+          <text x="180" y="48" font-family="Atkinson Hyperlegible" font-size="18" font-weight="700" text-anchor="middle" fill="#007291">My Fashion Design</text>
+          <text x="44" y="82" font-family="Atkinson Hyperlegible" font-size="12" fill="#777">Name:</text><line x1="86" y1="82" x2="165" y2="82" stroke="#aaa"/>
+          <text x="190" y="82" font-family="Atkinson Hyperlegible" font-size="12" fill="#777">Brief:</text><line x1="230" y1="82" x2="315" y2="82" stroke="#aaa"/>
+          <circle cx="180" cy="118" r="24" fill="#f1c9a5" stroke="#555" stroke-width="2"/>
+          <circle cx="172" cy="116" r="2" fill="#5a4636"/><circle cx="188" cy="116" r="2" fill="#5a4636"/><path d="M172 128 Q180 134 188 128" stroke="#5a4636" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <rect x="173" y="142" width="14" height="18" fill="#f1c9a5"/>
+          <path class="part" data-part="jacket" d="M123 162 L150 152 L172 176 L172 270 L132 270 Q112 220 118 178 Z" fill="#f7f4ee" stroke="#555" stroke-width="2"/>
+          <path class="part" data-part="jacket" d="M237 162 L210 152 L188 176 L188 270 L228 270 Q248 220 242 178 Z" fill="#f7f4ee" stroke="#555" stroke-width="2"/>
+          <rect class="part" data-part="top" x="142" y="158" width="76" height="98" rx="14" fill="#f7f4ee" stroke="#555" stroke-width="2"/>
+          <path class="part" data-part="skirt" d="M142 256 L218 256 L244 342 L116 342 Z" fill="#f7f4ee" stroke="#555" stroke-width="2"/>
+          <rect class="part" data-part="trousers" x="148" y="256" width="28" height="126" rx="10" fill="#f7f4ee" stroke="#555" stroke-width="2"/>
+          <rect class="part" data-part="trousers" x="184" y="256" width="28" height="126" rx="10" fill="#f7f4ee" stroke="#555" stroke-width="2"/>
+          <ellipse class="part" data-part="shoes" cx="162" cy="392" rx="23" ry="10" fill="#f7f4ee" stroke="#555" stroke-width="2"/>
+          <ellipse class="part" data-part="shoes" cx="198" cy="392" rx="23" ry="10" fill="#f7f4ee" stroke="#555" stroke-width="2"/>
+          <text x="50" y="430" font-family="Atkinson Hyperlegible" font-size="12" font-weight="700" fill="#c05a10">Label your choices:</text>
+          <line x1="50" y1="448" x2="310" y2="448" stroke="#bbb" stroke-dasharray="4 4"/>
+          <line x1="50" y1="466" x2="310" y2="466" stroke="#bbb" stroke-dasharray="4 4"/>
+        </svg>
+        <p class="hint" id="templateHint">Choose a design brief, then colour the outfit template.</p>
+      </div>
+    </aside>
+  </div>
+</main>
+<footer>Base 6 · Chilton Bridge School · Aesthetic and Creative</footer>
+<script>
+const STORE_KEY='base6_w4_creative_fashion_planner_v1';
+const TEACHER_EMAIL='jay.raine@chiltonbridgeschool.co.uk';
+const PLABELS=['Starter','Plan','Template','Explain','Review'];
+const BRIEFS=[
+  {id:'weather',title:'Weather-ready',text:'Design for rain, cold or wind.'},
+  {id:'party',title:'Celebration',text:'Design something expressive and special.'},
+  {id:'performance',title:'Performance',text:'Design for movement and stage impact.'},
+  {id:'everyday',title:'Everyday comfort',text:'Design something practical and comfortable.'}
+];
+const SWATCHES=[
+  {label:'Teal',fill:'#007291',preview:'#007291'}, {label:'Pink',fill:'#c2185b',preview:'#c2185b'}, {label:'Orange',fill:'#ef7724',preview:'#ef7724'},
+  {label:'Green',fill:'#2e8b57',preview:'#2e8b57'}, {label:'Yellow',fill:'#f4c542',preview:'#f4c542'}, {label:'Black',fill:'#333333',preview:'#333333'},
+  {label:'Denim',fill:'url(#ws-denim)',preview:'repeating-linear-gradient(45deg,#3b6ea5 0,#3b6ea5 6px,#5b8ec9 6px,#5b8ec9 9px)'},
+  {label:'Silk',fill:'url(#ws-silk)',preview:'linear-gradient(135deg,#f4d58d,#fbeed0,#e6b84e)'},
+  {label:'Polka',fill:'url(#ws-polka)',preview:'radial-gradient(circle at 25% 25%,#fff 0 12%,transparent 13%),radial-gradient(circle at 75% 75%,#fff 0 12%,transparent 13%),#f5a9c8'},
+  {label:'Stripes',fill:'url(#ws-stripes)',preview:'repeating-linear-gradient(90deg,#007291 0,#007291 10px,#fff 10px,#fff 20px)'},
+  {label:'Check',fill:'url(#ws-check)',preview:'linear-gradient(90deg,rgba(192,57,43,.45) 50%,transparent 50%),linear-gradient(rgba(192,57,43,.45) 50%,transparent 50%),#fff'},
+  {label:'Floral',fill:'url(#ws-floral)',preview:'radial-gradient(circle at 50% 45%,#ef7724 0 8%,transparent 9%),radial-gradient(circle at 35% 60%,#f5a9c8 0 8%,transparent 9%),#e6f3e6'}
+];
+let state={stage:1,brief:'',fills:{},fields:{},checks:{}};
+try{state=Object.assign(state,JSON.parse(localStorage.getItem(STORE_KEY))||{});}catch(e){}
+if(!state.fields)state.fields={}; if(!state.fills)state.fills={}; if(!state.checks)state.checks={};
+let activeFill=null; let activeLabel='';
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}}
+function setHint(t){const h=document.getElementById('templateHint'); if(h)h.textContent=t;}
+function renderProgress(){const p=document.getElementById('progress'); p.innerHTML=''; PLABELS.forEach((lab,i)=>{const n=i+1; const b=document.createElement('button'); b.type='button'; b.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':''); b.textContent=n+'. '+lab; if(n<=state.stage){b.onclick=()=>showStage(n);} p.appendChild(b);});}
+function showStage(n){for(let i=1;i<=5;i++){const el=document.getElementById('stage-'+i); if(el)el.classList.toggle('show',i===n);} renderProgress(); const t=document.getElementById('stage-'+n); if(t)t.scrollIntoView({behavior:'smooth',block:'start'});}
+function goStage(n){state.stage=Math.max(state.stage,n); save(); showStage(n);}
+function buildBriefs(){const grid=document.getElementById('briefGrid'); grid.innerHTML=''; BRIEFS.forEach(b=>{const btn=document.createElement('button'); btn.type='button'; btn.className='brief-btn'+(state.brief===b.id?' on':''); btn.innerHTML='<strong>'+b.title+'</strong>'+b.text; btn.onclick=()=>{state.brief=b.id; save(); buildBriefs(); setHint('Brief selected: '+b.title+'. Plan your material, colour and pattern.');}; grid.appendChild(btn);});}
+function makeSwatch(s){const b=document.createElement('button'); b.type='button'; b.className='swatch'; b.title=s.label; b.style.background=s.preview; b.innerHTML='<span class="label">'+s.label+'</span>'; b.onclick=()=>{activeFill=s.fill; activeLabel=s.label; document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); document.getElementById('brushNote').textContent='Swatch selected: '+s.label+'. Tap a template part.'; setHint('Tap a template part to use '+s.label+'.');}; document.getElementById('swatches').appendChild(b);}
+function buildSwatches(){document.getElementById('swatches').innerHTML=''; SWATCHES.forEach(makeSwatch);}
+function applyToPart(part){if(!activeFill){setHint('Pick a swatch first, then tap an outfit part.'); return;} state.fills[part]=activeFill; save(); renderTemplate(); setHint(part+' filled with '+activeLabel+'.');}
+function renderTemplate(){document.querySelectorAll('.part').forEach(el=>{const part=el.dataset.part; el.setAttribute('fill', state.fills[part]||'#f7f4ee'); el.onclick=()=>applyToPart(part);});}
+function bindFields(){document.querySelectorAll('[data-save]').forEach(el=>{const k=el.dataset.save; if(state.fields[k]!==undefined)el.value=state.fields[k]; el.addEventListener('input',()=>{state.fields[k]=el.value; save();});});}
+function buildChecklist(){const items=['I chose a design brief.','I used the template to create a simple fashion design.','I considered at least one material or fabric.','I considered colour or pattern.','I explained why my choices fit the brief.']; const box=document.getElementById('reviewCheck'); box.innerHTML=''; items.forEach((t,i)=>{const l=document.createElement('label'); l.className='crow'; l.innerHTML='<input type="checkbox" data-check="'+i+'"> '+t; box.appendChild(l); const cb=l.querySelector('input'); cb.checked=!!state.checks[i]; cb.addEventListener('change',()=>{state.checks[i]=cb.checked; save();});});}
+function plannerSummary(){const f=state.fields; const brief=(BRIEFS.find(b=>b.id===state.brief)||{}).title||'(no brief chosen)'; return 'Fashion Design Planner - Base 6 Week 4\n\nBrief: '+brief+'\n\nStarter factors:\n'+(f.starterFactors||'')+'\n\nMaterial: '+(f.materialChoice||'')+' - '+(f.materialWhy||'')+'\nColour: '+(f.colourChoice||'')+' - '+(f.colourWhy||'')+'\nPattern: '+(f.patternChoice||'')+' - '+(f.patternWhy||'')+'\nPracticality: '+(f.practicalChoice||'')+' - '+(f.practicalWhy||'')+'\n\nTemplate notes:\n'+(f.templateNotes||'')+'\n\nFinal explanation:\n'+(f.finalDesignText||'')+'\n\nImprovement after checking:\n'+(f.teacherComment||'');}
+function emailPlanner(){window.location.href='mailto:'+TEACHER_EMAIL+'?subject='+encodeURIComponent('Fashion Design Planner - Base 6 Week 4')+'&body='+encodeURIComponent(plannerSummary()); flash('Your email app should open with the design notes ready to send.');}
+function resetAll(){if(!confirm('Clear this planner activity and start again?'))return; localStorage.removeItem(STORE_KEY); location.reload();}
+function flash(msg){const n=document.getElementById('notify'); n.textContent=msg; n.classList.add('show');}
+buildBriefs(); buildSwatches(); renderTemplate(); bindFields(); buildChecklist(); showStage(state.stage||1);
+</script>
+</body>
+</html>
