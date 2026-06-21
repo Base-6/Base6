@@ -53,9 +53,9 @@
   .readouts { display:flex; flex-wrap:wrap; gap:0.45rem; }
   .pill { font-size:0.76rem; font-weight:700; padding:0.35rem 0.65rem; border-radius:20px; background:#e6f5f8; color:#075066; border:1.5px solid #b8d8e0; }
   button, .next-btn, .check-btn, .action-btn { font-family:inherit; font-weight:700; border-radius:8px; cursor:pointer; }
-  .lab-buttons { display:flex; gap:0.5rem; flex-wrap:wrap; margin:0.7rem 0; }
+  .lab-buttons { display:flex; gap:0.5rem; flex-wrap:wrap; margin:0.7rem 0; align-items:center; }
   .check-btn { font-size:0.84rem; padding:0.5rem 0.9rem; border:2px solid #007291; background:#fff; color:#007291; }
-  .check-btn:hover { background:#e6f5f8; }
+  .check-btn:hover { background:#e6f5e6; }
   .next-btn { font-size:0.92rem; padding:0.7rem 1.5rem; border:none; background:#c0392b; color:#fff; margin-top:0.6rem; }
   .next-btn:hover { background:#992c21; }
   .tip { font-size:0.84rem; color:#888; margin-top:0.5rem; line-height:1.5; }
@@ -90,9 +90,19 @@
   .mini-visual-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:0.7rem; margin:0.85rem 0 1rem; }
   .mini-visual { background:#f7f4ee; border:1.5px solid #e0d8d0; border-radius:12px; padding:0.65rem; }
   .mini-visual svg { width:100%; height:auto; display:block; }
-  .mini-visual p { font-size:0.84rem; line-height:1.45; color:#555; margin:0.45rem 0 0; }
-  .legend-row { display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:0.5rem; }
-  .legend-pill { font-size:0.72rem; font-weight:700; border-radius:999px; padding:3px 9px; background:#fff3e8; color:#c05a10; border:1px solid #fcd8bc; }
+  .mini-visual p { font-size:0.84rem; line-height:1.45; color:#555; margin:0.45rem 0 ...; }
+
+  /* Dynamic Bar Graph Styles */
+  .graph-card { background:#fdfbf7; border:2px solid #e0d8d0; border-radius:12px; padding:0.8rem; margin:0.8rem 0; display:none; }
+  .graph-flex { display:flex; justify-content:space-around; align-items:flex-end; height:90px; padding-top:10px; }
+  .graph-column { text-align:center; width:45%; }
+  .graph-bar-box { display:flex; justify-content:center; align-items:flex-end; gap:12px; height:60px; border-bottom:2px solid #baa998; }
+  .bar { width:22px; height:0%; transition:height 0.35s ease-out; border-radius:4px 4px 0 0; }
+  .bar.r-force { background:#c0392b; }
+  .bar.b-force { background:#007291; }
+  .bar.r-motion { background:#e74c3c; opacity:0.75; }
+  .bar.b-motion { background:#2980b9; opacity:0.75; }
+  .graph-label { font-size:0.78rem; font-weight:700; margin-top:5px; color:#444; }
 
   footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
 </style>
@@ -139,17 +149,14 @@
     <div class="stage-card">
       <p class="stage-eyebrow">Stage 2 of 5 · Set up</p>
       <h2>Choose mass and speed</h2>
-      <p class="intro">Set the masses and the red car's starting speed. The blue car begins stationary. Then write a quick prediction before you collide.</p>
-      <div class="mini-visual-grid">
-        <div class="mini-visual"><svg viewBox="0 0 230 130" role="img" aria-label="Heavy red car hits light blue car"><rect width="230" height="130" rx="12" fill="#fff7f0"/><rect x="28" y="54" width="85" height="40" rx="12" fill="#ffd6d2" stroke="#c0392b" stroke-width="4"/><text x="70" y="48" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700">large mass</text><rect x="150" y="62" width="52" height="32" rx="10" fill="#d9f4ff" stroke="#007291" stroke-width="3"/><text x="176" y="48" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700">small mass</text><path d="M118 74 L147 74" stroke="#ef7724" stroke-width="8" marker-end="url(#ar2a)"/><defs><marker id="ar2a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker></defs></svg><p>The small car usually changes motion more.</p></div>
-        <div class="mini-visual"><svg viewBox="0 0 230 130" role="img" aria-label="Light red car hits heavy blue car"><rect width="230" height="130" rx="12" fill="#e8f4f7"/><rect x="36" y="62" width="52" height="32" rx="10" fill="#ffd6d2" stroke="#c0392b" stroke-width="3"/><text x="62" y="48" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700">small mass</text><rect x="135" y="54" width="85" height="40" rx="12" fill="#d9f4ff" stroke="#007291" stroke-width="4"/><text x="178" y="48" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="13" font-weight="700">large mass</text><path d="M91 74 L132 74" stroke="#ef7724" stroke-width="8" marker-end="url(#ar2b)"/><defs><marker id="ar2b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#ef7724"/></marker></defs></svg><p>The force pair is still equal, even when the masses are different.</p></div>
-      </div>
-
+      <p class="intro">Set the masses and velocities of both cars. You can configure a classic stationary target, a dramatic head-on crash, or a high-speed car chase!</p>
+      
       <div class="lab-card">
         <div class="controls">
           <div class="control"><label for="redMass"><span>Red car mass</span><span id="redMassRead">5 kg</span></label><input id="redMass" type="range" min="1" max="10" value="5"></div>
           <div class="control"><label for="blueMass"><span>Blue car mass</span><span id="blueMassRead">5 kg</span></label><input id="blueMass" type="range" min="1" max="10" value="5"></div>
-          <div class="control"><label for="redSpeed"><span>Red car speed</span><span id="redSpeedRead">5</span></label><input id="redSpeed" type="range" min="1" max="10" value="5"></div>
+          <div class="control"><label for="redSpeed"><span>Red speed (Right)</span><span id="redSpeedRead">5</span></label><input id="redSpeed" type="range" min="1" max="10" value="5"></div>
+          <div class="control"><label for="blueSpeed"><span>Blue speed & Dir</span><span id="blueSpeedRead">0 (Stationary)</span></label><input id="blueSpeed" type="range" min="-10" max="10" value="0"></div>
         </div>
         <div class="readouts"><span class="pill" id="forceRead">Impact force: not tested yet</span><span class="pill" id="motionRead">Motion change: not tested yet</span></div>
       </div>
@@ -163,17 +170,7 @@
     <div class="stage-card">
       <p class="stage-eyebrow">Stage 3 of 5 · Exploration</p>
       <h2>Collide and watch the force arrows</h2>
-      <p class="intro">At impact the simulation pauses and two force arrows appear. Check whether they are the same size or different sizes.</p>
-      <div class="visual-note">
-        <svg class="diagram-svg" viewBox="0 0 620 170" role="img" aria-label="Collision pause diagram with equal force arrows">
-          <defs><marker id="ar3r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#c0392b"/></marker><marker id="ar3b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="#007291"/></marker></defs>
-          <rect width="620" height="170" rx="12" fill="#20242b"/><line x1="310" y1="26" x2="310" y2="144" stroke="#fff" stroke-dasharray="8 8" opacity="0.35"/>
-          <rect x="218" y="70" width="86" height="42" rx="13" fill="#ffd6d2" stroke="#c0392b" stroke-width="3"/><rect x="316" y="70" width="86" height="42" rx="13" fill="#d9f4ff" stroke="#007291" stroke-width="3"/>
-          <path d="M310 91 L230 91" stroke="#007291" stroke-width="11" marker-end="url(#ar3b)"/><path d="M310 91 L390 91" stroke="#c0392b" stroke-width="11" marker-end="url(#ar3r)"/>
-          <text x="310" y="38" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="19" font-weight="700" fill="#fff">Impact moment: arrows are identical length</text>
-          <text x="310" y="148" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="14" fill="#cfdbe6">Pause the simulation here and compare the arrow sizes.</text>
-        </svg>
-      </div>
+      <p class="intro">At impact the simulation pauses, a dynamic data graph loads, and two force arrows appear. Check whether the forces remain equal across configurations.</p>
 
       <div class="lab-card">
         <div class="arena" id="arena">
@@ -184,8 +181,34 @@
           <div class="car red" id="redCar">RED<div class="wheel w1"></div><div class="wheel w2"></div></div>
           <div class="car blue" id="blueCar">BLUE<div class="wheel w1"></div><div class="wheel w2"></div></div>
         </div>
-        <div class="lab-buttons"><button class="check-btn" onclick="runCollision()">▶ Collide</button><button class="check-btn" onclick="resetCars()">Reset cars</button><button class="check-btn" onclick="saveTrial()">Save this collision to notebook</button></div>
-        <p class="tip">Try at least three: heavy red into light blue, light red into heavy blue, and equal masses.</p>
+        
+        <div class="graph-card" id="graphCard">
+          <div style="font-weight:700; font-size:0.84rem; color:#007291; margin-bottom:4px; text-align:center;">Real-Time Collision Dynamics Graph</div>
+          <div class="graph-flex">
+            <div class="graph-column">
+              <div class="graph-bar-box">
+                <div class="bar r-force" id="barFR"></div>
+                <div class="bar b-force" id="barFB"></div>
+              </div>
+              <div class="graph-label">Impact Forces (Equal)</div>
+            </div>
+            <div class="graph-column">
+              <div class="graph-bar-box">
+                <div class="bar r-motion" id="barMR"></div>
+                <div class="bar b-motion" id="barMB"></div>
+              </div>
+              <div class="graph-label">Motion Change (Δv)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-buttons">
+          <button class="check-btn" onclick="runCollision()">▶ Collide</button>
+          <button class="check-btn" onclick="resetCars()">Reset cars</button>
+          <button class="check-btn" onclick="saveTrial()">Save this collision to notebook</button>
+          <label class="crow" style="margin-left:auto; font-weight:700; color:#555;"><input type="checkbox" id="slowMo"> 🐢 Slow-Mo Mode</label>
+        </div>
+        <p class="tip">Try different scenarios: a high speed head-on collision, or making one car massive compared to the other.</p>
       </div>
       <label class="q" for="s3q">What did you notice about the two force arrows at the moment of impact?</label>
       <textarea id="s3q" data-save="s3q" placeholder="The arrows were..."></textarea>
@@ -198,17 +221,8 @@
       <p class="stage-eyebrow">Stage 4 of 5 · Evidence notebook</p>
       <h2>Record three collisions</h2>
       <p class="intro">Use your saved trials or type your results. The key evidence is the force on the red car and the force on the blue car during the same collision.</p>
-      <div class="visual-note">
-        <svg class="diagram-svg" viewBox="0 0 620 150" role="img" aria-label="Table diagram showing forces stay equal but acceleration changes">
-          <rect width="620" height="150" rx="12" fill="#fffaf6"/>
-          <text x="34" y="34" font-family="Atkinson Hyperlegible" font-size="18" font-weight="700" fill="#007291">Record this pattern:</text>
-          <line x1="40" y1="58" x2="580" y2="58" stroke="#e0d8d0" stroke-width="2"/>
-          <text x="90" y="85" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700">Collision</text><text x="260" y="85" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700">Red force</text><text x="420" y="85" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700">Blue force</text><text x="535" y="85" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15" font-weight="700">Same?</text>
-          <text x="90" y="119" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15">A / B / C</text><text x="260" y="119" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15">same length arrow</text><text x="420" y="119" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="15">same length arrow</text><text x="535" y="119" text-anchor="middle" font-family="Atkinson Hyperlegible" font-size="22" font-weight="700" fill="#2e8b57">✓</text>
-        </svg>
-      </div>
-
-      <div style="overflow-x:auto;"><table id="trialTable"><tr><th>Trial</th><th>Red mass</th><th>Blue mass</th><th>Speed</th><th>Force on red</th><th>Force on blue</th><th>What changed most?</th></tr></table></div>
+      
+      <div style="overflow-x:auto;"><table id="trialTable"><tr><th>Trial</th><th>Red mass</th><th>Blue mass</th><th>Red speed</th><th>Blue speed</th><th>Force on red</th><th>Force on blue</th><th>What changed most?</th></tr></table></div>
       <label class="q" for="s4q">What pattern do you see in the force numbers?</label>
       <textarea id="s4q" data-save="s4q" placeholder="In every trial, the force on red was... and the force on blue was..."></textarea>
       <button class="next-btn" onclick="goStage(5)">Review the misconception →</button>
@@ -232,43 +246,255 @@
     </div>
     <div class="send-card">
       <p>Send your collision evidence and explanation to Jay.</p>
-      <button class="action-btn" onclick="emailWork()">📧 Send my bumper car investigation to Jay</button>
+      <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+        <button class="action-btn" onclick="emailWork()">📧 Send via Gmail</button>
+        <button class="action-btn" style="background:#2e8b57;" onclick="copyWork()">📋 Copy Report to Clipboard</button>
+      </div>
       <div class="notify" id="notify"></div>
+    </div>
+    
+    <div style="text-align:center; margin-top:2.5rem;">
+      <button onclick="nukeLab()" style="background:none; border:none; color:#ba4a00; font-size:0.8rem; text-decoration:underline; cursor:pointer; font-weight:700;">Clear All Lab Data & Start Fresh</button>
     </div>
   </section>
 </main>
 <footer>Base 6 · Chilton Bridge School · Science</footer>
+
 <script>
-const STORE_KEY='base6_w4_science_bumper_cars';
+const STORE_KEY='base6_w4_science_bumper_cars_v2';
 const TEACHER_EMAIL='jay.raine@chiltonbridgeschool.co.uk';
 const PLABELS=['Law','Setup','Collide','Evidence','Review'];
-let state={stage:1,fields:{},trials:[],checks:{},choice:null};
+let state={stage:1,fields:{},trials:[{},{},{}],checks:{},choice:null};
+
 try{state=Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY))||{});}catch(e){}
-if(!state.fields)state.fields={}; if(!state.trials)state.trials=[]; if(!state.checks)state.checks={};
+if(!state.fields)state.fields={}; 
+if(!state.trials || state.trials.length === 0) { state.trials=[{},{},{}]; }
+while(state.trials.length < 3) { state.trials.push({}); }
+if(!state.checks)state.checks={};
+
 function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}}
 function renderProgress(){const p=document.getElementById('progress'); p.innerHTML=''; PLABELS.forEach((lab,i)=>{const n=i+1; const c=document.createElement('span'); c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':''); c.textContent=n+'. '+lab; p.appendChild(c);});}
 function goStage(n){state.stage=Math.max(state.stage,n); save(); for(let i=1;i<=5;i++){const el=document.getElementById('stage-'+i); if(el)el.classList.toggle('show',i<=n);} renderProgress(); const t=document.getElementById('stage-'+n); if(t)t.scrollIntoView({behavior:'smooth',block:'start'});}
 document.querySelectorAll('[data-save]').forEach(el=>{const k=el.dataset.save; if(state.fields[k]!==undefined)el.value=state.fields[k]; el.addEventListener('input',()=>{state.fields[k]=el.value; save();});});
-const redMass=document.getElementById('redMass'), blueMass=document.getElementById('blueMass'), redSpeed=document.getElementById('redSpeed');
-function vals(){return {rm:+redMass.value,bm:+blueMass.value,sp:+redSpeed.value};}
-function updateSliders(){const v=vals(); document.getElementById('redMassRead').textContent=v.rm+' kg'; document.getElementById('blueMassRead').textContent=v.bm+' kg'; document.getElementById('redSpeedRead').textContent=v.sp;}
-[redMass,blueMass,redSpeed].forEach(r=>r.addEventListener('input',()=>{updateSliders(); resetCars();})); updateSliders();
-let last={force:0,redAfter:0,blueAfter:0,changed:''}; let anim=null;
-function resetCars(){if(anim)cancelAnimationFrame(anim); const arena=document.getElementById('arena'); const w=arena.clientWidth; redCar.style.left='55px'; blueCar.style.left=(w-140)+'px'; hideArrows(); document.getElementById('forceRead').textContent='Impact force: not tested yet'; document.getElementById('motionRead').textContent='Motion change: not tested yet';}
-function hideArrows(){['arrowLeft','arrowRight','labA','labB','impactBanner'].forEach(id=>document.getElementById(id).style.display='none');}
-function showArrows(force){const arena=document.getElementById('arena'); const mid=arena.clientWidth/2; const len=Math.max(70,Math.min(170,force/2)); const al=document.getElementById('arrowLeft'), ar=document.getElementById('arrowRight'); al.style.display='block'; ar.style.display='block'; al.style.left=(mid-len-10)+'px'; al.style.width=len+'px'; ar.style.left=(mid+10)+'px'; ar.style.width=len+'px'; document.getElementById('labA').style.display='block'; document.getElementById('labB').style.display='block'; document.getElementById('labA').style.left=(mid-len-20)+'px'; document.getElementById('labB').style.left=(mid+20)+'px'; document.getElementById('labA').textContent='Force on red: '+force+' N'; document.getElementById('labB').textContent='Force on blue: '+force+' N'; document.getElementById('impactBanner').style.display='block';}
-function runCollision(){if(anim)cancelAnimationFrame(anim); resetCars(); const v=vals(); const arena=document.getElementById('arena'); const w=arena.clientWidth; let rx=55, bx=w-140; let phase='approach'; const u1=v.sp*1.25; const force=Math.round((v.sp*(v.rm+v.bm))*4); const v1=((v.rm-v.bm)/(v.rm+v.bm))*u1; const v2=((2*v.rm)/(v.rm+v.bm))*u1; last={force, redAfter:v1, blueAfter:v2, changed:Math.abs(v2)>Math.abs(v1)?'Blue changed most':(Math.abs(v1)>Math.abs(v2)?'Red changed most':'Both changed similarly'), rm:v.rm,bm:v.bm,sp:v.sp};
-  function step(){if(phase==='approach'){rx+=u1; if(rx+82>=bx){rx=bx-82; phase='pause'; showArrows(force); document.getElementById('forceRead').textContent='Impact force: '+force+' N on each car'; document.getElementById('motionRead').textContent=last.changed; setTimeout(()=>{hideArrows(); phase='bounce'; anim=requestAnimationFrame(step);},1550);} }
-    else if(phase==='bounce'){rx+=v1; bx+=v2; if(rx<-110||rx>w+20||bx<-20||bx>w+110){return;}}
-    redCar.style.left=rx+'px'; blueCar.style.left=bx+'px'; if(phase!=='pause')anim=requestAnimationFrame(step);} step();}
-function saveTrial(){if(!last.force){alert('Run a collision first.'); return;} state.trials.push({rm:last.rm,bm:last.bm,sp:last.sp,fr:last.force,fb:last.force,chg:last.changed}); if(state.trials.length>3)state.trials=state.trials.slice(-3); save(); renderTrials();}
-function renderTrials(){const t=document.getElementById('trialTable'); t.innerHTML='<tr><th>Trial</th><th>Red mass</th><th>Blue mass</th><th>Speed</th><th>Force on red</th><th>Force on blue</th><th>What changed most?</th></tr>'; for(let i=0;i<3;i++){const tr=state.trials[i]||{}; const row=document.createElement('tr'); row.innerHTML='<td>'+(i+1)+'</td><td><input value="'+(tr.rm||'')+'" data-trial="'+i+'" data-k="rm"></td><td><input value="'+(tr.bm||'')+'" data-trial="'+i+'" data-k="bm"></td><td><input value="'+(tr.sp||'')+'" data-trial="'+i+'" data-k="sp"></td><td><input value="'+(tr.fr||'')+'" data-trial="'+i+'" data-k="fr"></td><td><input value="'+(tr.fb||'')+'" data-trial="'+i+'" data-k="fb"></td><td><input value="'+(tr.chg||'')+'" data-trial="'+i+'" data-k="chg"></td>'; t.appendChild(row);} t.querySelectorAll('input[data-trial]').forEach(inp=>inp.addEventListener('input',()=>{const i=+inp.dataset.trial,k=inp.dataset.k; if(!state.trials[i])state.trials[i]={}; state.trials[i][k]=inp.value; save();}));}
+
+const redMass=document.getElementById('redMass'), blueMass=document.getElementById('blueMass'), redSpeed=document.getElementById('redSpeed'), blueSpeed=document.getElementById('blueSpeed'), slowMo=document.getElementById('slowMo');
+function vals(){return {rm:+redMass.value,bm:+blueMass.value,sp:+redSpeed.value,bsp:+blueSpeed.value};}
+
+function updateSliders(){
+  const v=vals(); 
+  document.getElementById('redMassRead').textContent=v.rm+' kg'; 
+  document.getElementById('blueMassRead').textContent=v.bm+' kg'; 
+  document.getElementById('redSpeedRead').textContent=v.sp;
+  
+  if(v.bsp === 0) document.getElementById('blueSpeedRead').textContent='0 (Stationary)';
+  else if(v.bsp < 0) document.getElementById('blueSpeedRead').textContent=Math.abs(v.bsp)+' (Left)';
+  else document.getElementById('blueSpeedRead').textContent=v.bsp+' (Right)';
+}
+[redMass,blueMass,redSpeed,blueSpeed].forEach(r=>r.addEventListener('input',()=>{updateSliders(); resetCars();})); updateSliders();
+
+let last={force:0,redAfter:0,blueAfter:0,changed:''}; let anim=null; let pauseTimeout=null;
+
+function playImpactSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(130, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.16);
+    gain.gain.setValueAtTime(0.4, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.16);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime + 0.16);
+  } catch(e){}
+}
+
+function resetCars(){
+  if(anim)cancelAnimationFrame(anim);
+  if(pauseTimeout)clearTimeout(pauseTimeout);
+  const arena=document.getElementById('arena');
+  const w=arena.clientWidth;
+  document.getElementById('redCar').style.left='55px';
+  document.getElementById('blueCar').style.left=(w-140)+'px';
+  hideArrows();
+  document.getElementById('forceRead').textContent='Impact force: not tested yet';
+  document.getElementById('motionRead').textContent='Motion change: not tested yet';
+}
+
+function hideArrows(){
+  ['arrowLeft','arrowRight','labA','labB','impactBanner'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('graphCard').style.display='none';
+  document.getElementById('barFR').style.height='0%';
+  document.getElementById('barFB').style.height='0%';
+  document.getElementById('barMR').style.height='0%';
+  document.getElementById('barMB').style.height='0%';
+}
+
+function showArrows(force, cx){
+  const len=Math.max(65,Math.min(165,force/3.5));
+  const al=document.getElementById('arrowLeft'), ar=document.getElementById('arrowRight');
+  al.style.display='block'; ar.style.display='block';
+  al.style.left=(cx-len-4)+'px'; al.style.width=len+'px';
+  ar.style.left=(cx+4)+'px'; ar.style.width=len+'px';
+  
+  document.getElementById('labA').style.display='block'; document.getElementById('labB').style.display='block';
+  document.getElementById('labA').style.left=(cx-len-15)+'px'; document.getElementById('labB').style.left=(cx+15)+'px';
+  document.getElementById('labA').textContent='Force on red: '+force+' N';
+  document.getElementById('labB').textContent='Force on blue: '+force+' N';
+  document.getElementById('impactBanner').style.display='block';
+
+  // Render comparative analytics bar chart graphs
+  document.getElementById('graphCard').style.display='block';
+  const forcePct = Math.min(100, (force / 1400) * 100);
+  document.getElementById('barFR').style.height = forcePct + '%';
+  document.getElementById('barFB').style.height = forcePct + '%';
+  
+  const motionPctRed = Math.min(100, (Math.abs(last.redAfter - last.u1) / 22) * 100);
+  const motionPctBlue = Math.min(100, (Math.abs(last.blueAfter - last.u2) / 22) * 100);
+  document.getElementById('barMR').style.height = motionPctRed + '%';
+  document.getElementById('barMB').style.height = motionPctBlue + '%';
+}
+
+function runCollision(){
+  if(anim)cancelAnimationFrame(anim);
+  if(pauseTimeout)clearTimeout(pauseTimeout);
+  resetCars();
+  const v=vals();
+  const arena=document.getElementById('arena');
+  const w=arena.clientWidth;
+  let rx=55, bx=w-140;
+  let phase='approach';
+  
+  const u1=v.sp*1.2;
+  const u2=v.bsp*1.2; // Right is positive vector, left is negative vector
+
+  // Edge case calculation handling: ensure cars close the gap
+  if(u1 <= u2) {
+    document.getElementById('forceRead').textContent='Simulation alert: Red car is too slow to catch Blue!';
+    return;
+  }
+  
+  // Real 1D Newton-Impulse Vector Math Structure
+  const impulse = (2 * v.rm * v.bm / (v.rm + v.bm)) * (u1 - u2);
+  const force = Math.round(impulse * 8.5);
+  
+  const v1 = ((v.rm - v.bm) * u1 + 2 * v.bm * u2) / (v.rm + v.bm);
+  const v2 = (2 * v.rm * u1 + (v.bm - v.rm) * u2) / (v.rm + v.bm);
+  
+  const deltaV1 = Math.abs(v1 - u1);
+  const deltaV2 = Math.abs(v2 - u2);
+  
+  last={
+    force, redAfter:v1, blueAfter:v2, u1, u2,
+    changed: deltaV2 > deltaV1 + 0.05 ? 'Blue changed most' : (deltaV1 > deltaV2 + 0.05 ? 'Red changed most' : 'Both changed similarly'), 
+    rm:v.rm, bm:v.bm, sp:v.sp, bsp:v.bsp
+  };
+  
+  function step(){
+    const dt = slowMo.checked ? 0.25 : 1.0;
+    if(phase==='approach'){
+      rx += u1 * dt;
+      bx += u2 * dt;
+      if(rx+82 >= bx){
+        rx = bx - 82;
+        phase = 'pause';
+        playImpactSound();
+        showArrows(force, bx);
+        document.getElementById('forceRead').textContent='Impact force: '+force+' N on each car';
+        document.getElementById('motionRead').textContent=last.changed;
+        pauseTimeout = setTimeout(()=>{
+          hideArrows();
+          phase='bounce';
+          anim=requestAnimationFrame(step);
+        },1550);
+      }
+    }
+    else if(phase==='bounce'){
+      rx += v1 * dt;
+      bx += v2 * dt;
+      if(rx < -110 || rx > w + 20 || bx < -20 || bx > w + 110){ return; }
+    }
+    document.getElementById('redCar').style.left=rx+'px'; 
+    document.getElementById('blueCar').style.left=bx+'px'; 
+    if(phase!=='pause') anim=requestAnimationFrame(step);
+  }
+  step();
+}
+
+function saveTrial(){
+  if(!last.force){alert('Run a successful collision first.'); return;}
+  let idx = state.trials.findIndex(t => !t.fr);
+  if(idx === -1){
+    state.trials.shift();
+    state.trials.push({});
+    idx = 2;
+  }
+  state.trials[idx]={rm:last.rm, bm:last.bm, sp:last.sp, bsp:last.bsp, fr:last.force, fb:last.force, chg:last.changed};
+  save();
+  renderTrials();
+}
+
+function renderTrials(){
+  const t=document.getElementById('trialTable');
+  t.innerHTML='<tr><th>Trial</th><th>Red mass</th><th>Blue mass</th><th>Red speed</th><th>Blue speed</th><th>Force on red</th><th>Force on blue</th><th>What changed most?</th></tr>';
+  for(let i=0;i<3;i++){
+    const tr=state.trials[i]||{};
+    const row=document.createElement('tr');
+    row.innerHTML='<td>'+(i+1)+'</td><td><input value="'+(tr.rm||'')+'" data-trial="'+i+'" data-k="rm"></td><td><input value="'+(tr.bm||'')+'" data-trial="'+i+'" data-k="bm"></td><td><input value="'+(tr.sp||'')+'" data-trial="'+i+'" data-k="sp"></td><td><input value="'+(tr.bsp!==undefined?tr.bsp:'')+'" data-trial="'+i+'" data-k="bsp"></td><td><input value="'+(tr.fr||'')+'" data-trial="'+i+'" data-k="fr"></td><td><input value="'+(tr.fb||'')+'" data-trial="'+i+'" data-k="fb"></td><td><input value="'+(tr.chg||'')+'" data-trial="'+i+'" data-k="chg"></td>';
+    t.appendChild(row);
+  }
+  t.querySelectorAll('input[data-trial]').forEach(inp=>inp.addEventListener('input',()=>{
+    const i=+inp.dataset.trial, k=inp.dataset.k;
+    if(!state.trials[i]) state.trials[i]={};
+    state.trials[i][k]=inp.value;
+    save();
+  }));
+}
 renderTrials(); setTimeout(resetCars,100);
-function chooseMis(btn){document.querySelectorAll('.choice').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); state.choice=btn.dataset.choice; save(); const fb=document.getElementById('misFb'); fb.className='feedback show '+(state.choice==='right'?'good':'try'); fb.textContent=state.choice==='right'?'✓ Correct. The forces are equal and opposite. The smaller mass usually has the bigger change in motion.':'Not quite. Look back at your force numbers: the force on each car during the same collision is equal.';}
+
+function chooseMis(btn){document.querySelectorAll('.choice').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); state.choice=btn.dataset.choice; save(); const fb=document.getElementById('misFb'); fb.className='feedback show '+(state.choice==='right'?'good':'try'); fb.textContent=state.choice==='right'?'✓ Correct. The forces are equal and opposite. The smaller mass always undergoes the bigger change in velocity.':'Not quite. Look back at your dynamic graph or data table: the contact force on each car during the impact is perfectly identical.';}
 const checkItems=['I used the phrase equal and opposite.','I included force evidence from at least one collision.','I explained that mass affects the change in motion.','I corrected the idea that the bigger object always applies more force.'];
 const fc=document.getElementById('finalCheck'); checkItems.forEach((t,i)=>{const l=document.createElement('label'); l.className='crow'; l.innerHTML='<input type="checkbox" data-check="'+i+'"> '+t; fc.appendChild(l); const cb=l.querySelector('input'); cb.checked=!!state.checks[i]; cb.addEventListener('change',()=>{state.checks[i]=cb.checked; save();});});
 if(state.choice){const btn=document.querySelector('.choice[data-choice="'+state.choice+'"]'); if(btn)chooseMis(btn);}
-function emailWork(){const f=state.fields; let b='ACTION-REACTION BUMPER CARS — Science Week 4\n'; b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n'; b+='STAGE 1 Prediction:\n'+((f.s1q||'').trim()||'(no answer)')+'\n\n'; b+='STAGE 2 Prediction:\n'+((f.s2q||'').trim()||'(no answer)')+'\n\n'; b+='STAGE 3 Observation:\n'+((f.s3q||'').trim()||'(no answer)')+'\n\n'; b+='STAGE 4 Evidence trials:\n'; state.trials.forEach((tr,i)=>{b+='Trial '+(i+1)+': red mass '+(tr.rm||'')+', blue mass '+(tr.bm||'')+', speed '+(tr.sp||'')+', force on red '+(tr.fr||'')+', force on blue '+(tr.fb||'')+', changed most '+(tr.chg||'')+'\n';}); b+='Pattern noticed: '+((f.s4q||'').trim()||'(no answer)')+'\n\n'; b+='Review choice: '+(state.choice||'(not chosen)')+'\n'; b+='Checklist: '+Object.values(state.checks).filter(Boolean).length+' / '+checkItems.length+'\n'; b+='Final explanation:\n'+((f.finalExplain||'').trim()||'(no answer)')+'\n\n—\nSent from Base 6'; const su=encodeURIComponent('Base 6 · Action-Reaction Bumper Cars'); window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank'); const n=document.getElementById('notify'); n.textContent='✓ Opening your email — your bumper car investigation is ready to send.'; n.classList.add('show');}
+
+function generateReportText() {
+  const f=state.fields; 
+  let b='ACTION-REACTION BUMPER CARS — Science Week 4\n'; 
+  b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n'; 
+  b+='STAGE 1 Prediction:\n'+((f.s1q||'').trim()||'(no answer)')+'\n\n'; 
+  b+='STAGE 2 Prediction:\n'+((f.s2q||'').trim()||'(no answer)')+'\n\n'; 
+  b+='STAGE 3 Observation:\n'+((f.s3q||'').trim()||'(no answer)')+'\n\n'; 
+  b+='STAGE 4 Evidence trials:\n'; 
+  state.trials.forEach((tr,i)=>{b+='Trial '+(i+1)+': red mass '+(tr.rm||'')+', blue mass '+(tr.bm||'')+', red speed '+(tr.sp||'')+', blue speed '+(tr.bsp!==undefined?tr.bsp:'')+', force on red '+(tr.fr||'')+', force on blue '+(tr.fb||'')+', changed most '+(tr.chg||'')+'\n';}); 
+  b+='Pattern noticed: '+((f.s4q||'').trim()||'(no answer)')+'\n\n'; 
+  b+='Review choice: '+(state.choice||'(not chosen)')+'\n'; 
+  b+='Checklist: '+Object.values(state.checks).filter(Boolean).length+' / '+checkItems.length+'\n'; 
+  b+='Final explanation:\n'+((f.finalExplain||'').trim()||'(no answer)')+'\n\n—\nSent from Base 6 via Chromebook Utility';
+  return b;
+}
+
+function emailWork(){
+  const b=generateReportText();
+  const su=encodeURIComponent('Base 6 · Action-Reaction Bumper Cars'); 
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank'); 
+  const n=document.getElementById('notify'); n.textContent='✓ Opening your email — your bumper car investigation is ready to send.'; n.className='notify show';
+}
+
+function copyWork(){
+  const b=generateReportText();
+  navigator.clipboard.writeText(b).then(()=>{
+    const n=document.getElementById('notify'); n.textContent='✓ Report text successfully copied to clipboard! You can now paste it into Google Classroom or a Google Doc.'; n.className='notify show';
+  }).catch(()=>{
+    alert('Clipboard transfer failed. Please copy text layout manually.');
+  });
+}
+
+function nukeLab(){
+  if(confirm('Are you sure you want to completely erase all data records and start over? This cannot be undone.')){
+    localStorage.removeItem(STORE_KEY);
+    location.reload();
+  }
+}
 goStage(state.stage||1);
 </script>
 </body>
