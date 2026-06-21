@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Media · Week 4 · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:#fef8f4; color:#1a1a1a; min-height:100vh; }
+  .site-header { background:#4a6fa5; padding:1.25rem 2rem; display:flex; align-items:center; gap:.75rem; }
+  .back-link { color:#fff; font-size:.9rem; font-weight:700; text-decoration:none; opacity:.9; }
+  .back-link:hover { opacity:1; }
+  .breadcrumb { color:#fff; font-size:.9rem; font-weight:700; opacity:.65; }
+  .subject-hero { background:#4a6fa5; padding:1.5rem 2rem 2.5rem; text-align:center; }
+  .subject-hero .subject-label { font-size:.85rem; font-weight:700; color:#fff; opacity:.85; letter-spacing:.1em; text-transform:uppercase; margin-bottom:.5rem; }
+  .subject-hero h1 { font-size:2.2rem; font-weight:700; color:#fff; line-height:1.2; }
+  .main { max-width:900px; margin:0 auto; padding:2.4rem 1.5rem 4rem; }
+  .focus-card { background:#edf3fb; border:2px solid #c7d6ea; border-radius:14px; padding:1.25rem 1.5rem; margin-bottom:1.4rem; }
+  .focus-card p.label { font-size:.8rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#315077; margin-bottom:.6rem; }
+  .focus-card ul { list-style:none; }
+  .focus-card li { font-size:.93rem; line-height:1.7; color:#333; padding-left:1.4rem; position:relative; }
+  .focus-card li::before { content:"✦"; position:absolute; left:0; color:#007291; }
+  .visual-strip { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:.75rem; margin:0 0 2rem; }
+  .visual-tile { background:#fff; border:1.5px solid #e0d8d0; border-radius:13px; padding:.85rem; min-height:110px; }
+  .visual-tile svg { width:100%; height:64px; display:block; margin-bottom:.35rem; }
+  .visual-tile b { color:#4a6fa5; font-size:.9rem; }
+  .visual-tile p { color:#666; font-size:.78rem; line-height:1.35; margin-top:.2rem; }
+  .section-label { font-size:.8rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#4a6fa5; margin-bottom:1.25rem; }
+  .resources-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; }
+  .resource-card { background:#fff; border:2px solid #4a6fa5; border-radius:14px; padding:1.4rem 1.5rem; display:flex; flex-direction:column; gap:.4rem; text-decoration:none; color:inherit; transition:box-shadow .15s, transform .1s; }
+  .resource-card:hover { box-shadow:0 4px 16px rgba(0,0,0,.08); transform:translateY(-2px); }
+  .resource-icon { font-size:1.8rem; margin-bottom:.3rem; }
+  .resource-name { font-size:1.1rem; font-weight:700; color:#4a6fa5; line-height:1.3; }
+  .resource-desc { font-size:.88rem; color:#555; line-height:1.5; flex-grow:1; }
+  .resource-arrow { margin-top:.75rem; font-size:.85rem; font-weight:700; color:#ef7724; }
+  .resource-tag { display:inline-block; align-self:flex-start; font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#315077; background:#e8eef8; border-radius:20px; padding:2px 9px; margin-bottom:.3rem; }
+  .resource-tag.worksheet { color:#c05a10; background:#fff3e8; }
+  .resource-tag.game { color:#315077; background:#e8eef8; }
+  .tracker-row { margin-top:.9rem; padding-top:.8rem; border-top:1px solid #f0e8e0; display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+  .tracker-label { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#aaa; }
+  .initials-row { display:flex; gap:.35rem; flex-wrap:wrap; }
+  .initial-btn { font-family:'Atkinson Hyperlegible', sans-serif; font-size:.72rem; font-weight:700; min-width:36px; height:28px; padding:0 6px; border-radius:7px; border:1.5px solid #e0d8d0; background:#fff; color:#999; cursor:pointer; transition:background .12s,border-color .12s,color .12s; }
+  .initial-btn:hover { border-color:#c7d6ea; }
+  .initial-btn.done { background:#e6f5e6; border-color:#2e8b57; color:#1a5e1a; }
+  a:focus-visible, button:focus-visible { outline:3px solid #007291; outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:.8rem; color:#888; border-top:1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+<header class="site-header"><a class="back-link" href="../index.html">← Week 4</a><span class="breadcrumb">/ Digital Media</span></header>
+<div class="subject-hero"><p class="subject-label">Week 4 · Digital Media</p><h1>📱 Digital Media</h1></div>
+<main class="main">
+  <div class="focus-card">
+    <p class="label">This week we are exploring</p>
+    <ul>
+      <li>How recommendation algorithms build a profile from likes, dislikes and watch choices</li>
+      <li>Why simple chatbots follow rules rather than truly understanding meaning</li>
+      <li>How search engines crawl, rank and return websites</li>
+      <li>How to judge whether digital content, images and claims are reliable</li>
+      <li>How to spot clues that an image might be AI-generated</li>
+    </ul>
+  </div>
+
+  <div class="visual-strip" aria-label="Digital media visual overview">
+    <div class="visual-tile">
+      <svg viewBox="0 0 160 70" role="img" aria-label="Recommendation profile diagram"><rect x="8" y="10" width="42" height="50" rx="8" fill="#e8eef8" stroke="#4a6fa5"/><circle cx="29" cy="30" r="10" fill="#4a6fa5"/><rect x="19" y="44" width="20" height="8" rx="4" fill="#4a6fa5"/><path d="M55 35 H102" stroke="#ef7724" stroke-width="4" stroke-linecap="round"/><rect x="108" y="12" width="42" height="46" rx="8" fill="#e8f4f7" stroke="#007291"/><path d="M118 45 L128 20 L138 45" fill="none" stroke="#007291" stroke-width="5" stroke-linecap="round"/></svg>
+      <b>Profiles</b><p>Clicks become signals.</p>
+    </div>
+    <div class="visual-tile">
+      <svg viewBox="0 0 160 70" role="img" aria-label="Chatbot rule diagram"><rect x="12" y="12" width="58" height="42" rx="12" fill="#fff3e8" stroke="#ef7724"/><text x="41" y="38" text-anchor="middle" font-size="18">if</text><path d="M76 33 H100" stroke="#4a6fa5" stroke-width="4" stroke-linecap="round"/><rect x="106" y="12" width="42" height="42" rx="12" fill="#e8eef8" stroke="#4a6fa5"/><text x="127" y="38" text-anchor="middle" font-size="18">then</text></svg>
+      <b>Rules</b><p>Bots can match keywords.</p>
+    </div>
+    <div class="visual-tile">
+      <svg viewBox="0 0 160 70" role="img" aria-label="Search crawler diagram"><circle cx="38" cy="35" r="18" fill="#e8f4f7" stroke="#007291" stroke-width="3"/><circle cx="86" cy="18" r="12" fill="#e8eef8" stroke="#4a6fa5" stroke-width="3"/><circle cx="116" cy="48" r="14" fill="#fff3e8" stroke="#ef7724" stroke-width="3"/><path d="M54 29 L75 22 M53 42 L102 47 M95 27 L108 38" stroke="#555" stroke-width="3" stroke-linecap="round"/></svg>
+      <b>Search</b><p>Crawlers connect pages.</p>
+    </div>
+    <div class="visual-tile">
+      <svg viewBox="0 0 160 70" role="img" aria-label="Real or AI image clues"><rect x="16" y="12" width="55" height="42" rx="8" fill="#f7f4ee" stroke="#999"/><circle cx="40" cy="31" r="12" fill="#f09a5b"/><path d="M88 18 h46 M88 32 h30 M88 46 h40" stroke="#4a6fa5" stroke-width="5" stroke-linecap="round"/><circle cx="68" cy="50" r="8" fill="#c0392b"/><text x="68" y="55" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">?</text></svg>
+      <b>Clues</b><p>Look closely before trusting.</p>
+    </div>
+  </div>
+
+  <p class="section-label">Resources</p>
+  <div class="resources-grid">
+    <a class="resource-card" href="algorithm-profile-builder.html" data-activity="algorithm-profile-builder">
+      <span class="resource-tag">Interactive</span><div class="resource-icon">🎬</div><span class="resource-name">The Algorithm Profile Builder</span>
+      <span class="resource-desc">Like or dislike mock movies and watch the hidden profile change. Try to make the recommendation engine believe you only like a specific type of content.</span><span class="resource-arrow">Open activity →</span>
+    </a>
+    <a class="resource-card" href="chatbot-rules-builder.html" data-activity="chatbot-rules-builder">
+      <span class="resource-tag">Interactive</span><div class="resource-icon">🤖</div><span class="resource-name">The Chatbot Rules Builder</span>
+      <span class="resource-desc">Build a keyword chatbot, test it in a chat window, then try to break it with tricky sentences. Learn the difference between rules and understanding.</span><span class="resource-arrow">Open activity →</span>
+    </a>
+    <a class="resource-card" href="search-credibility-lab.html" data-activity="search-credibility-lab">
+      <span class="resource-tag worksheet">Worksheet</span><div class="resource-icon">🔎</div><span class="resource-name">Search & Credibility Lab</span>
+      <span class="resource-desc">Adapted from the digital media worksheet: web crawlers, better search phrases, quotation marks, URL clues and three-step fact-checking.</span><span class="resource-arrow">Open worksheet →</span>
+    </a>
+    <a class="resource-card" href="media-maker-ai-detective.html" data-activity="media-maker-ai-detective">
+      <span class="resource-tag worksheet">Worksheet</span><div class="resource-icon">🖼️</div><span class="resource-name">Media Maker & AI Image Detective</span>
+      <span class="resource-desc">Plan a Year 3 presentation, choose the right media, then inspect AI and real photo clues including odd bodies, warped backgrounds, lighting and texture.</span><span class="resource-arrow">Open worksheet →</span>
+    </a>
+    <a class="resource-card" href="https://wordwall.net/play/115281/979/735" target="_blank" rel="noopener" data-activity="real-or-ai-wordwall">
+      <span class="resource-tag game">Game</span><div class="resource-icon">🕵️</div><span class="resource-name">Real or AI?</span>
+      <span class="resource-desc">Play the Wordwall game and test how quickly you can decide whether an image is real or AI-generated. Opens in a new tab.</span><span class="resource-arrow">Play game →</span>
+    </a>
+  </div>
+</main>
+<footer>Base 6 · Chilton Bridge School</footer>
+<script>
+const TRACKER_KEY='base6_w4_digital_media_tracker';
+const STUDENTS=['LW','AP','LS','LC','HK','JTK'];
+function loadState(){ try{return JSON.parse(localStorage.getItem(TRACKER_KEY))||{};}catch(e){return{};} }
+function saveState(s){ try{localStorage.setItem(TRACKER_KEY,JSON.stringify(s));}catch(e){} }
+function buildTrackers(){
+  const state=loadState();
+  document.querySelectorAll('.resource-card[data-activity]').forEach(card=>{
+    const activity=card.dataset.activity;
+    const strip=document.createElement('div'); strip.className='tracker-row';
+    const label=document.createElement('span'); label.className='tracker-label'; label.textContent='completed by'; strip.appendChild(label);
+    const row=document.createElement('div'); row.className='initials-row';
+    STUDENTS.forEach(initials=>{
+      const btn=document.createElement('button');
+      btn.className='initial-btn'+(state[activity]&&state[activity][initials]?' done':''); btn.textContent=initials;
+      btn.title=state[activity]&&state[activity][initials]?initials+' — done ✓':initials+' — not yet';
+      btn.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); const s=loadState(); if(!s[activity]) s[activity]={}; s[activity][initials]=!s[activity][initials]; saveState(s); btn.classList.toggle('done',!!s[activity][initials]); btn.title=s[activity][initials]?initials+' — done ✓':initials+' — not yet'; });
+      row.appendChild(btn);
+    });
+    strip.appendChild(row); card.appendChild(strip);
+  });
+}
+buildTrackers();
+</script>
+</body>
+</html>
