@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Enterprise Builder · Preparation for Adulthood</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --teal:#007291; --teal-dark:#005a73; --cream:#fef8f4; --ink:#1a1a1a; --muted:#555;
+  --orange:#ef7724; --orange-soft:#fff3e8; --orange-line:#fcd8bc;
+  --green:#2e8b57; --green-soft:#eaf7f0; --green-line:#a9dfbf;
+  --pink:#c2185b; --pink-soft:#fbe4ed; --purple:#7b5ea7; --purple-soft:#efe9f6;
+  --blue:#1a5276; --blue-soft:#eaf4fb; --gold:#b8860b; --gold-soft:#fff8e1;
+  --line:#e0d8d0; --card:#ffffff;
+}
+body { font-family: 'Atkinson Hyperlegible', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+.site-header { background: var(--teal); padding: 1.15rem 1.5rem; }
+.back-link { color: var(--cream); text-decoration: none; font-weight: 700; opacity: .9; font-size: .9rem; }
+.back-link:hover { opacity: 1; }
+.hero { background: var(--teal); padding: 1.5rem 1.5rem 2.35rem; text-align: center; color: var(--cream); }
+.hero .label { font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; opacity: .8; margin-bottom: .45rem; }
+.hero h1 { font-size: clamp(1.75rem, 4vw, 2.35rem); line-height: 1.15; margin-bottom: .6rem; }
+.hero p { max-width: 680px; margin: 0 auto; font-size: .96rem; line-height: 1.6; opacity: .9; }
+.main { max-width: 1060px; margin: 0 auto; padding: 1.7rem 1.2rem 4rem; }
+.focus-card, .card { background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 1.2rem 1.35rem; margin-bottom: 1.2rem; }
+.focus-card { background: #fff7f0; border-color: var(--orange-line); }
+.eyebrow { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--orange); margin-bottom: .45rem; }
+h2 { font-size: 1.18rem; color: var(--teal); margin-bottom: .65rem; line-height: 1.25; }
+h3 { font-size: .98rem; color: var(--ink); margin-bottom: .4rem; line-height: 1.35; }
+p { line-height: 1.58; color: var(--muted); font-size: .92rem; }
+.small { font-size: .8rem; color: #777; line-height: 1.45; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: .9rem; }
+.tile { background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 1rem; }
+.tile.orange { background: var(--orange-soft); border-color: var(--orange-line); }
+.tile.green { background: var(--green-soft); border-color: var(--green-line); }
+.tile.blue { background: var(--blue-soft); border-color: #aed6f1; }
+.tile.gold { background: var(--gold-soft); border-color: #f0d080; }
+.tile.purple { background: var(--purple-soft); border-color: #d6c8ea; }
+.icon { font-size: 2rem; display: block; margin-bottom: .35rem; }
+.chips, .btn-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .65rem; }
+.chip, .btn, .mini-btn { font-family: inherit; font-weight: 700; border-radius: 999px; cursor: pointer; transition: transform .1s, background .15s, border-color .15s; }
+.chip { border: 2px solid var(--line); background: white; padding: .5rem .85rem; color: var(--ink); font-size: .86rem; }
+.chip:hover, .chip.sel { border-color: var(--teal); background: #e6f5f8; color: var(--teal); }
+.btn { border: none; padding: .65rem 1rem; background: var(--teal); color: white; font-size: .9rem; text-decoration: none; display: inline-flex; align-items: center; gap: .35rem; }
+.btn:hover { transform: translateY(-1px); background: var(--teal-dark); }
+.btn.secondary { background: var(--orange); }
+.btn.secondary:hover { background: #c05a10; }
+.btn.ghost { color: var(--teal); background: white; border: 2px solid var(--teal); }
+.btn.ghost:hover { background: #e6f5f8; }
+.mini-btn { border: 2px solid var(--line); background: white; padding: .45rem .75rem; font-size: .8rem; }
+.mini-btn:hover { border-color: var(--teal); }
+label { display: block; font-size: .84rem; font-weight: 700; color: var(--ink); margin: .75rem 0 .35rem; }
+textarea, input[type=text], input[type=number], select { width: 100%; font-family: inherit; font-size: .92rem; padding: .7rem .8rem; border: 2px solid var(--line); border-radius: 10px; background: #fffaf6; color: var(--ink); line-height: 1.5; }
+textarea { min-height: 82px; resize: vertical; }
+input:focus, textarea:focus, select:focus { outline: 3px solid rgba(0,114,145,.22); border-color: var(--teal); }
+.table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.table th, .table td { padding: .65rem .55rem; border-bottom: 1px solid #eee5dc; text-align: left; vertical-align: top; }
+.table th { color: var(--teal); font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
+.notice { background: #fff3e8; border: 2px solid var(--orange-line); border-radius: 12px; padding: .85rem 1rem; font-size: .86rem; color: #6b350b; line-height: 1.55; }
+.success { display:none; background: var(--green-soft); border: 2px solid var(--green); color: #1a5e1a; border-radius: 10px; padding: .75rem .9rem; font-size: .88rem; font-weight: 700; margin-top: .75rem; }
+.success.show { display:block; }
+.stage-tabs { position: sticky; top: 0; z-index: 20; display: flex; gap: .4rem; overflow-x: auto; padding: .6rem 0; background: var(--cream); border-bottom: 1px solid var(--line); margin-bottom: 1rem; }
+.stage-tabs button { white-space: nowrap; font-family: inherit; border: 2px solid var(--line); background: white; color: #777; border-radius: 999px; padding: .45rem .8rem; font-size: .78rem; font-weight: 700; cursor: pointer; }
+.stage-tabs button.active { background: var(--teal); border-color: var(--teal); color: white; }
+.stage { display:none; }
+.stage.show { display:block; }
+.checklist { display: grid; gap: .55rem; }
+.check { display:flex; gap:.65rem; align-items:flex-start; background:#fafaf8; border:2px solid var(--line); border-radius:12px; padding:.75rem .85rem; font-size:.88rem; font-weight:700; line-height:1.45; cursor:pointer; }
+.check input { width:20px; height:20px; accent-color: var(--green); flex: 0 0 auto; }
+footer { text-align:center; padding: 1.5rem; border-top:1px solid var(--line); color:#888; font-size:.8rem; }
+@media (max-width: 720px) { .main { padding-left: 1rem; padding-right: 1rem; } .grid { grid-template-columns: 1fr; } }
+@media print { .site-header, .stage-tabs, .btn-row, footer { display:none !important; } body { background:white; } .main { max-width:none; padding:0; } .stage { display:block !important; } .card, .focus-card { break-inside: avoid; } }
+
+.impact-map { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:.75rem; }
+.impact-card { border:2px solid var(--line); border-radius:14px; padding:1rem; background:white; cursor:pointer; }
+.impact-card.sel { border-color:var(--purple); background:var(--purple-soft); }
+.canvas { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:.8rem; }
+.canvas .tile textarea { min-height:96px; }
+.pitch-preview { background:#101824; color:white; border-radius:16px; padding:1.1rem; }
+.pitch-preview p, .pitch-preview h3 { color:white; }
+</style></head>
+<body>
+<header class="site-header"><a class="back-link" href="index.html">← Preparation for Adulthood</a></header>
+<section class="hero"><p class="label">Activity 3 · Community Impact & Enterprise</p><h1>🌍 Community Enterprise Builder</h1><p>Explore how to start a small business that could help people around you.</p></section>
+<main class="main">
+<nav class="stage-tabs"><button class="active" data-stage="stage-1">1 · Need</button><button data-stage="stage-2">2 · Idea</button><button data-stage="stage-3">3 · Plan</button><button data-stage="stage-4">4 · Pitch</button></nav>
+<section class="stage show" id="stage-1"><div class="focus-card"><p class="eyebrow">Learning goal</p><h2>I can explore how to start a small business.</h2><p>A small business starts with a need: something people want, a problem to solve, or a helpful service.</p></div><div class="card"><h2>Spot a community need</h2><p>Tap one that interests you, or add your own.</p><div class="impact-map">
+  <div class="impact-card" onclick="selectNeed(this,'People need affordable snacks or drinks')"><span class="icon">🥤</span><h3>Affordable snacks</h3></div>
+  <div class="impact-card" onclick="selectNeed(this,'People need small gifts or cards')"><span class="icon">🎁</span><h3>Small gifts</h3></div>
+  <div class="impact-card" onclick="selectNeed(this,'People need help with simple jobs')"><span class="icon">🤝</span><h3>Helpful jobs</h3></div>
+  <div class="impact-card" onclick="selectNeed(this,'People want recycled or reused products')"><span class="icon">♻️</span><h3>Reuse and recycle</h3></div>
+  <div class="impact-card" onclick="selectNeed(this,'People need things organised or cleaned')"><span class="icon">🧹</span><h3>Organising</h3></div>
+  <div class="impact-card" onclick="selectNeed(this,'People want fun at break or lunchtime')"><span class="icon">🎲</span><h3>Fun activity</h3></div>
+</div><label for="communityNeed">The need I noticed</label><textarea id="communityNeed" data-save placeholder="I noticed that..."></textarea></div></section>
+<section class="stage" id="stage-2"><div class="card"><p class="eyebrow">Business idea</p><h2>What could you offer?</h2><div class="chips"><button class="chip" data-target="offerType" onclick="toggleChip(this,'offerType')">Product</button><button class="chip" data-target="offerType" onclick="toggleChip(this,'offerType')">Service</button><button class="chip" data-target="offerType" onclick="toggleChip(this,'offerType')">Event</button><button class="chip" data-target="offerType" onclick="toggleChip(this,'offerType')">Upcycled item</button></div><input type="hidden" id="offerType" data-save><label for="businessIdea">My small business idea</label><textarea id="businessIdea" data-save placeholder="My idea is..."></textarea><label for="whoHelps">Who would it help?</label><textarea id="whoHelps" data-save placeholder="It would help..."></textarea></div></section>
+<section class="stage" id="stage-3"><div class="card"><p class="eyebrow">Simple plan</p><h2>Build your business canvas</h2><div class="canvas">
+  <div class="tile orange"><h3>1 · What I offer</h3><textarea id="offer" data-save placeholder="I will offer..."></textarea></div>
+  <div class="tile green"><h3>2 · Who it is for</h3><textarea id="audience" data-save placeholder="It is for..."></textarea></div>
+  <div class="tile blue"><h3>3 · What I need</h3><textarea id="needs" data-save placeholder="I need..."></textarea></div>
+  <div class="tile gold"><h3>4 · Price or value</h3><textarea id="priceValue" data-save placeholder="People might pay... because..."></textarea></div>
+  <div class="tile purple"><h3>5 · Good impact</h3><textarea id="impact" data-save placeholder="This helps the community because..."></textarea></div>
+  <div class="tile"><h3>6 · First small step</h3><textarea id="firstStep" data-save placeholder="My first step is..."></textarea></div>
+</div></div></section>
+<section class="stage" id="stage-4"><div class="card"><p class="eyebrow">Pitch</p><h2>Explain your idea clearly</h2><label for="businessName">Business name</label><input type="text" id="businessName" data-save placeholder="e.g. Helpful Hands"><label for="pitchText">My pitch</label><textarea id="pitchText" data-save placeholder="My business is called... It helps... People would want it because..."></textarea><button class="mini-btn" onclick="buildPitch()">Build preview</button><div class="pitch-preview" style="margin-top:1rem;"><h3 id="previewName">Your business name</h3><p id="previewPitch">Your pitch will appear here.</p></div><div class="checklist" style="margin-top:1rem;"><label class="check"><input type="checkbox"> I know what problem or need I am solving.</label><label class="check"><input type="checkbox"> I know who my customers could be.</label><label class="check"><input type="checkbox"> I know what I need to start.</label><label class="check"><input type="checkbox"> I can explain the community impact.</label></div><div class="btn-row"><button class="btn" onclick="sendCommunity()">📧 Send to Jay</button><button class="btn ghost" onclick="printPage()">Print / save as PDF</button><button class="btn secondary" onclick="markComplete('w4-adulthood-community')">Mark complete</button></div><div class="success" id="notify"></div></div></section>
+</main><footer>Base 6 · Preparation for Adulthood</footer>
+<script>
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+function saveField(el) { try { localStorage.setItem(el.id, el.value); } catch(e) {} }
+function loadFields() { document.querySelectorAll('[data-save]').forEach(el => { try { const v = localStorage.getItem(el.id); if (v !== null) el.value = v; } catch(e) {} el.addEventListener('input', () => saveField(el)); }); }
+function showStage(id) { document.querySelectorAll('.stage').forEach(s => s.classList.toggle('show', s.id === id)); document.querySelectorAll('.stage-tabs button').forEach(b => b.classList.toggle('active', b.dataset.stage === id)); window.scrollTo({top:0, behavior:'smooth'}); }
+function setupTabs() { document.querySelectorAll('.stage-tabs button').forEach(b => b.addEventListener('click', () => showStage(b.dataset.stage))); }
+function toggleChip(btn, targetId) { btn.classList.toggle('sel'); const target = document.getElementById(targetId); if (!target) return; const labels = Array.from(document.querySelectorAll('[data-target="'+targetId+'"][class*="chip"].sel')).map(b => b.textContent.trim()); target.value = labels.join(', '); target.dispatchEvent(new Event('input')); }
+function printPage() { window.print(); }
+function markComplete(key) { try { localStorage.setItem(key, 'complete'); } catch(e) {} const n=document.getElementById('notify'); if(n){n.textContent='Saved on this device.'; n.classList.add('show');} }
+function mailToJay(subject, body) { const url='https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(TEACHER_EMAIL)+'&su='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body); window.open(url,'_blank'); }
+window.addEventListener('DOMContentLoaded', () => { loadFields(); setupTabs(); });
+
+function selectNeed(card,text){ document.querySelectorAll('.impact-card').forEach(c=>c.classList.remove('sel')); card.classList.add('sel'); const el=document.getElementById('communityNeed'); el.value=text; el.dispatchEvent(new Event('input')); }
+function buildPitch(){ document.getElementById('previewName').textContent=document.getElementById('businessName').value||'Your business name'; document.getElementById('previewPitch').textContent=document.getElementById('pitchText').value||'Your pitch will appear here.'; }
+function sendCommunity(){ buildPitch(); const body='COMMUNITY ENTERPRISE BUILDER
+
+Need: '+document.getElementById('communityNeed').value+'
+
+Offer type: '+document.getElementById('offerType').value+'
+
+Idea: '+document.getElementById('businessIdea').value+'
+
+Who it helps: '+document.getElementById('whoHelps').value+'
+
+Offer: '+document.getElementById('offer').value+'
+Audience: '+document.getElementById('audience').value+'
+Needs: '+document.getElementById('needs').value+'
+Price/value: '+document.getElementById('priceValue').value+'
+Impact: '+document.getElementById('impact').value+'
+First step: '+document.getElementById('firstStep').value+'
+
+Business name: '+document.getElementById('businessName').value+'
+Pitch: '+document.getElementById('pitchText').value; mailToJay('Base 6 · Community Enterprise Builder', body); }
+</script></body></html>

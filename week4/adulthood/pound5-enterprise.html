@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>£5 Enterprise Challenge · Preparation for Adulthood</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --teal:#007291; --teal-dark:#005a73; --cream:#fef8f4; --ink:#1a1a1a; --muted:#555;
+  --orange:#ef7724; --orange-soft:#fff3e8; --orange-line:#fcd8bc;
+  --green:#2e8b57; --green-soft:#eaf7f0; --green-line:#a9dfbf;
+  --pink:#c2185b; --pink-soft:#fbe4ed; --purple:#7b5ea7; --purple-soft:#efe9f6;
+  --blue:#1a5276; --blue-soft:#eaf4fb; --gold:#b8860b; --gold-soft:#fff8e1;
+  --line:#e0d8d0; --card:#ffffff;
+}
+body { font-family: 'Atkinson Hyperlegible', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+.site-header { background: var(--teal); padding: 1.15rem 1.5rem; }
+.back-link { color: var(--cream); text-decoration: none; font-weight: 700; opacity: .9; font-size: .9rem; }
+.back-link:hover { opacity: 1; }
+.hero { background: var(--teal); padding: 1.5rem 1.5rem 2.35rem; text-align: center; color: var(--cream); }
+.hero .label { font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; opacity: .8; margin-bottom: .45rem; }
+.hero h1 { font-size: clamp(1.75rem, 4vw, 2.35rem); line-height: 1.15; margin-bottom: .6rem; }
+.hero p { max-width: 680px; margin: 0 auto; font-size: .96rem; line-height: 1.6; opacity: .9; }
+.main { max-width: 1060px; margin: 0 auto; padding: 1.7rem 1.2rem 4rem; }
+.focus-card, .card { background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 1.2rem 1.35rem; margin-bottom: 1.2rem; }
+.focus-card { background: #fff7f0; border-color: var(--orange-line); }
+.eyebrow { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--orange); margin-bottom: .45rem; }
+h2 { font-size: 1.18rem; color: var(--teal); margin-bottom: .65rem; line-height: 1.25; }
+h3 { font-size: .98rem; color: var(--ink); margin-bottom: .4rem; line-height: 1.35; }
+p { line-height: 1.58; color: var(--muted); font-size: .92rem; }
+.small { font-size: .8rem; color: #777; line-height: 1.45; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: .9rem; }
+.tile { background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 1rem; }
+.tile.orange { background: var(--orange-soft); border-color: var(--orange-line); }
+.tile.green { background: var(--green-soft); border-color: var(--green-line); }
+.tile.blue { background: var(--blue-soft); border-color: #aed6f1; }
+.tile.gold { background: var(--gold-soft); border-color: #f0d080; }
+.tile.purple { background: var(--purple-soft); border-color: #d6c8ea; }
+.icon { font-size: 2rem; display: block; margin-bottom: .35rem; }
+.chips, .btn-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .65rem; }
+.chip, .btn, .mini-btn { font-family: inherit; font-weight: 700; border-radius: 999px; cursor: pointer; transition: transform .1s, background .15s, border-color .15s; }
+.chip { border: 2px solid var(--line); background: white; padding: .5rem .85rem; color: var(--ink); font-size: .86rem; }
+.chip:hover, .chip.sel { border-color: var(--teal); background: #e6f5f8; color: var(--teal); }
+.btn { border: none; padding: .65rem 1rem; background: var(--teal); color: white; font-size: .9rem; text-decoration: none; display: inline-flex; align-items: center; gap: .35rem; }
+.btn:hover { transform: translateY(-1px); background: var(--teal-dark); }
+.btn.secondary { background: var(--orange); }
+.btn.secondary:hover { background: #c05a10; }
+.btn.ghost { color: var(--teal); background: white; border: 2px solid var(--teal); }
+.btn.ghost:hover { background: #e6f5f8; }
+.mini-btn { border: 2px solid var(--line); background: white; padding: .45rem .75rem; font-size: .8rem; }
+.mini-btn:hover { border-color: var(--teal); }
+label { display: block; font-size: .84rem; font-weight: 700; color: var(--ink); margin: .75rem 0 .35rem; }
+textarea, input[type=text], input[type=number], select { width: 100%; font-family: inherit; font-size: .92rem; padding: .7rem .8rem; border: 2px solid var(--line); border-radius: 10px; background: #fffaf6; color: var(--ink); line-height: 1.5; }
+textarea { min-height: 82px; resize: vertical; }
+input:focus, textarea:focus, select:focus { outline: 3px solid rgba(0,114,145,.22); border-color: var(--teal); }
+.table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.table th, .table td { padding: .65rem .55rem; border-bottom: 1px solid #eee5dc; text-align: left; vertical-align: top; }
+.table th { color: var(--teal); font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
+.notice { background: #fff3e8; border: 2px solid var(--orange-line); border-radius: 12px; padding: .85rem 1rem; font-size: .86rem; color: #6b350b; line-height: 1.55; }
+.success { display:none; background: var(--green-soft); border: 2px solid var(--green); color: #1a5e1a; border-radius: 10px; padding: .75rem .9rem; font-size: .88rem; font-weight: 700; margin-top: .75rem; }
+.success.show { display:block; }
+.stage-tabs { position: sticky; top: 0; z-index: 20; display: flex; gap: .4rem; overflow-x: auto; padding: .6rem 0; background: var(--cream); border-bottom: 1px solid var(--line); margin-bottom: 1rem; }
+.stage-tabs button { white-space: nowrap; font-family: inherit; border: 2px solid var(--line); background: white; color: #777; border-radius: 999px; padding: .45rem .8rem; font-size: .78rem; font-weight: 700; cursor: pointer; }
+.stage-tabs button.active { background: var(--teal); border-color: var(--teal); color: white; }
+.stage { display:none; }
+.stage.show { display:block; }
+.checklist { display: grid; gap: .55rem; }
+.check { display:flex; gap:.65rem; align-items:flex-start; background:#fafaf8; border:2px solid var(--line); border-radius:12px; padding:.75rem .85rem; font-size:.88rem; font-weight:700; line-height:1.45; cursor:pointer; }
+.check input { width:20px; height:20px; accent-color: var(--green); flex: 0 0 auto; }
+footer { text-align:center; padding: 1.5rem; border-top:1px solid var(--line); color:#888; font-size:.8rem; }
+@media (max-width: 720px) { .main { padding-left: 1rem; padding-right: 1rem; } .grid { grid-template-columns: 1fr; } }
+@media print { .site-header, .stage-tabs, .btn-row, footer { display:none !important; } body { background:white; } .main { max-width:none; padding:0; } .stage { display:block !important; } .card, .focus-card { break-inside: avoid; } }
+
+.money-panel { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:.8rem; }
+.money-box { background:var(--green-soft); border:2px solid var(--green-line); border-radius:14px; padding:1rem; text-align:center; }
+.money-box strong { display:block; font-size:1.8rem; color:var(--green); margin-top:.15rem; }
+.idea-card { cursor:pointer; } .idea-card.selected { outline:4px solid rgba(0,114,145,.18); border-color:var(--teal); }
+.calc-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.75rem; }
+.big-result { font-size:2rem; color:var(--teal); font-weight:700; }
+</style>
+</head>
+<body>
+<header class="site-header"><a class="back-link" href="index.html">← Preparation for Adulthood</a></header>
+<section class="hero"><p class="label">Activity 1 · Enterprise</p><h1>💷 The £5 Enterprise Challenge</h1><p>You start with £5. Your challenge is to plan a safe way to turn it into more money.</p></section>
+<main class="main">
+<nav class="stage-tabs" aria-label="Activity steps">
+  <button class="active" data-stage="stage-1">1 · Choose</button><button data-stage="stage-2">2 · Cost</button><button data-stage="stage-3">3 · Sell</button><button data-stage="stage-4">4 · Reflect</button>
+</nav>
+
+<section class="stage show" id="stage-1">
+  <div class="focus-card"><p class="eyebrow">Safe enterprise rules</p><div class="grid"><div class="notice">Ask Jay before buying or selling anything. No gambling, no risky dares, no online spending, and food ideas need adult approval.</div><div class="money-panel"><div class="money-box">Starting pot<strong>£5</strong></div><div class="money-box">Aim<strong>More than £5</strong></div></div></div></div>
+  <div class="card"><h2>Pick an idea to test</h2><p>Tap an idea, or create your own.</p><div class="grid" id="ideas">
+    <div class="tile orange idea-card" onclick="chooseIdea(this,'Make and sell bookmarks or cards')"><span class="icon">🎨</span><h3>Cards or bookmarks</h3><p>Use low-cost materials. Sell to people who want small handmade gifts.</p></div>
+    <div class="tile green idea-card" onclick="chooseIdea(this,'Buy supplies and make snack packs with adult approval')"><span class="icon">🍿</span><h3>Snack packs</h3><p>Only with adult approval. Check allergies and school rules first.</p></div>
+    <div class="tile blue idea-card" onclick="chooseIdea(this,'Offer a small helpful service')"><span class="icon">🧽</span><h3>Helpful service</h3><p>Offer a small task people value, like organising, cleaning or carrying.</p></div>
+    <div class="tile purple idea-card" onclick="chooseIdea(this,'Upcycle something into a product')"><span class="icon">♻️</span><h3>Upcycle</h3><p>Improve something old and sell it as something more useful or attractive.</p></div>
+  </div><label for="idea">My enterprise idea</label><textarea id="idea" data-save placeholder="My idea is..."></textarea></div>
+</section>
+
+<section class="stage" id="stage-2">
+  <div class="card"><p class="eyebrow">Budget check</p><h2>Can the idea make money?</h2><p>Estimate your costs and selling price. The calculator works out possible profit.</p>
+    <div class="calc-grid">
+      <div><label for="start">Starting money (£)</label><input type="number" id="start" value="5" min="0" step="0.01" oninput="calcProfit()"></div>
+      <div><label for="cost">Spend on supplies (£)</label><input type="number" id="cost" value="0" min="0" step="0.01" oninput="calcProfit()"></div>
+      <div><label for="items">Number sold</label><input type="number" id="items" value="0" min="0" step="1" oninput="calcProfit()"></div>
+      <div><label for="price">Price each (£)</label><input type="number" id="price" value="0" min="0" step="0.01" oninput="calcProfit()"></div>
+    </div>
+    <div class="grid" style="margin-top:1rem;"><div class="tile green"><h3>Money back</h3><div class="big-result" id="revenue">£0.00</div></div><div class="tile blue"><h3>Possible profit</h3><div class="big-result" id="profit">£0.00</div></div></div>
+    <label for="budgetNotes">What will you buy or use?</label><textarea id="budgetNotes" data-save placeholder="I will need..."></textarea>
+  </div>
+</section>
+
+<section class="stage" id="stage-3">
+  <div class="card"><p class="eyebrow">Customers and selling</p><h2>Who would want it?</h2><div class="chips">
+    <button class="chip" data-target="customers" onclick="toggleChip(this,'customers')">Students</button><button class="chip" data-target="customers" onclick="toggleChip(this,'customers')">Staff</button><button class="chip" data-target="customers" onclick="toggleChip(this,'customers')">Family</button><button class="chip" data-target="customers" onclick="toggleChip(this,'customers')">Visitors</button>
+  </div><input type="hidden" id="customers" data-save>
+  <label for="pitch">My quick pitch</label><textarea id="pitch" data-save placeholder="Would you like to buy...? It helps because..."></textarea>
+  <label for="risk">One thing that could go wrong, and my safe fix</label><textarea id="risk" data-save placeholder="Risk: ... Safe fix: ..."></textarea></div>
+</section>
+
+<section class="stage" id="stage-4">
+  <div class="card"><p class="eyebrow">Review</p><h2>Is this a good idea to try?</h2><div class="checklist">
+    <label class="check"><input type="checkbox"> It can be done safely with adult approval.</label>
+    <label class="check"><input type="checkbox"> It costs £5 or less to start.</label>
+    <label class="check"><input type="checkbox"> Someone might want to buy it.</label>
+    <label class="check"><input type="checkbox"> I can explain how it makes more money.</label>
+  </div><label for="finalPlan">My final plan</label><textarea id="finalPlan" data-save placeholder="I will start with £5. I will..."></textarea>
+  <div class="btn-row"><button class="btn" onclick="sendPlan()">📧 Send plan to Jay</button><button class="btn ghost" onclick="printPage()">Print / save as PDF</button><button class="btn secondary" onclick="markComplete('w4-adulthood-pound5')">Mark complete</button></div><div class="success" id="notify"></div></div>
+</section>
+</main><footer>Base 6 · Preparation for Adulthood</footer>
+<script>
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+function saveField(el) { try { localStorage.setItem(el.id, el.value); } catch(e) {} }
+function loadFields() { document.querySelectorAll('[data-save]').forEach(el => { try { const v = localStorage.getItem(el.id); if (v !== null) el.value = v; } catch(e) {} el.addEventListener('input', () => saveField(el)); }); }
+function showStage(id) { document.querySelectorAll('.stage').forEach(s => s.classList.toggle('show', s.id === id)); document.querySelectorAll('.stage-tabs button').forEach(b => b.classList.toggle('active', b.dataset.stage === id)); window.scrollTo({top:0, behavior:'smooth'}); }
+function setupTabs() { document.querySelectorAll('.stage-tabs button').forEach(b => b.addEventListener('click', () => showStage(b.dataset.stage))); }
+function toggleChip(btn, targetId) { btn.classList.toggle('sel'); const target = document.getElementById(targetId); if (!target) return; const labels = Array.from(document.querySelectorAll('[data-target="'+targetId+'"][class*="chip"].sel')).map(b => b.textContent.trim()); target.value = labels.join(', '); target.dispatchEvent(new Event('input')); }
+function printPage() { window.print(); }
+function markComplete(key) { try { localStorage.setItem(key, 'complete'); } catch(e) {} const n=document.getElementById('notify'); if(n){n.textContent='Saved on this device.'; n.classList.add('show');} }
+function mailToJay(subject, body) { const url='https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(TEACHER_EMAIL)+'&su='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body); window.open(url,'_blank'); }
+window.addEventListener('DOMContentLoaded', () => { loadFields(); setupTabs(); });
+
+function chooseIdea(card, text){ document.querySelectorAll('.idea-card').forEach(c=>c.classList.remove('selected')); card.classList.add('selected'); const el=document.getElementById('idea'); el.value=text; el.dispatchEvent(new Event('input')); }
+function money(n){ return '£'+(Number(n)||0).toFixed(2); }
+function calcProfit(){ const cost=Number(document.getElementById('cost').value)||0; const items=Number(document.getElementById('items').value)||0; const price=Number(document.getElementById('price').value)||0; const revenue=items*price; const profit=revenue-cost; document.getElementById('revenue').textContent=money(revenue); document.getElementById('profit').textContent=money(profit); }
+function sendPlan(){ const body='£5 ENTERPRISE CHALLENGE
+
+Idea: '+document.getElementById('idea').value+'
+
+Budget notes: '+document.getElementById('budgetNotes').value+'
+
+Customers: '+document.getElementById('customers').value+'
+
+Pitch: '+document.getElementById('pitch').value+'
+
+Risk and safe fix: '+document.getElementById('risk').value+'
+
+Final plan: '+document.getElementById('finalPlan').value; mailToJay('Base 6 · £5 Enterprise Challenge', body); }
+window.addEventListener('DOMContentLoaded', calcProfit);
+</script></body></html>
