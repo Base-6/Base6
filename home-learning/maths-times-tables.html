@@ -1,0 +1,2740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Times Table Farm | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:#007291;
+    --teal-deep:#005b75;
+    --teal-light:#e6f5f8;
+    --orange:#ef7724;
+    --orange-dark:#c05a10;
+    --orange-light:#fdeee0;
+    --cream:#fef8f4;
+    --ink:#1a1a1a;
+    --text:#333333;
+    --muted:#5f6470;
+    --card:#ffffff;
+    --line:#e0d8d0;
+    --green:#2e8b57;
+    --green-light:#e6f3ec;
+    --purple:#7b4fa3;
+    --purple-light:#f0eaf6;
+    --pink:#d6336c;
+    --pink-light:#fbe7ee;
+    --yellow:#fff4cc;
+    --shadow-teal:rgba(0,114,145,0.18);
+    --shadow-orange:rgba(239,119,36,0.18);
+    --shadow-soft:0 8px 22px rgba(26,26,26,0.08);
+    --focus:#1a1a1a;
+    --radius:16px;
+  }
+
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family:'Atkinson Hyperlegible', sans-serif;
+    background-color:var(--cream);
+    color:var(--ink);
+    min-height:100vh;
+  }
+  button, input, textarea, select { font:inherit; }
+  button { cursor:pointer; border:0; }
+  button:disabled { cursor:not-allowed; opacity:0.55; }
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  a:focus-visible,
+  summary:focus-visible {
+    outline:4px solid var(--focus);
+    outline-offset:3px;
+  }
+
+  .site-header {
+    position:relative;
+    background-color:var(--teal);
+    padding:1.35rem 1.25rem 2.35rem;
+    text-align:center;
+    overflow:hidden;
+  }
+  .site-header::before {
+    content:"";
+    position:absolute;
+    top:-80px;
+    left:-48px;
+    width:170px;
+    height:170px;
+    background:rgba(255,255,255,0.08);
+    border-radius:50%;
+  }
+  .site-header::after {
+    content:"";
+    position:absolute;
+    bottom:0;
+    right:-54px;
+    width:190px;
+    height:190px;
+    background:rgba(239,119,36,0.18);
+    border-radius:50%;
+  }
+  .site-header .header-inner { position:relative; z-index:2; }
+  .site-header .eyebrow {
+    font-size:0.76rem;
+    font-weight:700;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:#d7eef4;
+    margin-bottom:0.25rem;
+  }
+  .site-header h1 {
+    font-size:clamp(1.75rem, 4vw, 2.25rem);
+    font-weight:700;
+    color:var(--cream);
+    letter-spacing:0.02em;
+    line-height:1.16;
+  }
+  .site-header p:not(.eyebrow) {
+    font-size:1rem;
+    color:#d7eef4;
+    margin-top:0.35rem;
+  }
+  .header-wave {
+    position:absolute;
+    bottom:-1px;
+    left:0;
+    width:100%;
+    height:34px;
+    z-index:1;
+  }
+
+  .main {
+    max-width:1140px;
+    margin:0 auto;
+    padding:1.15rem 1.25rem 3.25rem;
+  }
+  .back-link {
+    display:inline-block;
+    margin-bottom:0.85rem;
+    font-size:0.9rem;
+    font-weight:700;
+    color:var(--teal);
+    text-decoration:none;
+  }
+  .back-link:hover { text-decoration:underline; }
+
+  .game-shell {
+    background:#fff;
+    border:2px solid var(--teal);
+    border-radius:22px;
+    box-shadow:0 10px 28px rgba(0,114,145,0.12);
+    overflow:hidden;
+  }
+  .game-banner {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:1rem;
+    align-items:center;
+    padding:1rem;
+    background:linear-gradient(135deg, var(--teal-light), #ffffff 60%);
+    border-bottom:2px solid rgba(0,114,145,0.16);
+  }
+  .activity-title {
+    display:flex;
+    align-items:center;
+    gap:0.85rem;
+    min-width:0;
+  }
+  .activity-badge {
+    flex:0 0 auto;
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    background:var(--teal-light);
+    border:2px solid var(--teal);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.75rem;
+  }
+  .activity-title h2 {
+    font-size:1.35rem;
+    color:var(--teal);
+    line-height:1.25;
+  }
+  .activity-title p {
+    margin-top:0.2rem;
+    color:#444;
+    line-height:1.45;
+    font-weight:700;
+  }
+  .quick-stats {
+    display:grid;
+    grid-template-columns:repeat(4, minmax(88px, auto));
+    gap:0.55rem;
+  }
+  .stat,
+  .coin-stat {
+    min-height:64px;
+    border-radius:var(--radius);
+    border:2px solid var(--teal);
+    background:#fff;
+    padding:0.55rem 0.7rem;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    box-shadow:0 4px 12px rgba(0,114,145,0.08);
+  }
+  .coin-stat {
+    background:var(--orange-light);
+    border-color:var(--orange);
+    color:var(--orange-dark);
+    font-size:1.35rem;
+    font-weight:700;
+  }
+  .stat strong {
+    display:block;
+    color:var(--teal);
+    font-size:1.35rem;
+    line-height:1.1;
+  }
+  .stat span {
+    font-size:0.72rem;
+    color:#444;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+  }
+  .play-hint {
+    margin:0;
+    padding:0.7rem 1rem;
+    background:#fff;
+    color:#444;
+    border-bottom:2px solid rgba(224,216,208,0.7);
+    font-weight:700;
+    line-height:1.45;
+  }
+
+
+  .order-card {
+    margin:1rem 1rem 0;
+    border:2px solid var(--orange);
+    border-radius:var(--radius);
+    background:linear-gradient(135deg, var(--orange-light), #ffffff 68%);
+    box-shadow:0 4px 14px rgba(239,119,36,0.1);
+    padding:0.9rem;
+  }
+  .order-top {
+    display:flex;
+    justify-content:space-between;
+    gap:0.8rem;
+    align-items:flex-start;
+    margin-bottom:0.75rem;
+  }
+  .order-title {
+    color:var(--orange-dark);
+    font-size:1.02rem;
+    font-weight:700;
+    line-height:1.35;
+  }
+  .order-snark {
+    color:#444;
+    font-size:0.92rem;
+    font-weight:700;
+    line-height:1.45;
+    margin-top:0.15rem;
+  }
+  .order-reward {
+    flex:0 0 auto;
+    border:2px solid var(--orange);
+    background:#fff;
+    color:var(--orange-dark);
+    border-radius:999px;
+    padding:0.45rem 0.65rem;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .order-items {
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(128px, 1fr));
+    gap:0.55rem;
+  }
+  .order-item {
+    border:2px solid rgba(0,114,145,0.24);
+    background:#fff;
+    border-radius:14px;
+    padding:0.6rem;
+    display:grid;
+    gap:0.35rem;
+  }
+  .order-item.done {
+    border-color:var(--green);
+    background:var(--green-light);
+  }
+  .order-item strong {
+    color:var(--teal);
+    font-size:0.92rem;
+  }
+  .order-item.done strong { color:var(--green); }
+  .mini-progress {
+    height:12px;
+    border-radius:999px;
+    background:#f4eee7;
+    border:2px solid #e0d8d0;
+    overflow:hidden;
+  }
+  .mini-progress span {
+    display:block;
+    height:100%;
+    background:linear-gradient(90deg, var(--orange), var(--green));
+  }
+  .seed-picker {
+    border:2px dashed rgba(239,119,36,0.35);
+    background:#fffdfb;
+    border-radius:var(--radius);
+    padding:0.75rem;
+    margin-bottom:0.85rem;
+  }
+  .seed-picker p {
+    margin:0 0 0.55rem;
+    color:#444;
+    font-size:0.9rem;
+    font-weight:700;
+    line-height:1.35;
+  }
+  .seed-options {
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:0.45rem;
+  }
+  .crop-chip {
+    min-height:48px;
+    border-radius:14px;
+    border:2px solid var(--teal);
+    background:#fff;
+    color:var(--teal);
+    padding:0.5rem;
+    font-weight:700;
+    text-align:left;
+    line-height:1.25;
+  }
+  .crop-chip small {
+    display:block;
+    color:#444;
+    font-size:0.72rem;
+    margin-top:0.12rem;
+  }
+  .crop-chip.active {
+    border-color:var(--orange);
+    background:var(--orange-light);
+    color:var(--orange-dark);
+  }
+  .crop-chip:disabled:not(.active) {
+    opacity:0.68;
+  }
+  .plot.locked {
+    border-color:#b9b2aa;
+    background:#f5efe8;
+    color:#59534d;
+  }
+  .plot.locked::before { background:#b9b2aa; }
+  .plot.locked:hover { transform:none; box-shadow:0 4px 12px rgba(26,26,26,0.08); }
+  .plot.ready {
+    border-color:var(--orange);
+    box-shadow:0 4px 16px rgba(239,119,36,0.18);
+  }
+  .plot.ready::before { background:var(--orange); }
+  .plot-meta {
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:0.35rem;
+    font-size:0.72rem;
+    font-weight:700;
+  }
+  .plot-meta span {
+    border-radius:999px;
+    background:#fff;
+    border:2px solid rgba(0,114,145,0.18);
+    padding:0.16rem 0.38rem;
+    color:#444;
+  }
+
+  .game-layout {
+    display:grid;
+    grid-template-columns:minmax(0, 1.38fr) minmax(340px, 0.72fr);
+    gap:1rem;
+    align-items:start;
+    padding:1rem;
+  }
+
+  .farm-card,
+  .question-card,
+  .tool-dock,
+  .modal {
+    background:var(--card);
+    border-radius:var(--radius);
+  }
+  .farm-card {
+    border:2px solid var(--green);
+    box-shadow:var(--shadow-soft);
+    overflow:hidden;
+  }
+  .card-head {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:0.75rem;
+    padding:0.85rem 1rem;
+    border-bottom:2px solid rgba(46,139,87,0.18);
+    background:var(--green-light);
+  }
+  .section-label {
+    font-size:0.8rem;
+    font-weight:700;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--green);
+  }
+  .tiny-action {
+    min-height:40px;
+    padding:0.55rem 0.75rem;
+    border-radius:999px;
+    border:2px solid var(--green);
+    color:var(--green);
+    background:#fff;
+    font-weight:700;
+  }
+  .tiny-action:hover { box-shadow:0 8px 20px rgba(46,139,87,0.16); transform:translateY(-1px); }
+
+  .farm-scene {
+    position:relative;
+    overflow:hidden;
+    padding:0.9rem;
+    background:
+      radial-gradient(circle at 86% 8%, rgba(239,119,36,0.2) 0 56px, transparent 58px),
+      linear-gradient(180deg, #d7eef4 0 24%, var(--green-light) 24% 100%);
+  }
+  .farm-sky {
+    height:96px;
+    position:relative;
+    margin:0 0 0.7rem;
+  }
+  .sun {
+    position:absolute;
+    right:1.4rem;
+    top:0.35rem;
+    width:54px;
+    height:54px;
+    border-radius:50%;
+    background:#ffd166;
+    box-shadow:0 0 0 12px rgba(255,209,102,0.24);
+  }
+  .barn {
+    position:absolute;
+    left:1rem;
+    top:1.75rem;
+    width:118px;
+    height:74px;
+    background:var(--orange);
+    border:3px solid var(--orange-dark);
+    border-radius:14px 14px 8px 8px;
+    display:grid;
+    place-items:end center;
+    padding-bottom:0.4rem;
+    font-size:2rem;
+    z-index:2;
+  }
+  .barn::before {
+    content:"";
+    position:absolute;
+    top:-32px;
+    left:-9px;
+    width:128px;
+    height:64px;
+    transform:skewY(-12deg);
+    background:var(--teal);
+    border:3px solid var(--teal-deep);
+    border-radius:16px 16px 6px 6px;
+    z-index:-1;
+  }
+  .farm-scene.rainbow-roof .barn::before {
+    background:linear-gradient(135deg, #e63946, #f4a261, #ffd166, #2a9d8f, #277da1, #9b5de5);
+    border-color:#8e44ad;
+  }
+
+  .decorations {
+    min-height:64px;
+    border-radius:var(--radius);
+    background:rgba(255,255,255,0.72);
+    border:2px dashed rgba(0,114,145,0.32);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:0.55rem;
+    padding:0.65rem;
+    margin-bottom:0.8rem;
+    color:var(--muted);
+  }
+  .decoration {
+    display:inline-flex;
+    align-items:center;
+    gap:0.35rem;
+    min-height:40px;
+    border-radius:999px;
+    background:var(--orange-light);
+    border:2px solid var(--orange);
+    padding:0.32rem 0.58rem;
+    font-size:1.35rem;
+    box-shadow:0 4px 12px rgba(239,119,36,0.1);
+  }
+  .decoration-label {
+    font-size:0.72rem;
+    font-weight:700;
+    color:var(--orange-dark);
+  }
+
+  .farm-grid {
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:0.75rem;
+    position:relative;
+    z-index:2;
+  }
+  .plot {
+    position:relative;
+    min-height:146px;
+    padding:0.75rem;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    gap:0.36rem;
+    text-align:center;
+    color:var(--text);
+    background:var(--card);
+    border:2px solid var(--green);
+    border-radius:var(--radius);
+    box-shadow:0 4px 12px rgba(46,139,87,0.12);
+    transition:transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    overflow:hidden;
+  }
+  .plot::before {
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:6px;
+    background:var(--green);
+  }
+  .plot:hover {
+    transform:translateY(-4px) rotate(-0.35deg);
+    box-shadow:0 10px 26px rgba(46,139,87,0.22);
+  }
+  .plot.selected {
+    border-color:var(--orange);
+    box-shadow:0 0 0 4px rgba(239,119,36,0.18), 0 10px 26px rgba(239,119,36,0.2);
+  }
+  .plot.selected::before { background:var(--orange); }
+  .plot.selected::after {
+    content:"Working here";
+    position:absolute;
+    top:0.52rem;
+    right:0.52rem;
+    border-radius:999px;
+    background:var(--orange-light);
+    border:2px solid var(--orange);
+    color:var(--orange-dark);
+    font-size:0.62rem;
+    font-weight:700;
+    padding:0.22rem 0.4rem;
+  }
+  .plot-top {
+    display:flex;
+    justify-content:space-between;
+    gap:0.45rem;
+    align-items:center;
+    font-size:0.72rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--green);
+  }
+  .plot-icon {
+    min-height:52px;
+    display:grid;
+    place-items:center;
+    font-size:2.9rem;
+    line-height:1;
+  }
+  .plot-name {
+    font-size:0.92rem;
+    font-weight:700;
+    color:var(--green);
+  }
+  .stage-label {
+    display:inline-flex;
+    align-self:center;
+    justify-content:center;
+    align-items:center;
+    min-height:30px;
+    border-radius:999px;
+    background:var(--green-light);
+    border:2px solid rgba(46,139,87,0.18);
+    color:var(--green);
+    padding:0.28rem 0.62rem;
+    font-size:0.82rem;
+    font-weight:700;
+  }
+  .progress-track {
+    width:100%;
+    height:12px;
+    border-radius:999px;
+    background:#f4eee7;
+    border:2px solid #e0d8d0;
+    overflow:hidden;
+  }
+  .progress-fill {
+    height:100%;
+    background:linear-gradient(90deg, var(--teal), var(--green));
+    width:0%;
+    transition:width 0.25s ease;
+  }
+
+  .question-card {
+    position:sticky;
+    top:0.85rem;
+    border:2px solid var(--orange);
+    box-shadow:0 4px 14px rgba(239,119,36,0.1);
+    overflow:hidden;
+  }
+  .question-head {
+    padding:0.85rem 1rem;
+    background:var(--orange-light);
+    border-bottom:2px solid rgba(239,119,36,0.24);
+  }
+  .question-head .section-label { color:var(--orange-dark); }
+  .mini-label {
+    color:var(--orange-dark);
+    font-size:0.95rem;
+    line-height:1.45;
+    font-weight:700;
+    margin:0.35rem 0 0;
+  }
+  .question-body { padding:1rem; }
+  .question {
+    min-height:104px;
+    border-radius:var(--radius);
+    background:var(--orange-light);
+    border:2px solid var(--orange);
+    display:grid;
+    place-items:center;
+    text-align:center;
+    padding:0.85rem;
+    font-size:clamp(2.55rem, 6vw, 4.15rem);
+    line-height:1.05;
+    font-weight:700;
+    color:var(--orange-dark);
+    margin-bottom:0.9rem;
+  }
+  .answers {
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:0.7rem;
+    margin-bottom:0.85rem;
+  }
+  .answer-btn {
+    min-height:76px;
+    border-radius:var(--radius);
+    background:var(--teal-light);
+    color:var(--teal);
+    border:2px solid var(--teal);
+    font-size:clamp(1.35rem, 4.5vw, 2rem);
+    font-weight:700;
+    transition:transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .answer-btn:hover:not(:disabled) {
+    transform:translateY(-3px);
+    box-shadow:0 10px 24px var(--shadow-teal);
+  }
+  .answer-btn.correct {
+    background:var(--green-light);
+    border-color:var(--green);
+    color:var(--green);
+  }
+  .answer-btn.try-again {
+    background:var(--yellow);
+    border-color:var(--orange);
+    color:var(--orange-dark);
+  }
+  .feedback {
+    min-height:78px;
+    border-radius:var(--radius);
+    background:#ffffff;
+    border:2px solid #e0d8d0;
+    padding:0.85rem;
+    font-size:1.02rem;
+    line-height:1.45;
+    font-weight:700;
+    display:grid;
+    place-items:center;
+    text-align:center;
+    color:var(--text);
+  }
+  .feedback.good {
+    background:var(--green-light);
+    border-color:var(--green);
+    color:var(--green);
+  }
+  .feedback.help {
+    background:var(--orange-light);
+    border-color:var(--orange);
+    color:var(--orange-dark);
+  }
+  .next-row { display:none; margin-top:0.85rem; }
+  .next-row.show { display:block; }
+
+  .primary-btn,
+  .secondary-btn,
+  .small-btn,
+  .choice-btn,
+  .dock-btn {
+    border-radius:var(--radius);
+    font-weight:700;
+    transition:transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .primary-btn {
+    width:100%;
+    min-height:56px;
+    padding:0.9rem 1.1rem;
+    background:var(--teal);
+    color:#ffffff;
+    font-size:1.05rem;
+  }
+  .primary-btn:hover {
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px var(--shadow-teal);
+  }
+  .secondary-btn,
+  .small-btn {
+    min-height:46px;
+    padding:0.75rem 0.95rem;
+    background:#ffffff;
+    border:2px solid var(--teal);
+    color:var(--teal);
+  }
+  .danger-btn {
+    background:var(--pink-light) !important;
+    color:var(--pink) !important;
+    border-color:var(--pink) !important;
+  }
+
+  .tool-dock {
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:0.9rem;
+    align-items:start;
+    margin:0 1rem 1rem;
+    padding:0.85rem;
+    border:2px solid var(--line);
+    background:#fffdfb;
+  }
+  .pupil-tools,
+  .teacher-row {
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.6rem;
+    align-items:center;
+  }
+  .dock-btn {
+    position:relative;
+    min-height:52px;
+    padding:0.78rem 0.95rem;
+    border:2px solid var(--teal);
+    background:var(--teal-light);
+    color:var(--teal);
+    overflow:hidden;
+  }
+  .dock-btn:hover {
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px var(--shadow-teal);
+  }
+  .dock-btn.shop { border-color:var(--purple); color:var(--purple); background:var(--purple-light); }
+  .dock-btn.email { border-color:var(--green); color:var(--green); background:var(--green-light); }
+  .dock-btn.sound { border-color:var(--orange); color:var(--orange-dark); background:var(--orange-light); }
+  .teacher-tools {
+    justify-self:end;
+    min-width:min(360px, 100%);
+  }
+  .teacher-tools summary {
+    min-height:52px;
+    border-radius:var(--radius);
+    border:2px solid var(--teal);
+    background:#fff;
+    color:var(--teal);
+    font-weight:700;
+    padding:0.85rem 1rem;
+    list-style:none;
+    cursor:pointer;
+  }
+  .teacher-tools summary::-webkit-details-marker { display:none; }
+  .teacher-tools summary::after { content:" ▾"; }
+  .teacher-tools[open] summary::after { content:" ▴"; }
+  .teacher-row {
+    margin-top:0.65rem;
+    padding:0.75rem;
+    border-radius:var(--radius);
+    border:2px dashed rgba(0,114,145,0.32);
+    background:var(--teal-light);
+    justify-content:flex-end;
+  }
+
+  .modal-overlay {
+    position:fixed;
+    inset:0;
+    background:rgba(26,26,26,0.58);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:1rem;
+    z-index:1000;
+  }
+  .modal-overlay.show { display:flex; }
+  .modal {
+    width:min(720px, 100%);
+    max-height:min(88vh, 820px);
+    overflow:auto;
+    background:var(--card);
+    border:2px solid var(--orange);
+    padding:1.1rem;
+    box-shadow:0 20px 70px rgba(26,26,26,0.28);
+  }
+  .modal-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:0.8rem;
+    margin-bottom:0.9rem;
+  }
+  .modal h2 {
+    color:var(--orange-dark);
+    font-size:1.35rem;
+  }
+  .modal h3 {
+    color:var(--teal);
+    font-size:0.8rem;
+    font-weight:700;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    margin:1rem 0 0.6rem;
+  }
+  .close-btn {
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:var(--orange-light);
+    border:2px solid var(--orange);
+    color:var(--orange-dark);
+    font-size:1.4rem;
+    font-weight:700;
+  }
+
+  .settings-grid,
+  .shop-grid { display:grid; gap:0.8rem; }
+  .setting-box {
+    padding:0.9rem;
+    border-radius:var(--radius);
+    border:2px solid var(--teal);
+    background:var(--teal-light);
+  }
+  .setting-box:nth-child(even) {
+    border-color:var(--orange);
+    background:var(--orange-light);
+  }
+  .setting-title {
+    margin:0 0 0.6rem;
+    font-weight:700;
+    color:var(--teal);
+  }
+  .setting-box:nth-child(even) .setting-title { color:var(--orange-dark); }
+  .button-row { display:flex; flex-wrap:wrap; gap:0.55rem; align-items:center; }
+  .choice-btn {
+    min-height:46px;
+    padding:0.65rem 0.8rem;
+    background:#ffffff;
+    color:var(--teal);
+    border:2px solid var(--teal);
+    line-height:1.2;
+  }
+  .choice-btn small { font-size:0.76rem; color:#444; }
+  .choice-btn.active {
+    background:var(--teal);
+    color:#ffffff;
+  }
+  .choice-btn.active small { color:#d7eef4; }
+  .table-grid {
+    display:grid;
+    grid-template-columns:repeat(4, minmax(0, 1fr));
+    gap:0.55rem;
+  }
+
+  .shop-item {
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:0.75rem;
+    width:100%;
+    border-radius:var(--radius);
+    padding:0.85rem;
+    background:#ffffff;
+    border:2px solid var(--teal);
+    text-align:left;
+    color:var(--ink);
+    transition:transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .shop-item:not(:disabled):hover {
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px var(--shadow-teal);
+  }
+  .shop-icon {
+    width:48px;
+    height:48px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:var(--teal-light);
+    border:2px solid var(--teal);
+    font-size:1.55rem;
+  }
+  .shop-name { display:block; font-weight:700; color:var(--teal); }
+  .shop-desc {
+    color:#444;
+    font-size:0.9rem;
+    display:block;
+    margin-top:0.25rem;
+    line-height:1.4;
+  }
+  .owned-pill,
+  .price-pill {
+    padding:0.45rem 0.6rem;
+    border-radius:999px;
+    font-weight:700;
+    white-space:nowrap;
+    background:var(--orange-light);
+    color:var(--orange-dark);
+    border:2px solid var(--orange);
+  }
+  .owned-pill {
+    background:var(--green-light);
+    color:var(--green);
+    border-color:var(--green);
+  }
+
+  .field { display:grid; gap:0.4rem; margin-bottom:0.8rem; }
+  .field label { font-weight:700; color:var(--teal); }
+  .field input,
+  .field textarea {
+    width:100%;
+    border-radius:var(--radius);
+    border:2px solid var(--line);
+    padding:0.85rem;
+    min-height:48px;
+    color:var(--ink);
+    background:#ffffff;
+    font-weight:700;
+  }
+  .field textarea {
+    min-height:220px;
+    resize:vertical;
+    line-height:1.45;
+    font-family:'Atkinson Hyperlegible', sans-serif;
+    font-weight:400;
+    font-size:0.95rem;
+  }
+  .note {
+    border-radius:var(--radius);
+    background:var(--teal-light);
+    border:2px solid var(--teal);
+    padding:0.85rem;
+    color:#333;
+    font-weight:700;
+    line-height:1.45;
+    margin:0 0 0.85rem;
+  }
+
+  .toast {
+    position:fixed;
+    left:50%;
+    bottom:1rem;
+    transform:translateX(-50%) translateY(100px);
+    background:var(--teal);
+    color:white;
+    padding:0.8rem 1rem;
+    border-radius:999px;
+    font-weight:700;
+    box-shadow:0 10px 26px var(--shadow-teal);
+    opacity:0;
+    transition:opacity 0.2s ease, transform 0.2s ease;
+    z-index:2000;
+    max-width:min(92vw, 520px);
+    text-align:center;
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  .sr-only {
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+  }
+
+  footer {
+    text-align:center;
+    padding:1.5rem;
+    font-size:0.8rem;
+    color:#888;
+    border-top:1px solid var(--line);
+    margin-top:2rem;
+  }
+
+  @keyframes gentle-pop {
+    0% { transform:scale(0.98); }
+    60% { transform:scale(1.025); }
+    100% { transform:scale(1); }
+  }
+  @keyframes harvest-glow {
+    0% { box-shadow:0 0 0 0 rgba(239,119,36,0.65); }
+    100% { box-shadow:0 0 0 18px rgba(239,119,36,0); }
+  }
+  @keyframes soft-wiggle {
+    0%,100% { transform:rotate(0); }
+    25% { transform:rotate(-1.5deg); }
+    75% { transform:rotate(1.5deg); }
+  }
+  .pop { animation:gentle-pop 0.42s ease; }
+  .harvested { animation:harvest-glow 0.75s ease; }
+  .wiggle { animation:soft-wiggle 0.3s ease; }
+
+  body.calm .pop,
+  body.calm .harvested,
+  body.calm .wiggle,
+  body.calm .plot,
+  body.calm .answer-btn,
+  body.calm .progress-fill,
+  body.calm .dock-btn,
+  body.calm .tiny-action {
+    animation:none !important;
+    transition:none !important;
+  }
+  body.calm .decorations .decoration-label { display:none; }
+  body.calm .farm-scene {
+    background:linear-gradient(180deg, #d7eef4 0 24%, #f4fbf7 24% 100%);
+  }
+
+  @media (max-width:980px) {
+    .game-banner { grid-template-columns:1fr; }
+    .quick-stats { grid-template-columns:repeat(2, 1fr); }
+    .game-layout { grid-template-columns:1fr; }
+    .question-card { position:static; order:-1; }
+    .tool-dock { grid-template-columns:1fr; }
+    .teacher-tools { justify-self:stretch; }
+    .teacher-row { justify-content:flex-start; }
+  }
+  @media (max-width:680px) {
+    .site-header { padding:1.15rem 1rem 2.15rem; }
+    .main { padding:1rem 0.85rem 2.5rem; }
+    .game-banner { padding:0.85rem; }
+    .activity-title { align-items:flex-start; }
+    .activity-badge { width:52px; height:52px; }
+    .quick-stats { grid-template-columns:1fr; }
+    .game-layout { padding:0.85rem; }
+    .farm-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+    .answers { grid-template-columns:1fr; }
+    .seed-options { grid-template-columns:1fr; }
+    .tool-dock { margin:0 0.85rem 0.85rem; }
+    .pupil-tools, .teacher-row { flex-direction:column; align-items:stretch; }
+    .dock-btn, .teacher-row .secondary-btn { width:100%; }
+    .table-grid { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+    .plot { min-height:138px; }
+    .plot.selected::after { position:static; margin:0.15rem auto 0; width:max-content; }
+    .shop-item { grid-template-columns:auto 1fr; }
+    .shop-item .owned-pill,
+    .shop-item .price-pill { grid-column:1 / -1; justify-self:start; }
+  }
+
+
+/* Focus Mode UI pass: fewer things on screen, stronger hierarchy. */
+.focus-banner {
+  grid-template-columns:minmax(0,1fr) auto;
+  padding:0.9rem 1rem;
+}
+.compact-hud {
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:0.6rem;
+}
+.hud-pill {
+  min-height:52px;
+  border-radius:999px;
+  padding:0.55rem 0.85rem;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+  font-size:1rem;
+}
+.coin-stat.hud-pill { font-size:1.25rem; }
+.order-pill {
+  border-color:var(--orange);
+  background:#fff;
+  color:var(--orange-dark);
+  font-weight:700;
+}
+.focus-layout {
+  grid-template-columns:minmax(0, 1.28fr) minmax(320px, 0.72fr);
+  gap:1rem;
+  padding:1rem;
+}
+.focus-stack {
+  display:grid;
+  gap:0.85rem;
+  align-items:start;
+  position:sticky;
+  top:0.85rem;
+}
+.focus-stack .question-card { position:static; }
+.question-card { border-width:3px; }
+.question-head { padding:0.72rem 0.9rem; }
+.question-body { padding:0.85rem; }
+.question {
+  min-height:86px;
+  margin-bottom:0.75rem;
+  font-size:clamp(2.25rem, 5vw, 3.5rem);
+}
+.answers { gap:0.55rem; margin-bottom:0.7rem; }
+.answer-btn { min-height:66px; }
+.feedback { min-height:58px; padding:0.7rem; font-size:0.96rem; }
+.selected-card {
+  border:2px solid var(--teal);
+  border-radius:var(--radius);
+  background:linear-gradient(135deg, var(--teal-light), #fff 72%);
+  box-shadow:0 4px 14px rgba(0,114,145,0.08);
+  padding:0.85rem;
+}
+.selected-card h3,
+.selected-card .selected-title {
+  color:var(--teal);
+  font-size:1rem;
+  margin:0 0 0.45rem;
+  line-height:1.3;
+}
+.selected-card p {
+  color:#444;
+  font-weight:700;
+  line-height:1.42;
+  margin:0.25rem 0;
+}
+.selected-actions { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.65rem; }
+.selected-actions .secondary-btn,
+.selected-actions .primary-btn { min-height:44px; padding:0.62rem 0.8rem; width:auto; }
+.selected-stage {
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:0.55rem;
+  align-items:center;
+  margin-top:0.55rem;
+}
+.selected-stage .big-icon { font-size:2.4rem; line-height:1; }
+.compact-order {
+  margin:0;
+  padding:0.78rem;
+}
+.compact-order .order-top { margin-bottom:0.55rem; align-items:center; }
+.compact-order .order-title { font-size:0.98rem; }
+.compact-order .order-snark { display:none; }
+.compact-order .order-reward { font-size:0.86rem; padding:0.34rem 0.55rem; }
+.compact-order .order-items { grid-template-columns:1fr; gap:0.42rem; }
+.compact-order .order-item {
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:0.45rem;
+  padding:0.45rem;
+}
+.compact-order .order-item strong { font-size:0.9rem; }
+.compact-order .order-item .mini-progress { height:10px; }
+.order-count {
+  font-size:0.8rem;
+  font-weight:700;
+  color:#444;
+  white-space:nowrap;
+}
+.farm-card .card-head { padding:0.72rem 0.9rem; }
+.farm-scene { padding:0.75rem; }
+.farm-sky { height:66px; margin-bottom:0.55rem; }
+.sun { width:42px; height:42px; right:1.1rem; top:0.2rem; }
+.barn { width:92px; height:54px; top:1.25rem; left:0.8rem; font-size:1.55rem; }
+.barn::before { top:-24px; left:-7px; width:100px; height:50px; }
+.decorations { min-height:48px; padding:0.45rem; margin-bottom:0.65rem; gap:0.35rem; }
+.decoration { min-height:34px; padding:0.22rem 0.4rem; font-size:1.15rem; }
+.farm-grid { gap:0.55rem; }
+.plot {
+  min-height:116px;
+  padding:0.58rem;
+  gap:0.22rem;
+}
+.plot:hover { transform:translateY(-2px); }
+.plot.selected::after {
+  content:"Selected";
+  top:0.42rem;
+  right:0.42rem;
+}
+.plot-top { font-size:0.68rem; }
+.plot-icon { min-height:42px; font-size:2.2rem; }
+.plot-name { font-size:0.84rem; }
+.stage-label { min-height:26px; font-size:0.76rem; padding:0.2rem 0.45rem; }
+.plot-meta { display:none; }
+.progress-track { height:10px; }
+.tool-dock {
+  margin-top:0;
+  background:#fff;
+}
+.crop-modal-grid {
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:0.7rem;
+}
+.crop-modal-grid .crop-chip {
+  min-height:84px;
+  padding:0.75rem;
+  border-width:2px;
+}
+.crop-modal-grid .crop-chip strong {
+  display:block;
+  font-size:1rem;
+  margin-bottom:0.25rem;
+}
+.crop-modal-grid .crop-chip small { line-height:1.35; }
+@media (max-width:980px) {
+  .focus-banner { grid-template-columns:1fr; }
+  .compact-hud { justify-content:flex-start; }
+  .focus-layout { grid-template-columns:1fr; }
+  .focus-stack { order:-1; position:static; }
+  .focus-stack .question-card { order:1; }
+  .focus-stack .selected-card { order:2; }
+  .focus-stack .order-card { order:3; }
+}
+@media (max-width:680px) {
+  .compact-hud { display:grid; grid-template-columns:1fr; }
+  .hud-pill { width:100%; }
+  .focus-layout { padding:0.85rem; }
+  .crop-modal-grid { grid-template-columns:1fr; }
+  .farm-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+  .plot { min-height:108px; }
+  .compact-order .order-top { display:grid; gap:0.4rem; }
+  .compact-order .order-reward { justify-self:start; }
+}
+
+
+/* Full polish pass: tutorial, clearer crop recommendations, visual ticks, finish flow. */
+.field-name {
+  display:block;
+  color:var(--teal);
+  font-size:0.72rem;
+  font-weight:700;
+  line-height:1.2;
+  margin-top:0.05rem;
+}
+.order-ticks {
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.22rem;
+  align-items:center;
+}
+.tick {
+  width:22px;
+  height:22px;
+  border-radius:8px;
+  border:2px solid #d8cec5;
+  background:#fff;
+  display:inline-grid;
+  place-items:center;
+  font-size:0.82rem;
+  line-height:1;
+  font-weight:700;
+}
+.tick.done {
+  border-color:var(--green);
+  background:var(--green-light);
+  color:var(--green);
+}
+.crop-chip.recommended {
+  border-color:var(--orange);
+  background:linear-gradient(135deg, var(--orange-light), #fff 72%);
+  box-shadow:0 8px 22px rgba(239,119,36,0.13);
+}
+.recommend-pill {
+  display:inline-flex;
+  width:max-content;
+  margin-top:0.45rem;
+  border-radius:999px;
+  border:2px solid var(--orange);
+  background:#fff;
+  color:var(--orange-dark);
+  padding:0.18rem 0.42rem;
+  font-size:0.68rem;
+  font-weight:700;
+}
+.crop-personality {
+  display:block;
+  margin-top:0.18rem;
+  color:#444;
+}
+.field-hint {
+  margin-top:0.45rem;
+  color:var(--orange-dark) !important;
+  background:var(--orange-light);
+  border:2px solid rgba(239,119,36,0.25);
+  border-radius:12px;
+  padding:0.45rem;
+}
+.summary-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(132px, 1fr));
+  gap:0.7rem;
+  margin:0.9rem 0;
+}
+.summary-tile {
+  border:2px solid var(--teal);
+  background:var(--teal-light);
+  border-radius:var(--radius);
+  padding:0.8rem;
+  text-align:center;
+  font-weight:700;
+}
+.summary-tile strong {
+  display:block;
+  font-size:1.6rem;
+  color:var(--teal);
+  line-height:1.1;
+}
+.summary-tile span {
+  display:block;
+  margin-top:0.25rem;
+  color:#444;
+  font-size:0.82rem;
+}
+.tutorial-list {
+  display:grid;
+  gap:0.6rem;
+  margin:0.8rem 0 1rem;
+}
+.tutorial-step {
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:0.65rem;
+  align-items:start;
+  border:2px solid var(--line);
+  border-radius:var(--radius);
+  padding:0.75rem;
+  background:#fffdfb;
+  font-weight:700;
+  line-height:1.45;
+}
+.tutorial-step .num {
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:var(--orange-light);
+  border:2px solid var(--orange);
+  color:var(--orange-dark);
+  display:grid;
+  place-items:center;
+  font-weight:700;
+}
+.event-log {
+  margin-top:0.55rem;
+  border-radius:12px;
+  border:2px dashed rgba(0,114,145,0.25);
+  background:#fff;
+  color:#444;
+  padding:0.55rem;
+  font-weight:700;
+  line-height:1.4;
+}
+@media (max-width:680px) {
+  .tick { width:20px; height:20px; border-radius:7px; font-size:0.76rem; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <p class="eyebrow">Base 6 · Maths</p>
+    <h1>Times Table Farm</h1>
+    <p>Grow crops by doing multiplication. No timer. Very generous of us.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main app" id="app">
+  <a class="back-link" href="../index.html">Back to Home Learning Hub</a>
+
+  <section class="game-shell" aria-label="Times Table Farm game">
+    <div class="game-banner focus-banner">
+      <div class="activity-title">
+        <div class="activity-badge" aria-hidden="true">✖️</div>
+        <div>
+          <h2>Times Table Farm</h2>
+          <p>Answer. Grow. Complete orders. Try not to start a vegetable empire.</p>
+        </div>
+      </div>
+      <div class="quick-stats compact-hud" aria-label="Game progress">
+        <div class="coin-stat hud-pill" id="coinDisplay" aria-label="Coins">🪙 0</div>
+        <div class="stat hud-pill order-pill" id="orderMiniDisplay" aria-label="Current order progress">📦 Order 0/0</div>
+      </div>
+    </div>
+
+    <section class="game-layout focus-layout" aria-label="Main game area">
+      <section class="farm-card" aria-label="Your farm">
+        <div class="card-head">
+          <span class="section-label">Your farm</span>
+          <button class="tiny-action" onclick="openShop()">🛒 Shop</button>
+        </div>
+        <div class="farm-scene" id="farmScene" aria-label="Farm scene">
+          <div class="farm-sky" aria-hidden="true">
+            <div class="barn" id="barn">🚪</div>
+            <div class="sun"></div>
+          </div>
+          <div class="decorations" id="decorations" aria-label="Unlocked farm decorations"></div>
+          <div class="farm-grid" id="farmGrid" aria-label="Farm plots"></div>
+        </div>
+      </section>
+
+      <aside class="focus-stack" aria-label="Current task">
+        <section class="question-card" aria-label="Question panel">
+          <div class="question-head">
+            <span class="section-label">Do this now</span>
+            <p class="mini-label" id="plotLabel">Field 1</p>
+          </div>
+          <div class="question-body">
+            <div class="question" id="questionText" aria-live="polite">?</div>
+            <div class="answers" id="answersGrid"></div>
+            <div class="feedback" id="feedback" aria-live="polite">Pick an answer. The dirt is emotionally invested.</div>
+            <div class="next-row" id="nextRow">
+              <button class="primary-btn" onclick="nextQuestion()">Next Question →</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="selected-card" id="selectedCard" aria-label="Selected field"></section>
+
+        <section class="order-card compact-order" id="orderCard" aria-label="Current farm order"></section>
+      </aside>
+    </section>
+
+    <section class="tool-dock" aria-label="Game tools">
+      <div class="pupil-tools" aria-label="Pupil tools">
+        <button class="dock-btn shop" onclick="openShop()">🛒 Shop</button>
+        <button class="dock-btn sound" id="muteButton" onclick="toggleMute()">🔊 Sound</button>
+        <button class="dock-btn email" onclick="openEmailReport()">📧 Email Jay</button>
+        <button class="dock-btn email" onclick="finishSession()">✅ Finish + send</button>
+      </div>
+
+      <details class="teacher-tools">
+        <summary>Teacher stuff</summary>
+        <div class="teacher-row">
+          <button class="secondary-btn" onclick="openModal('settingsModal')">⚙️ Settings</button>
+          <button class="secondary-btn" onclick="showTutorial()">❓ Show tutorial</button>
+          <button class="secondary-btn" onclick="openEmailReport()">📋 View report</button>
+          <button class="secondary-btn danger-btn" onclick="openModal('resetModal')">🔄 Reset</button>
+        </div>
+      </details>
+    </section>
+  </section>
+</main>
+
+<div class="modal-overlay" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" onclick="overlayClose(event, 'settingsModal')">
+  <section class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 id="settingsTitle">⚙️ Teacher Settings, obviously</h2>
+      <button class="close-btn" onclick="closeModal('settingsModal')" aria-label="Close settings">×</button>
+    </div>
+    <div class="settings-grid">
+      <div class="setting-box">
+        <p class="setting-title">Pick your level of chaos</p>
+        <div class="button-row">
+          <button class="choice-btn" onclick="setPreset('easy')">Easy<br><small>2, 5, 10</small></button>
+          <button class="choice-btn" onclick="setPreset('building')">Building<br><small>2, 3, 4, 5, 10</small></button>
+          <button class="choice-btn" onclick="setPreset('challenge')">Main character mode<br><small>6, 7, 8, 9, 11, 12</small></button>
+          <button class="choice-btn" onclick="setPreset('mixed')">Absolute soup<br><small>2–12</small></button>
+        </div>
+      </div>
+
+      <div class="setting-box">
+        <p class="setting-title">Times tables to bother people with</p>
+        <div class="table-grid" id="tableToggles"></div>
+      </div>
+
+      <div class="setting-box">
+        <p class="setting-title">How high are we going?</p>
+        <div class="button-row" id="maxMultiplierButtons">
+          <button class="choice-btn" onclick="setMaxMultiplier(5)">up to ×5</button>
+          <button class="choice-btn" onclick="setMaxMultiplier(10)">up to ×10</button>
+          <button class="choice-btn" onclick="setMaxMultiplier(12)">up to ×12</button>
+        </div>
+      </div>
+
+      <div class="setting-box">
+        <p class="setting-title">Calm Mode</p>
+        <div class="button-row">
+          <button class="choice-btn" id="calmToggle" onclick="toggleCalmMode()">Calm Mode: Off</button>
+        </div>
+        <p class="note" style="margin-top:10px;margin-bottom:0;">Calm Mode reduces motion, noise, and general screen nonsense.</p>
+      </div>
+
+      <div class="setting-box">
+        <p class="setting-title">Email report bits</p>
+        <div class="field">
+          <label for="studentName">Pupil name or mysterious initials</label>
+          <input id="studentName" type="text" placeholder="Optional" oninput="saveTeacherFields()" />
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label for="teacherEmail">Where Jay gets the evidence</label>
+          <input id="teacherEmail" type="email" placeholder="teacher@example.com" oninput="saveTeacherFields()" />
+        </div>
+      </div>
+    </div>
+    <button class="primary-btn" style="margin-top:14px;" onclick="closeModal('settingsModal')">Done</button>
+  </section>
+</div>
+
+<div class="modal-overlay" id="shopModal" role="dialog" aria-modal="true" aria-labelledby="shopTitle" onclick="overlayClose(event, 'shopModal')">
+  <section class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 id="shopTitle">🛒 Farm Shop: questionable purchases</h2>
+      <button class="close-btn" onclick="closeModal('shopModal')" aria-label="Close shop">×</button>
+    </div>
+    <p class="note" id="shopCoinText">You have 0 coins. Tragic, but temporary.</p>
+    <h3>Actually useful upgrades</h3>
+    <div class="shop-grid" id="upgradesList"></div>
+    <h3>Deeply necessary decorations</h3>
+    <div class="shop-grid" id="cosmeticsList"></div>
+  </section>
+</div>
+
+<div class="modal-overlay" id="cropModal" role="dialog" aria-modal="true" aria-labelledby="cropTitle" onclick="overlayClose(event, 'cropModal')">
+  <section class="modal crop-modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 id="cropTitle">🌱 Choose a crop</h2>
+      <button class="close-btn" onclick="closeModal('cropModal')" aria-label="Close crop choices">×</button>
+    </div>
+    <p class="note">Pick one crop for this empty field. The crop chooser only appears when you need it. Character growth.</p>
+    <div class="crop-modal-grid" id="cropModalGrid"></div>
+  </section>
+</div>
+
+<div class="modal-overlay" id="emailModal" role="dialog" aria-modal="true" aria-labelledby="emailTitle" onclick="overlayClose(event, 'emailModal')">
+  <section class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 id="emailTitle">📧 Email Jay the evidence</h2>
+      <button class="close-btn" onclick="closeModal('emailModal')" aria-label="Close email report">×</button>
+    </div>
+    <p class="note">This opens a pre-filled email draft. The webpage cannot secretly send it, because apparently that would be frowned upon.</p>
+    <div class="field">
+      <label for="emailTo">Send to</label>
+      <input id="emailTo" type="email" oninput="saveEmailFromModal()" />
+    </div>
+    <div class="field">
+      <label for="reportText">Report text</label>
+      <textarea id="reportText"></textarea>
+    </div>
+    <div class="button-row">
+      <button class="primary-btn" style="width:auto;" onclick="sendEmailDraft()">Open email draft</button>
+      <button class="secondary-btn" onclick="copyReport()">Copy report</button>
+      <button class="secondary-btn" onclick="downloadReport()">Download receipt of brilliance</button>
+    </div>
+  </section>
+</div>
+
+<div class="modal-overlay" id="resetModal" role="dialog" aria-modal="true" aria-labelledby="resetTitle" onclick="overlayClose(event, 'resetModal')">
+  <section class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 id="resetTitle">Reset progress? Bold choice.</h2>
+      <button class="close-btn" onclick="closeModal('resetModal')" aria-label="Close reset dialog">×</button>
+    </div>
+    <p class="note">This clears coins, crops, upgrades, decorations, and stats. Teacher settings survive the drama.</p>
+    <div class="button-row">
+      <button class="primary-btn danger-btn" style="width:auto;" onclick="resetProgress()">Yes, reset the drama</button>
+      <button class="secondary-btn" onclick="closeModal('resetModal')">Cancel, obviously</button>
+    </div>
+  </section>
+</div>
+
+
+<div class="modal-overlay" id="tutorialModal" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle" onclick="overlayClose(event, 'tutorialModal')">
+  <section class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 id="tutorialTitle">Welcome to Times Table Farm</h2>
+      <button class="close-btn" onclick="finishTutorial()" aria-label="Close tutorial">×</button>
+    </div>
+    <p class="note">A tiny tutorial. Blink and you might miss it, which is frankly efficient.</p>
+    <div class="tutorial-list">
+      <div class="tutorial-step"><span class="num">1</span><span>Pick a field. Some dirt is locked because apparently land has a price tag.</span></div>
+      <div class="tutorial-step"><span class="num">2</span><span>Answer multiplication questions to grow crops. No timer. We are not monsters.</span></div>
+      <div class="tutorial-step"><span class="num">3</span><span>Choose crops that match the village order. The village has demands. Rude, but profitable.</span></div>
+      <div class="tutorial-step"><span class="num">4</span><span>Harvest crops, earn coins, unlock more fields, and buy deeply necessary nonsense.</span></div>
+    </div>
+    <button class="primary-btn" onclick="finishTutorial()">Start farming, I suppose</button>
+  </section>
+</div>
+
+<div class="modal-overlay" id="finishModal" role="dialog" aria-modal="true" aria-labelledby="finishTitle" onclick="overlayClose(event, 'finishModal')">
+  <section class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 id="finishTitle">Session finished. Evidence time.</h2>
+      <button class="close-btn" onclick="closeModal('finishModal')" aria-label="Close finish summary">×</button>
+    </div>
+    <p class="note">Here is the tidy version of what just happened. Spoiler: maths.</p>
+    <div class="summary-grid" id="finishSummary"></div>
+    <div class="event-log" id="finishTrickyFacts"></div>
+    <div class="button-row" style="margin-top:1rem;">
+      <button class="primary-btn" style="width:auto;" onclick="openEmailReport()">Email Jay</button>
+      <button class="secondary-btn" onclick="copyReportFromFinish()">Copy report</button>
+      <button class="secondary-btn" onclick="downloadReportFromFinish()">Download report</button>
+      <button class="secondary-btn" onclick="closeModal('finishModal')">Keep farming</button>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+
+
+<footer>
+  Base 6 · Chilton Bridge School
+</footer>
+
+<script>
+// Times Table Farm - self-contained HTML/CSS/JS game.
+// This version adds focus-mode polish: tutorial, progressive orders, crop hints, field names, events, and richer reports.
+
+const STORAGE_KEY = "timesTableFarmOrders_v2";
+const TEACHER_EMAIL_DEFAULT = "jay.raine@chiltonbridgeschool.co.uk";
+
+const CROPS = [
+  { id: "carrot", name: "Carrot", emoji: "🥕", readySteps: 2, reward: 3, desc: "Fast. Cheap. Orange." },
+  { id: "lettuce", name: "Lettuce", emoji: "🥬", readySteps: 2, reward: 4, desc: "Quick money, leafy attitude." },
+  { id: "corn", name: "Corn", emoji: "🌽", readySteps: 3, reward: 6, desc: "Reliable. Suspiciously tall." },
+  { id: "strawberry", name: "Strawberry", emoji: "🍓", readySteps: 3, reward: 7, desc: "Fancy fruit behaviour." },
+  { id: "sunflower", name: "Sunflower", emoji: "🌻", readySteps: 3, reward: 6, desc: "Cheerful. Annoyingly photogenic." },
+  { id: "pumpkin", name: "Pumpkin", emoji: "🎃", readySteps: 4, reward: 11, desc: "Slow, huge, dramatic." }
+];
+
+const FIELD_COSTS = [0, 0, 12, 22, 36, 54];
+
+const FIELD_NAMES = [
+  "Mud Kingdom",
+  "The Damp Zone",
+  "Beige Acres",
+  "Carrot-Adjacent Land",
+  "Probably A Field",
+  "The Fancy Dirt"
+];
+
+const FARM_EVENTS = [
+  "A suspiciously helpful duck appeared. +2 coins. Nobody is asking questions.",
+  "The scarecrow blinked. We are all pretending that is normal. +1 coin.",
+  "A carrot looked expensive for no reason. +1 coin.",
+  "The barn made a tiny motivational creak. +2 coins.",
+  "A worm unionised peacefully. Productivity improved. +1 coin.",
+  "A sheep judged your technique, then helped anyway. +2 coins."
+];
+
+const ORDER_TEMPLATES = [
+  { title: "Tiny Starter Order", snark: "The village wants carrots. Bold culinary vision.", needs: { carrot: 2 }, reward: 10 },
+  { title: "Leafy Little Demand", snark: "Someone requested lettuce. We respect their low standards.", needs: { lettuce: 2 }, reward: 12 },
+  { title: "Basic Basket Business", snark: "Two crops. The plot thickens, unlike the soup.", needs: { carrot: 1, corn: 1 }, reward: 15 },
+  { title: "Berry Minor Drama", snark: "Apparently strawberries make everything fancy now.", needs: { strawberry: 2 }, reward: 18 },
+  { title: "Sunflower PR Campaign", snark: "The farm needs better vibes. Management insists.", needs: { sunflower: 2, corn: 1 }, reward: 22 },
+  { title: "Pumpkin Drama Delivery", snark: "One pumpkin was not enough drama, obviously.", needs: { pumpkin: 1, carrot: 2 }, reward: 30 },
+  { title: "Ridiculous Rainbow Crate", snark: "A bit of everything. Because simple was too emotionally stable.", needs: { carrot: 1, lettuce: 1, corn: 1, strawberry: 1, sunflower: 1 }, reward: 38 },
+  { title: "The Big Dirt Economy", snark: "Congratulations, you are now basically agricultural middle management.", needs: { pumpkin: 2, strawberry: 2, sunflower: 1 }, reward: 48 }
+];
+
+const UPGRADES = [
+  { id: "watering_can", name: "Suspiciously Better Watering Can", desc: "Crops get ready one answer sooner. Hydration, but fancy.", cost: 8, emoji: "🚿" },
+  { id: "shiny_shovel", name: "Unnecessarily Shiny Shovel", desc: "+2 coins each harvest. Sparkly capitalism.", cost: 10, emoji: "⛏️" },
+  { id: "scarecrow", name: "Scarecrow Who Tries", desc: "+1 bonus coin every 5 correct. Finally useful.", cost: 12, emoji: "🧑‍🌾" },
+  { id: "tractor", name: "Tiny Tractor, Massive Ego", desc: "Grows another planted field every harvest. Claims full credit.", cost: 16, emoji: "🚜" }
+];
+
+const COSMETICS = [
+  { id: "cow_sunglasses", name: "Cow with Main Character Sunglasses", cost: 4, emoji: "🐄🕶️", short: "Main character cow" },
+  { id: "wizard_chicken", name: "Wizard Chicken. No Questions.", cost: 4, emoji: "🐔🧙", short: "Wizard chicken" },
+  { id: "pig_wellies", name: "Pig in Questionable Wellies", cost: 5, emoji: "🐷👢", short: "Wellies pig" },
+  { id: "disco_scarecrow", name: "Disco Scarecrow Crisis", cost: 6, emoji: "🕺🧑‍🌾", short: "Disco scarecrow" },
+  { id: "golden_carrot", name: "Suspiciously Golden Carrot", cost: 7, emoji: "🥕✨", short: "Golden carrot" },
+  { id: "rainbow_barn", name: "Rainbow Barn Roof, Obviously", cost: 8, emoji: "🌈🏠", short: "Rainbow roof" },
+  { id: "duck_crown", name: "Duck with Tiny Crown Complex", cost: 6, emoji: "🦆👑", short: "Royal duck" },
+  { id: "super_sheep", name: "Superhero Sheep, Somehow", cost: 6, emoji: "🐑🦸", short: "Super sheep" }
+];
+
+let state = loadState();
+let currentQuestion = null;
+let answerLocked = false;
+let toastTimer = null;
+let audioCtx = null;
+
+function defaultState() {
+  return {
+    coins: 0,
+    tables: [2, 5, 10],
+    maxMultiplier: 12,
+    selectedPlot: 0,
+    unlockedPlots: 2,
+    plots: Array.from({ length: 6 }, (_, i) => ({ cropIndex: i % CROPS.length, stage: 0 })),
+    currentOrder: makeOrder(0),
+    ordersCompleted: 0,
+    harvestedByCrop: {},
+    upgrades: [],
+    cosmetics: [],
+    muted: false,
+    calmMode: false,
+    studentName: "",
+    teacherEmail: TEACHER_EMAIL_DEFAULT,
+    totalCorrect: 0,
+    totalAttempts: 0,
+    totalIncorrect: 0,
+    harvests: 0,
+    correctByTable: {},
+    incorrectByTable: {},
+    recentQuestions: [],
+    wrongByFact: {},
+    attemptsByFact: {},
+    correctByFact: {},
+    farmEvents: [],
+    tutorialSeen: false,
+    sessionStartedAt: new Date().toISOString()
+  };
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return defaultState();
+    const parsed = JSON.parse(saved);
+    const merged = { ...defaultState(), ...parsed };
+    if (!Array.isArray(merged.tables) || merged.tables.length === 0) merged.tables = [2, 5, 10];
+    if (!Array.isArray(merged.plots) || merged.plots.length !== 6) merged.plots = defaultState().plots;
+    merged.plots = merged.plots.map((plot, index) => ({ cropIndex: Number.isInteger(plot.cropIndex) ? plot.cropIndex : index % CROPS.length, stage: Number(plot.stage) || 0 }));
+    merged.unlockedPlots = Math.max(1, Math.min(6, Number(merged.unlockedPlots) || 2));
+    if (merged.selectedPlot >= merged.unlockedPlots) merged.selectedPlot = 0;
+    if (!merged.currentOrder || !merged.currentOrder.needs || !merged.currentOrder.progress) merged.currentOrder = makeOrder(merged.ordersCompleted || 0);
+    if (!merged.teacherEmail) merged.teacherEmail = TEACHER_EMAIL_DEFAULT;
+    if (!merged.harvestedByCrop) merged.harvestedByCrop = {};
+    if (!merged.wrongByFact) merged.wrongByFact = {};
+    if (!merged.attemptsByFact) merged.attemptsByFact = {};
+    if (!merged.correctByFact) merged.correctByFact = {};
+    if (!Array.isArray(merged.farmEvents)) merged.farmEvents = [];
+    if (typeof merged.tutorialSeen !== "boolean") merged.tutorialSeen = false;
+    return merged;
+  } catch (error) {
+    return defaultState();
+  }
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (error) {}
+}
+
+function makeOrder(orderNumber) {
+  const template = ORDER_TEMPLATES[orderNumber % ORDER_TEMPLATES.length];
+  return {
+    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    title: template.title,
+    snark: template.snark,
+    needs: { ...template.needs },
+    progress: Object.fromEntries(Object.keys(template.needs).map(id => [id, 0])),
+    reward: template.reward + Math.floor(orderNumber / ORDER_TEMPLATES.length) * 6
+  };
+}
+
+function cropById(id) {
+  return CROPS.find(crop => crop.id === id) || CROPS[0];
+}
+
+function cropForPlot(plot) {
+  return CROPS[plot.cropIndex] || CROPS[0];
+}
+
+function isUnlocked(index) {
+  return index < state.unlockedPlots;
+}
+
+function getFieldCost(index) {
+  return FIELD_COSTS[index] || 99;
+}
+
+function getReadySteps(plot) {
+  const crop = cropForPlot(plot);
+  const reduction = state.upgrades.includes("watering_can") ? 1 : 0;
+  return Math.max(2, crop.readySteps - reduction);
+}
+
+function getStageInfo(plot) {
+  const stage = Math.max(0, Number(plot.stage) || 0);
+  const readySteps = getReadySteps(plot);
+  if (stage >= readySteps) return { label: "Ready to harvest", icon: "🌾" };
+  if (stage <= 0) return { label: "Empty soil", icon: "🟫" };
+  if (stage === 1) return { label: "Seed planted", icon: "🌱" };
+  if (readySteps >= 4 && stage === 2) return { label: "Watered", icon: "💧" };
+  return { label: "Growing", icon: "🌿" };
+}
+
+function getProgressPercent(plot) {
+  return Math.round((Math.min(plot.stage, getReadySteps(plot)) / getReadySteps(plot)) * 100);
+}
+
+function render() {
+  document.body.classList.toggle("calm", Boolean(state.calmMode));
+  document.getElementById("farmScene").classList.toggle("rainbow-roof", state.cosmetics.includes("rainbow_barn"));
+  document.getElementById("coinDisplay").textContent = `🪙 ${state.coins}`;
+  document.getElementById("muteButton").textContent = state.muted ? "🔇 Muted" : "🔊 Sound";
+  renderOrder();
+  renderFarm();
+  renderSelectedCard();
+  renderDecorations();
+  renderSettingsControls();
+  saveState();
+}
+
+function renderOrder() {
+  const order = state.currentOrder || makeOrder(0);
+  state.currentOrder = order;
+  const card = document.getElementById("orderCard");
+  const entries = Object.entries(order.needs);
+  const completed = entries.filter(([cropId, needed]) => (order.progress[cropId] || 0) >= needed).length;
+  const mini = document.getElementById("orderMiniDisplay");
+  if (mini) mini.textContent = `📦 Order ${completed}/${entries.length}`;
+  const items = entries.map(([cropId, needed]) => {
+    const crop = cropById(cropId);
+    const progress = Math.min(order.progress[cropId] || 0, needed);
+    const ticks = makeOrderTicks(progress, needed);
+    return `
+      <div class="order-item ${progress >= needed ? "done" : ""}" aria-label="${escapeHtml(crop.name)} progress ${progress} of ${needed}">
+        <strong title="${escapeHtml(crop.name)}">${crop.emoji} ${escapeHtml(crop.name)}</strong>
+        <div class="order-ticks" aria-hidden="true">${ticks}</div>
+        <span class="order-count">${progress}/${needed}</span>
+      </div>`;
+  }).join("");
+  card.innerHTML = `
+    <div class="order-top">
+      <div>
+        <div class="section-label">Village order</div>
+        <div class="order-title">${escapeHtml(order.title)}</div>
+        <p class="order-snark">${escapeHtml(order.snark)}</p>
+      </div>
+      <div class="order-reward">🪙 ${order.reward}</div>
+    </div>
+    <div class="order-items">${items}</div>`;
+}
+
+function makeOrderTicks(progress, needed) {
+  return Array.from({ length: needed }, (_, index) => `<span class="tick ${index < progress ? "done" : ""}">${index < progress ? "✓" : ""}</span>`).join("");
+}
+
+function renderFarm() {
+  const grid = document.getElementById("farmGrid");
+  grid.innerHTML = "";
+  state.plots.forEach((plot, index) => {
+    const crop = cropForPlot(plot);
+    const unlocked = isUnlocked(index);
+    const stage = getStageInfo(plot);
+    const percent = getProgressPercent(plot);
+    const ready = unlocked && plot.stage >= getReadySteps(plot);
+    const button = document.createElement("button");
+    button.className = `plot ${index === state.selectedPlot ? "selected" : ""} ${unlocked ? "" : "locked"} ${ready ? "ready" : ""}`;
+    button.type = "button";
+    if (!unlocked) {
+      const cost = getFieldCost(index);
+      button.setAttribute("aria-label", `Locked field ${index + 1}, costs ${cost} coins`);
+      button.onclick = () => unlockPlot(index);
+      button.innerHTML = `
+        <div class="plot-top"><span>Field ${index + 1}</span><span>🔒</span></div>
+        <span class="field-name">${escapeHtml(FIELD_NAMES[index])}</span>
+        <div class="plot-icon" aria-hidden="true">🔒</div>
+        <div class="plot-name">Locked</div>
+        <div class="stage-label">🪙 ${cost}</div>`;
+    } else {
+      button.setAttribute("aria-label", `Field ${index + 1}, ${crop.name}, ${stage.label}`);
+      button.onclick = () => selectPlot(index);
+      button.innerHTML = `
+        <div class="plot-top"><span>Field ${index + 1}</span><span>${ready ? "Ready" : ""}</span></div>
+        <span class="field-name">${escapeHtml(FIELD_NAMES[index])}</span>
+        <div class="plot-icon" aria-hidden="true">${ready ? crop.emoji : stage.icon}</div>
+        <div class="plot-name">${crop.emoji} ${escapeHtml(crop.name)}</div>
+        <div class="stage-label">${escapeHtml(stage.label)}</div>
+        <div class="progress-track" aria-hidden="true"><div class="progress-fill" style="width:${percent}%"></div></div>`;
+    }
+    grid.appendChild(button);
+  });
+}
+
+function renderDecorations() {
+  const area = document.getElementById("decorations");
+  const owned = COSMETICS.filter(item => state.cosmetics.includes(item.id));
+  if (owned.length === 0) {
+    area.innerHTML = `<strong style="color:var(--muted);">Decorations will appear here once the farm has earned a personality.</strong>`;
+    return;
+  }
+  area.innerHTML = owned.map(item => {
+    if (item.id === "rainbow_barn") return "";
+    return `<span class="decoration" title="${escapeHtml(item.name)}"><span aria-hidden="true">${item.emoji}</span><span class="decoration-label">${escapeHtml(item.short)}</span></span>`;
+  }).join("");
+  if (!area.innerHTML.trim()) {
+    area.innerHTML = `<strong style="color:var(--muted);">Your barn roof is rainbow now. Subtle? Absolutely not. 🌈</strong>`;
+  }
+}
+
+function renderSelectedCard() {
+  const card = document.getElementById("selectedCard");
+  if (!card) return;
+  const plot = state.plots[state.selectedPlot];
+  if (!plot || !isUnlocked(state.selectedPlot)) {
+    card.innerHTML = `<div class="selected-title">No field selected</div><p>Pick some unlocked dirt first. Revolutionary concept.</p>`;
+    return;
+  }
+  const crop = cropForPlot(plot);
+  const stage = getStageInfo(plot);
+  const readySteps = getReadySteps(plot);
+  const percent = getProgressPercent(plot);
+  const canChange = plot.stage === 0;
+  const ready = plot.stage >= readySteps;
+  const remainingNeed = getCurrentOrderNeedRemaining(crop.id);
+  const hint = remainingNeed > 0
+    ? `<p class="field-hint">Needed for the current order: ${remainingNeed} more ${crop.emoji}. Sensible farming, annoyingly.</p>`
+    : `<p class="field-hint">Not needed for the order right now. Still pays coins, because vegetables have rights.</p>`;
+  card.innerHTML = `
+    <div class="selected-title">Field ${state.selectedPlot + 1}: ${escapeHtml(FIELD_NAMES[state.selectedPlot])}</div>
+    <p>${crop.emoji} ${escapeHtml(crop.name)} · ${ready ? "Ready to harvest. Very needy." : escapeHtml(stage.label)}</p>
+    <div class="selected-stage">
+      <span class="big-icon" aria-hidden="true">${ready ? crop.emoji : stage.icon}</span>
+      <div>
+        <div class="progress-track" aria-hidden="true"><div class="progress-fill" style="width:${percent}%"></div></div>
+        <p>${Math.min(plot.stage, readySteps)}/${readySteps} growth steps · pays 🪙 ${getCropReward(crop)}</p>
+      </div>
+    </div>
+    ${hint}
+    <div class="selected-actions">
+      ${canChange ? `<button class="secondary-btn" onclick="openCropPicker()">🌱 Change crop</button>` : `<button class="secondary-btn" disabled>🌱 Crop locked in</button>`}
+      <button class="secondary-btn" onclick="openShop()">🛒 Shop</button>
+    </div>`;
+}
+
+function renderCropPicker() {
+  // Kept as a safe no-op for older calls. Crop choices now live in a modal.
+  renderSelectedCard();
+}
+
+function openCropPicker() {
+  const plot = state.plots[state.selectedPlot];
+  if (!plot || !isUnlocked(state.selectedPlot)) {
+    announce("Pick an unlocked field first. The dirt insists.");
+    return;
+  }
+  if (plot.stage > 0) {
+    announce("Finish this crop before changing it. Commitment, sadly.");
+    return;
+  }
+  renderCropChoiceModal();
+  openModal("cropModal");
+}
+
+function renderCropChoiceModal() {
+  const grid = document.getElementById("cropModalGrid");
+  const plot = state.plots[state.selectedPlot];
+  if (!grid || !plot) return;
+  grid.innerHTML = CROPS.map((item, index) => {
+    const active = index === plot.cropIndex;
+    const remaining = getCurrentOrderNeedRemaining(item.id);
+    const recommended = remaining > 0;
+    return `<button class="crop-chip ${active ? "active" : ""} ${recommended ? "recommended" : ""}" onclick="setPlotCrop(${index})" aria-pressed="${active ? "true" : "false"}">
+      <strong>${item.emoji} ${escapeHtml(item.name)}</strong>
+      <small>${getReadySteps({ cropIndex:index, stage:0 })} growth steps · pays 🪙 ${getCropReward(item)}
+      <span class="crop-personality">${escapeHtml(item.desc)}</span></small>
+      ${recommended ? `<span class="recommend-pill">Needed: ${remaining}</span>` : ""}
+    </button>`;
+  }).join("");
+}
+
+function setPlotCrop(cropIndex) {
+  const plot = state.plots[state.selectedPlot];
+  if (!plot || plot.stage > 0) {
+    announce("Finish the current crop first. Commitment, unfortunately.");
+    return;
+  }
+  plot.cropIndex = cropIndex;
+  saveState();
+  render();
+  updatePlotLabel();
+  closeModal("cropModal");
+  announce(`${CROPS[cropIndex].emoji} ${CROPS[cropIndex].name} selected. Agricultural branding complete.`);
+}
+
+function selectPlot(index) {
+  if (!isUnlocked(index)) return unlockPlot(index);
+  state.selectedPlot = index;
+  saveState();
+  renderFarm();
+  renderSelectedCard();
+  updatePlotLabel();
+  announce(`Field ${index + 1} selected. Excellent dirt management.`);
+}
+
+function unlockPlot(index) {
+  if (index !== state.unlockedPlots) {
+    announce("Unlock fields in order. The dirt has bureaucracy.");
+    return;
+  }
+  const cost = getFieldCost(index);
+  if (state.coins < cost) {
+    announce(`You need 🪙 ${cost} coins to unlock that field. Capitalism strikes again.`);
+    return;
+  }
+  state.coins -= cost;
+  state.unlockedPlots++;
+  state.selectedPlot = index;
+  playSound("buy");
+  render();
+  updatePlotLabel();
+  announce(`${FIELD_NAMES[index]} unlocked. Congratulations, you now own more dirt.`);
+}
+
+function updatePlotLabel() {
+  const plot = state.plots[state.selectedPlot];
+  if (!plot) return;
+  const crop = cropForPlot(plot);
+  const stage = getStageInfo(plot);
+  document.getElementById("plotLabel").textContent = `${FIELD_NAMES[state.selectedPlot]}: ${crop.emoji} ${crop.name} — ${stage.label}`;
+}
+
+function generateQuestion() {
+  const tricky = maybeMakeTrickyQuestion();
+  if (tricky) return tricky;
+
+  const tables = state.tables.length ? state.tables : [2, 5, 10];
+  let a, b, key;
+  let attempts = 0;
+  do {
+    a = tables[Math.floor(Math.random() * tables.length)];
+    b = Math.floor(Math.random() * state.maxMultiplier) + 1;
+    key = `${a}×${b}`;
+    attempts++;
+  } while (state.recentQuestions.includes(key) && attempts < 24);
+
+  const correct = a * b;
+  const choices = makeChoices(a, b, correct);
+  rememberRecentQuestion(key);
+  return { a, b, text: `${a} × ${b}`, correct, choices, key };
+}
+
+function maybeMakeTrickyQuestion() {
+  const tricky = getTrickyFacts();
+  if (!tricky.length || Math.random() > 0.28) return null;
+  const fact = randomFrom(tricky.slice(0, 6));
+  const [aRaw, bRaw] = fact.key.split("×");
+  const a = Number(aRaw);
+  const b = Number(bRaw);
+  if (!state.tables.includes(a) || b > state.maxMultiplier || !a || !b) return null;
+  const correct = a * b;
+  rememberRecentQuestion(fact.key);
+  return { a, b, text: `${a} × ${b}`, correct, choices: makeChoices(a, b, correct), key: fact.key, revisited: true };
+}
+
+function rememberRecentQuestion(key) {
+  state.recentQuestions.push(key);
+  if (state.recentQuestions.length > 12) state.recentQuestions.shift();
+  saveState();
+}
+
+function makeChoices(a, b, correct) {
+  const options = new Set([correct]);
+  const likely = [
+    a * Math.max(1, b - 1), a * (b + 1), Math.max(1, a - 1) * b,
+    (a + 1) * b, correct + a, correct - a, correct + b, correct - b,
+    correct + 10, correct - 10
+  ];
+  likely.forEach(value => {
+    if (value > 0 && value !== correct && options.size < 4) options.add(value);
+  });
+  while (options.size < 4) {
+    const offset = Math.floor(Math.random() * 17) - 8;
+    const value = correct + (offset === 0 ? 2 : offset);
+    if (value > 0) options.add(value);
+  }
+  return shuffle([...options]).slice(0, 4);
+}
+
+function showQuestion() {
+  currentQuestion = generateQuestion();
+  answerLocked = false;
+  if (state.selectedPlot >= state.unlockedPlots) state.selectedPlot = 0;
+  updatePlotLabel();
+  document.getElementById("questionText").textContent = `${currentQuestion.text} = ?`;
+  document.getElementById("nextRow").classList.remove("show");
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback";
+  feedback.textContent = currentQuestion.revisited ? "A previously spicy question has returned. Character development." : "Choose an answer and make the crop less dramatic.";
+  const grid = document.getElementById("answersGrid");
+  grid.innerHTML = "";
+  currentQuestion.choices.forEach(choice => {
+    const button = document.createElement("button");
+    button.className = "answer-btn";
+    button.type = "button";
+    button.textContent = choice;
+    button.onclick = () => submitAnswer(choice, button);
+    grid.appendChild(button);
+  });
+  renderCropPicker();
+  saveState();
+}
+
+function submitAnswer(choice, button) {
+  if (answerLocked || !currentQuestion) return;
+  state.totalAttempts++;
+  state.attemptsByFact[currentQuestion.key] = (state.attemptsByFact[currentQuestion.key] || 0) + 1;
+  if (choice === currentQuestion.correct) {
+    answerLocked = true;
+    state.totalCorrect++;
+    state.correctByTable[currentQuestion.a] = (state.correctByTable[currentQuestion.a] || 0) + 1;
+    state.correctByFact[currentQuestion.key] = (state.correctByFact[currentQuestion.key] || 0) + 1;
+    lockAnswerButtons(button);
+    button.classList.add("correct", "pop");
+    handleCorrectAnswer();
+  } else {
+    state.totalIncorrect++;
+    state.incorrectByTable[currentQuestion.a] = (state.incorrectByTable[currentQuestion.a] || 0) + 1;
+    recordWrongFact(currentQuestion);
+    button.classList.add("try-again");
+    if (!state.calmMode) button.classList.add("wiggle");
+    button.disabled = true;
+    showHelpfulHint();
+    playSound("softOops");
+    saveState();
+  }
+}
+
+function lockAnswerButtons(correctButton) {
+  [...document.querySelectorAll(".answer-btn")].forEach(button => {
+    button.disabled = true;
+    if (button !== correctButton) button.style.opacity = "0.55";
+  });
+}
+
+function handleCorrectAnswer() {
+  const plot = state.plots[state.selectedPlot];
+  if (!plot || !isUnlocked(state.selectedPlot)) return;
+  const crop = cropForPlot(plot);
+  let message = randomFrom([
+    "Correct. The crop is trying not to look impressed. 🌱",
+    "Look at you doing maths. Casual genius. ✨",
+    "The crop has decided you're acceptable. 🌿",
+    "Mathematical behaviour detected. Slightly iconic. 🌻"
+  ]);
+
+  if (state.upgrades.includes("scarecrow") && state.totalCorrect % 5 === 0) {
+    state.coins += 1;
+    message += " Scarecrow bonus +1 coin. It finally did something.";
+  }
+
+  const readySteps = getReadySteps(plot);
+  if (plot.stage >= readySteps) {
+    message = harvestPlot(state.selectedPlot, "selected");
+  } else {
+    plot.stage++;
+    if (plot.stage >= readySteps) {
+      message = `${crop.emoji} ${crop.name} is ready. One more correct answer to harvest it, because crops enjoy admin.`;
+      markSelectedPlot("harvested");
+    } else {
+      markSelectedPlot("pop");
+    }
+    playSound("correct");
+  }
+
+  if (state.totalCorrect > 0 && state.totalCorrect % 3 === 0) {
+    const helpedMessage = growBackgroundField();
+    if (helpedMessage) message += ` ${helpedMessage}`;
+  }
+
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback good";
+  feedback.textContent = message;
+  document.getElementById("nextRow").classList.add("show");
+  render();
+}
+
+function getCropReward(crop) {
+  return crop.reward + (state.upgrades.includes("shiny_shovel") ? 2 : 0);
+}
+
+function harvestPlot(index, source) {
+  const plot = state.plots[index];
+  const crop = cropForPlot(plot);
+  const reward = getCropReward(crop);
+  state.coins += reward;
+  state.harvests++;
+  state.harvestedByCrop[crop.id] = (state.harvestedByCrop[crop.id] || 0) + 1;
+  let message = `Harvest time! ${crop.emoji} ${crop.name} paid 🪙 ${reward}. Capitalism, but with vegetables.`;
+
+  const orderMessage = addCropToOrder(crop.id);
+  if (orderMessage) message += ` ${orderMessage}`;
+  const eventMessage = maybeFarmEvent();
+  if (eventMessage) message += ` ${eventMessage}`;
+
+  plot.stage = 0;
+  // Keep the same crop selected so pupils can intentionally run repeats for orders.
+
+  if (state.upgrades.includes("tractor") && source === "selected") {
+    const helped = growBackgroundField(true);
+    if (helped) message += ` ${helped}`;
+  }
+  playSound("harvest");
+  markSelectedPlot("harvested");
+  return message;
+}
+
+function addCropToOrder(cropId) {
+  const order = state.currentOrder;
+  if (!order.needs[cropId]) return "Not on the order, but money is money.";
+  const needed = order.needs[cropId];
+  const before = order.progress[cropId] || 0;
+  if (before >= needed) return "The village already has enough of that. Fussy.";
+  order.progress[cropId] = before + 1;
+  if (isOrderComplete(order)) {
+    state.coins += order.reward;
+    state.ordersCompleted++;
+    const reward = order.reward;
+    state.currentOrder = makeOrder(state.ordersCompleted);
+    return `Order complete. The villagers are weirdly pleased. Bonus 🪙 ${reward}.`;
+  }
+  return "Order progress updated. The village remains demanding.";
+}
+
+function isOrderComplete(order) {
+  return Object.entries(order.needs).every(([cropId, needed]) => (order.progress[cropId] || 0) >= needed);
+}
+
+function growBackgroundField(forceAny) {
+  const candidates = state.plots
+    .map((plot, index) => ({ plot, index }))
+    .filter(item => item.index !== state.selectedPlot && isUnlocked(item.index) && item.plot.stage > 0 && item.plot.stage < getReadySteps(item.plot));
+  if (!candidates.length) return "";
+  const target = forceAny ? candidates[0] : randomFrom(candidates);
+  target.plot.stage++;
+  const crop = cropForPlot(target.plot);
+  if (target.plot.stage >= getReadySteps(target.plot)) {
+    return `Field ${target.index + 1} is ready too. Multi-field farming. Dangerous levels of competence.`;
+  }
+  return `Field ${target.index + 1} grew in the background. Look at the dirt multitasking.`;
+}
+
+function getCurrentOrderNeedRemaining(cropId) {
+  const order = state.currentOrder;
+  if (!order || !order.needs || !order.needs[cropId]) return 0;
+  return Math.max(0, order.needs[cropId] - (order.progress[cropId] || 0));
+}
+
+function recordWrongFact(question) {
+  if (!question || !question.key) return;
+  state.wrongByFact[question.key] = (state.wrongByFact[question.key] || 0) + 1;
+}
+
+function getTrickyFacts() {
+  return Object.entries(state.wrongByFact || {})
+    .map(([key, wrong]) => {
+      const attempts = state.attemptsByFact[key] || wrong;
+      const correct = state.correctByFact[key] || 0;
+      return { key, wrong, attempts, correct, score: wrong * 2 - correct };
+    })
+    .filter(item => item.wrong > 0 && item.score > 0)
+    .sort((a, b) => b.score - a.score || b.wrong - a.wrong);
+}
+
+function makeTrickyFactSummary(limit = 5) {
+  const tricky = getTrickyFacts().slice(0, limit);
+  if (!tricky.length) return "No obvious tricky facts yet. Suspiciously competent.";
+  return tricky.map(item => {
+    const [a, b] = item.key.split("×");
+    return `${a} × ${b}: ${item.wrong} wobble${item.wrong === 1 ? "" : "s"}`;
+  }).join("\n");
+}
+
+function maybeFarmEvent() {
+  if (state.harvests < 2 || Math.random() > 0.24) return "";
+  const text = randomFrom(FARM_EVENTS);
+  const rewardMatch = text.match(/\+(\d+) coin/);
+  const reward = rewardMatch ? Number(rewardMatch[1]) : 1;
+  state.coins += reward;
+  state.farmEvents.push({ text, at: new Date().toISOString() });
+  if (state.farmEvents.length > 8) state.farmEvents.shift();
+  return text;
+}
+
+function showHelpfulHint() {
+  const hints = [
+    `Not that one. Plot twist. Try another.`,
+    `Try skip-counting in ${currentQuestion.a}s. Wild, but it works.`,
+    `Think of ${currentQuestion.b} equal groups of ${currentQuestion.a}. The crop is waiting, dramatically.`,
+    `Close enough to be interesting. Have another go.`
+  ];
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback help";
+  feedback.textContent = randomFrom(hints);
+}
+
+function nextQuestion() { showQuestion(); }
+
+function markSelectedPlot(className) {
+  requestAnimationFrame(() => {
+    const plots = [...document.querySelectorAll(".plot")];
+    const plot = plots[state.selectedPlot];
+    if (!plot || state.calmMode) return;
+    plot.classList.remove(className);
+    void plot.offsetWidth;
+    plot.classList.add(className);
+  });
+}
+
+function openShop() {
+  renderShop();
+  openModal("shopModal");
+}
+
+function renderShop() {
+  document.getElementById("shopCoinText").textContent = `You have 🪙 ${state.coins} coins. Fields unlock by clicking locked dirt. Obviously.`;
+  document.getElementById("upgradesList").innerHTML = UPGRADES.map(item => shopItemHtml(item, "upgrade")).join("");
+  document.getElementById("cosmeticsList").innerHTML = COSMETICS.map(item => shopItemHtml(item, "cosmetic")).join("");
+}
+
+function shopItemHtml(item, type) {
+  const owned = type === "upgrade" ? state.upgrades.includes(item.id) : state.cosmetics.includes(item.id);
+  const affordable = state.coins >= item.cost;
+  const action = type === "upgrade" ? `buyUpgrade('${item.id}')` : `buyCosmetic('${item.id}')`;
+  return `
+    <button class="shop-item" onclick="${action}" ${owned || !affordable ? "disabled" : ""} aria-label="${escapeHtml(item.name)}, ${owned ? "owned" : item.cost + " coins"}">
+      <span class="shop-icon" aria-hidden="true">${item.emoji}</span>
+      <span><span class="shop-name">${escapeHtml(item.name)}</span><span class="shop-desc">${escapeHtml(item.desc || "Funny decoration")}</span></span>
+      <span class="${owned ? "owned-pill" : "price-pill"}">${owned ? "Owned" : "🪙 " + item.cost}</span>
+    </button>`;
+}
+
+function buyUpgrade(id) {
+  const item = UPGRADES.find(upgrade => upgrade.id === id);
+  if (!item || state.upgrades.includes(id) || state.coins < item.cost) return;
+  state.coins -= item.cost;
+  state.upgrades.push(id);
+  // Clamp stages if watering can makes a half-grown crop suddenly ready.
+  state.plots.forEach(plot => { if (plot.stage > getReadySteps(plot)) plot.stage = getReadySteps(plot); });
+  playSound("buy");
+  announce(`${item.name} bought. Financial decisions were made.`);
+  render();
+  renderShop();
+  showQuestion();
+}
+
+function buyCosmetic(id) {
+  const item = COSMETICS.find(cosmetic => cosmetic.id === id);
+  if (!item || state.cosmetics.includes(id) || state.coins < item.cost) return;
+  state.coins -= item.cost;
+  state.cosmetics.push(id);
+  playSound("buy");
+  announce(`${item.name} added to your farm. The vibes have escalated.`);
+  render();
+  renderShop();
+}
+
+function renderSettingsControls() {
+  const tableBox = document.getElementById("tableToggles");
+  if (tableBox) {
+    tableBox.innerHTML = "";
+    for (let table = 2; table <= 12; table++) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `choice-btn ${state.tables.includes(table) ? "active" : ""}`;
+      button.textContent = `×${table}`;
+      button.setAttribute("aria-pressed", state.tables.includes(table) ? "true" : "false");
+      button.onclick = () => toggleTable(table);
+      tableBox.appendChild(button);
+    }
+  }
+
+  const maxButtons = document.getElementById("maxMultiplierButtons");
+  if (maxButtons) {
+    [...maxButtons.querySelectorAll("button")].forEach(button => {
+      const value = Number(button.textContent.replace(/\D/g, ""));
+      button.classList.toggle("active", value === state.maxMultiplier);
+    });
+  }
+
+  const calmToggle = document.getElementById("calmToggle");
+  if (calmToggle) {
+    calmToggle.textContent = state.calmMode ? "Calm Mode: On" : "Calm Mode: Off";
+    calmToggle.classList.toggle("active", state.calmMode);
+    calmToggle.setAttribute("aria-pressed", state.calmMode ? "true" : "false");
+  }
+
+  const studentName = document.getElementById("studentName");
+  const teacherEmail = document.getElementById("teacherEmail");
+  if (studentName && studentName.value !== state.studentName) studentName.value = state.studentName || "";
+  if (teacherEmail && teacherEmail.value !== state.teacherEmail) teacherEmail.value = state.teacherEmail || TEACHER_EMAIL_DEFAULT;
+}
+
+function setPreset(mode) {
+  const presets = {
+    easy: [2, 5, 10],
+    building: [2, 3, 4, 5, 10],
+    challenge: [6, 7, 8, 9, 11, 12],
+    mixed: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  };
+  state.tables = presets[mode] || presets.easy;
+  saveState();
+  renderSettingsControls();
+  showQuestion();
+  announce("Difficulty updated. Brave.");
+}
+
+function toggleTable(table) {
+  const index = state.tables.indexOf(table);
+  if (index >= 0) {
+    if (state.tables.length === 1) {
+      announce("Keep at least one table switched on. We do need maths in the maths game.");
+      return;
+    }
+    state.tables.splice(index, 1);
+  } else {
+    state.tables.push(table);
+    state.tables.sort((a, b) => a - b);
+  }
+  saveState();
+  renderSettingsControls();
+  showQuestion();
+}
+
+function setMaxMultiplier(value) {
+  state.maxMultiplier = value;
+  saveState();
+  renderSettingsControls();
+  showQuestion();
+  announce(`Questions now go up to ×${value}.`);
+}
+
+function toggleCalmMode() {
+  state.calmMode = !state.calmMode;
+  if (state.calmMode) state.muted = true;
+  render();
+  announce(state.calmMode ? "Calm Mode is on. The screen has taken a breath." : "Calm Mode is off. Chaos permissions restored.");
+}
+
+function toggleMute() {
+  state.muted = !state.muted;
+  render();
+  announce(state.muted ? "Sound muted. Peace at last." : "Sound on. Noisy little farm.");
+}
+
+function saveTeacherFields() {
+  const studentName = document.getElementById("studentName");
+  const teacherEmail = document.getElementById("teacherEmail");
+  if (studentName) state.studentName = studentName.value.trim();
+  if (teacherEmail) state.teacherEmail = teacherEmail.value.trim() || TEACHER_EMAIL_DEFAULT;
+  saveState();
+}
+
+function openEmailReport() {
+  const finishModal = document.getElementById("finishModal");
+  if (finishModal && finishModal.classList.contains("show")) finishModal.classList.remove("show");
+  const report = makeReport();
+  const emailTo = document.getElementById("emailTo");
+  const reportText = document.getElementById("reportText");
+  emailTo.value = state.teacherEmail || TEACHER_EMAIL_DEFAULT;
+  reportText.value = report;
+  openModal("emailModal");
+}
+
+function saveEmailFromModal() {
+  const emailTo = document.getElementById("emailTo");
+  state.teacherEmail = emailTo.value.trim() || TEACHER_EMAIL_DEFAULT;
+  const teacherEmail = document.getElementById("teacherEmail");
+  if (teacherEmail) teacherEmail.value = state.teacherEmail;
+  saveState();
+}
+
+function makeReport() {
+  const started = new Date(state.sessionStartedAt || Date.now());
+  const now = new Date();
+  const accuracy = state.totalAttempts ? Math.round((state.totalCorrect / state.totalAttempts) * 100) : 0;
+  const selectedTables = state.tables.slice().sort((a, b) => a - b).map(t => `×${t}`).join(", ");
+  const upgrades = state.upgrades.length ? state.upgrades.map(id => (UPGRADES.find(u => u.id === id) || {}).name).filter(Boolean).join(", ") : "None yet";
+  const decorations = state.cosmetics.length ? state.cosmetics.map(id => (COSMETICS.find(c => c.id === id) || {}).name).filter(Boolean).join(", ") : "None yet";
+  const tableStats = makeTableStats();
+  const cropStats = CROPS.map(crop => `${crop.emoji} ${crop.name}: ${state.harvestedByCrop[crop.id] || 0}`).join("\n");
+  const order = state.currentOrder;
+  const orderLine = Object.entries(order.needs).map(([cropId, needed]) => {
+    const crop = cropById(cropId);
+    return `${crop.name} ${(order.progress[cropId] || 0)}/${needed}`;
+  }).join(", ");
+  const pupil = state.studentName || "Not entered";
+  const trickyFacts = makeTrickyFactSummary(6);
+  const eventLines = state.farmEvents && state.farmEvents.length
+    ? state.farmEvents.slice(-5).map(event => `- ${event.text}`).join("\n")
+    : "No silly farm events yet. The duck is biding its time.";
+
+  return [
+    "Times Table Farm Progress Report (evidence of actual maths)",
+    "",
+    `Pupil: ${pupil}`,
+    `Report created: ${now.toLocaleString()}`,
+    `Session started: ${started.toLocaleString()}`,
+    "",
+    "Session summary:",
+    `Correct answers: ${state.totalCorrect}`,
+    `Attempts: ${state.totalAttempts}`,
+    `Accuracy: ${accuracy}%`,
+    `Harvests: ${state.harvests}`,
+    `Orders completed: ${state.ordersCompleted || 0}`,
+    `Unlocked fields: ${state.unlockedPlots}/6`,
+    `Coins left: ${state.coins}`,
+    "",
+    `Current order: ${order.title} (${orderLine})`,
+    "",
+    `Tables practised: ${selectedTables}`,
+    `Max multiplier: ×${state.maxMultiplier}`,
+    `Calm Mode: ${state.calmMode ? "On" : "Off"}`,
+    "",
+    "Needs more practice / returned for another round:",
+    trickyFacts,
+    "",
+    "Table breakdown:",
+    tableStats || "No completed answers yet.",
+    "",
+    "Crop harvest breakdown:",
+    cropStats,
+    "",
+    `Upgrades owned: ${upgrades}`,
+    `Decorations owned: ${decorations}`,
+    "",
+    "Recent farm nonsense:",
+    eventLines,
+    "",
+    "Teacher note:",
+    "The game quietly revisits facts that caused wobbles. No public shame, just sneaky practice. Educational villainy."
+  ].join("\n");
+}
+
+function makeTableStats() {
+  const allTables = [...new Set([...Object.keys(state.correctByTable), ...Object.keys(state.incorrectByTable)])]
+    .map(Number).filter(Boolean).sort((a, b) => a - b);
+  return allTables.map(table => {
+    const correct = state.correctByTable[table] || 0;
+    const incorrect = state.incorrectByTable[table] || 0;
+    const total = correct + incorrect;
+    const accuracy = total ? Math.round((correct / total) * 100) : 0;
+    return `×${table}: ${correct}/${total} correct (${accuracy}%)`;
+  }).join("\n");
+}
+
+function sendEmailDraft() {
+  saveEmailFromModal();
+  const to = state.teacherEmail || TEACHER_EMAIL_DEFAULT;
+  const subjectName = state.studentName ? ` - ${state.studentName}` : "";
+  const subject = `Times Table Farm Report${subjectName}`;
+  const body = document.getElementById("reportText").value || makeReport();
+  const href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = href;
+  announce("Email draft opened. Hit Send if the evidence is acceptable.");
+}
+
+async function copyReport() {
+  const text = document.getElementById("reportText").value || makeReport();
+  try {
+    await navigator.clipboard.writeText(text);
+    announce("Report copied. Evidence secured.");
+  } catch (error) {
+    document.getElementById("reportText").select();
+    announce("Select and copy the report text. Manual mode, apparently.");
+  }
+}
+
+function downloadReport() {
+  const text = document.getElementById("reportText").value || makeReport();
+  const blob = new Blob([text], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  const safeName = (state.studentName || "times-table-farm").replace(/[^a-z0-9_-]+/gi, "-").toLowerCase();
+  link.href = url;
+  link.download = `${safeName}-report.txt`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  announce("Report downloaded. Receipts obtained.");
+}
+
+function resetProgress() {
+  const keepSettings = {
+    tables: state.tables,
+    maxMultiplier: state.maxMultiplier,
+    muted: state.muted,
+    calmMode: state.calmMode,
+    studentName: state.studentName,
+    teacherEmail: state.teacherEmail,
+    tutorialSeen: state.tutorialSeen
+  };
+  state = { ...defaultState(), ...keepSettings };
+  closeModal("resetModal");
+  render();
+  showQuestion();
+  announce("Progress reset. Fresh start, no witnesses.");
+}
+
+function showTutorial() {
+  openModal("tutorialModal");
+}
+
+function finishTutorial() {
+  state.tutorialSeen = true;
+  saveState();
+  closeModal("tutorialModal");
+  announce("Tutorial complete. You may now farm dramatically.");
+}
+
+function finishSession() {
+  renderFinishSummary();
+  openModal("finishModal");
+}
+
+function renderFinishSummary() {
+  const accuracy = state.totalAttempts ? Math.round((state.totalCorrect / state.totalAttempts) * 100) : 0;
+  const box = document.getElementById("finishSummary");
+  if (box) {
+    box.innerHTML = `
+      <div class="summary-tile"><strong>${state.totalCorrect}</strong><span>correct answers</span></div>
+      <div class="summary-tile"><strong>${accuracy}%</strong><span>accuracy</span></div>
+      <div class="summary-tile"><strong>${state.harvests}</strong><span>harvests</span></div>
+      <div class="summary-tile"><strong>${state.ordersCompleted || 0}</strong><span>orders completed</span></div>`;
+  }
+  const tricky = document.getElementById("finishTrickyFacts");
+  if (tricky) {
+    tricky.innerHTML = `<strong>Useful teacher bit:</strong><br>${escapeHtml(makeTrickyFactSummary(4)).replaceAll("\n", "<br>")}`;
+  }
+}
+
+async function copyReportFromFinish() {
+  const fakeArea = document.getElementById("reportText");
+  if (fakeArea) fakeArea.value = makeReport();
+  await copyReport();
+}
+
+function downloadReportFromFinish() {
+  const fakeArea = document.getElementById("reportText");
+  if (fakeArea) fakeArea.value = makeReport();
+  downloadReport();
+}
+
+function openModal(id) {
+  const modal = document.getElementById(id);
+  modal.classList.add("show");
+  const focusable = modal.querySelector("button, input, textarea, select");
+  if (focusable) setTimeout(() => focusable.focus(), 50);
+}
+
+function closeModal(id) {
+  const modal = document.getElementById(id);
+  if (!modal) return;
+  modal.classList.remove("show");
+  if (id !== "tutorialModal") saveTeacherFields();
+}
+
+function overlayClose(event, id) {
+  if (event.target === event.currentTarget) closeModal(id);
+}
+
+function playSound(kind) {
+  if (state.muted || state.calmMode) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const sounds = { correct: [523, 659], harvest: [523, 659, 784], buy: [440, 880], softOops: [220] };
+    const notes = sounds[kind] || sounds.correct;
+    notes.forEach((freq, index) => setTimeout(() => tone(freq, kind === "softOops" ? 0.08 : 0.11), index * 85));
+  } catch (error) {}
+}
+
+function tone(freq, duration) {
+  const oscillator = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  oscillator.type = "sine";
+  oscillator.frequency.value = freq;
+  gain.gain.value = 0.08;
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+  oscillator.connect(gain);
+  gain.connect(audioCtx.destination);
+  oscillator.start();
+  oscillator.stop(audioCtx.currentTime + duration);
+}
+
+function announce(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2400);
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function randomFrom(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    ["settingsModal", "shopModal", "cropModal", "emailModal", "resetModal", "tutorialModal", "finishModal"].forEach(id => closeModal(id));
+  }
+});
+
+render();
+showQuestion();
+if (!state.tutorialSeen) setTimeout(() => showTutorial(), 250);
+</script>
+</body>
+</html>
