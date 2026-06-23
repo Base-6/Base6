@@ -20,19 +20,7 @@
   .eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#ef7724; margin-bottom:0.3rem; }
   .card h2 { font-size:1.2rem; font-weight:700; color:#007291; margin-bottom:0.5rem; }
   .intro { font-size:0.95rem; color:#444; line-height:1.65; margin-bottom:0.6rem; }
-  .big-q { font-size:1.1rem; font-weight:700; color:#c05a10; line-height:1.5; background:#fff7f0; border:2px solid #fcd8bc; border-radius:12px; padding:1rem 1.2rem; }
-
-  .slider-wrap { margin:1.2rem 0 0.4rem; }
-  input[type=range] { width:100%; accent-color:#007291; height:30px; }
-  .scale-row { display:flex; justify-content:space-between; font-size:0.78rem; font-weight:700; color:#888; }
-  .slider-val { text-align:center; font-size:1.6rem; font-weight:700; color:#007291; margin-top:0.4rem; }
-  .slider-fb { text-align:center; font-size:0.9rem; color:#555; line-height:1.5; min-height:2.6em; margin-top:0.3rem; }
-
-  .consider { font-size:0.9rem; font-weight:700; margin:1rem 0 0.5rem; }
-  .chip-row { display:flex; gap:0.5rem; flex-wrap:wrap; }
-  .chip { font-family:inherit; font-size:0.86rem; font-weight:700; padding:0.55rem 1rem; border-radius:14px; cursor:pointer; border:2px solid #cbb9a8; background:#fff; color:#6a5a4a; text-align:left; }
-  .chip:hover { border-color:#007291; }
-  .chip.on { background:#e8f4f7; border-color:#007291; color:#075066; }
+  .big-q { font-size:1.05rem; font-weight:700; color:#c05a10; line-height:1.5; background:#fff7f0; border:2px solid #fcd8bc; border-radius:12px; padding:0.9rem 1rem; }
 
   label.fl { display:block; font-size:0.9rem; font-weight:700; color:#c05a10; margin:1rem 0 0.3rem; }
   textarea { font-family:inherit; font-size:0.97rem; width:100%; min-height:60px; padding:0.6rem 0.8rem; border:2px solid #007291; border-radius:10px; background:#fff; outline:none; line-height:1.6; resize:vertical; }
@@ -44,18 +32,6 @@
   .notify.show { display:block; }
   a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline:3px solid #007291; outline-offset:2px; }
   footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
-  .reward-card { background:linear-gradient(135deg,#fff7f0,#e8f4f7); border:2px solid #fcd8bc; border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
-  .reward-card h2 { font-size:1.2rem; font-weight:700; color:#c05a10; margin-bottom:0.4rem; }
-  .reward-card .eyebrow { color:#ef7724; }
-  .reward-item { display:flex; align-items:center; gap:0.9rem; background:#fff; border:2px solid #e0d8d0; border-radius:14px; padding:0.9rem 1.1rem; margin:0.9rem 0; }
-  .reward-emoji { font-size:1.9rem; width:54px; height:54px; border-radius:50%; background:#fff3e6; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .reward-name { font-size:1.05rem; font-weight:700; color:#1a1a1a; }
-  .reward-slot { font-size:0.82rem; color:#888; }
-  .claim-btn { font-family:inherit; font-size:0.95rem; font-weight:700; padding:0.75rem 1.5rem; border-radius:10px; cursor:pointer; border:none; color:#fff; background:#ef7724; margin-top:0.2rem; }
-  .claim-btn:hover { background:#c05a10; }
-  .claim-btn:disabled { background:#9ec9b0; cursor:default; }
-  .claimed-msg { display:none; margin-top:0.8rem; font-size:0.9rem; font-weight:700; line-height:1.55; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.7rem 1rem; }
-  .claimed-msg.show { display:block; }
 
   .pride-stripe { height:8px; background:linear-gradient(90deg,#e40303,#ff8c00,#ffed00,#008026,#004dff,#750787); }
   .meta-row { display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap; margin-top:0.7rem; }
@@ -64,7 +40,7 @@
   .step-num { flex-shrink:0; width:34px; height:34px; border-radius:50%; background:#ef7724; color:#fff; font-weight:700; font-size:1.05rem; display:flex; align-items:center; justify-content:center; }
   .step-title { font-size:1.18rem; font-weight:700; color:#007291; line-height:1.2; }
   .lead { font-size:0.92rem; color:#555; line-height:1.5; margin-bottom:0.7rem; }
-  .mini-note { font-size:0.82rem; color:#6a5a4a; line-height:1.5; background:#faf3ec; border:1.5px solid #ead9c7; border-radius:10px; padding:0.55rem 0.75rem; margin-top:0.7rem; }
+  .mini-note { font-size:0.84rem; color:#6a5a4a; line-height:1.5; background:#faf3ec; border:1.5px solid #ead9c7; border-radius:10px; padding:0.65rem 0.8rem; margin-top:0.7rem; }
   .done-flag { display:none; font-size:0.9rem; font-weight:700; color:#1a5e1a; background:#e6f5e6; border:1.5px solid #2d4a2d; border-radius:10px; padding:0.6rem 0.85rem; margin-top:0.7rem; }
   .done-flag.show { display:block; }
 
@@ -72,97 +48,102 @@
   .tile { position:relative; border:2.5px solid #e0d8d0; border-radius:16px; background:#fff; padding:1rem 0.55rem 0.85rem; cursor:pointer; font-family:inherit; text-align:center; transition:transform .12s, border-color .12s, background .12s; }
   .tile:hover { border-color:#007291; transform:translateY(-2px); }
   .tile.on { border-color:#007291; background:#eaf6f9; }
-  .tile-emoji { font-size:2.2rem; display:block; line-height:1; }
+  .tile.good.on { border-color:#2d8a4e; background:#eaf7ee; }
+  .tile.soft.on { border-color:#c98a2a; background:#fdf3e3; }
+  .tile-emoji { font-size:1.9rem; display:block; line-height:1; }
   .tile-label { display:block; font-size:0.84rem; font-weight:700; color:#3f4a4d; margin-top:0.5rem; line-height:1.25; }
   .tile .tick { position:absolute; top:6px; right:9px; font-size:1rem; color:#007291; opacity:0; }
   .tile.on .tick { opacity:1; }
 
-  .flag-build { display:flex; gap:1rem; flex-wrap:wrap; align-items:flex-start; }
-  .flag-pole { width:150px; height:170px; border:2px solid #e0d8d0; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; background:repeating-linear-gradient(45deg,#fbf3ec,#fbf3ec 10px,#f4e9df 10px,#f4e9df 20px); }
-  .flag-pole > div { flex:1; transition:flex .25s; min-height:0; }
-  .colour-pick { display:flex; flex-direction:column; gap:0.45rem; flex:1; min-width:170px; }
-  .cbtn { display:flex; align-items:center; gap:0.6rem; border:2px solid #e0d8d0; border-radius:12px; background:#fff; padding:0.55rem 0.7rem; cursor:pointer; font-family:inherit; text-align:left; }
-  .cbtn:hover:not(:disabled) { border-color:#007291; }
-  .cbtn:disabled { opacity:0.55; cursor:default; }
-  .cdot { width:26px; height:26px; border-radius:7px; flex-shrink:0; border:1px solid rgba(0,0,0,0.12); }
-  .cword { font-size:0.9rem; font-weight:700; color:#3f4a4d; }
-
-  .tl { display:flex; gap:0.5rem; margin-top:0.4rem; }
-  .tl-step { flex:1; border:2px solid #e0d8d0; border-radius:14px; background:#fff; padding:0.7rem 0.4rem; cursor:pointer; text-align:center; font-family:inherit; }
-  .tl-step:hover { border-color:#007291; }
-  .tl-step.on { border-color:#007291; background:#eaf6f9; }
-  .tl-emoji { font-size:1.8rem; line-height:1; }
-  .tl-year { font-size:0.8rem; font-weight:700; color:#ef7724; margin-top:0.25rem; }
-  .tl-cap { font-size:0.82rem; color:#444; line-height:1.4; margin-top:0.5rem; display:none; }
-  .tl-step.on .tl-cap { display:block; }
-
   .sortcard { display:flex; align-items:center; gap:0.7rem; border:2px solid #e0d8d0; border-radius:14px; background:#fff; padding:0.65rem 0.75rem; margin-top:0.7rem; transition:border-color .12s, background .12s; }
   .sortcard.ok { border-color:#2d8a4e; background:#eaf7ee; }
   .sortcard.no { border-color:#c98a2a; background:#fdf3e3; }
-  .sc-emoji { font-size:1.9rem; flex-shrink:0; }
+  .sc-emoji { font-size:1.6rem; flex-shrink:0; }
   .sc-text { font-size:0.9rem; font-weight:700; color:#3f4a4d; line-height:1.3; flex:1; }
   .sc-btns { display:flex; gap:0.4rem; flex-shrink:0; }
-  .sc-pick { width:48px; height:48px; border-radius:12px; border:2px solid #cbb9a8; background:#fff; font-size:1.4rem; cursor:pointer; line-height:1; }
-  .sc-pick.sel-ok { border-color:#2d8a4e; background:#d8f0e0; }
-  .sc-pick.sel-no { border-color:#c98a2a; background:#fbe6c8; }
-  .sc-fb { font-size:0.8rem; font-weight:700; line-height:1.4; width:100%; margin-top:0.2rem; min-height:0; }
+  .sc-pick { width:48px; height:48px; border-radius:12px; border:2px solid #cbb9a8; background:#fff; font-size:1.25rem; font-weight:700; cursor:pointer; line-height:1; }
+  .sc-pick.sel-ok, .sc-pick.sel-fact { border-color:#2d8a4e; background:#d8f0e0; }
+  .sc-pick.sel-no, .sc-pick.sel-myth { border-color:#c98a2a; background:#fbe6c8; }
+  .sc-fb { font-size:0.82rem; font-weight:700; line-height:1.4; width:100%; margin-top:0.2rem; min-height:0; }
   .sc-fb.good { color:#1a5e1a; } .sc-fb.soft { color:#9a5a10; }
+  .legend { display:flex; gap:0.45rem; flex-wrap:wrap; margin:0.4rem 0 0.2rem; }
+  .legend span { display:inline-block; font-size:0.76rem; font-weight:700; color:#075066; background:#eaf6f9; border:1.5px solid #bfe3ee; border-radius:20px; padding:0.25rem 0.55rem; }
 
   .scn { border:2px solid #e0d8d0; border-radius:16px; background:#fff; padding:0.95rem 1rem; margin-top:0.8rem; }
   .scn-head { display:flex; align-items:center; gap:0.6rem; }
-  .scn-emoji { font-size:2rem; line-height:1; }
+  .scn-emoji { font-size:1.7rem; line-height:1; }
   .scn-q { font-size:0.95rem; font-weight:700; color:#075066; line-height:1.4; }
   .opt { display:block; width:100%; text-align:left; font-family:inherit; font-size:0.9rem; font-weight:700; padding:0.7rem 0.9rem; border-radius:12px; cursor:pointer; border:2px solid #cbb9a8; background:#fff; color:#4a3f34; margin-top:0.5rem; line-height:1.35; }
   .opt:hover { border-color:#007291; }
   .opt.pick { border-color:#007291; background:#eaf6f9; }
+  .opt.good.pick { border-color:#2d8a4e; background:#eaf7ee; }
+  .opt.soft.pick { border-color:#c98a2a; background:#fdf3e3; }
   .scn-fb { font-size:0.86rem; font-weight:700; line-height:1.5; margin-top:0.55rem; min-height:0; }
   .scn-fb.good { color:#1a5e1a; } .scn-fb.soft { color:#9a5a10; }
 
-  .stripe-pick { margin-top:0.7rem; }
-  .stripe-lab { font-size:0.82rem; font-weight:700; color:#6a5a4a; margin-bottom:0.3rem; }
-  .swatches { display:flex; gap:0.5rem; flex-wrap:wrap; }
-  .sw { width:44px; height:44px; border-radius:11px; border:3px solid transparent; cursor:pointer; }
-  .sw.pick { border-color:#1a1a1a; }
-  .flag-prev { height:130px; border-radius:14px; border:2px solid #e0d8d0; overflow:hidden; display:flex; flex-direction:column; margin-top:0.9rem; }
-  .flag-prev > div { flex:1; }
-
-  .pledge-preview { font-size:1.05rem; font-weight:700; color:#075066; line-height:1.5; background:#eaf6f9; border:2px solid #bfe3ee; border-radius:12px; padding:0.9rem 1rem; margin-top:0.7rem; }
-
+  @media (max-width:520px){
+    .sortcard { align-items:flex-start; flex-wrap:wrap; }
+    .sc-btns { width:100%; justify-content:flex-start; }
+  }
   @media (prefers-reduced-motion: reduce){ * { transition:none !important; } }
 </style>
 </head>
 <body>
 
-<header class="site-header"><a class="back-link" href="../day3.html">&larr; Back to Wednesday</a></header>
+<header class="site-header"><a class="back-link" href="../day3.html" aria-label="Back to Wednesday activities">&larr; Back to Wednesday</a></header>
 
 <div class="hero">
   <span class="day-pill">Pride Week &middot; Wednesday</span>
-  <h1>🌟 Being Yourself</h1>
-  <p>Being yourself, and being kind to others.</p>
-  <div class="meta-row"><span class="time-pill">About 20 minutes</span><span class="time-pill">Share only if you want</span></div>
+  <h1>Being Yourself</h1>
+  <p>Identity, respect and school culture.</p>
+  <div class="meta-row"><span class="time-pill">Pick what you can</span><span class="time-pill">No personal sharing needed</span><span class="time-pill">Respect is expected</span></div>
 </div>
 <div class="pride-stripe"></div>
 
 <main class="main">
 
   <div class="card">
-    <div class="step"><span class="step-num">1</span><span class="step-title">Respectful, or not okay?</span></div>
-    <p class="lead">For each one, tap &#128077; or &#128683;.</p>
+    <div class="eyebrow">Safe start</div>
+    <h2>You do not have to share private information.</h2>
+    <p class="intro">This is about how people are treated. You can have questions. Mocking, slurs and pressure are not OK.</p>
+    <div class="big-q">You do not need to understand someone fully to treat them safely.</div>
+  </div>
+
+  <div class="card">
+    <div class="step"><span class="step-num">1</span><span class="step-title">Respectful, or crosses a line?</span></div>
+    <p class="lead">For each one, choose respectful or not OK.</p>
+    <div class="legend" aria-hidden="true"><span>✓ Respectful</span><span>✕ Not OK</span></div>
     <div id="sortWrap"></div>
+    <div class="done-flag" id="sortMsg" aria-live="polite">Clear boundary: questions can be respectful; insults are not.</div>
   </div>
 
   <div class="card">
-    <div class="step"><span class="step-num">2</span><span class="step-title">Everyone is unique</span></div>
-    <p class="lead">Tap the things that can make a person who they are.</p>
+    <div class="step"><span class="step-num">2</span><span class="step-title">Identity is more than one thing</span></div>
+    <p class="lead">Tap the things that can be part of who someone is.</p>
     <div class="tiles" id="uniqueTiles"></div>
+    <div class="mini-note" id="uniqueMsg" aria-live="polite">People are not just one label.</div>
   </div>
 
   <div class="card">
-    <div class="step"><span class="step-num">3</span><span class="step-title">One word or sentence (optional)</span></div>
-    <label class="fl">One way I can show respect</label>
+    <div class="step"><span class="step-num">3</span><span class="step-title">Myth or reality?</span></div>
+    <p class="lead">Choose one. Then read the short feedback.</p>
+    <div id="mythWrap"></div>
+    <div class="done-flag" id="mythMsg" aria-live="polite">Useful distinction: respect is about behaviour.</div>
+  </div>
+
+  <div class="card">
+    <div class="step"><span class="step-num">4</span><span class="step-title">What could you say instead?</span></div>
+    <p class="lead">Pick the response that keeps things safe and respectful.</p>
+    <div id="scenarioWrap"></div>
+    <div class="done-flag" id="scenarioMsg" aria-live="polite">Useful responses: clear, calm and not personal.</div>
+  </div>
+
+  <div class="card">
+    <div class="step"><span class="step-num">5</span><span class="step-title">One word or sentence (optional)</span></div>
+    <label class="fl" for="t1">One way I can show respect</label>
     <textarea id="t1" data-save="respect" placeholder="I can show respect by..." style="min-height:48px;"></textarea>
-    <button class="action-btn" onclick="emailWork()">&#128231; Send to Jay</button>
-    <div class="notify" id="notify"></div>
+    <button type="button" class="action-btn" onclick="emailWork()">&#128231; Send to Jay</button>
+    <div class="notify" id="notify" aria-live="polite"></div>
   </div>
 
 </main>
@@ -170,70 +151,199 @@
 <footer>Base 6 &middot; Chilton Bridge School &middot; Pride Week</footer>
 
 <script>
-const STORE_KEY='base6_w4_pride_wed';
+const STORE_KEY='base6_w4_pride_wed_reworked';
 const TEACHER_EMAIL='jay.raine@chiltonbridgeschool.co.uk';
-var state={ fields:{}, sort:{}, unique:[] };
+var state={ fields:{}, sort:{}, unique:[], myth:{}, scenario:{} };
 try { state=Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY))||{}); } catch(e){}
 if(!state.fields) state.fields={};
-if(!state.sort || typeof state.sort!=='object') state.sort={};
+if(!state.sort || typeof state.sort!=='object' || Array.isArray(state.sort)) state.sort={};
 if(!Array.isArray(state.unique)) state.unique=[];
+if(!state.myth || typeof state.myth!=='object' || Array.isArray(state.myth)) state.myth={};
+if(!state.scenario || typeof state.scenario!=='object' || Array.isArray(state.scenario)) state.scenario={};
 function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
+function esc(s){ return String(s).replace(/[&<>\"]/g, function(ch){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]; }); }
+function countObj(obj){ var n=0; Object.keys(obj||{}).forEach(function(k){ if(obj[k]) n++; }); return n; }
 
 var SORT=[
- {e:'🙂', t:'Ask a kind question to get to know someone', a:'ok', good:'Kind and respectful.'},
- {e:'😬', t:'Make a joke about how someone identifies', a:'no', bad:'Not okay. That can really hurt.'},
- {e:'💬', t:'Disagree with an idea in a calm, kind way', a:'ok', good:'Respectful. You can disagree kindly.'},
- {e:'🚪', t:'Leave someone out for being different', a:'no', bad:'Not okay. Everyone deserves to be included.'},
- {e:'🏷️', t:'Use the name a person asks you to use', a:'ok', good:'Kind and respectful.'}
+ {id:'s1', e:'?', t:'Ask a genuine question without making it personal', a:'ok', good:'Respectful. A real question is different from mocking.'},
+ {id:'s2', e:'X', t:'Use “gay” as an insult', a:'no', bad:'Not OK. Say what you actually mean.'},
+ {id:'s3', e:'=', t:'Say “I do not get it yet, but I can still be respectful”', a:'ok', good:'Respectful. Understanding can grow.'},
+ {id:'s4', e:'!', t:'Mock someone’s clothes, voice or identity', a:'no', bad:'Not OK. That targets the person.'},
+ {id:'s5', e:'ID', t:'Use the name someone asks you to use', a:'ok', good:'Respectful. It is a basic dignity choice.'},
+ {id:'s6', e:'GC', t:'Share a meme or screenshot to laugh at someone', a:'no', bad:'Not OK. Group chats can still cause harm.'},
+ {id:'s7', e:'...', t:'Disagree calmly without targeting a person', a:'ok', good:'Respectful. You can disagree without being cruel.'}
 ];
+function sortLabel(v){ return v==='ok'?'Respectful':'Not OK'; }
 function buildSort(){
   var w=document.getElementById('sortWrap'); w.innerHTML='';
-  SORT.forEach(function(it,i){
-    var pick=state.sort[i];
-    var card=document.createElement('div'); card.className='sortcard'+(pick? (pick===it.a?(it.a==='ok'?' ok':' no'):''):'');
+  SORT.forEach(function(it){
+    var pick=state.sort[it.id];
+    var card=document.createElement('div'); card.className='sortcard'+(pick?' '+pick:'');
     var em=document.createElement('div'); em.className='sc-emoji'; em.setAttribute('aria-hidden','true'); em.textContent=it.e; card.appendChild(em);
     var tx=document.createElement('div'); tx.className='sc-text'; tx.textContent=it.t; card.appendChild(tx);
     var btns=document.createElement('div'); btns.className='sc-btns';
-    [['ok','👍'],['no','🚫']].forEach(function(p){
-      var b=document.createElement('button'); b.className='sc-pick'+(pick===p[0]?(p[0]==='ok'?' sel-ok':' sel-no'):''); b.textContent=p[1];
-      b.setAttribute('aria-label', p[0]==='ok'?'Respectful':'Not okay');
-      b.onclick=function(){ state.sort[i]=p[0]; save(); buildSort(); };
+    [['ok','✓','Respectful'],['no','✕','Not OK']].forEach(function(p){
+      var b=document.createElement('button'); b.type='button'; b.className='sc-pick'+(pick===p[0]?' sel-'+p[0]:''); b.textContent=p[1];
+      b.setAttribute('aria-label', p[2]+' for: '+it.t);
+      b.onclick=function(){ state.sort[it.id]=p[0]; save(); buildSort(); };
       btns.appendChild(b);
     });
     card.appendChild(btns);
     var fb=document.createElement('div'); fb.className='sc-fb';
-    if(pick){ if(pick===it.a){ fb.className='sc-fb good'; fb.textContent = it.a==='ok'? it.good : it.bad; } else { fb.className='sc-fb soft'; fb.textContent='Have another think.'; } }
+    if(pick){
+      if(pick===it.a){ fb.className='sc-fb good'; fb.textContent = it.a==='ok'? it.good : it.bad; }
+      else { fb.className='sc-fb soft'; fb.textContent='Try again. Think about impact, not intention.'; }
+    }
     card.appendChild(fb);
     w.appendChild(card);
   });
+  var msg=document.getElementById('sortMsg');
+  if(msg){ msg.className='done-flag'+(countObj(state.sort)===SORT.length?' show':''); }
 }
 
 function buildTiles(elId, arr, bag, rebuild){
   var g=document.getElementById(elId); g.innerHTML='';
   arr.forEach(function(t){
-    var b=document.createElement('button'); b.className='tile'+(bag.indexOf(t.l)!==-1?' on':'');
+    var b=document.createElement('button'); b.type='button'; b.className='tile'+(bag.indexOf(t.l)!==-1?' on':'');
     b.setAttribute('aria-pressed', bag.indexOf(t.l)!==-1?'true':'false');
-    b.innerHTML='<span class="tick" aria-hidden="true">&#10003;</span><span class="tile-emoji" aria-hidden="true">'+t.e+'</span><span class="tile-label">'+t.l+'</span>';
+    b.innerHTML='<span class="tick" aria-hidden="true">&#10003;</span><span class="tile-emoji" aria-hidden="true">'+t.e+'</span><span class="tile-label">'+esc(t.l)+'</span>';
     b.onclick=function(){ var i=bag.indexOf(t.l); if(i>-1) bag.splice(i,1); else bag.push(t.l); save(); rebuild(); };
     g.appendChild(b);
   });
 }
-var UNIQUE=[{e:'🎨',l:'Likes'},{e:'⚽',l:'Talents'},{e:'😄',l:'Sense of humour'},{e:'👪',l:'Family'},{e:'🕊️',l:'Beliefs'},{e:'🌈',l:'How they see themselves'}];
-function rebUnique(){ buildTiles('uniqueTiles', UNIQUE, state.unique, rebUnique); }
+var UNIQUE=[
+ {e:'🎧',l:'Interests'},
+ {e:'⚡',l:'Strengths'},
+ {e:'👟',l:'Style'},
+ {e:'🏠',l:'Family / culture'},
+ {e:'🧭',l:'Values'},
+ {e:'🕊️',l:'Faith / beliefs'},
+ {e:'🌈',l:'Gender / sexuality'},
+ {e:'🔒',l:'Boundaries'},
+ {e:'🎮',l:'Hobbies'},
+ {e:'🤝',l:'Friendships'}
+];
+function rebUnique(){
+  buildTiles('uniqueTiles', UNIQUE, state.unique, rebUnique);
+  var msg=document.getElementById('uniqueMsg');
+  if(!msg) return;
+  if(state.unique.length===0) msg.textContent='People are not just one label.';
+  else if(state.unique.length<3) msg.textContent='Good start. Identity has many parts.';
+  else msg.textContent='Exactly. No one should be reduced to one part of who they are.';
+}
 
-document.querySelectorAll('[data-save]').forEach(function(el){ var k=el.dataset.save; if(state.fields[k]!==undefined) el.value=state.fields[k];
-  el.addEventListener('input', function(){ state.fields[k]=el.value; save(); }); });
+var MYTH=[
+ {id:'m1', e:'=', q:'Respect means you must agree with everything.', a:'myth', fb:'Myth. Respect is about behaviour.'},
+ {id:'m2', e:'?', q:'Not understanding is a reason to mock.', a:'myth', fb:'Myth. You can ask or move on.'},
+ {id:'m3', e:'!', q:'A joke can still cause harm.', a:'reality', fb:'Reality. Impact matters.'},
+ {id:'m4', e:'🏫', q:'In school, safety comes before banter.', a:'reality', fb:'Reality. Everyone has the right to feel safe.'},
+ {id:'m5', e:'...', q:'You can hold a view and still avoid insults.', a:'reality', fb:'Reality. Private beliefs do not excuse harmful behaviour.'}
+];
+function mythLabel(v){ return v==='reality'?'Reality':'Myth'; }
+function buildMyth(){
+  var w=document.getElementById('mythWrap'); w.innerHTML='';
+  MYTH.forEach(function(item){
+    var pick=state.myth[item.id];
+    var correct=pick && pick===item.a;
+    var card=document.createElement('div'); card.className='scn';
+    card.innerHTML='<div class="scn-head"><div class="scn-emoji" aria-hidden="true">'+esc(item.e)+'</div><div class="scn-q">'+esc(item.q)+'</div></div>';
+    [
+      {v:'reality', lab:'Reality'},
+      {v:'myth', lab:'Myth'}
+    ].forEach(function(opt){
+      var b=document.createElement('button'); b.type='button';
+      b.className='opt'+(pick===opt.v?' pick '+(correct?'good':'soft'):'');
+      b.textContent=opt.lab;
+      b.onclick=function(){ state.myth[item.id]=opt.v; save(); buildMyth(); };
+      card.appendChild(b);
+    });
+    var fb=document.createElement('div'); fb.className='scn-fb '+(correct?'good':'soft');
+    if(pick){ fb.textContent=(correct?'Clear. ':'Try again. ')+item.fb; }
+    card.appendChild(fb);
+    w.appendChild(card);
+  });
+  var msg=document.getElementById('mythMsg');
+  if(msg){ msg.className='done-flag'+(countObj(state.myth)===MYTH.length?' show':''); }
+}
+
+var SCENARIOS=[
+ {id:'c1', e:'X', q:'Someone says “that’s gay” when they mean “annoying”.', a:0, opts:[
+   {t:'“Say what you mean instead.”', fb:'Clear and calm.'},
+   {t:'“Say it louder.”', fb:'That makes it worse.'},
+   {t:'“It is only a joke.”', fb:'That avoids the impact.'}
+ ]},
+ {id:'c2', e:'?', q:'Someone says: “Why are we doing Pride?”', a:1, opts:[
+   {t:'“Shut up.”', fb:'That escalates it.'},
+   {t:'“It is about school being safe.”', fb:'Clear and relevant.'},
+   {t:'Make a joke about LGBTQ+ people.', fb:'That targets people.'}
+ ]},
+ {id:'c3', e:'🔒', q:'A friend tells you something private about their identity.', a:2, opts:[
+   {t:'Tell the group chat.', fb:'That breaks trust.'},
+   {t:'Ask loads of personal questions.', fb:'That can feel like pressure.'},
+   {t:'“Thanks for trusting me. I will not share it.”', fb:'Respectful and safe.'}
+ ]},
+ {id:'c4', e:'👟', q:'Someone is mocked for their clothes or voice.', a:0, opts:[
+   {t:'“Leave it. It is not hurting anyone.”', fb:'Calm and protective.'},
+   {t:'Join in so you are not targeted.', fb:'That spreads the harm.'},
+   {t:'Film it.', fb:'That makes it worse.'}
+ ]}
+];
+function buildScenarios(){
+  var w=document.getElementById('scenarioWrap'); w.innerHTML='';
+  SCENARIOS.forEach(function(item){
+    var pick=state.scenario[item.id];
+    var correct=(pick!==undefined && pick!==null && pick!=='' && Number(pick)===item.a);
+    var card=document.createElement('div'); card.className='scn';
+    card.innerHTML='<div class="scn-head"><div class="scn-emoji" aria-hidden="true">'+esc(item.e)+'</div><div class="scn-q">'+esc(item.q)+'</div></div>';
+    item.opts.forEach(function(opt,idx){
+      var b=document.createElement('button'); b.type='button';
+      b.className='opt'+(String(pick)===String(idx)?' pick '+(correct?'good':'soft'):'');
+      b.textContent=opt.t;
+      b.onclick=function(){ state.scenario[item.id]=idx; save(); buildScenarios(); };
+      card.appendChild(b);
+    });
+    var fb=document.createElement('div'); fb.className='scn-fb '+(correct?'good':'soft');
+    if(pick!==undefined && pick!==null && pick!==''){
+      var chosen=item.opts[Number(pick)];
+      fb.textContent=(correct?'Useful response. ':'Try again. ')+(chosen?chosen.fb:'');
+    }
+    card.appendChild(fb);
+    w.appendChild(card);
+  });
+  var msg=document.getElementById('scenarioMsg');
+  if(msg){ msg.className='done-flag'+(countObj(state.scenario)===SCENARIOS.length?' show':''); }
+}
+
+document.querySelectorAll('[data-save]').forEach(function(el){
+  var k=el.dataset.save;
+  if(state.fields[k]!==undefined) el.value=state.fields[k];
+  el.addEventListener('input', function(){ state.fields[k]=el.value; save(); });
+});
 function emailWork(){
   var f=state.fields; var g=function(k){ return (f[k]&&f[k].trim()?f[k].trim():'-'); };
-  var b='PRIDE WEEK: BEING YOURSELF (Wednesday)\n';
+  var b='PRIDE WEEK: BEING YOURSELF (Wednesday - teen version)\n';
   b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n';
   b+='One way I can show respect: '+g('respect')+'\n';
-  b+='Unique things I chose: '+(state.unique.length?state.unique.join(', '):'-')+'\n\n-\nSent from Base 6';
+  b+='Identity tiles chosen: '+(state.unique.length?state.unique.join(', '):'-')+'\n';
+  b+='Respect sort completed: '+countObj(state.sort)+' of '+SORT.length+' cards tried\n';
+  b+='Myth/reality completed: '+countObj(state.myth)+' of '+MYTH.length+' cards tried\n';
+  b+='Scenario choices completed: '+countObj(state.scenario)+' of '+SCENARIOS.length+' cards tried\n\n';
+  b+='Respect sort choices:\n';
+  SORT.forEach(function(item){ b+='- '+item.t+' -> '+(state.sort[item.id]?sortLabel(state.sort[item.id]):'-')+'\n'; });
+  b+='\nMyth/reality choices:\n';
+  MYTH.forEach(function(item){ b+='- '+item.q+' -> '+(state.myth[item.id]?mythLabel(state.myth[item.id]):'-')+'\n'; });
+  b+='\nScenario choices:\n';
+  SCENARIOS.forEach(function(item){
+    var p=state.scenario[item.id];
+    var ans=(p!==undefined && p!==null && p!=='' && item.opts[Number(p)])?item.opts[Number(p)].t:'-';
+    b+='- '+item.q+' -> '+ans+'\n';
+  });
+  b+='\n-\nSent from Base 6';
   var su=encodeURIComponent('Base 6 - Pride Week - Wednesday');
   window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank');
   var n=document.getElementById('notify'); n.textContent='Opening your email. Ready to send.'; n.classList.add('show');
 }
-buildSort(); rebUnique();
+buildSort(); rebUnique(); buildMyth(); buildScenarios();
 </script>
 
 </body>
