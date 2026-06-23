@@ -72,6 +72,8 @@
   .tile { position:relative; border:2.5px solid #e0d8d0; border-radius:16px; background:#fff; padding:1rem 0.55rem 0.85rem; cursor:pointer; font-family:inherit; text-align:center; transition:transform .12s, border-color .12s, background .12s; }
   .tile:hover { border-color:#007291; transform:translateY(-2px); }
   .tile.on { border-color:#007291; background:#eaf6f9; }
+  .tile.good.on { border-color:#2d8a4e; background:#eaf7ee; }
+  .tile.soft.on { border-color:#c98a2a; background:#fdf3e3; }
   .tile-emoji { font-size:2.2rem; display:block; line-height:1; }
   .tile-label { display:block; font-size:0.84rem; font-weight:700; color:#3f4a4d; margin-top:0.5rem; line-height:1.25; }
   .tile .tick { position:absolute; top:6px; right:9px; font-size:1rem; color:#007291; opacity:0; }
@@ -87,26 +89,34 @@
   .cdot { width:26px; height:26px; border-radius:7px; flex-shrink:0; border:1px solid rgba(0,0,0,0.12); }
   .cword { font-size:0.9rem; font-weight:700; color:#3f4a4d; }
 
-  .tl { display:flex; gap:0.5rem; margin-top:0.4rem; }
-  .tl-step { flex:1; border:2px solid #e0d8d0; border-radius:14px; background:#fff; padding:0.7rem 0.4rem; cursor:pointer; text-align:center; font-family:inherit; }
+  .tl { display:grid; grid-template-columns:repeat(auto-fit,minmax(135px,1fr)); gap:0.55rem; margin-top:0.4rem; }
+  .tl-step { border:2px solid #e0d8d0; border-radius:14px; background:#fff; padding:0.75rem 0.45rem; cursor:pointer; text-align:center; font-family:inherit; min-height:92px; }
   .tl-step:hover { border-color:#007291; }
   .tl-step.on { border-color:#007291; background:#eaf6f9; }
   .tl-emoji { font-size:1.8rem; line-height:1; }
   .tl-year { font-size:0.8rem; font-weight:700; color:#ef7724; margin-top:0.25rem; }
   .tl-cap { font-size:0.82rem; color:#444; line-height:1.4; margin-top:0.5rem; display:none; }
   .tl-step.on .tl-cap { display:block; }
+  .tl-step.local { border-color:#fcd8bc; }
+  .tl-step.local.on { background:#fff7f0; border-color:#ef7724; }
+  .tl-hint { font-size:0.78rem; color:#6a5a4a; line-height:1.45; background:#faf3ec; border:1.5px solid #ead9c7; border-radius:10px; padding:0.55rem 0.75rem; margin-top:0.75rem; }
 
   .sortcard { display:flex; align-items:center; gap:0.7rem; border:2px solid #e0d8d0; border-radius:14px; background:#fff; padding:0.65rem 0.75rem; margin-top:0.7rem; transition:border-color .12s, background .12s; }
-  .sortcard.ok { border-color:#2d8a4e; background:#eaf7ee; }
-  .sortcard.no { border-color:#c98a2a; background:#fdf3e3; }
+  .sortcard.ok, .sortcard.respect { border-color:#2d8a4e; background:#eaf7ee; }
+  .sortcard.q, .sortcard.question { border-color:#007291; background:#eaf6f9; }
+  .sortcard.no, .sortcard.notok { border-color:#c98a2a; background:#fdf3e3; }
   .sc-emoji { font-size:1.9rem; flex-shrink:0; }
   .sc-text { font-size:0.9rem; font-weight:700; color:#3f4a4d; line-height:1.3; flex:1; }
-  .sc-btns { display:flex; gap:0.4rem; flex-shrink:0; }
-  .sc-pick { width:48px; height:48px; border-radius:12px; border:2px solid #cbb9a8; background:#fff; font-size:1.4rem; cursor:pointer; line-height:1; }
-  .sc-pick.sel-ok { border-color:#2d8a4e; background:#d8f0e0; }
-  .sc-pick.sel-no { border-color:#c98a2a; background:#fbe6c8; }
+  .sc-btns { display:flex; gap:0.4rem; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end; }
+  .sc-pick { width:48px; height:48px; border-radius:12px; border:2px solid #cbb9a8; background:#fff; font-size:1.25rem; cursor:pointer; line-height:1; }
+  .sc-pick.sel-ok, .sc-pick.sel-respect, .sc-pick.sel-fact { border-color:#2d8a4e; background:#d8f0e0; }
+  .sc-pick.sel-q, .sc-pick.sel-question { border-color:#007291; background:#d9eef5; }
+  .sc-pick.sel-no, .sc-pick.sel-notok, .sc-pick.sel-rumour { border-color:#c98a2a; background:#fbe6c8; }
   .sc-fb { font-size:0.8rem; font-weight:700; line-height:1.4; width:100%; margin-top:0.2rem; min-height:0; }
-  .sc-fb.good { color:#1a5e1a; } .sc-fb.soft { color:#9a5a10; }
+  .sc-fb.good { color:#1a5e1a; }
+  .sc-fb.soft { color:#9a5a10; }
+  .legend { display:flex; gap:0.45rem; flex-wrap:wrap; margin:0.4rem 0 0.2rem; }
+  .legend span { display:inline-block; font-size:0.76rem; font-weight:700; color:#075066; background:#eaf6f9; border:1.5px solid #bfe3ee; border-radius:20px; padding:0.25rem 0.55rem; }
 
   .scn { border:2px solid #e0d8d0; border-radius:16px; background:#fff; padding:0.95rem 1rem; margin-top:0.8rem; }
   .scn-head { display:flex; align-items:center; gap:0.6rem; }
@@ -115,6 +125,8 @@
   .opt { display:block; width:100%; text-align:left; font-family:inherit; font-size:0.9rem; font-weight:700; padding:0.7rem 0.9rem; border-radius:12px; cursor:pointer; border:2px solid #cbb9a8; background:#fff; color:#4a3f34; margin-top:0.5rem; line-height:1.35; }
   .opt:hover { border-color:#007291; }
   .opt.pick { border-color:#007291; background:#eaf6f9; }
+  .opt.good.pick { border-color:#2d8a4e; background:#eaf7ee; }
+  .opt.soft.pick { border-color:#c98a2a; background:#fdf3e3; }
   .scn-fb { font-size:0.86rem; font-weight:700; line-height:1.5; margin-top:0.55rem; min-height:0; }
   .scn-fb.good { color:#1a5e1a; } .scn-fb.soft { color:#9a5a10; }
 
@@ -128,51 +140,86 @@
 
   .pledge-preview { font-size:1.05rem; font-weight:700; color:#075066; line-height:1.5; background:#eaf6f9; border:2px solid #bfe3ee; border-radius:12px; padding:0.9rem 1rem; margin-top:0.7rem; }
 
+  @media (max-width:520px){
+    .sortcard { align-items:flex-start; flex-wrap:wrap; }
+    .sc-btns { width:100%; justify-content:flex-start; }
+  }
   @media (prefers-reduced-motion: reduce){ * { transition:none !important; } }
 </style>
 </head>
 <body>
 
-<header class="site-header"><a class="back-link" href="../day2.html">&larr; Back to Tuesday</a></header>
+<header class="site-header"><a class="back-link" href="../day2.html" aria-label="Back to Tuesday activities">&larr; Back to Tuesday</a></header>
 
 <div class="hero">
   <span class="day-pill">Pride Week &middot; Tuesday</span>
   <h1>🏳️‍🌈 What is Pride?</h1>
-  <p>A quick, hands-on look at Pride.</p>
-  <div class="meta-row"><span class="time-pill">About 20 minutes</span><span class="time-pill">Share only if you want</span></div>
+  <p>A practical look at Pride, rights, language and school culture.</p>
+  <div class="meta-row"><span class="time-pill">Choose a route</span><span class="time-pill">No personal sharing needed</span><span class="time-pill">Respectful questions</span></div>
 </div>
 <div class="pride-stripe"></div>
 
 <main class="main">
 
   <div class="card">
-    <div class="step"><span class="step-num">1</span><span class="step-title">Build the rainbow flag</span></div>
-    <p class="lead">Tap each colour to add a stripe and see what it means.</p>
+    <div class="eyebrow">Before we start</div>
+    <h2>You do not have to agree with everyone to treat them with respect.</h2>
+    <p class="intro">This activity is not asking anyone to share personal beliefs or identity. It is about rights, language and how people are treated in school.</p>
+    <div class="big-q">Understanding can take time. Respect is expected now.</div>
+  </div>
+
+  <div class="card">
+    <div class="step"><span class="step-num">1</span><span class="step-title">Explore the rainbow flag</span></div>
+    <p class="lead">Tap each colour to add a stripe and reveal one of the original meanings.</p>
     <div class="flag-build">
       <div class="flag-pole" id="pole" aria-label="Your flag"></div>
       <div class="colour-pick" id="pick"></div>
     </div>
-    <div class="done-flag" id="flagMsg">&#127881; You built the whole flag.</div>
+    <div class="done-flag" id="flagMsg" aria-live="polite">Full flag explored.</div>
   </div>
 
   <div class="card">
-    <div class="step"><span class="step-num">2</span><span class="step-title">A bit of history</span></div>
-    <p class="lead">Tap each moment to find out more.</p>
+    <div class="step"><span class="step-num">2</span><span class="step-title">Pride history: rights, protest and change</span></div>
+    <p class="lead">Choose any card to reveal more. Some moments are about celebration; others are about law, protest, health, education and safety.</p>
     <div class="tl" id="tl"></div>
+    <div class="tl-hint">Orange-edged cards link to the UK, schools or law. You can explore a few, or all of them.</div>
+    <div class="done-flag" id="tlMsg" aria-live="polite">You explored a range of history cards.</div>
   </div>
 
   <div class="card">
-    <div class="step"><span class="step-num">3</span><span class="step-title">Pride is about...</span></div>
-    <p class="lead">Tap the ones you think fit.</p>
+    <div class="step"><span class="step-num">3</span><span class="step-title">Pride can be about...</span></div>
+    <p class="lead">Tap the ideas that fit. More than one can be true.</p>
     <div class="tiles" id="prideTiles"></div>
   </div>
 
   <div class="card">
-    <div class="step"><span class="step-num">4</span><span class="step-title">One word or sentence (optional)</span></div>
-    <label class="fl">One thing I learned today</label>
-    <textarea id="t1" data-save="learned" placeholder="One thing I learned is..." style="min-height:48px;"></textarea>
-    <button class="action-btn" onclick="emailWork()">&#128231; Send to Jay</button>
-    <div class="notify" id="notify"></div>
+    <div class="step"><span class="step-num">4</span><span class="step-title">Language: question, respect or harm?</span></div>
+    <p class="lead">Sort each comment. The aim is to separate honest uncertainty from language that targets people.</p>
+    <div class="legend" aria-hidden="true"><span>🤝 Respect</span><span>❓ Question</span><span>🚫 Not OK</span></div>
+    <div id="langSort"></div>
+    <div class="done-flag" id="langMsg" aria-live="polite">Clear distinction: questions are allowed; targeted insults are not.</div>
+  </div>
+
+  <div class="card">
+    <div class="step"><span class="step-num">5</span><span class="step-title">Myth or accurate?</span></div>
+    <p class="lead">Tap what you think. Then check the feedback.</p>
+    <div id="mythSort"></div>
+    <div class="done-flag" id="mythMsg" aria-live="polite">All statements checked.</div>
+  </div>
+
+  <div class="card">
+    <div class="step"><span class="step-num">6</span><span class="step-title">Repair the harm</span></div>
+    <p class="lead">Someone uses homophobic or anti-LGBTQ+ language. Which responses actually repair the harm?</p>
+    <div class="tiles" id="repairTiles"></div>
+    <div class="mini-note" id="repairMsg" aria-live="polite">Repair means changing what happens next, not arguing about whether someone was hurt.</div>
+  </div>
+
+  <div class="card">
+    <div class="step"><span class="step-num">7</span><span class="step-title">Takeaway or question (optional)</span></div>
+    <label class="fl" for="t1">One takeaway, question or boundary I understand</label>
+    <textarea id="t1" data-save="learned" placeholder="A takeaway, question, or boundary I understand is..." style="min-height:54px;"></textarea>
+    <button type="button" class="action-btn" onclick="emailWork()">&#128231; Send to Jay</button>
+    <div class="notify" id="notify" aria-live="polite"></div>
   </div>
 
 </main>
@@ -180,15 +227,19 @@
 <footer>Base 6 &middot; Chilton Bridge School &middot; Pride Week</footer>
 
 <script>
-const STORE_KEY='base6_w4_pride_tue';
+const STORE_KEY='base6_w4_pride_tue_teen_v1';
 const TEACHER_EMAIL='jay.raine@chiltonbridgeschool.co.uk';
-var state={ fields:{}, flagBuilt:[], tl:[], pride:[] };
+var state={ fields:{}, flagBuilt:[], tl:[], pride:[], lang:{}, myth:{}, repair:[] };
 try { state=Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY))||{}); } catch(e){}
 if(!state.fields) state.fields={};
 if(!Array.isArray(state.flagBuilt)) state.flagBuilt=[];
 if(!Array.isArray(state.tl)) state.tl=[];
 if(!Array.isArray(state.pride)) state.pride=[];
+if(!state.lang || Array.isArray(state.lang)) state.lang={};
+if(!state.myth || Array.isArray(state.myth)) state.myth={};
+if(!Array.isArray(state.repair)) state.repair=[];
 function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
+function esc(s){ return String(s).replace(/[&<>\"]/g, function(ch){ return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[ch]||ch; }); }
 
 var FLAG=[
  {c:'#e40303', n:'Red', m:'Life'},
@@ -205,8 +256,8 @@ function buildFlag(){
   var pick=document.getElementById('pick'); pick.innerHTML='';
   FLAG.forEach(function(f,i){
     var added=state.flagBuilt.indexOf(i)!==-1;
-    var b=document.createElement('button'); b.className='cbtn'; b.disabled=added;
-    b.innerHTML='<span class="cdot" style="background:'+f.c+'"></span><span class="cword">'+f.n+(added?(' = '+f.m):'')+'</span>';
+    var b=document.createElement('button'); b.type='button'; b.className='cbtn'; b.disabled=added;
+    b.innerHTML='<span class="cdot" style="background:'+f.c+'"></span><span class="cword">'+esc(f.n)+(added?(' = '+esc(f.m)):'')+'</span>';
     b.onclick=function(){ if(state.flagBuilt.indexOf(i)===-1){ state.flagBuilt.push(i); save(); buildFlag(); } };
     pick.appendChild(b);
   });
@@ -214,47 +265,184 @@ function buildFlag(){
 }
 
 var TL=[
- {e:'✊', y:'1969', cap:'People stood up for fair treatment at Stonewall, in New York.'},
- {e:'🏳️‍🌈', y:'1978', cap:'The rainbow Pride flag was created.'},
- {e:'🪧', y:'Then', cap:'Pride marches grew all around the world.'},
- {e:'🎉', y:'Today', cap:'Pride is a celebration of being yourself.'}
+ {e:'⚖️', y:'1967', local:true, cap:'UK law changed for some gay men in England and Wales. It was a partial change, not full equality.'},
+ {e:'✊', y:'1969', local:false, cap:'Stonewall: LGBTQ+ people resisted police raids and unfair treatment in New York.'},
+ {e:'🪧', y:'1970', local:false, cap:'The first Pride marches marked Stonewall and demanded equal treatment in public.'},
+ {e:'🇬🇧', y:'1972', local:true, cap:'The first UK Pride march took place in London. Around 2,000 people attended.'},
+ {e:'🏳️‍🌈', y:'1978', local:false, cap:'The rainbow flag was created as a visible symbol of LGBTQ+ community and hope.'},
+ {e:'🏥', y:'1980s', local:false, cap:'During the HIV/AIDS crisis, activists fought stigma and demanded proper care and information.'},
+ {e:'📢', y:'1988', local:true, cap:'Section 28 restricted positive discussion of LGBTQ+ people in many UK schools and local authorities.'},
+ {e:'🌍', y:'1990', local:false, cap:'The World Health Organization removed homosexuality from its list of mental disorders.'},
+ {e:'✅', y:'2000', local:true, cap:'Gay, lesbian and bisexual people could serve openly in the UK armed forces.'},
+ {e:'🏫', y:'2003', local:true, cap:'Section 28 ended in England and Wales. Schools could address LGBTQ+ respect more openly.'},
+ {e:'🤝', y:'2004', local:true, cap:'Civil partnerships gave same-sex couples legal recognition in the UK.'},
+ {e:'⚖️', y:'2010', local:true, cap:'The Equality Act protected people from discrimination, including because of sexual orientation.'},
+ {e:'💍', y:'2013', local:true, cap:'Marriage law changed so same-sex couples could marry in England and Wales.'},
+ {e:'🌈', y:'2014', local:true, cap:'The first same-sex marriages took place in England, Wales and Scotland.'},
+ {e:'📚', y:'2020', local:true, cap:'Relationships education in England included respect for different families and people.'},
+ {e:'🛡️', y:'Today', local:true, cap:'In school, anti-LGBTQ+ language is not just “banter”. It affects safety, trust and culture.'}
 ];
 function buildTl(){
   var w=document.getElementById('tl'); w.innerHTML='';
   TL.forEach(function(t,i){
-    var b=document.createElement('button'); b.className='tl-step'+(state.tl.indexOf(i)!==-1?' on':'');
-    b.innerHTML='<div class="tl-emoji" aria-hidden="true">'+t.e+'</div><div class="tl-year">'+t.y+'</div><div class="tl-cap">'+t.cap+'</div>';
-    b.onclick=function(){ if(state.tl.indexOf(i)===-1){ state.tl.push(i); save(); } b.classList.add('on'); };
+    var b=document.createElement('button'); b.type='button'; b.className='tl-step'+(t.local?' local':'')+(state.tl.indexOf(i)!==-1?' on':'');
+    b.innerHTML='<div class="tl-emoji" aria-hidden="true">'+t.e+'</div><div class="tl-year">'+esc(t.y)+'</div><div class="tl-cap">'+esc(t.cap)+'</div>';
+    b.onclick=function(){ if(state.tl.indexOf(i)===-1){ state.tl.push(i); save(); } buildTl(); };
     w.appendChild(b);
   });
+  var msg=document.getElementById('tlMsg'); if(msg){ msg.className='done-flag'+(state.tl.length>=6?' show':''); }
 }
 
 function buildTiles(elId, arr, bag, rebuild){
   var g=document.getElementById(elId); g.innerHTML='';
   arr.forEach(function(t){
-    var b=document.createElement('button'); b.className='tile'+(bag.indexOf(t.l)!==-1?' on':'');
+    var b=document.createElement('button'); b.type='button'; b.className='tile'+(bag.indexOf(t.l)!==-1?' on':'');
     b.setAttribute('aria-pressed', bag.indexOf(t.l)!==-1?'true':'false');
-    b.innerHTML='<span class="tick" aria-hidden="true">&#10003;</span><span class="tile-emoji" aria-hidden="true">'+t.e+'</span><span class="tile-label">'+t.l+'</span>';
+    b.innerHTML='<span class="tick" aria-hidden="true">&#10003;</span><span class="tile-emoji" aria-hidden="true">'+t.e+'</span><span class="tile-label">'+esc(t.l)+'</span>';
     b.onclick=function(){ var i=bag.indexOf(t.l); if(i>-1) bag.splice(i,1); else bag.push(t.l); save(); rebuild(); };
     g.appendChild(b);
   });
 }
-var PRIDE=[{e:'🎉',l:'Celebration'},{e:'🤝',l:'Everyone welcome'},{e:'⚖️',l:'Fairness'},{e:'🌟',l:'Being yourself'}];
+var PRIDE=[{e:'🎉',l:'Celebration'},{e:'🪧',l:'Protest'},{e:'⚖️',l:'Human rights'},{e:'🛡️',l:'Safety'},{e:'🤝',l:'Belonging'},{e:'🌟',l:'Being yourself'}];
 function rebPride(){ buildTiles('prideTiles', PRIDE, state.pride, rebPride); }
+
+var LANG=[
+ {id:'l1', e:'💬', text:'I do not fully understand Pride yet.', ans:'q', fb:'That can be a respectful starting point. Ask without mocking or targeting people.'},
+ {id:'l2', e:'🚫', text:'That’s so gay.', ans:'no', fb:'Not OK. Using an identity as an insult can make school feel hostile.'},
+ {id:'l3', e:'🤝', text:'Everyone should get through the school day without being targeted.', ans:'ok', fb:'Respectful. This is about safety and basic dignity.'},
+ {id:'l4', e:'❓', text:'Can you explain what LGBTQ+ means without making it personal?', ans:'q', fb:'A fair question. Keep it about learning, not putting someone on the spot.'},
+ {id:'l5', e:'👎', text:'People should keep that stuff to themselves.', ans:'no', fb:'Not OK. It suggests some people should hide while others can be open.'},
+ {id:'l6', e:'🧭', text:'I can disagree with someone and still not insult them.', ans:'ok', fb:'Respectful. Personal views do not excuse harmful behaviour.'},
+ {id:'l7', e:'🛑', text:'I do not want to talk about my own identity.', ans:'ok', fb:'Respectful. No one should be pressured to share personal information.'},
+ {id:'l8', e:'📱', text:'It is fine online because it is just a meme.', ans:'no', fb:'Not OK. Online language still affects people and school culture.'}
+];
+function langLabel(v){ return v==='ok'?'Respect':(v==='q'?'Question':'Not OK'); }
+function buildLang(){
+  var w=document.getElementById('langSort'); w.innerHTML='';
+  var tried=0;
+  LANG.forEach(function(item){
+    var pick=state.lang[item.id];
+    if(pick) tried++;
+    var correct=pick && pick===item.ans;
+    var card=document.createElement('div');
+    card.className='sortcard'+(pick?' '+(pick==='ok'?'respect':pick==='q'?'question':'notok'):'');
+    card.innerHTML='<div class="sc-emoji" aria-hidden="true">'+item.e+'</div><div class="sc-text">'+esc(item.text)+'</div>';
+    var btns=document.createElement('div'); btns.className='sc-btns';
+    [
+      {v:'ok', icon:'🤝', lab:'Respect'},
+      {v:'q', icon:'❓', lab:'Question'},
+      {v:'no', icon:'🚫', lab:'Not OK'}
+    ].forEach(function(opt){
+      var b=document.createElement('button'); b.type='button'; b.className='sc-pick'+(pick===opt.v?' sel-'+(opt.v==='ok'?'respect':opt.v==='q'?'question':'notok'):'');
+      b.setAttribute('aria-label', opt.lab+' for: '+item.text);
+      b.title=opt.lab;
+      b.textContent=opt.icon;
+      b.onclick=function(){ state.lang[item.id]=opt.v; save(); buildLang(); };
+      btns.appendChild(b);
+    });
+    var fb=document.createElement('div'); fb.className='sc-fb '+(correct?'good':'soft');
+    if(pick){ fb.textContent=(correct?'✓ ':'Review this: ')+item.fb; }
+    btns.appendChild(fb);
+    card.appendChild(btns);
+    w.appendChild(card);
+  });
+  var msg=document.getElementById('langMsg');
+  if(msg){ msg.className='done-flag'+(tried===LANG.length?' show':''); }
+}
+
+var MYTH=[
+ {id:'m1', e:'🏳️‍🌈', q:'Pride means everyone is expected to be LGBTQ+.', ans:'rumour', fb:'Myth. Pride is about safety, visibility and equal treatment for LGBTQ+ people.'},
+ {id:'m2', e:'🤝', q:'People can have personal or religious beliefs and still follow school expectations on respect.', ans:'fact', fb:'Accurate. Personal beliefs do not make targeted insults acceptable.'},
+ {id:'m3', e:'👂', q:'Using “gay” as an insult can affect people even if the speaker says they “didn’t mean it that way”.', ans:'fact', fb:'Accurate. Impact matters as well as intention.'},
+ {id:'m4', e:'🎉', q:'Pride is only a party.', ans:'rumour', fb:'Myth. Pride can include celebration, protest, history, grief, rights and community.'},
+ {id:'m5', e:'📚', q:'LGBTQ+ rights in the UK have always been the same as they are now.', ans:'rumour', fb:'Myth. The law and school guidance have changed a lot over time.'},
+ {id:'m6', e:'🛡️', q:'A school can challenge anti-LGBTQ+ language without forcing everyone to think the same.', ans:'fact', fb:'Accurate. The boundary is about behaviour, safety and respect.'}
+];
+function buildMyth(){
+  var w=document.getElementById('mythSort'); w.innerHTML='';
+  var tried=0;
+  MYTH.forEach(function(item){
+    var pick=state.myth[item.id];
+    if(pick) tried++;
+    var correct=pick && pick===item.ans;
+    var card=document.createElement('div'); card.className='scn';
+    card.innerHTML='<div class="scn-head"><div class="scn-emoji" aria-hidden="true">'+item.e+'</div><div class="scn-q">'+esc(item.q)+'</div></div>';
+    [
+      {v:'fact', lab:'Accurate'},
+      {v:'rumour', lab:'Myth'}
+    ].forEach(function(opt){
+      var b=document.createElement('button'); b.type='button';
+      b.className='opt'+(pick===opt.v?' pick '+(correct?'good':'soft'):'');
+      b.textContent=opt.lab;
+      b.onclick=function(){ state.myth[item.id]=opt.v; save(); buildMyth(); };
+      card.appendChild(b);
+    });
+    var fb=document.createElement('div'); fb.className='scn-fb '+(correct?'good':'soft');
+    if(pick){ fb.textContent=(correct?'✓ ':'Review this: ')+item.fb; }
+    card.appendChild(fb);
+    w.appendChild(card);
+  });
+  var msg=document.getElementById('mythMsg');
+  if(msg){ msg.className='done-flag'+(tried===MYTH.length?' show':''); }
+}
+
+var REPAIR=[
+ {e:'🛑', l:'Stop and change the wording', good:true, fb:'That helps. Stop the harmful language first.'},
+ {e:'💬', l:'Say “I should not have used that as an insult.”', good:true, fb:'That helps. A clear repair does not need a long speech.'},
+ {e:'🧠', l:'Use precise words: annoying, awkward, frustrating', good:true, fb:'That helps. Say what you actually mean.'},
+ {e:'👂', l:'Listen if someone says it affected them', good:true, fb:'That helps. Listen without arguing about their reaction.'},
+ {e:'🙄', l:'Say “it was only banter”', good:false, fb:'That does not repair it. It avoids responsibility.'},
+ {e:'🎯', l:'Blame someone for being offended', good:false, fb:'That does not repair it. It shifts blame onto the person affected.'},
+ {e:'🔁', l:'Repeat it to get a reaction', good:false, fb:'That does not repair it. It keeps the harm going.'}
+];
+function buildRepair(){
+  var g=document.getElementById('repairTiles'); g.innerHTML='';
+  var hasBad=false;
+  var goodCount=0;
+  REPAIR.forEach(function(t){
+    var chosen=state.repair.indexOf(t.l)!==-1;
+    if(chosen && t.good) goodCount++;
+    if(chosen && !t.good) hasBad=true;
+    var b=document.createElement('button'); b.type='button';
+    b.className='tile '+(t.good?'good':'soft')+(chosen?' on':'');
+    b.setAttribute('aria-pressed', chosen?'true':'false');
+    b.innerHTML='<span class="tick" aria-hidden="true">&#10003;</span><span class="tile-emoji" aria-hidden="true">'+t.e+'</span><span class="tile-label">'+esc(t.l)+'</span>';
+    b.onclick=function(){ var i=state.repair.indexOf(t.l); if(i>-1) state.repair.splice(i,1); else state.repair.push(t.l); save(); buildRepair(); };
+    g.appendChild(b);
+  });
+  var msg=document.getElementById('repairMsg');
+  if(!msg) return;
+  if(state.repair.length===0){ msg.textContent='Repair means changing what happens next, not arguing about whether someone was hurt.'; return; }
+  if(hasBad){ msg.textContent='Some choices make the harm bigger. Look for responses that stop, own, change and listen.'; return; }
+  if(goodCount>=4){ msg.textContent='Strong repair plan: stop, own it, change the words and listen.'; return; }
+  msg.textContent='Useful start. Repair means stopping the harm and choosing more precise words next time.';
+}
 
 document.querySelectorAll('[data-save]').forEach(function(el){ var k=el.dataset.save; if(state.fields[k]!==undefined) el.value=state.fields[k];
   el.addEventListener('input', function(){ state.fields[k]=el.value; save(); }); });
 function emailWork(){
   var f=state.fields; var g=function(k){ return (f[k]&&f[k].trim()?f[k].trim():'-'); };
-  var b='PRIDE WEEK: WHAT IS PRIDE? (Tuesday)\n';
+  var countObj=function(obj){ var n=0; Object.keys(obj||{}).forEach(function(k){ if(obj[k]) n++; }); return n; };
+  var b='PRIDE WEEK: WHAT IS PRIDE? (Tuesday - teen version)\n';
   b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n';
-  b+='One thing I learned: '+g('learned')+'\n';
-  b+='Pride is about: '+(state.pride.length?state.pride.join(', '):'-')+'\n\n-\nSent from Base 6';
-  var su=encodeURIComponent('Base 6 - Pride Week - Tuesday');
+  b+='Takeaway/question/boundary: '+g('learned')+'\n';
+  b+='Pride can be about: '+(state.pride.length?state.pride.join(', '):'-')+'\n';
+  b+='History cards explored: '+state.tl.length+' of '+TL.length+'\n';
+  b+='Words task completed: '+countObj(state.lang)+' of '+LANG.length+' cards tried\n';
+  b+='Myth/accurate task completed: '+countObj(state.myth)+' of '+MYTH.length+' cards tried\n';
+  b+='Repair choices: '+(state.repair.length?state.repair.join(', '):'-')+'\n\n';
+  b+='History explored:\n';
+  TL.forEach(function(item,idx){ if(state.tl.indexOf(idx)!==-1){ b+='- '+item.y+': '+item.cap+'\n'; } });
+  b+='\nLanguage choices:\n';
+  LANG.forEach(function(item){ b+='- '+item.text+' -> '+(state.lang[item.id]?langLabel(state.lang[item.id]):'-')+'\n'; });
+  b+='\nMyth/accurate choices:\n';
+  MYTH.forEach(function(item){ b+='- '+item.q+' -> '+(state.myth[item.id]||'-')+'\n'; });
+  b+='\n-\nSent from Base 6';
+  var su=encodeURIComponent('Base 6 - Pride Week - Tuesday teen version');
   window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank');
-  var n=document.getElementById('notify'); n.textContent='Opening your email. Ready to send.'; n.classList.add('show');
+  var n=document.getElementById('notify'); n.textContent='Opening your email. Review it, then send when ready.'; n.classList.add('show');
 }
-buildFlag(); buildTl(); rebPride();
+buildFlag(); buildTl(); rebPride(); buildLang(); buildMyth(); buildRepair();
 </script>
 
 </body>
