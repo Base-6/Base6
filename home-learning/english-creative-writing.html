@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Creative Writing | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --plum: #7b4fa3; --plum-bg: #f0eaf6; --teal: #007291; --orange: #ef7724; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: var(--plum); padding: 2rem 2rem 2.75rem; text-align: center; overflow: hidden; }
+  .site-header::after { content: ""; position: absolute; top: -50px; right: -40px; width: 170px; height: 170px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+  .site-header .header-inner { position: relative; z-index: 2; }
+  .site-header h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .site-header p { font-size: 1rem; color: #ece2f5; margin-top: 0.35rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 34px; z-index: 1; }
+
+  .main { max-width: 680px; margin: 0 auto; padding: 1.25rem 1.25rem 4rem; }
+  .back-link { display: inline-block; margin-bottom: 1rem; font-size: 0.9rem; font-weight: 700; color: var(--teal); text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+
+  .progress-wrap { margin-bottom: 1.25rem; }
+  .progress-track { background: #e7ded6; border-radius: 20px; height: 12px; overflow: hidden; }
+  .progress-fill { background: var(--plum); height: 100%; width: 0%; border-radius: 20px; transition: width 0.3s ease; }
+  .progress-text { font-size: 0.8rem; font-weight: 700; color: var(--plum); margin-top: 0.4rem; }
+
+  .step { display: none; }
+  .step.active { display: block; animation: fade 0.25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { background: #ffffff; border: 2px solid var(--plum); border-radius: 16px; padding: 1.4rem 1.5rem 1.5rem; box-shadow: 0 4px 14px rgba(123,79,163,0.1); }
+  .card h2 { font-size: 1.4rem; color: var(--plum); line-height: 1.25; margin-bottom: 0.7rem; }
+  .card p { font-size: 1.05rem; line-height: 1.6; color: #2a2a2a; margin-bottom: 0.8rem; }
+  .card p:last-child { margin-bottom: 0; }
+  .card strong { color: var(--plum); }
+  .lead { font-size: 1.12rem; }
+  .center { text-align: center; }
+
+  .illo { display: block; width: 100%; max-width: 170px; margin: 0.3rem auto 1rem; }
+
+  /* spark board */
+  .spark-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.7rem; margin: 0.8rem 0; }
+  .spark { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1rem 0.9rem; cursor: pointer; text-align: center; transition: transform 0.12s ease, border-color 0.12s ease; display: flex; flex-direction: column; gap: 0.35rem; }
+  .spark:hover { transform: translateY(-2px); }
+  .spark .se { font-size: 1.8rem; }
+  .spark .st { font-weight: 700; color: var(--teal); font-size: 0.98rem; }
+  .spark .sb { font-size: 0.86rem; color: #555; line-height: 1.4; display: none; }
+  .spark.picked { border-color: var(--plum); background: var(--plum-bg); }
+  .spark.picked .st { color: var(--plum); }
+  .spark.picked .sb { display: block; }
+  .pick-note { text-align: center; font-weight: 700; color: var(--orange); margin-top: 0.6rem; min-height: 1.4rem; }
+
+  /* idea mixer */
+  .mix-row { display: grid; grid-template-columns: 1fr; gap: 0.6rem; margin: 0.8rem 0; }
+  .mix-card { background: var(--plum-bg); border: 2px solid var(--plum); border-radius: 12px; padding: 0.8rem 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.7rem; transition: transform 0.12s ease; }
+  .mix-card:hover { transform: translateY(-2px); }
+  .mix-card .ml { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--plum); width: 84px; flex-shrink: 0; }
+  .mix-card .mv { font-weight: 700; color: #2a2a2a; font-size: 1.02rem; }
+  .mix-sentence { background: #fff; border: 2px dashed var(--orange); border-radius: 12px; padding: 0.9rem 1.1rem; font-size: 1.05rem; line-height: 1.5; color: #2a2a2a; margin-top: 0.4rem; }
+  .mix-tip { font-size: 0.85rem; color: #777; text-align: center; margin-top: 0.5rem; }
+
+  /* writing pad */
+  .spark-banner { background: var(--plum-bg); border-radius: 10px; padding: 0.7rem 1rem; font-size: 0.95rem; color: #4a3560; margin-bottom: 0.8rem; }
+  .spark-banner strong { color: var(--plum); }
+  textarea { width: 100%; min-height: 230px; border: 2px solid var(--plum); border-radius: 12px; padding: 0.9rem; font-family: inherit; font-size: 1.05rem; line-height: 1.55; resize: vertical; background: #fff; color: #1a1a1a; }
+  textarea:focus { outline: none; border-color: var(--orange); }
+  .count-line { font-size: 0.85rem; font-weight: 700; color: var(--plum); margin-top: 0.4rem; }
+  .any-shape { font-size: 0.9rem; color: #666; margin: 0.7rem 0; }
+
+  .toggle-btn { background: #fff; color: var(--teal); border: 2px solid var(--teal); border-radius: 12px; padding: 0.7rem 1rem; font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: transform 0.12s ease; }
+  .toggle-btn:hover { transform: translateY(-2px); }
+  .toggle-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.9rem 0 0.3rem; }
+  .chips { display: none; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0; }
+  .chips.open { display: flex; }
+  .chip { background: #fff; border: 1.5px solid var(--plum); border-radius: 20px; padding: 0.45rem 0.85rem; font-family: inherit; font-size: 0.92rem; font-weight: 700; color: var(--plum); cursor: pointer; transition: transform 0.1s ease, background 0.1s ease; }
+  .chip:hover { transform: translateY(-1px); background: var(--plum-bg); }
+  .sense-label { width: 100%; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--orange); margin-top: 0.4rem; }
+
+  .action-row { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1rem; }
+  .btn { padding: 0.85rem 1.3rem; border-radius: 12px; font-family: inherit; font-size: 0.98rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; border: 2px solid; transition: transform 0.12s ease; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-send { background: var(--plum); border-color: var(--plum); color: #fff; }
+  .btn-copy { background: #fff; border-color: var(--teal); color: var(--teal); }
+  .copied-note { font-size: 0.85rem; color: var(--plum); font-weight: 700; margin-top: 0.6rem; display: none; }
+
+  .tap-btn { background: var(--plum); color: #fff; border: none; border-radius: 12px; padding: 0.8rem 1.4rem; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.12s ease; }
+  .tap-btn:hover { transform: translateY(-2px); }
+
+  .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.4rem; gap: 0.75rem; }
+  .nav-btn { padding: 0.85rem 1.5rem; border-radius: 12px; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; border: 2px solid var(--plum); transition: transform 0.12s ease; }
+  .nav-btn:hover { transform: translateY(-2px); }
+  .nav-back { background: #fff; color: var(--plum); }
+  .nav-next { background: var(--plum); color: #fff; }
+  .nav-btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+
+  .dots { display: flex; justify-content: center; gap: 0.35rem; margin-top: 1.1rem; flex-wrap: wrap; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; background: #d8cfc6; border: none; cursor: pointer; padding: 0; }
+  .dot.done { background: #c9b3de; }
+  .dot.active { background: var(--plum); transform: scale(1.3); }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <h1>Creative Writing</h1>
+    <p>Your writing den. No right answers, just your ideas.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 34" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,17 C150,34 350,0 600,15 C850,30 1050,4 1200,17 L1200,34 L0,34 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <a class="back-link" href="index.html">Back to the Home Learning Hub</a>
+
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">Step 1</div>
+  </div>
+
+  <div class="stage" id="stage">
+
+    <!-- 1 welcome -->
+    <section class="step active">
+      <div class="card">
+        <h2>Welcome to your writing den</h2>
+        <svg class="illo" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+          <rect x="44" y="22" width="104" height="98" rx="9" fill="#fff" stroke="#7b4fa3" stroke-width="3"></rect>
+          <line x1="44" y1="22" x2="148" y2="22" stroke="#7b4fa3" stroke-width="7"></line>
+          <line x1="60" y1="48" x2="132" y2="48" stroke="#e6daf0" stroke-width="3"></line>
+          <line x1="60" y1="66" x2="132" y2="66" stroke="#e6daf0" stroke-width="3"></line>
+          <line x1="60" y1="84" x2="112" y2="84" stroke="#e6daf0" stroke-width="3"></line>
+          <g stroke="#f6c343" stroke-width="4" stroke-linecap="round">
+            <line x1="166" y1="20" x2="166" y2="8"></line>
+            <line x1="152" y1="30" x2="144" y2="24"></line>
+            <line x1="180" y1="30" x2="188" y2="24"></line>
+          </g>
+          <circle cx="166" cy="38" r="11" fill="#f6c343" stroke="#ef7724" stroke-width="2"></circle>
+        </svg>
+        <p class="lead">There is no set task today. You are the boss of what you write.</p>
+        <p>Next, pick a spark to get going. If none of them grab you, there is an idea mixer to help, and a blank page that is happy with anything you put on it.</p>
+      </div>
+    </section>
+
+    <!-- 2 pick a spark -->
+    <section class="step">
+      <div class="card">
+        <h2>Pick a spark</h2>
+        <p>Tap whichever one tickles your imagination. You can change your mind any time.</p>
+        <div class="spark-grid" id="sparkGrid"></div>
+        <div class="pick-note" id="pickNote"></div>
+      </div>
+    </section>
+
+    <!-- 3 idea mixer -->
+    <section class="step">
+      <div class="card">
+        <h2>Stuck for an idea? Mix one up</h2>
+        <p>Tap a card to change just that part, or shuffle the whole lot.</p>
+        <div class="mix-row">
+          <div class="mix-card" id="mixChar"><span class="ml">Character</span><span class="mv">a nervous dragon</span></div>
+          <div class="mix-card" id="mixPlace"><span class="ml">Where</span><span class="mv">a melting ice palace</span></div>
+          <div class="mix-card" id="mixProb"><span class="ml">Problem</span><span class="mv">has lost something important</span></div>
+        </div>
+        <div class="mix-sentence" id="mixSentence"></div>
+        <div class="center" style="margin-top:0.9rem;"><button class="tap-btn" id="mixAll">Mix it all up</button></div>
+        <p class="mix-tip">Use it, twist it, or ignore it. Totally up to you.</p>
+      </div>
+    </section>
+
+    <!-- 4 writing pad -->
+    <section class="step">
+      <div class="card">
+        <h2>Your blank page</h2>
+        <div class="spark-banner" id="sparkBanner">Pick a spark on the page before, or simply start writing.</div>
+        <textarea id="writing" placeholder="Start anywhere you like. Even one sentence is a brilliant start."></textarea>
+        <div class="count-line" id="countLine">Your story starts here.</div>
+        <p class="any-shape">Any shape counts: a story, a poem, a comic script, a list, a diary entry. Whatever feels right.</p>
+        <div class="toggle-row">
+          <button class="toggle-btn" data-target="starterChips">Need a sentence starter?</button>
+          <button class="toggle-btn" data-target="wordChips">Want some describing words?</button>
+        </div>
+        <div class="chips" id="starterChips"></div>
+        <div class="chips" id="wordChips"></div>
+        <div class="action-row">
+          <a class="btn btn-send" id="sendJay">Send to Jay</a>
+          <button class="btn btn-copy" id="copyBtn">Copy</button>
+        </div>
+        <div class="copied-note" id="copiedNote">Copied. Paste it anywhere you like.</div>
+      </div>
+    </section>
+
+    <!-- 5 done -->
+    <section class="step">
+      <div class="card center">
+        <h2>Nicely done, writer!</h2>
+        <svg class="illo" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg">
+          <rect x="40" y="26" width="80" height="92" rx="8" fill="#fff" stroke="#7b4fa3" stroke-width="3"></rect>
+          <line x1="40" y1="26" x2="120" y2="26" stroke="#7b4fa3" stroke-width="7"></line>
+          <line x1="56" y1="50" x2="104" y2="50" stroke="#e6daf0" stroke-width="3"></line>
+          <line x1="56" y1="66" x2="104" y2="66" stroke="#e6daf0" stroke-width="3"></line>
+          <path d="M62,86 l12,12 l22,-26" fill="none" stroke="#2e8b57" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
+          <g stroke="#f6c343" stroke-width="4" stroke-linecap="round">
+            <line x1="130" y1="34" x2="142" y2="30"></line>
+            <line x1="128" y1="46" x2="140" y2="48"></line>
+          </g>
+        </svg>
+        <p class="lead">Every word you wrote today came from your own imagination.</p>
+        <p>If you would like Jay to read it, pop back a page and tap Send to Jay. Otherwise, it is saved right here for next time.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn nav-back" id="backBtn">Back</button>
+    <button class="nav-btn nav-next" id="nextBtn">Next</button>
+  </div>
+
+  <div class="dots" id="dots"></div>
+
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+(function () {
+  var KEY = 'base6HomeLearningWriting';
+  var EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+  function loadState() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function saveState(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var state = loadState();
+
+  var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
+  var total = steps.length;
+  var current = (typeof state.step === 'number' && state.step >= 0 && state.step < total) ? state.step : 0;
+
+  var fill = document.getElementById('progressFill');
+  var ptext = document.getElementById('progressText');
+  var backBtn = document.getElementById('backBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var dotsWrap = document.getElementById('dots');
+
+  for (var i = 0; i < total; i++) {
+    (function (idx) {
+      var d = document.createElement('button');
+      d.className = 'dot';
+      d.setAttribute('aria-label', 'Go to step ' + (idx + 1));
+      d.addEventListener('click', function () { goTo(idx); });
+      dotsWrap.appendChild(d);
+    })(i);
+  }
+  var dots = Array.prototype.slice.call(dotsWrap.children);
+
+  function render() {
+    for (var i = 0; i < total; i++) {
+      steps[i].classList.toggle('active', i === current);
+      dots[i].classList.toggle('active', i === current);
+      dots[i].classList.toggle('done', i < current);
+    }
+    fill.style.width = ((current + 1) / total * 100) + '%';
+    ptext.textContent = 'Step ' + (current + 1) + ' of ' + total;
+    backBtn.disabled = current === 0;
+    nextBtn.textContent = current === total - 1 ? 'Done' : 'Next';
+    state.step = current; saveState(state);
+    updateBanner();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function goTo(i) { if (i >= 0 && i < total) { current = i; render(); } }
+  backBtn.addEventListener('click', function () { goTo(current - 1); });
+  nextBtn.addEventListener('click', function () { if (current < total - 1) goTo(current + 1); });
+
+  // spark board
+  var sparks = [
+    { e: '🔥', t: 'The hottest day', b: 'The hottest day ever recorded, and then something strange happened.' },
+    { e: '🧊', t: 'Be an object', b: 'Write as the last ice cube in the freezer, or a lolly slowly melting.' },
+    { e: '📬', t: 'Postcard from the cold', b: 'Send a postcard from the most freezing place you can dream up.' },
+    { e: '🌞', t: 'The sun never set', b: 'A world of endless daytime. What would it be like to live there?' },
+    { e: '🏝️', t: 'A cool escape', b: 'Describe the most refreshing place you can imagine, bit by bit.' },
+    { e: '✨', t: 'Your own idea', b: 'Got a spark of your own? Brilliant. Run with it.' }
+  ];
+  var sparkGrid = document.getElementById('sparkGrid');
+  var pickNote = document.getElementById('pickNote');
+  sparks.forEach(function (s) {
+    var el = document.createElement('div');
+    el.className = 'spark';
+    el.innerHTML = '<span class="se">' + s.e + '</span><span class="st">' + s.t + '</span><span class="sb">' + s.b + '</span>';
+    el.addEventListener('click', function () {
+      var already = el.classList.contains('picked');
+      Array.prototype.slice.call(sparkGrid.children).forEach(function (c) { c.classList.remove('picked'); });
+      if (already) {
+        state.spark = '';
+        pickNote.textContent = '';
+      } else {
+        el.classList.add('picked');
+        state.spark = s.t + ': ' + s.b;
+        pickNote.textContent = 'Lovely choice. Your page is waiting.';
+      }
+      saveState(state);
+      updateBanner();
+    });
+    sparkGrid.appendChild(el);
+  });
+  // restore picked spark
+  if (state.spark) {
+    sparks.forEach(function (s, idx) {
+      if (state.spark === s.t + ': ' + s.b) {
+        sparkGrid.children[idx].classList.add('picked');
+        pickNote.textContent = 'Lovely choice. Your page is waiting.';
+      }
+    });
+  }
+
+  // idea mixer
+  var chars = ['a nervous dragon', 'a tiny robot', 'a curious cat', 'a lonely lighthouse keeper', 'a sleepy giant', 'a brave little beetle', 'a grumpy wizard', 'a lost astronaut'];
+  var places = ['a melting ice palace', 'a city under the sea', 'a desert with no shade', 'a treehouse in the clouds', 'a cave full of echoes', 'a base on the moon', 'an overgrown jungle', 'a fairground at midnight'];
+  var probs = ['has lost something important', 'cannot stop sneezing', 'is far too hot', 'has a big secret to keep', 'is running out of time', 'made a giant mistake', 'heard a strange noise', 'must get home before dark'];
+  var mixChar = document.getElementById('mixChar');
+  var mixPlace = document.getElementById('mixPlace');
+  var mixProb = document.getElementById('mixProb');
+  var mixSentence = document.getElementById('mixSentence');
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function setVal(card, v) { card.querySelector('.mv').textContent = v; }
+  function valOf(card) { return card.querySelector('.mv').textContent; }
+  function updateSentence() {
+    mixSentence.textContent = 'Write about ' + valOf(mixChar) + ', in ' + valOf(mixPlace) + ', who ' + valOf(mixProb) + '.';
+  }
+  mixChar.addEventListener('click', function () { setVal(mixChar, pick(chars)); updateSentence(); });
+  mixPlace.addEventListener('click', function () { setVal(mixPlace, pick(places)); updateSentence(); });
+  mixProb.addEventListener('click', function () { setVal(mixProb, pick(probs)); updateSentence(); });
+  document.getElementById('mixAll').addEventListener('click', function () {
+    setVal(mixChar, pick(chars)); setVal(mixPlace, pick(places)); setVal(mixProb, pick(probs)); updateSentence();
+  });
+  updateSentence();
+
+  // writing pad
+  var writing = document.getElementById('writing');
+  var countLine = document.getElementById('countLine');
+  var sparkBanner = document.getElementById('sparkBanner');
+  if (typeof state.writing === 'string') writing.value = state.writing;
+
+  function updateBanner() {
+    if (!sparkBanner) return;
+    if (state.spark) sparkBanner.innerHTML = '<strong>Your spark:</strong> ' + state.spark;
+    else sparkBanner.textContent = 'Pick a spark on the page before, or simply start writing.';
+  }
+  function updateCount() {
+    var words = writing.value.trim() ? writing.value.trim().split(/\s+/).length : 0;
+    if (words === 0) countLine.textContent = 'Your story starts here.';
+    else countLine.textContent = words + (words === 1 ? ' word so far. Keep going!' : ' words so far. Keep going!');
+  }
+  writing.addEventListener('input', function () { state.writing = writing.value; saveState(state); updateCount(); });
+  updateCount();
+
+  function addText(t, newLine) {
+    var cur = writing.value;
+    var sep = '';
+    if (cur.length) {
+      if (newLine) sep = cur.charAt(cur.length - 1) === '\n' ? '' : '\n';
+      else sep = (cur.charAt(cur.length - 1) === ' ' || cur.charAt(cur.length - 1) === '\n') ? '' : ' ';
+    }
+    writing.value = cur + sep + t;
+    state.writing = writing.value; saveState(state); updateCount();
+    writing.focus();
+  }
+
+  // toggles
+  Array.prototype.slice.call(document.querySelectorAll('.toggle-btn')).forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = document.getElementById(b.getAttribute('data-target'));
+      if (t) t.classList.toggle('open');
+    });
+  });
+
+  // sentence starters
+  var starters = ['It all began when', 'Nobody noticed at first, but', 'The strangest thing about that day was', 'If I close my eyes I can still', 'I never thought I would', 'Deep down, I knew that'];
+  var starterChips = document.getElementById('starterChips');
+  starters.forEach(function (s) {
+    var c = document.createElement('button');
+    c.className = 'chip'; c.textContent = s;
+    c.addEventListener('click', function () { addText(s + ' ', true); });
+    starterChips.appendChild(c);
+  });
+
+  // describing words by sense
+  var senses = [
+    { label: 'See', words: ['shimmering', 'golden', 'blinding', 'frosty', 'gloomy'] },
+    { label: 'Hear', words: ['crackling', 'silent', 'buzzing', 'echoing'] },
+    { label: 'Feel', words: ['sticky', 'melting', 'icy', 'prickly', 'soft'] },
+    { label: 'Smell or taste', words: ['dusty', 'fresh', 'sweet', 'sharp'] }
+  ];
+  var wordChips = document.getElementById('wordChips');
+  senses.forEach(function (group) {
+    var lbl = document.createElement('span');
+    lbl.className = 'sense-label'; lbl.textContent = group.label;
+    wordChips.appendChild(lbl);
+    group.words.forEach(function (w) {
+      var c = document.createElement('button');
+      c.className = 'chip'; c.textContent = w;
+      c.addEventListener('click', function () { addText(w, false); });
+      wordChips.appendChild(c);
+    });
+  });
+
+  // send and copy
+  document.getElementById('sendJay').addEventListener('click', function () {
+    var text = writing.value.trim();
+    var body = (state.spark ? 'Spark: ' + state.spark + '\n\n' : '') + (text || '(I have not written anything yet)');
+    var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(EMAIL) +
+              '&su=' + encodeURIComponent('Creative Writing from Base 6') + '&body=' + encodeURIComponent(body);
+    window.open(url, '_blank');
+  });
+  var copiedNote = document.getElementById('copiedNote');
+  document.getElementById('copyBtn').addEventListener('click', function () {
+    var text = writing.value;
+    function done() { copiedNote.style.display = 'block'; setTimeout(function () { copiedNote.style.display = 'none'; }, 2500); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { writing.select(); done(); });
+    } else { writing.select(); try { document.execCommand('copy'); } catch (e) {} done(); }
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
