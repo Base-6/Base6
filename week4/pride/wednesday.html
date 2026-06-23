@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Being Yourself &middot; Pride Week &middot; Base 6</title>
+<title>Being an Ally &middot; Pride Week &middot; Base 6</title>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
@@ -20,27 +20,17 @@
   .eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#ef7724; margin-bottom:0.3rem; }
   .card h2 { font-size:1.2rem; font-weight:700; color:#007291; margin-bottom:0.5rem; }
   .intro { font-size:0.95rem; color:#444; line-height:1.65; margin-bottom:0.6rem; }
-  .big-q { font-size:1.05rem; font-weight:700; color:#c05a10; line-height:1.5; background:#fff7f0; border:2px solid #fcd8bc; border-radius:12px; padding:0.9rem 1rem; }
-
-  label.fl { display:block; font-size:0.9rem; font-weight:700; color:#c05a10; margin:1rem 0 0.3rem; }
-  textarea { font-family:inherit; font-size:0.97rem; width:100%; min-height:60px; padding:0.6rem 0.8rem; border:2px solid #007291; border-radius:10px; background:#fff; outline:none; line-height:1.6; resize:vertical; }
-  textarea:focus { border-color:#ef7724; }
-
-  .action-btn { font-family:inherit; font-size:0.9rem; font-weight:700; padding:0.7rem 1.4rem; border-radius:9px; cursor:pointer; border:none; color:#fff; background:#007291; margin-top:0.4rem; }
-  .action-btn:hover { background:#00576e; }
-  .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; }
-  .notify.show { display:block; }
-  a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline:3px solid #007291; outline-offset:2px; }
-  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+  .big-q { font-size:1.08rem; font-weight:700; color:#c05a10; line-height:1.45; background:#fff7f0; border:2px solid #fcd8bc; border-radius:12px; padding:0.95rem 1.1rem; }
 
   .pride-stripe { height:8px; background:linear-gradient(90deg,#e40303,#ff8c00,#ffed00,#008026,#004dff,#750787); }
   .meta-row { display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap; margin-top:0.7rem; }
   .time-pill { display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.03em; text-transform:uppercase; color:#075066; background:#cdeaf2; padding:0.3rem 0.75rem; border-radius:20px; }
+
   .step { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.5rem; }
   .step-num { flex-shrink:0; width:34px; height:34px; border-radius:50%; background:#ef7724; color:#fff; font-weight:700; font-size:1.05rem; display:flex; align-items:center; justify-content:center; }
   .step-title { font-size:1.18rem; font-weight:700; color:#007291; line-height:1.2; }
   .lead { font-size:0.92rem; color:#555; line-height:1.5; margin-bottom:0.7rem; }
-  .mini-note { font-size:0.84rem; color:#6a5a4a; line-height:1.5; background:#faf3ec; border:1.5px solid #ead9c7; border-radius:10px; padding:0.65rem 0.8rem; margin-top:0.7rem; }
+  .mini-note { font-size:0.84rem; color:#6a5a4a; line-height:1.5; background:#faf3ec; border:1.5px solid #ead9c7; border-radius:10px; padding:0.6rem 0.8rem; margin-top:0.75rem; }
   .done-flag { display:none; font-size:0.9rem; font-weight:700; color:#1a5e1a; background:#e6f5e6; border:1.5px solid #2d4a2d; border-radius:10px; padding:0.6rem 0.85rem; margin-top:0.7rem; }
   .done-flag.show { display:block; }
 
@@ -50,28 +40,30 @@
   .tile.on { border-color:#007291; background:#eaf6f9; }
   .tile.good.on { border-color:#2d8a4e; background:#eaf7ee; }
   .tile.soft.on { border-color:#c98a2a; background:#fdf3e3; }
-  .tile-emoji { font-size:1.9rem; display:block; line-height:1; }
+  .tile-emoji { font-size:2.05rem; display:block; line-height:1; }
   .tile-label { display:block; font-size:0.84rem; font-weight:700; color:#3f4a4d; margin-top:0.5rem; line-height:1.25; }
   .tile .tick { position:absolute; top:6px; right:9px; font-size:1rem; color:#007291; opacity:0; }
   .tile.on .tick { opacity:1; }
 
-  .sortcard { display:flex; align-items:center; gap:0.7rem; border:2px solid #e0d8d0; border-radius:14px; background:#fff; padding:0.65rem 0.75rem; margin-top:0.7rem; transition:border-color .12s, background .12s; }
-  .sortcard.ok { border-color:#2d8a4e; background:#eaf7ee; }
-  .sortcard.no { border-color:#c98a2a; background:#fdf3e3; }
-  .sc-emoji { font-size:1.6rem; flex-shrink:0; }
-  .sc-text { font-size:0.9rem; font-weight:700; color:#3f4a4d; line-height:1.3; flex:1; }
-  .sc-btns { display:flex; gap:0.4rem; flex-shrink:0; }
-  .sc-pick { width:48px; height:48px; border-radius:12px; border:2px solid #cbb9a8; background:#fff; font-size:1.25rem; font-weight:700; cursor:pointer; line-height:1; }
-  .sc-pick.sel-ok, .sc-pick.sel-fact { border-color:#2d8a4e; background:#d8f0e0; }
-  .sc-pick.sel-no, .sc-pick.sel-myth { border-color:#c98a2a; background:#fbe6c8; }
-  .sc-fb { font-size:0.82rem; font-weight:700; line-height:1.4; width:100%; margin-top:0.2rem; min-height:0; }
-  .sc-fb.good { color:#1a5e1a; } .sc-fb.soft { color:#9a5a10; }
+  .sortcard { display:flex; align-items:center; gap:0.7rem; border:2px solid #e0d8d0; border-radius:14px; background:#fff; padding:0.7rem 0.75rem; margin-top:0.7rem; transition:border-color .12s, background .12s; }
+  .sortcard.ok, .sortcard.help { border-color:#2d8a4e; background:#eaf7ee; }
+  .sortcard.no, .sortcard.risk { border-color:#c98a2a; background:#fdf3e3; }
+  .sc-emoji { font-size:1.75rem; flex-shrink:0; }
+  .sc-text { font-size:0.92rem; font-weight:700; color:#3f4a4d; line-height:1.35; flex:1; }
+  .sc-btns { display:flex; gap:0.4rem; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end; }
+  .sc-pick { min-width:54px; height:46px; border-radius:12px; border:2px solid #cbb9a8; background:#fff; font-size:1.2rem; cursor:pointer; line-height:1; padding:0 0.45rem; font-family:inherit; font-weight:700; }
+  .sc-pick.sel-ok, .sc-pick.sel-help { border-color:#2d8a4e; background:#d8f0e0; }
+  .sc-pick.sel-no, .sc-pick.sel-risk { border-color:#c98a2a; background:#fbe6c8; }
+  .sc-fb { font-size:0.82rem; font-weight:700; line-height:1.45; width:100%; margin-top:0.2rem; min-height:0; }
+  .sc-fb.good { color:#1a5e1a; }
+  .sc-fb.soft { color:#9a5a10; }
+
   .legend { display:flex; gap:0.45rem; flex-wrap:wrap; margin:0.4rem 0 0.2rem; }
   .legend span { display:inline-block; font-size:0.76rem; font-weight:700; color:#075066; background:#eaf6f9; border:1.5px solid #bfe3ee; border-radius:20px; padding:0.25rem 0.55rem; }
 
   .scn { border:2px solid #e0d8d0; border-radius:16px; background:#fff; padding:0.95rem 1rem; margin-top:0.8rem; }
   .scn-head { display:flex; align-items:center; gap:0.6rem; }
-  .scn-emoji { font-size:1.7rem; line-height:1; }
+  .scn-emoji { font-size:1.85rem; line-height:1; }
   .scn-q { font-size:0.95rem; font-weight:700; color:#075066; line-height:1.4; }
   .opt { display:block; width:100%; text-align:left; font-family:inherit; font-size:0.9rem; font-weight:700; padding:0.7rem 0.9rem; border-radius:12px; cursor:pointer; border:2px solid #cbb9a8; background:#fff; color:#4a3f34; margin-top:0.5rem; line-height:1.35; }
   .opt:hover { border-color:#007291; }
@@ -79,24 +71,42 @@
   .opt.good.pick { border-color:#2d8a4e; background:#eaf7ee; }
   .opt.soft.pick { border-color:#c98a2a; background:#fdf3e3; }
   .scn-fb { font-size:0.86rem; font-weight:700; line-height:1.5; margin-top:0.55rem; min-height:0; }
-  .scn-fb.good { color:#1a5e1a; } .scn-fb.soft { color:#9a5a10; }
+  .scn-fb.good { color:#1a5e1a; }
+  .scn-fb.soft { color:#9a5a10; }
+
+  .phrase-bank { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:0.6rem; margin-top:0.4rem; }
+  .phrase { border:2px solid #e0d8d0; border-radius:14px; background:#fff; padding:0.75rem 0.85rem; cursor:pointer; font-family:inherit; text-align:left; font-size:0.9rem; font-weight:700; color:#3f4a4d; line-height:1.35; }
+  .phrase:hover { border-color:#007291; }
+  .phrase.on { border-color:#007291; background:#eaf6f9; }
+
+  label.fl { display:block; font-size:0.9rem; font-weight:700; color:#c05a10; margin:1rem 0 0.3rem; }
+  textarea { font-family:inherit; font-size:0.97rem; width:100%; min-height:60px; padding:0.6rem 0.8rem; border:2px solid #007291; border-radius:10px; background:#fff; outline:none; line-height:1.6; resize:vertical; }
+  textarea:focus { border-color:#ef7724; }
+  .action-btn { font-family:inherit; font-size:0.9rem; font-weight:700; padding:0.7rem 1.4rem; border-radius:9px; cursor:pointer; border:none; color:#fff; background:#007291; margin-top:0.4rem; }
+  .action-btn:hover { background:#00576e; }
+  .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; }
+  .notify.show { display:block; }
+
+  a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline:3px solid #007291; outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
 
   @media (max-width:520px){
     .sortcard { align-items:flex-start; flex-wrap:wrap; }
     .sc-btns { width:100%; justify-content:flex-start; }
+    .phrase-bank { grid-template-columns:1fr; }
   }
   @media (prefers-reduced-motion: reduce){ * { transition:none !important; } }
 </style>
 </head>
 <body>
 
-<header class="site-header"><a class="back-link" href="../day3.html" aria-label="Back to Wednesday activities">&larr; Back to Wednesday</a></header>
+<header class="site-header"><a class="back-link" href="../day4.html" aria-label="Back to Thursday activities">&larr; Back to Thursday</a></header>
 
 <div class="hero">
-  <span class="day-pill">Pride Week &middot; Wednesday</span>
-  <h1>Being Yourself</h1>
-  <p>Identity, respect and school culture.</p>
-  <div class="meta-row"><span class="time-pill">Pick what you can</span><span class="time-pill">No personal sharing needed</span><span class="time-pill">Respect is expected</span></div>
+  <span class="day-pill">Pride Week &middot; Thursday</span>
+  <h1>Being an Ally</h1>
+  <p>Practical choices when someone is targeted, mocked or left out.</p>
+  <div class="meta-row"><span class="time-pill">Pick what you can</span><span class="time-pill">No public sharing</span><span class="time-pill">Small actions count</span></div>
 </div>
 <div class="pride-stripe"></div>
 
@@ -104,44 +114,44 @@
 
   <div class="card">
     <div class="eyebrow">Safe start</div>
-    <h2>You do not have to share private information.</h2>
-    <p class="intro">This is about how people are treated. You can have questions. Mocking, slurs and pressure are not OK.</p>
-    <div class="big-q">You do not need to understand someone fully to treat them safely.</div>
+    <h2>Being an ally is not about being a hero.</h2>
+    <p class="intro">It means noticing harm and choosing a safer response. You can help without making a scene.</p>
+    <div class="big-q">You can challenge behaviour without attacking the person.</div>
   </div>
 
   <div class="card">
-    <div class="step"><span class="step-num">1</span><span class="step-title">Respectful, or crosses a line?</span></div>
-    <p class="lead">For each one, choose respectful or not OK.</p>
-    <div class="legend" aria-hidden="true"><span>✓ Respectful</span><span>✕ Not OK</span></div>
-    <div id="sortWrap"></div>
-    <div class="done-flag" id="sortMsg" aria-live="polite">Clear boundary: questions can be respectful; insults are not.</div>
+    <div class="step"><span class="step-num">1</span><span class="step-title">What would help?</span></div>
+    <p class="lead">Pick a response. You can try different options.</p>
+    <div id="scnWrap"></div>
+    <div class="done-flag" id="scnMsg" aria-live="polite">Scenarios checked. Safer choices reduce harm.</div>
   </div>
 
   <div class="card">
-    <div class="step"><span class="step-num">2</span><span class="step-title">Identity is more than one thing</span></div>
-    <p class="lead">Tap the things that can be part of who someone is.</p>
-    <div class="tiles" id="uniqueTiles"></div>
-    <div class="mini-note" id="uniqueMsg" aria-live="polite">People are not just one label.</div>
+    <div class="step"><span class="step-num">2</span><span class="step-title">Helpful or risky?</span></div>
+    <p class="lead">Sort each action. Does it help, or could it make things worse?</p>
+    <div class="legend" aria-hidden="true"><span>✓ Helps</span><span>! Risky</span></div>
+    <div id="riskSort"></div>
+    <div class="done-flag" id="riskMsg" aria-live="polite">Useful boundary: support should not create more risk.</div>
   </div>
 
   <div class="card">
-    <div class="step"><span class="step-num">3</span><span class="step-title">Myth or reality?</span></div>
-    <p class="lead">Choose one. Then read the short feedback.</p>
-    <div id="mythWrap"></div>
-    <div class="done-flag" id="mythMsg" aria-live="polite">Useful distinction: respect is about behaviour.</div>
+    <div class="step"><span class="step-num">3</span><span class="step-title">Ally moves</span></div>
+    <p class="lead">Tap any you could realistically use.</p>
+    <div class="tiles" id="allyTiles"></div>
+    <div class="mini-note" id="allyMsg" aria-live="polite">Choose one small move. That is enough to start.</div>
   </div>
 
   <div class="card">
-    <div class="step"><span class="step-num">4</span><span class="step-title">What could you say instead?</span></div>
-    <p class="lead">Pick the response that keeps things safe and respectful.</p>
-    <div id="scenarioWrap"></div>
-    <div class="done-flag" id="scenarioMsg" aria-live="polite">Useful responses: clear, calm and not personal.</div>
+    <div class="step"><span class="step-num">4</span><span class="step-title">What could you say?</span></div>
+    <p class="lead">Tap phrases that could work in school.</p>
+    <div class="phrase-bank" id="phraseBank"></div>
+    <div class="mini-note" id="phraseMsg" aria-live="polite">A short sentence is often safer than a speech.</div>
   </div>
 
   <div class="card">
     <div class="step"><span class="step-num">5</span><span class="step-title">One word or sentence (optional)</span></div>
-    <label class="fl" for="t1">One way I can show respect</label>
-    <textarea id="t1" data-save="respect" placeholder="I can show respect by..." style="min-height:48px;"></textarea>
+    <label class="fl" for="t1">One small thing I could do to help</label>
+    <textarea id="t1" data-save="action" placeholder="One small thing I could do is..." style="min-height:48px;"></textarea>
     <button type="button" class="action-btn" onclick="emailWork()">&#128231; Send to Jay</button>
     <div class="notify" id="notify" aria-live="polite"></div>
   </div>
@@ -151,54 +161,101 @@
 <footer>Base 6 &middot; Chilton Bridge School &middot; Pride Week</footer>
 
 <script>
-const STORE_KEY='base6_w4_pride_wed_reworked';
+const STORE_KEY='base6_w4_pride_thu_v2';
 const TEACHER_EMAIL='jay.raine@chiltonbridgeschool.co.uk';
-var state={ fields:{}, sort:{}, unique:[], myth:{}, scenario:{} };
+var state={ fields:{}, scn:{}, risk:{}, ally:[], phrase:[] };
 try { state=Object.assign(state, JSON.parse(localStorage.getItem(STORE_KEY))||{}); } catch(e){}
 if(!state.fields) state.fields={};
-if(!state.sort || typeof state.sort!=='object' || Array.isArray(state.sort)) state.sort={};
-if(!Array.isArray(state.unique)) state.unique=[];
-if(!state.myth || typeof state.myth!=='object' || Array.isArray(state.myth)) state.myth={};
-if(!state.scenario || typeof state.scenario!=='object' || Array.isArray(state.scenario)) state.scenario={};
+if(!state.scn || typeof state.scn!=='object') state.scn={};
+if(!state.risk || typeof state.risk!=='object') state.risk={};
+if(!Array.isArray(state.ally)) state.ally=[];
+if(!Array.isArray(state.phrase)) state.phrase=[];
 function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
-function esc(s){ return String(s).replace(/[&<>\"]/g, function(ch){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]; }); }
-function countObj(obj){ var n=0; Object.keys(obj||{}).forEach(function(k){ if(obj[k]) n++; }); return n; }
+function esc(s){ return String(s).replace(/[&<>\"]/g, function(ch){ return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[ch]; }); }
+function countObj(obj){ var n=0; Object.keys(obj||{}).forEach(function(k){ if(obj[k]!==undefined && obj[k]!==null && obj[k]!=='' ) n++; }); return n; }
 
-var SORT=[
- {id:'s1', e:'?', t:'Ask a genuine question without making it personal', a:'ok', good:'Respectful. A real question is different from mocking.'},
- {id:'s2', e:'X', t:'Use “gay” as an insult', a:'no', bad:'Not OK. Say what you actually mean.'},
- {id:'s3', e:'=', t:'Say “I do not get it yet, but I can still be respectful”', a:'ok', good:'Respectful. Understanding can grow.'},
- {id:'s4', e:'!', t:'Mock someone’s clothes, voice or identity', a:'no', bad:'Not OK. That targets the person.'},
- {id:'s5', e:'ID', t:'Use the name someone asks you to use', a:'ok', good:'Respectful. It is a basic dignity choice.'},
- {id:'s6', e:'GC', t:'Share a meme or screenshot to laugh at someone', a:'no', bad:'Not OK. Group chats can still cause harm.'},
- {id:'s7', e:'...', t:'Disagree calmly without targeting a person', a:'ok', good:'Respectful. You can disagree without being cruel.'}
+var SCN=[
+ { e:'Chat', q:'Someone uses “gay” as an insult in a group chat.',
+   opts:[ {t:'Add more jokes', k:'soft', fb:'That keeps the harm going.'},
+          {t:'Do not join in', k:'good', fb:'Good boundary. Not joining in matters.'},
+          {t:'Message: “Leave it out.”', k:'good', fb:'Short and clear. No big speech needed.'} ] },
+ { e:'Class', q:'A classmate is being mocked for how they dress or act.',
+   opts:[ {t:'Laugh so you do not stand out', k:'soft', fb:'Understandable pressure, but it supports the mocking.'},
+          {t:'Check in with them later', k:'good', fb:'Useful. Quiet support can still be support.'},
+          {t:'Tell staff if it keeps happening', k:'good', fb:'Appropriate. Repeated targeting needs adult support.'} ] },
+ { e:'Debate', q:'Someone says, “Why do we have to learn about LGBTQ+ people?”',
+   opts:[ {t:'Argue loudly', k:'soft', fb:'That can turn into a fight, not learning.'},
+          {t:'Say: “It is about respect and safety.”', k:'good', fb:'Clear and calm. That keeps the focus on behaviour.'},
+          {t:'Call them names back', k:'soft', fb:'That attacks the person instead of challenging the idea.'} ] },
+ { e:'Trust', q:'A friend tells you they are LGBTQ+ but says it is private.',
+   opts:[ {t:'Tell others for them', k:'soft', fb:'Risky. That is their information, not yours to share.'},
+          {t:'Thank them for trusting you', k:'good', fb:'Respectful. Privacy matters.'},
+          {t:'Ask what support they want', k:'good', fb:'Useful. Do not guess what they need.'} ] },
+ { e:'Corridor', q:'You hear a slur in the corridor.',
+   opts:[ {t:'Ignore every time', k:'soft', fb:'Ignoring may feel safe once, but repeated slurs need action.'},
+          {t:'Tell a member of staff', k:'good', fb:'That is not “snitching”. It is reporting harm.'},
+          {t:'Say calmly: “Do not use that word.”', k:'good', fb:'Only if it feels safe. Calm and brief is best.'} ] }
 ];
-function sortLabel(v){ return v==='ok'?'Respectful':'Not OK'; }
-function buildSort(){
-  var w=document.getElementById('sortWrap'); w.innerHTML='';
-  SORT.forEach(function(it){
-    var pick=state.sort[it.id];
-    var card=document.createElement('div'); card.className='sortcard'+(pick?' '+pick:'');
-    var em=document.createElement('div'); em.className='sc-emoji'; em.setAttribute('aria-hidden','true'); em.textContent=it.e; card.appendChild(em);
-    var tx=document.createElement('div'); tx.className='sc-text'; tx.textContent=it.t; card.appendChild(tx);
+function buildScn(){
+  var w=document.getElementById('scnWrap'); w.innerHTML='';
+  SCN.forEach(function(s,i){
+    var box=document.createElement('div'); box.className='scn';
+    var head=document.createElement('div'); head.className='scn-head';
+    var em=document.createElement('div'); em.className='scn-emoji'; em.setAttribute('aria-hidden','true'); em.textContent=s.e; head.appendChild(em);
+    var q=document.createElement('div'); q.className='scn-q'; q.textContent=s.q; head.appendChild(q);
+    box.appendChild(head);
+    s.opts.forEach(function(o,j){
+      var picked=state.scn[i]===j;
+      var b=document.createElement('button'); b.type='button'; b.className='opt'+(picked?' pick '+(o.k==='good'?'good':'soft'):''); b.textContent=o.t;
+      b.onclick=function(){ state.scn[i]=j; save(); buildScn(); };
+      box.appendChild(b);
+    });
+    var fb=document.createElement('div'); fb.className='scn-fb';
+    if(state.scn[i]!==undefined){ var o=s.opts[state.scn[i]]; fb.className='scn-fb '+(o.k==='good'?'good':'soft'); fb.textContent=o.fb; }
+    box.appendChild(fb);
+    w.appendChild(box);
+  });
+  var msg=document.getElementById('scnMsg');
+  if(msg){ msg.className='done-flag'+(countObj(state.scn)===SCN.length?' show':''); }
+}
+
+var RISK=[
+ {id:'r1', e:'Privacy', text:'Ask before sharing someone’s identity.', ans:'help', fb:'Helps. Privacy belongs to the person.'},
+ {id:'r2', e:'Noise', text:'Start a loud argument to prove you are right.', ans:'risk', fb:'Risky. Loud arguments can make things less safe.'},
+ {id:'r3', e:'Staff', text:'Report repeated slurs or targeting.', ans:'help', fb:'Helps. Repeated harm needs adult support.'},
+ {id:'r4', e:'Online', text:'Post support online but laugh at slurs offline.', ans:'risk', fb:'Risky. Real allyship is how you act when people are there.'},
+ {id:'r5', e:'Name', text:'Use the name someone asks you to use.', ans:'help', fb:'Helps. It shows basic respect.'},
+ {id:'r6', e:'Secret', text:'Tell everyone someone came out.', ans:'risk', fb:'Risky. That can put someone under pressure or in danger.'}
+];
+function riskLabel(v){ return v==='help'?'Helps':'Risky'; }
+function buildRisk(){
+  var w=document.getElementById('riskSort'); w.innerHTML='';
+  RISK.forEach(function(item){
+    var pick=state.risk[item.id];
+    var correct=pick && pick===item.ans;
+    var card=document.createElement('div');
+    card.className='sortcard'+(pick?' '+(pick==='help'?'help':'risk'):'');
+    card.innerHTML='<div class="sc-emoji" aria-hidden="true">'+esc(item.e)+'</div><div class="sc-text">'+esc(item.text)+'</div>';
     var btns=document.createElement('div'); btns.className='sc-btns';
-    [['ok','✓','Respectful'],['no','✕','Not OK']].forEach(function(p){
-      var b=document.createElement('button'); b.type='button'; b.className='sc-pick'+(pick===p[0]?' sel-'+p[0]:''); b.textContent=p[1];
-      b.setAttribute('aria-label', p[2]+' for: '+it.t);
-      b.onclick=function(){ state.sort[it.id]=p[0]; save(); buildSort(); };
+    [
+      {v:'help', lab:'Helps', icon:'✓'},
+      {v:'risk', lab:'Risky', icon:'!'}
+    ].forEach(function(opt){
+      var b=document.createElement('button'); b.type='button'; b.className='sc-pick'+(pick===opt.v?' sel-'+opt.v:'');
+      b.setAttribute('aria-label', opt.lab+' for: '+item.text);
+      b.title=opt.lab;
+      b.textContent=opt.icon;
+      b.onclick=function(){ state.risk[item.id]=opt.v; save(); buildRisk(); };
       btns.appendChild(b);
     });
+    var fb=document.createElement('div'); fb.className='sc-fb '+(correct?'good':'soft');
+    if(pick){ fb.textContent=(correct?'Clear. ':'Try again. ')+item.fb; }
+    btns.appendChild(fb);
     card.appendChild(btns);
-    var fb=document.createElement('div'); fb.className='sc-fb';
-    if(pick){
-      if(pick===it.a){ fb.className='sc-fb good'; fb.textContent = it.a==='ok'? it.good : it.bad; }
-      else { fb.className='sc-fb soft'; fb.textContent='Try again. Think about impact, not intention.'; }
-    }
-    card.appendChild(fb);
     w.appendChild(card);
   });
-  var msg=document.getElementById('sortMsg');
-  if(msg){ msg.className='done-flag'+(countObj(state.sort)===SORT.length?' show':''); }
+  var msg=document.getElementById('riskMsg');
+  if(msg){ msg.className='done-flag'+(countObj(state.risk)===RISK.length?' show':''); }
 }
 
 function buildTiles(elId, arr, bag, rebuild){
@@ -211,139 +268,73 @@ function buildTiles(elId, arr, bag, rebuild){
     g.appendChild(b);
   });
 }
-var UNIQUE=[
- {e:'🎧',l:'Interests'},
- {e:'⚡',l:'Strengths'},
- {e:'👟',l:'Style'},
- {e:'🏠',l:'Family / culture'},
- {e:'🧭',l:'Values'},
- {e:'🕊️',l:'Faith / beliefs'},
- {e:'🌈',l:'Gender / sexuality'},
- {e:'🔒',l:'Boundaries'},
- {e:'🎮',l:'Hobbies'},
- {e:'🤝',l:'Friendships'}
+var ALLY=[
+ {e:'✓',l:'Do not join in'},
+ {e:'?',l:'Check in'},
+ {e:'!',l:'Report harm'},
+ {e:'→',l:'Include someone'},
+ {e:'“”',l:'Use their name'},
+ {e:'↔',l:'Respect privacy'},
+ {e:'↘',l:'Calm challenge'},
+ {e:'+',l:'Learn more'}
 ];
-function rebUnique(){
-  buildTiles('uniqueTiles', UNIQUE, state.unique, rebUnique);
-  var msg=document.getElementById('uniqueMsg');
+function rebAlly(){
+  buildTiles('allyTiles', ALLY, state.ally, rebAlly);
+  var msg=document.getElementById('allyMsg');
   if(!msg) return;
-  if(state.unique.length===0) msg.textContent='People are not just one label.';
-  else if(state.unique.length<3) msg.textContent='Good start. Identity has many parts.';
-  else msg.textContent='Exactly. No one should be reduced to one part of who they are.';
+  if(state.ally.length===0) msg.textContent='Choose one small move. That is enough to start.';
+  else if(state.ally.length<3) msg.textContent='Practical choices. Small actions can shift the room.';
+  else msg.textContent='Strong set of choices. Allyship is behaviour, not a label.';
 }
 
-var MYTH=[
- {id:'m1', e:'=', q:'Respect means you must agree with everything.', a:'myth', fb:'Myth. Respect is about behaviour.'},
- {id:'m2', e:'?', q:'Not understanding is a reason to mock.', a:'myth', fb:'Myth. You can ask or move on.'},
- {id:'m3', e:'!', q:'A joke can still cause harm.', a:'reality', fb:'Reality. Impact matters.'},
- {id:'m4', e:'🏫', q:'In school, safety comes before banter.', a:'reality', fb:'Reality. Everyone has the right to feel safe.'},
- {id:'m5', e:'...', q:'You can hold a view and still avoid insults.', a:'reality', fb:'Reality. Private beliefs do not excuse harmful behaviour.'}
+var PHRASES=[
+ 'Leave it out.',
+ 'Do not use that word.',
+ 'It is about respect and safety.',
+ 'Are you alright?',
+ 'I am not joining in with that.',
+ 'Use their name.',
+ 'Let’s move on.',
+ 'I am going to tell staff.'
 ];
-function mythLabel(v){ return v==='reality'?'Reality':'Myth'; }
-function buildMyth(){
-  var w=document.getElementById('mythWrap'); w.innerHTML='';
-  MYTH.forEach(function(item){
-    var pick=state.myth[item.id];
-    var correct=pick && pick===item.a;
-    var card=document.createElement('div'); card.className='scn';
-    card.innerHTML='<div class="scn-head"><div class="scn-emoji" aria-hidden="true">'+esc(item.e)+'</div><div class="scn-q">'+esc(item.q)+'</div></div>';
-    [
-      {v:'reality', lab:'Reality'},
-      {v:'myth', lab:'Myth'}
-    ].forEach(function(opt){
-      var b=document.createElement('button'); b.type='button';
-      b.className='opt'+(pick===opt.v?' pick '+(correct?'good':'soft'):'');
-      b.textContent=opt.lab;
-      b.onclick=function(){ state.myth[item.id]=opt.v; save(); buildMyth(); };
-      card.appendChild(b);
-    });
-    var fb=document.createElement('div'); fb.className='scn-fb '+(correct?'good':'soft');
-    if(pick){ fb.textContent=(correct?'Clear. ':'Try again. ')+item.fb; }
-    card.appendChild(fb);
-    w.appendChild(card);
+function buildPhrases(){
+  var w=document.getElementById('phraseBank'); w.innerHTML='';
+  PHRASES.forEach(function(p){
+    var chosen=state.phrase.indexOf(p)!==-1;
+    var b=document.createElement('button'); b.type='button'; b.className='phrase'+(chosen?' on':'');
+    b.setAttribute('aria-pressed', chosen?'true':'false');
+    b.textContent=p;
+    b.onclick=function(){ var i=state.phrase.indexOf(p); if(i>-1) state.phrase.splice(i,1); else state.phrase.push(p); save(); buildPhrases(); };
+    w.appendChild(b);
   });
-  var msg=document.getElementById('mythMsg');
-  if(msg){ msg.className='done-flag'+(countObj(state.myth)===MYTH.length?' show':''); }
+  var msg=document.getElementById('phraseMsg');
+  if(!msg) return;
+  if(state.phrase.length===0) msg.textContent='A short sentence is often safer than a speech.';
+  else if(state.phrase.length<3) msg.textContent='Good. Short and calm usually works best.';
+  else msg.textContent='Useful phrase bank. You do not need to use all of them.';
 }
 
-var SCENARIOS=[
- {id:'c1', e:'X', q:'Someone says “that’s gay” when they mean “annoying”.', a:0, opts:[
-   {t:'“Say what you mean instead.”', fb:'Clear and calm.'},
-   {t:'“Say it louder.”', fb:'That makes it worse.'},
-   {t:'“It is only a joke.”', fb:'That avoids the impact.'}
- ]},
- {id:'c2', e:'?', q:'Someone says: “Why are we doing Pride?”', a:1, opts:[
-   {t:'“Shut up.”', fb:'That escalates it.'},
-   {t:'“It is about school being safe.”', fb:'Clear and relevant.'},
-   {t:'Make a joke about LGBTQ+ people.', fb:'That targets people.'}
- ]},
- {id:'c3', e:'🔒', q:'A friend tells you something private about their identity.', a:2, opts:[
-   {t:'Tell the group chat.', fb:'That breaks trust.'},
-   {t:'Ask loads of personal questions.', fb:'That can feel like pressure.'},
-   {t:'“Thanks for trusting me. I will not share it.”', fb:'Respectful and safe.'}
- ]},
- {id:'c4', e:'👟', q:'Someone is mocked for their clothes or voice.', a:0, opts:[
-   {t:'“Leave it. It is not hurting anyone.”', fb:'Calm and protective.'},
-   {t:'Join in so you are not targeted.', fb:'That spreads the harm.'},
-   {t:'Film it.', fb:'That makes it worse.'}
- ]}
-];
-function buildScenarios(){
-  var w=document.getElementById('scenarioWrap'); w.innerHTML='';
-  SCENARIOS.forEach(function(item){
-    var pick=state.scenario[item.id];
-    var correct=(pick!==undefined && pick!==null && pick!=='' && Number(pick)===item.a);
-    var card=document.createElement('div'); card.className='scn';
-    card.innerHTML='<div class="scn-head"><div class="scn-emoji" aria-hidden="true">'+esc(item.e)+'</div><div class="scn-q">'+esc(item.q)+'</div></div>';
-    item.opts.forEach(function(opt,idx){
-      var b=document.createElement('button'); b.type='button';
-      b.className='opt'+(String(pick)===String(idx)?' pick '+(correct?'good':'soft'):'');
-      b.textContent=opt.t;
-      b.onclick=function(){ state.scenario[item.id]=idx; save(); buildScenarios(); };
-      card.appendChild(b);
-    });
-    var fb=document.createElement('div'); fb.className='scn-fb '+(correct?'good':'soft');
-    if(pick!==undefined && pick!==null && pick!==''){
-      var chosen=item.opts[Number(pick)];
-      fb.textContent=(correct?'Useful response. ':'Try again. ')+(chosen?chosen.fb:'');
-    }
-    card.appendChild(fb);
-    w.appendChild(card);
-  });
-  var msg=document.getElementById('scenarioMsg');
-  if(msg){ msg.className='done-flag'+(countObj(state.scenario)===SCENARIOS.length?' show':''); }
-}
-
-document.querySelectorAll('[data-save]').forEach(function(el){
-  var k=el.dataset.save;
-  if(state.fields[k]!==undefined) el.value=state.fields[k];
-  el.addEventListener('input', function(){ state.fields[k]=el.value; save(); });
-});
+document.querySelectorAll('[data-save]').forEach(function(el){ var k=el.dataset.save; if(state.fields[k]!==undefined) el.value=state.fields[k];
+  el.addEventListener('input', function(){ state.fields[k]=el.value; save(); }); });
 function emailWork(){
   var f=state.fields; var g=function(k){ return (f[k]&&f[k].trim()?f[k].trim():'-'); };
-  var b='PRIDE WEEK: BEING YOURSELF (Wednesday - teen version)\n';
+  var b='PRIDE WEEK: BEING AN ALLY (Thursday - teen version)\n';
   b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n';
-  b+='One way I can show respect: '+g('respect')+'\n';
-  b+='Identity tiles chosen: '+(state.unique.length?state.unique.join(', '):'-')+'\n';
-  b+='Respect sort completed: '+countObj(state.sort)+' of '+SORT.length+' cards tried\n';
-  b+='Myth/reality completed: '+countObj(state.myth)+' of '+MYTH.length+' cards tried\n';
-  b+='Scenario choices completed: '+countObj(state.scenario)+' of '+SCENARIOS.length+' cards tried\n\n';
-  b+='Respect sort choices:\n';
-  SORT.forEach(function(item){ b+='- '+item.t+' -> '+(state.sort[item.id]?sortLabel(state.sort[item.id]):'-')+'\n'; });
-  b+='\nMyth/reality choices:\n';
-  MYTH.forEach(function(item){ b+='- '+item.q+' -> '+(state.myth[item.id]?mythLabel(state.myth[item.id]):'-')+'\n'; });
-  b+='\nScenario choices:\n';
-  SCENARIOS.forEach(function(item){
-    var p=state.scenario[item.id];
-    var ans=(p!==undefined && p!==null && p!=='' && item.opts[Number(p)])?item.opts[Number(p)].t:'-';
-    b+='- '+item.q+' -> '+ans+'\n';
-  });
+  b+='One small thing I could do: '+g('action')+'\n';
+  b+='Ally moves chosen: '+(state.ally.length?state.ally.join(', '):'-')+'\n';
+  b+='Phrases chosen: '+(state.phrase.length?state.phrase.join(' | '):'-')+'\n';
+  b+='Scenarios tried: '+countObj(state.scn)+' of '+SCN.length+'\n';
+  b+='Helpful/risky cards tried: '+countObj(state.risk)+' of '+RISK.length+'\n\n';
+  b+='Scenario choices:\n';
+  SCN.forEach(function(s,i){ var pick=state.scn[i]; b+='- '+s.q+' -> '+(pick!==undefined?s.opts[pick].t:'-')+'\n'; });
+  b+='\nHelpful/risky choices:\n';
+  RISK.forEach(function(item){ b+='- '+item.text+' -> '+(state.risk[item.id]?riskLabel(state.risk[item.id]):'-')+'\n'; });
   b+='\n-\nSent from Base 6';
-  var su=encodeURIComponent('Base 6 - Pride Week - Wednesday');
+  var su=encodeURIComponent('Base 6 - Pride Week - Thursday');
   window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(b),'_blank');
   var n=document.getElementById('notify'); n.textContent='Opening your email. Ready to send.'; n.classList.add('show');
 }
-buildSort(); rebUnique(); buildMyth(); buildScenarios();
+buildScn(); buildRisk(); rebAlly(); buildPhrases();
 </script>
 
 </body>
