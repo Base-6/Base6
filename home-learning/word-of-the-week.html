@@ -8,1171 +8,155 @@
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cream: #fef8f4;
-    --ink: #1a1a1a;
-    --muted: #4b4b4b;
-    --teal: #007291;
-    --teal-dark: #005c75;
-    --teal-soft: #e6f5f8;
-    --orange: #ef7724;
-    --orange-dark: #c05a10;
-    --orange-soft: #fdeee0;
-    --purple: #7b4fa3;
-    --purple-soft: #f0eaf6;
-    --green: #2e8b57;
-    --green-soft: #e6f3ec;
-    --pink: #d6336c;
-    --pink-soft: #fbe7ee;
-    --line: #e0d8d0;
-    --paper: #ffffff;
-    --shadow: rgba(0, 0, 0, 0.08);
-    --shadow-orange: rgba(239,119,36,0.13);
-    --shadow-teal: rgba(0,114,145,0.16);
-    --radius: 16px;
-    --focus: 0 0 0 4px rgba(0,114,145,0.25);
+    --cream:#fef8f4; --ink:#1a1a1a; --muted:#4b4b4b; --teal:#007291; --teal-dark:#005c75;
+    --teal-soft:#e6f5f8; --orange:#ef7724; --orange-dark:#c05a10; --orange-soft:#fdeee0;
+    --green:#2e8b57; --green-soft:#e6f3ec; --purple:#7b4fa3; --purple-soft:#f0eaf6;
+    --line:#e0d8d0; --paper:#fff; --focus:0 0 0 4px rgba(0,114,145,.25);
   }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Atkinson Hyperlegible', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--cream);
-    color: var(--ink);
-    min-height: 100vh;
-    line-height: 1.5;
-  }
-  button, input, textarea { font: inherit; }
-  button { cursor: pointer; }
-  button:disabled { cursor: not-allowed; opacity: 0.58; }
-  :focus-visible { outline: none; box-shadow: var(--focus); }
-
-  .site-header {
-    position: relative;
-    background: var(--teal);
-    padding: 1.7rem 1.2rem 2.5rem;
-    text-align: center;
-    overflow: hidden;
-  }
-  .site-header::before {
-    content: "";
-    position: absolute;
-    top: -60px;
-    left: -40px;
-    width: 180px;
-    height: 180px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 50%;
-  }
-  .site-header::after {
-    content: "";
-    position: absolute;
-    bottom: 10px;
-    right: -50px;
-    width: 200px;
-    height: 200px;
-    background: rgba(239,119,36,0.18);
-    border-radius: 50%;
-  }
-  .header-inner { position: relative; z-index: 2; max-width: 920px; margin: 0 auto; }
-  .site-header h1 {
-    font-size: clamp(1.9rem, 5vw, 2.7rem);
-    font-weight: 700;
-    color: var(--cream);
-    letter-spacing: 0.02em;
-    line-height: 1.15;
-  }
-  .site-header p { font-size: 1.02rem; color: #d7eef4; margin-top: 0.4rem; }
-  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
-
-  .main { max-width: 1060px; margin: 0 auto; padding: 1.5rem 1.1rem 4rem; }
-  .back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-bottom: 1rem;
-    font-size: 0.92rem;
-    font-weight: 700;
-    color: var(--teal);
-    text-decoration: none;
-  }
-  .back-link:hover { text-decoration: underline; }
-
-  .intro, .chunk-card, .summary-card, .sidebar-card {
-    background: var(--paper);
-    border: 2px solid var(--orange);
-    border-radius: var(--radius);
-    box-shadow: 0 4px 14px var(--shadow-orange);
-  }
-  .intro { padding: 1.1rem 1.25rem; margin-bottom: 1rem; display: grid; grid-template-columns: minmax(0,1fr) 180px; gap: 1rem; align-items: center; }
-  .intro h2 { font-size: clamp(1.35rem, 3vw, 1.7rem); color: var(--orange-dark); margin-bottom: 0.35rem; }
-  .intro p { color: #333; max-width: 76ch; }
-  .intro-visual { min-height: 130px; }
-
-  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 1rem; align-items: start; }
-  .activity-shell { min-width: 0; }
-  .sidebar { display: grid; gap: 0.9rem; position: sticky; top: 0.8rem; }
-  .sidebar-card { border-color: var(--teal); box-shadow: 0 4px 14px var(--shadow-teal); padding: 1rem; }
-  .sidebar-card.orange { border-color: var(--orange); box-shadow: 0 4px 14px var(--shadow-orange); }
-  .sidebar-card.purple { border-color: var(--purple); box-shadow: 0 4px 14px rgba(123,79,163,0.11); }
-  .sidebar-card h2, .sidebar-card h3 { color: var(--teal); line-height: 1.2; margin-bottom: 0.4rem; }
-  .sidebar-card.orange h2, .sidebar-card.orange h3 { color: var(--orange-dark); }
-  .sidebar-card.purple h2, .sidebar-card.purple h3 { color: var(--purple); }
-
-  .section-label {
-    font-size: 0.76rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--teal);
-    margin-bottom: 0.55rem;
-  }
-  .mini-text { color: var(--muted); font-size: 0.95rem; }
-  .small-text { color: var(--muted); font-size: 0.84rem; }
-
-  .step-nav {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 0.45rem;
-    margin: 1rem 0;
-  }
-  .step-tab {
-    border: 2px solid var(--line);
-    background: #fff;
-    border-radius: 14px;
-    padding: 0.55rem 0.4rem;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #333;
-    min-height: 56px;
-  }
-  .step-tab[aria-current="step"] { border-color: var(--orange); background: var(--orange-soft); color: var(--orange-dark); }
-  .step-tab.complete { border-color: var(--green); background: var(--green-soft); color: var(--green); }
-  .step-tab span { display: block; font-size: 1.1rem; line-height: 1; margin-bottom: 0.18rem; }
-
-  .progress-shell { width: 100%; height: 13px; background: #f0e5dd; border-radius: 999px; overflow: hidden; margin-top: 0.6rem; }
-  .progress-fill { height: 100%; width: 0%; background: var(--orange); border-radius: 999px; transition: width 0.2s ease; }
-
-  .chunk-card { display: none; overflow: hidden; }
-  .chunk-card.active { display: block; }
-  .chunk-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 230px;
-    gap: 1rem;
-    align-items: center;
-    padding: 1.25rem;
-    border-bottom: 2px solid var(--line);
-    background: linear-gradient(135deg, #fff, #fffaf7);
-  }
-  .chunk-hero h2 { color: var(--orange-dark); font-size: clamp(1.35rem, 3vw, 1.95rem); line-height: 1.15; margin-bottom: 0.4rem; }
-  .chunk-hero.teal h2 { color: var(--teal); }
-  .chunk-hero.purple h2 { color: var(--purple); }
-  .chunk-hero.green h2 { color: var(--green); }
-  .chunk-body { padding: 1.25rem; }
-
-  .image-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; margin-top: 1rem; }
-  .image-card {
-    border: 2px solid var(--line);
-    background: #fffaf7;
-    border-radius: 14px;
-    padding: 0.85rem;
-    min-height: 130px;
-  }
-  .image-card strong { display: block; color: var(--teal); margin-bottom: 0.3rem; }
-  .image-card .picture { height: 74px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.35rem; }
-
-  .definition {
-    border-left: 8px solid var(--orange);
-    background: var(--orange-soft);
-    border-radius: 12px;
-    padding: 0.9rem 1rem;
-    font-size: 1.08rem;
-    margin-top: 0.85rem;
-  }
-  .definition strong { color: var(--orange-dark); }
-
-  .choice-grid { display: grid; gap: 0.65rem; margin-top: 1rem; }
-  .choice-btn {
-    display: grid;
-    grid-template-columns: 48px minmax(0, 1fr);
-    gap: 0.75rem;
-    align-items: center;
-    width: 100%;
-    text-align: left;
-    border: 2px solid var(--line);
-    background: #fff;
-    border-radius: 14px;
-    padding: 0.8rem;
-    font-weight: 700;
-    color: #222;
-  }
-  .choice-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    display: grid;
-    place-items: center;
-    background: var(--teal-soft);
-    border: 2px solid var(--teal);
-    font-size: 1.5rem;
-  }
-  .choice-btn:hover { border-color: var(--orange); background: #fffaf7; }
-  .choice-btn.selected { border-color: var(--teal); background: var(--teal-soft); }
-  .choice-btn.correct { border-color: var(--green); background: var(--green-soft); }
-
-  .feedback { min-height: 1.8rem; margin-top: 0.75rem; font-weight: 700; color: var(--orange-dark); }
-
-  .btn-row, .button-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.35rem;
-    border: 2px solid var(--teal);
-    background: #fff;
-    color: var(--teal-dark);
-    border-radius: 14px;
-    padding: 0.72rem 0.88rem;
-    font-weight: 700;
-    min-height: 46px;
-    transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
-  }
-  .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,114,145,0.16); }
-  .btn.primary { background: var(--teal); color: #fff; }
-  .btn.orange { border-color: var(--orange); color: var(--orange-dark); }
-  .btn.orange.primary { background: var(--orange); color: #fff; }
-  .btn.purple { border-color: var(--purple); color: var(--purple); }
-  .btn.purple.primary { background: var(--purple); color: #fff; }
-  .btn.green { border-color: var(--green); color: var(--green); }
-  .btn.green.primary { background: var(--green); color: #fff; }
-  .btn.ghost { border-color: var(--line); color: #333; background: #fffaf7; }
-  .btn.small { min-height: 36px; padding: 0.38rem 0.55rem; font-size: 0.82rem; border-radius: 10px; }
-  .btn.full { width: 100%; }
-
-  .task-pile {
-    min-height: 145px;
-    border: 2px solid var(--teal);
-    background: var(--teal-soft);
-    border-radius: 14px;
-    padding: 0.85rem;
-    margin-top: 1rem;
-  }
-  .task-pile h3 { color: var(--teal); font-size: 1rem; margin-bottom: 0.45rem; }
-  .sort-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; margin-top: 1rem; }
-  .drop-zone {
-    min-height: 210px;
-    border: 2px dashed var(--line);
-    background: #fffaf7;
-    border-radius: 14px;
-    padding: 0.85rem;
-    transition: background 0.16s ease, border-color 0.16s ease;
-  }
-  .drop-zone.drag-over { background: var(--teal-soft); border-color: var(--teal); }
-  .drop-zone h3 { margin-bottom: 0.45rem; font-size: 1rem; }
-  .drop-zone.first h3 { color: var(--orange-dark); }
-  .drop-zone.later h3 { color: var(--teal); }
-  .drop-zone.notnow h3 { color: #666; }
-  .drop-count { font-size: 0.83rem; color: var(--muted); margin-bottom: 0.5rem; }
-
-  .task-card {
-    display: grid;
-    grid-template-columns: 42px minmax(0,1fr);
-    gap: 0.6rem;
-    border: 2px solid var(--line);
-    border-radius: 13px;
-    background: #fff;
-    padding: 0.7rem;
-    margin-bottom: 0.55rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  }
-  .task-card[draggable="true"] { cursor: grab; }
-  .task-card:active { cursor: grabbing; }
-  .task-img {
-    width: 42px;
-    height: 42px;
-    display: grid;
-    place-items: center;
-    border-radius: 13px;
-    border: 2px solid var(--orange);
-    background: var(--orange-soft);
-    font-size: 1.55rem;
-  }
-  .task-title { font-weight: 700; line-height: 1.25; }
-  .task-snark { font-size: 0.84rem; color: var(--muted); margin-top: 0.25rem; }
-  .task-actions { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem; margin-top: 0.2rem; }
-  .task-actions .btn { font-size: 0.76rem; min-height: 34px; padding: 0.35rem; border-radius: 10px; }
-
-  .select-card {
-    display: grid;
-    grid-template-columns: 44px minmax(0,1fr) auto;
-    align-items: center;
-    gap: 0.7rem;
-    border: 2px solid var(--line);
-    border-radius: 13px;
-    padding: 0.75rem;
-    background: #fff;
-  }
-  .select-card + .select-card { margin-top: 0.55rem; }
-  .select-card.active { border-color: var(--teal); background: var(--teal-soft); }
-  .mini-img { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; border: 2px solid var(--teal); background: var(--teal-soft); font-size: 1.4rem; }
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 34px;
-    min-height: 34px;
-    border-radius: 999px;
-    border: 2px solid var(--teal);
-    color: var(--teal);
-    background: #fff;
-    font-weight: 700;
-  }
-
-  .reason-block { border: 2px solid var(--line); border-radius: 14px; padding: 0.85rem; background: #fffaf7; margin-top: 0.75rem; }
-  .reason-block strong { color: var(--orange-dark); }
-  .reason-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.55rem; }
-  .reason-chips .btn.selected { background: var(--teal); color: #fff; border-color: var(--teal); }
-  .reflection-box, .name-input { width: 100%; border: 2px solid var(--line); border-radius: 13px; padding: 0.8rem; background: #fff; color: var(--ink); }
-  .reflection-box { min-height: 108px; resize: vertical; margin-top: 0.85rem; }
-  .name-input { margin-top: 0.6rem; min-height: 46px; }
-
-  .chunk-controls {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.7rem;
-    flex-wrap: wrap;
-    padding: 1rem 1.25rem;
-    border-top: 2px solid var(--line);
-    background: #fffaf7;
-  }
-
-  .mini-map { display: grid; gap: 0.35rem; margin-top: 0.7rem; }
-  .mini-map-item { display: flex; justify-content: space-between; gap: 0.5rem; border: 2px solid var(--line); border-radius: 12px; padding: 0.5rem; background: #fffaf7; font-size: 0.84rem; }
-  .mini-map-item strong { color: var(--teal); }
-  .mini-map-item.done { border-color: var(--green); background: var(--green-soft); }
-
-  .summary-card { padding: 1.2rem; margin-top: 1.1rem; }
-  .summary-card h2 { color: var(--teal); margin-bottom: 0.5rem; }
-  .summary-output { white-space: pre-wrap; background: #fffaf7; border: 2px solid var(--line); border-radius: 14px; padding: 0.95rem; margin-top: 0.8rem; max-height: 320px; overflow: auto; font-size: 0.95rem; }
-
-  details.teacher-tools { margin-top: 0.85rem; border: 2px solid var(--line); border-radius: 14px; background: #fff; padding: 0.75rem 0.95rem; }
-  details.teacher-tools summary { font-weight: 700; color: var(--teal); cursor: pointer; }
-
-  .cheer { text-align: center; margin-top: 2rem; font-size: 1.02rem; font-weight: 700; color: var(--teal); }
-  footer { text-align: center; padding: 1.5rem; font-size: 0.82rem; color: #888; border-top: 1px solid var(--line); margin-top: 2rem; }
-  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-
-  .visual-svg { width: 100%; height: auto; display: block; }
-  .visual-card-svg { max-width: 150px; width: 100%; height: auto; }
-  .island-sky { fill: #d7eef4; }
-  .svg-teal { fill: var(--teal); }
-  .svg-orange { fill: var(--orange); }
-  .svg-orange-soft { fill: var(--orange-soft); }
-  .svg-purple { fill: var(--purple); }
-  .svg-green { fill: var(--green); }
-  .svg-cream { fill: var(--cream); }
-  .svg-line { stroke: #4b4b4b; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; fill: none; }
-
-  @media (max-width: 920px) {
-    .layout { grid-template-columns: 1fr; }
-    .sidebar { position: static; order: -1; }
-    .intro { grid-template-columns: 1fr; }
-    .intro-visual { max-width: 220px; margin: 0 auto; }
-    .step-nav { grid-template-columns: repeat(3, 1fr); }
-    .chunk-hero { grid-template-columns: 1fr; }
-    .chunk-visual { max-width: 220px; margin: 0 auto; }
-    .sort-board { grid-template-columns: 1fr; }
-    .drop-zone { min-height: 120px; }
-    .image-strip { grid-template-columns: 1fr; }
-  }
-
-  @media (max-width: 580px) {
-    .site-header { padding: 1.45rem 1rem 2.4rem; }
-    .main { padding-inline: 0.85rem; }
-    .chunk-body, .chunk-hero, .chunk-controls, .intro, .sidebar-card { padding: 0.95rem; }
-    .step-nav { grid-template-columns: repeat(2, 1fr); }
-    .choice-btn { grid-template-columns: 1fr; }
-    .task-actions { grid-template-columns: 1fr; }
-    .select-card { grid-template-columns: 40px minmax(0,1fr); }
-    .select-card .btn, .select-card .badge { grid-column: 1 / -1; width: 100%; }
-    .button-row .btn, .btn-row .btn { width: 100%; }
-  }
+  *{box-sizing:border-box;margin:0;padding:0} body{font-family:'Atkinson Hyperlegible',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.5;min-height:100vh} button,input,textarea{font:inherit} button{cursor:pointer} button:disabled{opacity:.55;cursor:not-allowed}:focus-visible{outline:none;box-shadow:var(--focus)}
+  .site-header{position:relative;background:var(--teal);padding:1.35rem 1rem 2.25rem;text-align:center;overflow:hidden}.site-header:before{content:"";position:absolute;top:-60px;left:-40px;width:170px;height:170px;background:rgba(255,255,255,.08);border-radius:50%}.site-header:after{content:"";position:absolute;right:-50px;bottom:0;width:190px;height:190px;border-radius:50%;background:rgba(239,119,36,.18)}.header-inner{position:relative;z-index:2}.site-header h1{font-size:clamp(1.75rem,5vw,2.45rem);color:var(--cream);line-height:1.15}.site-header p{color:#d7eef4;margin-top:.35rem}.header-wave{position:absolute;bottom:-1px;left:0;width:100%;height:36px;z-index:1}
+  .main{max-width:780px;margin:0 auto;padding:1.2rem 1rem 3rem}.back-link{display:inline-block;margin-bottom:1rem;color:var(--teal);font-weight:700;text-decoration:none}.back-link:hover{text-decoration:underline}
+  .top-card,.screen,.summary{background:var(--paper);border:2px solid var(--orange);border-radius:16px;box-shadow:0 4px 14px rgba(239,119,36,.12)}.top-card{padding:1rem 1.1rem;margin-bottom:1rem}.top-card h2{color:var(--orange-dark);font-size:1.25rem}.top-card p{color:#333;margin-top:.25rem}.progress-row{display:flex;align-items:center;justify-content:space-between;gap:.8rem;margin-top:.85rem}.progress-text{font-weight:700;color:var(--teal);font-size:.92rem}.progress-track{height:12px;background:#f0e5dd;border-radius:999px;overflow:hidden;flex:1}.progress-fill{height:100%;width:0;background:var(--orange);border-radius:999px;transition:width .2s ease}
+  .screen{display:none;overflow:hidden}.screen.active{display:block}.hero{display:grid;grid-template-columns:minmax(0,1fr) 132px;gap:1rem;align-items:center;padding:1rem 1.1rem;border-bottom:2px solid var(--line);background:linear-gradient(135deg,#fff,#fffaf7)}.hero h2{font-size:clamp(1.3rem,4vw,1.75rem);line-height:1.15;color:var(--orange-dark);margin:.2rem 0}.label{font-size:.76rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--teal)}.mini{color:var(--muted);font-size:.96rem}.hero-icon{min-height:112px;border-radius:16px;background:var(--orange-soft);border:2px solid var(--orange);display:grid;place-items:center;font-size:4rem;position:relative}.hero-icon small{position:absolute;bottom:.55rem;font-size:.72rem;font-weight:700;color:var(--orange-dark);background:#fff;padding:.1rem .45rem;border-radius:999px;border:2px solid var(--orange)}.body{padding:1.1rem}.definition{background:var(--orange-soft);border-left:8px solid var(--orange);border-radius:12px;padding:.85rem 1rem;margin:.75rem 0;font-size:1.05rem}.definition strong{color:var(--orange-dark)}
+  .choice-grid,.list{display:grid;gap:.65rem;margin-top:.85rem}.choice,.item{display:grid;grid-template-columns:48px minmax(0,1fr);gap:.7rem;align-items:center;border:2px solid var(--line);border-radius:14px;background:#fff;padding:.8rem;text-align:left;font-weight:700}.choice:hover,.item:hover{border-color:var(--orange);background:#fffaf7}.choice.selected{border-color:var(--teal);background:var(--teal-soft)}.choice.correct{border-color:var(--green);background:var(--green-soft)}.icon,.mini-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;border:2px solid var(--teal);background:var(--teal-soft);font-size:1.5rem}.mini-icon{width:44px;height:44px}.feedback{min-height:1.6rem;margin-top:.75rem;font-weight:700;color:var(--orange-dark)}
+  .sort-stage{display:grid;gap:.8rem}.task-focus{display:grid;grid-template-columns:64px minmax(0,1fr);gap:.8rem;align-items:center;border:3px solid var(--teal);border-radius:16px;background:var(--teal-soft);padding:1rem}.task-focus .big{width:64px;height:64px;border-radius:18px;border:2px solid var(--teal);background:#fff;display:grid;place-items:center;font-size:2rem}.task-focus h3{color:var(--teal);font-size:1.25rem}.snark{color:var(--muted);font-size:.93rem;margin-top:.2rem}.sort-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}.count-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.6rem}.count-pill{border:2px solid var(--line);border-radius:13px;background:#fffaf7;padding:.55rem;text-align:center;font-weight:700}.count-pill strong{display:block;color:var(--teal);font-size:1.1rem}
+  .btn-row{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}.btn{display:inline-flex;justify-content:center;align-items:center;gap:.35rem;min-height:46px;border:2px solid var(--teal);background:#fff;color:var(--teal-dark);border-radius:14px;padding:.7rem .9rem;font-weight:700;text-decoration:none;transition:transform .14s ease,box-shadow .14s ease}.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,114,145,.15)}.btn.primary{background:var(--teal);color:#fff}.btn.orange{border-color:var(--orange);color:var(--orange-dark)}.btn.orange.primary{background:var(--orange);color:#fff}.btn.green{border-color:var(--green);color:var(--green)}.btn.green.primary{background:var(--green);color:#fff}.btn.purple{border-color:var(--purple);color:var(--purple)}.btn.purple.primary{background:var(--purple);color:#fff}.btn.ghost{border-color:var(--line);color:#333;background:#fffaf7}.btn.full{width:100%}
+  .pick-card{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:.7rem;align-items:center;border:2px solid var(--line);border-radius:14px;background:#fff;padding:.75rem}.pick-card.active{border-color:var(--purple);background:var(--purple-soft)}.pick-card+.pick-card{margin-top:.55rem}.badge{display:inline-grid;place-items:center;min-width:34px;min-height:34px;border-radius:999px;border:2px solid var(--purple);font-weight:700;color:var(--purple);background:#fff}.reason-block{border:2px solid var(--line);border-radius:14px;background:#fffaf7;padding:.85rem;margin-top:.7rem}.chips{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.55rem}.chip.selected{background:var(--teal);color:#fff;border-color:var(--teal)}.name-input,.reflection{width:100%;border:2px solid var(--line);border-radius:14px;background:#fff;padding:.8rem;margin-top:.6rem}.reflection{min-height:104px;resize:vertical}.controls{display:flex;justify-content:space-between;gap:.7rem;flex-wrap:wrap;padding:1rem 1.1rem;border-top:2px solid var(--line);background:#fffaf7}.summary{padding:1rem;margin-top:1rem}.summary[hidden]{display:none}.summary pre{white-space:pre-wrap;background:#fffaf7;border:2px solid var(--line);border-radius:14px;padding:.9rem;margin-top:.7rem;max-height:300px;overflow:auto}.teacher-tools{margin-top:.9rem;border:2px solid var(--line);border-radius:14px;background:#fff;padding:.75rem}.teacher-tools summary{font-weight:700;color:var(--teal);cursor:pointer}.cheer{text-align:center;margin-top:1.8rem;font-weight:700;color:var(--teal)}footer{text-align:center;padding:1.4rem;color:#888;border-top:1px solid var(--line);font-size:.82rem}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  @media(max-width:640px){.hero{grid-template-columns:1fr}.hero-icon{min-height:92px;font-size:3.2rem}.sort-buttons,.count-row{grid-template-columns:1fr}.pick-card{grid-template-columns:44px minmax(0,1fr)}.pick-card .btn,.pick-card .badge{grid-column:1/-1;width:100%}.btn-row .btn{width:100%}}
 </style>
 </head>
 <body>
 <header class="site-header">
   <div class="header-inner">
     <h1>Word of the Week</h1>
-    <p>Prioritise: choose what matters most. Revolutionary, apparently.</p>
+    <p>Prioritise: choosing what matters most. Surprisingly useful.</p>
   </div>
-  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
-  </svg>
+  <svg class="header-wave" viewBox="0 0 1200 36" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M0,18 C150,36 350,0 600,16 C850,32 1050,4 1200,18 L1200,36 L0,36 Z" fill="#fef8f4"></path></svg>
 </header>
-
 <main class="main">
   <a class="back-link" href="../index.html">← Back to Home Learning Hub</a>
-
-  <section class="intro" aria-labelledby="intro-title">
-    <div>
-      <h2 id="intro-title">Too Much To Do Island</h2>
-      <p>You have too many jobs and only one brain. Tragic. This version is chunked into small screens, so you only deal with one bit of chaos at a time.</p>
-    </div>
-    <div class="intro-visual" aria-hidden="true">
-      <svg class="visual-svg" viewBox="0 0 260 170" xmlns="http://www.w3.org/2000/svg">
-        <rect width="260" height="170" rx="20" class="island-sky"/>
-        <circle cx="210" cy="38" r="20" fill="#ffd166"/>
-        <path d="M25 128 C58 108 95 104 130 124 C165 144 204 136 235 119 L235 170 L25 170 Z" fill="#8dd7a5"/>
-        <path d="M80 128 C96 96 148 94 166 128 Z" fill="#f4a261"/>
-        <rect x="104" y="69" width="44" height="44" rx="6" fill="#ef7724"/>
-        <path d="M98 72 L126 46 L154 72 Z" fill="#007291"/>
-        <rect x="119" y="90" width="14" height="23" fill="#fef8f4"/>
-        <path d="M45 60 C65 40 95 42 112 61" class="svg-line"/>
-        <text x="42" y="84" font-size="28">📋</text>
-        <text x="178" y="105" font-size="30">🧠</text>
-      </svg>
-    </div>
+  <section class="top-card" aria-labelledby="intro-title">
+    <h2 id="intro-title">Too Much To Do Island</h2>
+    <p>One small step at a time. No giant task wall. Much better.</p>
+    <div class="progress-row" aria-hidden="true"><span class="progress-text" id="progress-text">Chunk 1 of 6</span><div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div></div>
   </section>
 
-  <nav class="step-nav" aria-label="Activity chunks">
-    <button class="step-tab" type="button" data-step-tab="0"><span>🧠</span>Word</button>
-    <button class="step-tab" type="button" data-step-tab="1"><span>🧺</span>Sort</button>
-    <button class="step-tab" type="button" data-step-tab="2"><span>⭐</span>Top 3</button>
-    <button class="step-tab" type="button" data-step-tab="3"><span>💬</span>Why</button>
-    <button class="step-tab" type="button" data-step-tab="4"><span>🚪</span>Scenario</button>
-    <button class="step-tab" type="button" data-step-tab="5"><span>📧</span>Send</button>
-  </nav>
-
-  <div class="layout">
-    <div class="activity-shell">
-      <section class="chunk-card active" data-step="0" aria-labelledby="step-word-title">
-        <div class="chunk-hero">
-          <div>
-            <p class="section-label">Chunk 1 · Meet the word</p>
-            <h2 id="step-word-title">Prioritise</h2>
-            <p class="mini-text">Say it like this: <strong>pry-OR-it-eyes</strong>. It means deciding what matters most and doing that before the less important stuff.</p>
-            <div class="definition"><strong>Prioritise</strong> means to choose the most important thing and deal with that first.</div>
-          </div>
-          <div class="chunk-visual" aria-hidden="true">
-            <svg class="visual-svg" viewBox="0 0 220 170" xmlns="http://www.w3.org/2000/svg">
-              <rect width="220" height="170" rx="18" fill="#fdeee0"/>
-              <circle cx="52" cy="58" r="32" fill="#007291" opacity="0.16"/>
-              <circle cx="168" cy="46" r="24" fill="#ef7724" opacity="0.22"/>
-              <rect x="50" y="43" width="120" height="92" rx="14" fill="#fff" stroke="#ef7724" stroke-width="4"/>
-              <path d="M75 78 L96 99 L143 63" stroke="#2e8b57" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              <text x="68" y="126" font-size="18" font-weight="700" fill="#007291">First things first</text>
-            </svg>
-          </div>
-        </div>
-        <div class="chunk-body">
-          <div class="image-strip" aria-label="Prioritise examples">
-            <div class="image-card"><div class="picture"><svg class="visual-card-svg" viewBox="0 0 160 86" xmlns="http://www.w3.org/2000/svg"><rect width="160" height="86" rx="14" fill="#e6f5f8"/><rect x="40" y="28" width="80" height="36" rx="8" fill="#fff" stroke="#007291" stroke-width="4"/><rect x="48" y="36" width="44" height="20" rx="3" fill="#ef7724"/><rect x="123" y="38" width="12" height="16" rx="3" fill="#007291"/><text x="56" y="23" font-size="18">🔌</text></svg></div><strong>Laptop at 2%</strong><p class="small-text">Find the charger. Suspense is overrated.</p></div>
-            <div class="image-card"><div class="picture"><svg class="visual-card-svg" viewBox="0 0 160 86" xmlns="http://www.w3.org/2000/svg"><rect width="160" height="86" rx="14" fill="#fdeee0"/><circle cx="116" cy="28" r="18" fill="#ffd166"/><path d="M45 23 H90 L80 70 H55 Z" fill="#fff" stroke="#007291" stroke-width="4"/><path d="M55 48 H82" stroke="#2e8b57" stroke-width="8" stroke-linecap="round"/><text x="24" y="32" font-size="20">💧</text></svg></div><strong>Hot day</strong><p class="small-text">Get water. Learning while melting is not the vibe.</p></div>
-            <div class="image-card"><div class="picture"><svg class="visual-card-svg" viewBox="0 0 160 86" xmlns="http://www.w3.org/2000/svg"><rect width="160" height="86" rx="14" fill="#f0eaf6"/><rect x="34" y="18" width="92" height="56" rx="9" fill="#fff" stroke="#7b4fa3" stroke-width="4"/><path d="M52 36 H108 M52 52 H92" stroke="#ef7724" stroke-width="5" stroke-linecap="round"/><text x="24" y="68" font-size="22">📋</text><text x="110" y="34" font-size="22">⭐</text></svg></div><strong>Five jobs</strong><p class="small-text">Pick the important one first. Annoyingly sensible.</p></div>
-          </div>
-
-          <div class="choice-grid" aria-label="Meaning check">
-            <button class="choice-btn" data-meaning="random" type="button"><span class="choice-icon">🎲</span><span>A. Doing random things and hoping for the best.</span></button>
-            <button class="choice-btn" data-meaning="important" type="button"><span class="choice-icon">⭐</span><span>B. Choosing what matters most and doing that first.</span></button>
-            <button class="choice-btn" data-meaning="ignore" type="button"><span class="choice-icon">🫥</span><span>C. Ignoring everything until it becomes everyone’s problem.</span></button>
-          </div>
-          <p class="feedback" id="meaning-feedback" aria-live="polite"></p>
-        </div>
-        <div class="chunk-controls"><span></span><button class="btn orange primary" type="button" data-next>Next chunk →</button></div>
-      </section>
-
-      <section class="chunk-card" data-step="1" aria-labelledby="step-sort-title">
-        <div class="chunk-hero teal">
-          <div>
-            <p class="section-label">Chunk 2 · Sort the chaos</p>
-            <h2 id="step-sort-title">What should happen first?</h2>
-            <p class="mini-text">Move each card into a box. Drag them, or use the tiny buttons. You cannot do everything first. Physics has entered the chat.</p>
-          </div>
-          <div class="chunk-visual" aria-hidden="true">
-            <svg class="visual-svg" viewBox="0 0 220 170" xmlns="http://www.w3.org/2000/svg">
-              <rect width="220" height="170" rx="18" fill="#e6f5f8"/>
-              <rect x="22" y="34" width="52" height="100" rx="10" fill="#fff" stroke="#ef7724" stroke-width="4"/>
-              <rect x="84" y="34" width="52" height="100" rx="10" fill="#fff" stroke="#007291" stroke-width="4"/>
-              <rect x="146" y="34" width="52" height="100" rx="10" fill="#fff" stroke="#777" stroke-width="4"/>
-              <text x="35" y="63" font-size="24">🔥</text><text x="98" y="63" font-size="24">🕒</text><text x="159" y="63" font-size="24">🙃</text>
-              <path d="M48 112 L61 125 L95 91" stroke="#2e8b57" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            </svg>
-          </div>
-        </div>
-        <div class="chunk-body">
-          <div class="image-strip" aria-label="Sorting boxes explained">
-            <div class="image-card"><div class="picture">🔥</div><strong>Do first</strong><p class="small-text">Important, urgent, or helps you get started.</p></div>
-            <div class="image-card"><div class="picture">🕒</div><strong>Do later</strong><p class="small-text">Still useful. Just not screaming for attention.</p></div>
-            <div class="image-card"><div class="picture">🙃</div><strong>Not right now</strong><p class="small-text">Can wait. It will survive emotionally.</p></div>
-          </div>
-          <div class="task-pile drop-zone" data-zone="pile" aria-label="Task pile drop zone">
-            <h3>📦 Task pile</h3>
-            <p class="drop-count" id="count-pile">0 cards</p>
-            <div id="zone-pile"></div>
-          </div>
-          <div class="sort-board" id="sort-board">
-            <div class="drop-zone first" data-zone="first" aria-label="Do first drop zone"><h3>🔥 Do first</h3><p class="drop-count" id="count-first">0 cards</p><div id="zone-first"></div></div>
-            <div class="drop-zone later" data-zone="later" aria-label="Do later drop zone"><h3>🕒 Do later</h3><p class="drop-count" id="count-later">0 cards</p><div id="zone-later"></div></div>
-            <div class="drop-zone notnow" data-zone="notnow" aria-label="Not important right now drop zone"><h3>🙃 Not right now</h3><p class="drop-count" id="count-notnow">0 cards</p><div id="zone-notnow"></div></div>
-          </div>
-        </div>
-        <div class="chunk-controls"><button class="btn ghost" type="button" data-prev>← Back</button><button class="btn orange primary" type="button" data-next>Next chunk →</button></div>
-      </section>
-
-      <section class="chunk-card" data-step="2" aria-labelledby="step-top-title">
-        <div class="chunk-hero purple">
-          <div>
-            <p class="section-label">Chunk 3 · Choose your top 3</p>
-            <h2 id="step-top-title">Pick three priorities</h2>
-            <p class="mini-text">Choose the three things you would do first. Not the funniest three. The most useful three. Rude, but sensible.</p>
-          </div>
-          <div class="chunk-visual" aria-hidden="true">
-            <svg class="visual-svg" viewBox="0 0 220 170" xmlns="http://www.w3.org/2000/svg">
-              <rect width="220" height="170" rx="18" fill="#f0eaf6"/>
-              <circle cx="112" cy="78" r="52" fill="#fff" stroke="#7b4fa3" stroke-width="5"/>
-              <text x="61" y="95" font-size="54">⭐</text>
-              <circle cx="55" cy="48" r="18" fill="#ef7724"/><circle cx="168" cy="120" r="20" fill="#007291"/>
-              <text x="50" y="55" font-size="17" fill="#fff" font-weight="700">1</text><text x="162" y="127" font-size="17" fill="#fff" font-weight="700">3</text>
-            </svg>
-          </div>
-        </div>
-        <div class="chunk-body">
-          <p class="mini-text">Tip: choices from your <strong>Do first</strong> box appear first. If that box is empty, you will see the full task pile because this website is trying to be helpful.</p>
-          <div id="priority-list"></div>
-          <p class="feedback" id="priority-feedback" aria-live="polite"></p>
-        </div>
-        <div class="chunk-controls"><button class="btn ghost" type="button" data-prev>← Back</button><button class="btn orange primary" type="button" data-next>Next chunk →</button></div>
-      </section>
-
-      <section class="chunk-card" data-step="3" aria-labelledby="step-why-title">
-        <div class="chunk-hero green">
-          <div>
-            <p class="section-label">Chunk 4 · Explain your choices</p>
-            <h2 id="step-why-title">Why these?</h2>
-            <p class="mini-text">Choose a reason for each priority. You can also add your own words, because apparently humans enjoy nuance.</p>
-          </div>
-          <div class="chunk-visual" aria-hidden="true">
-            <svg class="visual-svg" viewBox="0 0 220 170" xmlns="http://www.w3.org/2000/svg">
-              <rect width="220" height="170" rx="18" fill="#e6f3ec"/>
-              <rect x="30" y="35" width="160" height="100" rx="16" fill="#fff" stroke="#2e8b57" stroke-width="5"/>
-              <path d="M60 70 H160 M60 92 H138" stroke="#007291" stroke-width="7" stroke-linecap="round"/>
-              <circle cx="53" cy="69" r="8" fill="#ef7724"/><circle cx="53" cy="92" r="8" fill="#ef7724"/>
-              <text x="132" y="126" font-size="30">💬</text>
-            </svg>
-          </div>
-        </div>
-        <div class="chunk-body">
-          <div id="reason-list"></div>
-          <label for="reflection" class="mini-text"><strong>Optional sentence</strong></label>
-          <textarea id="reflection" class="reflection-box" placeholder="Example: I would prioritise getting water because it helps me feel ready and calm."></textarea>
-        </div>
-        <div class="chunk-controls"><button class="btn ghost" type="button" data-prev>← Back</button><button class="btn orange primary" type="button" data-next>Next chunk →</button></div>
-      </section>
-
-      <section class="chunk-card" data-step="4" aria-labelledby="step-scenario-title">
-        <div class="chunk-hero">
-          <div>
-            <p class="section-label">Chunk 5 · Real life chaos</p>
-            <h2 id="step-scenario-title">You have 20 minutes before going out</h2>
-            <p class="mini-text">Pick the top three priorities. Tidying your whole room is ambitious. We admire the optimism.</p>
-          </div>
-          <div class="chunk-visual" aria-hidden="true">
-            <svg class="visual-svg" viewBox="0 0 220 170" xmlns="http://www.w3.org/2000/svg">
-              <rect width="220" height="170" rx="18" fill="#fdeee0"/>
-              <rect x="38" y="36" width="84" height="92" rx="12" fill="#fff" stroke="#007291" stroke-width="5"/>
-              <path d="M130 52 H182 M130 82 H176 M130 112 H160" stroke="#ef7724" stroke-width="8" stroke-linecap="round"/>
-              <circle cx="80" cy="80" r="25" fill="#e6f5f8" stroke="#007291" stroke-width="4"/>
-              <path d="M80 63 V82 L94 92" stroke="#007291" stroke-width="5" stroke-linecap="round" fill="none"/>
-              <text x="40" y="151" font-size="24">🚪</text><text x="164" y="151" font-size="24">🔑</text>
-            </svg>
-          </div>
-        </div>
-        <div class="chunk-body">
-          <div id="scenario-list"></div>
-          <p class="feedback" id="scenario-feedback" aria-live="polite"></p>
-        </div>
-        <div class="chunk-controls"><button class="btn ghost" type="button" data-prev>← Back</button><button class="btn orange primary" type="button" data-next>Finish →</button></div>
-      </section>
-
-      <section class="chunk-card" data-step="5" aria-labelledby="step-send-title">
-        <div class="chunk-hero purple">
-          <div>
-            <p class="section-label">Chunk 6 · Finish</p>
-            <h2 id="step-send-title">Send it to Jay</h2>
-            <p class="mini-text">This opens an email draft. If email apps decide to be dramatic, use Copy report instead.</p>
-          </div>
-          <div class="chunk-visual" aria-hidden="true">
-            <svg class="visual-svg" viewBox="0 0 220 170" xmlns="http://www.w3.org/2000/svg">
-              <rect width="220" height="170" rx="18" fill="#f0eaf6"/>
-              <rect x="35" y="48" width="150" height="88" rx="14" fill="#fff" stroke="#7b4fa3" stroke-width="5"/>
-              <path d="M42 58 L110 103 L178 58" stroke="#ef7724" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              <text x="84" y="42" font-size="30">📧</text>
-              <circle cx="174" cy="119" r="23" fill="#2e8b57"/><path d="M163 119 L172 128 L188 108" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            </svg>
-          </div>
-        </div>
-        <div class="chunk-body">
-          <label for="student-name" class="mini-text"><strong>Your name</strong> <span aria-hidden="true">(optional)</span></label>
-          <input id="student-name" class="name-input" type="text" autocomplete="name" placeholder="Type your name if you want Jay to know it was you">
-          <div class="button-row">
-            <button class="btn purple primary full" type="button" id="email-btn">📧 Email Jay</button>
-            <button class="btn full" type="button" id="copy-btn">📋 Copy report</button>
-            <button class="btn orange full" type="button" id="download-btn">⬇️ Download report</button>
-          </div>
-          <p class="feedback" id="send-feedback" aria-live="polite"></p>
-          <details class="teacher-tools">
-            <summary>Teacher stuff</summary>
-            <div class="button-row">
-              <button class="btn ghost full" type="button" id="show-summary-btn">👀 Show report preview</button>
-              <button class="btn ghost full" type="button" id="reset-btn">🔄 Reset activity</button>
-            </div>
-          </details>
-        </div>
-        <div class="chunk-controls"><button class="btn ghost" type="button" data-prev>← Back</button><span></span></div>
-      </section>
-
-      <section class="summary-card" id="summary-panel" hidden aria-labelledby="summary-title">
-        <h2 id="summary-title">Report preview</h2>
-        <p class="mini-text">This is what will be copied, downloaded, or placed into the email draft.</p>
-        <pre class="summary-output" id="summary-output"></pre>
-      </section>
+  <section class="screen active" data-screen="0" aria-labelledby="word-title">
+    <div class="hero"><div><p class="label">Chunk 1 · Meet the word</p><h2 id="word-title">Prioritise</h2><p class="mini">Say it like this: <strong>pry-OR-it-eyes</strong>.</p></div><div class="hero-icon" aria-hidden="true">⭐<small>first things first</small></div></div>
+    <div class="body">
+      <div class="definition"><strong>Prioritise</strong> means choosing the most important thing and dealing with that first.</div>
+      <p class="mini">Pick the best meaning. The other options are trying their best.</p>
+      <div class="choice-grid">
+        <button class="choice" data-meaning="random" type="button"><span class="icon">🎲</span><span>Doing random things and hoping for the best.</span></button>
+        <button class="choice" data-meaning="important" type="button"><span class="icon">⭐</span><span>Choosing what matters most and doing that first.</span></button>
+        <button class="choice" data-meaning="ignore" type="button"><span class="icon">🫥</span><span>Ignoring everything until it becomes everyone else's problem.</span></button>
+      </div>
+      <p class="feedback" id="meaning-feedback" aria-live="polite"></p>
     </div>
+    <div class="controls"><span></span><button class="btn orange primary" type="button" data-next>Next →</button></div>
+  </section>
 
-    <aside class="sidebar" aria-label="Progress and helper panel">
-      <section class="sidebar-card orange">
-        <p class="section-label">Do this now</p>
-        <h2 id="sidebar-title">Start with the word</h2>
-        <p class="mini-text" id="sidebar-help">Pick the meaning of prioritise. The chaos can wait its turn.</p>
-        <div class="progress-shell" aria-hidden="true"><div class="progress-fill" id="progress-fill"></div></div>
-        <p class="small-text" id="progress-chip">0 of 6 chunks complete</p>
-      </section>
-      <section class="sidebar-card">
-        <h3>Picture map</h3>
-        <p class="mini-text">One small chunk at a time. Shocking but effective.</p>
-        <div class="mini-map" id="mini-map"></div>
-      </section>
-      <section class="sidebar-card purple">
-        <h3>Sentence starter</h3>
-        <p class="mini-text">I would prioritise ___ because ___.</p>
-      </section>
-    </aside>
-  </div>
+  <section class="screen" data-screen="1" aria-labelledby="sort-title">
+    <div class="hero"><div><p class="label">Chunk 2 · Sort the tasks</p><h2 id="sort-title">One card at a time</h2><p class="mini">Decide where the card goes. That is it. No giant sorting marathon required.</p></div><div class="hero-icon" aria-hidden="true">🧺<small>sort it</small></div></div>
+    <div class="body">
+      <div class="sort-stage" id="sort-stage"></div>
+      <div class="count-row" aria-label="Sorting totals"><div class="count-pill"><strong id="count-first">0</strong>Do first</div><div class="count-pill"><strong id="count-later">0</strong>Do later</div><div class="count-pill"><strong id="count-notnow">0</strong>Not now</div></div>
+      <p class="feedback" id="sort-feedback" aria-live="polite"></p>
+    </div>
+    <div class="controls"><button class="btn ghost" type="button" data-prev>← Back</button><button class="btn orange primary" type="button" data-next>Next →</button></div>
+  </section>
 
-  <p class="cheer">You have now prioritised things. The chaos is wounded, but not defeated.</p>
+  <section class="screen" data-screen="2" aria-labelledby="top-title">
+    <div class="hero"><div><p class="label">Chunk 3 · Top three</p><h2 id="top-title">Pick three priorities</h2><p class="mini">Three. Not eight. That would be called “avoiding the point”.</p></div><div class="hero-icon" aria-hidden="true">🏆<small>top 3</small></div></div>
+    <div class="body"><div id="priority-list"></div><p class="feedback" id="priority-feedback" aria-live="polite"></p></div>
+    <div class="controls"><button class="btn ghost" type="button" data-prev>← Back</button><button class="btn orange primary" type="button" data-next>Next →</button></div>
+  </section>
+
+  <section class="screen" data-screen="3" aria-labelledby="why-title">
+    <div class="hero"><div><p class="label">Chunk 4 · Reasons</p><h2 id="why-title">Why these?</h2><p class="mini">Choose a reason. Type a sentence only if words are cooperating.</p></div><div class="hero-icon" aria-hidden="true">💬<small>because...</small></div></div>
+    <div class="body"><div id="reason-list"></div><label for="reflection" class="mini"><strong>Optional sentence</strong></label><textarea id="reflection" class="reflection" placeholder="Example: I would prioritise getting water because it helps me feel ready and calm."></textarea></div>
+    <div class="controls"><button class="btn ghost" type="button" data-prev>← Back</button><button class="btn orange primary" type="button" data-next>Next →</button></div>
+  </section>
+
+  <section class="screen" data-screen="4" aria-labelledby="scenario-title">
+    <div class="hero"><div><p class="label">Chunk 5 · Real life choices</p><h2 id="scenario-title">20 minutes before going out</h2><p class="mini">Pick the top three. Tidying your entire room can probably wait. Ambitious, though.</p></div><div class="hero-icon" aria-hidden="true">🚪<small>go time</small></div></div>
+    <div class="body"><div id="scenario-list"></div><p class="feedback" id="scenario-feedback" aria-live="polite"></p></div>
+    <div class="controls"><button class="btn ghost" type="button" data-prev>← Back</button><button class="btn orange primary" type="button" data-next>Finish →</button></div>
+  </section>
+
+  <section class="screen" data-screen="5" aria-labelledby="send-title">
+    <div class="hero"><div><p class="label">Chunk 6 · Finish</p><h2 id="send-title">Send it to Jay</h2><p class="mini">Email draft, copy, or download. Technology gets three chances to behave.</p></div><div class="hero-icon" aria-hidden="true">📧<small>send</small></div></div>
+    <div class="body"><label for="student-name" class="mini"><strong>Your name</strong> <span aria-hidden="true">(optional)</span></label><input class="name-input" id="student-name" type="text" autocomplete="name" placeholder="Type your name if you want Jay to know it was you"><div class="btn-row"><button class="btn purple primary full" type="button" id="email-btn">📧 Email Jay</button><button class="btn full" type="button" id="copy-btn">📋 Copy report</button><button class="btn orange full" type="button" id="download-btn">⬇️ Download report</button></div><p class="feedback" id="send-feedback" aria-live="polite"></p><details class="teacher-tools"><summary>Teacher stuff</summary><div class="btn-row"><button class="btn ghost full" type="button" id="preview-btn">👀 Show report preview</button><button class="btn ghost full" type="button" id="reset-btn">🔄 Reset activity</button></div></details></div>
+    <div class="controls"><button class="btn ghost" type="button" data-prev>← Back</button><span></span></div>
+  </section>
+
+  <section class="summary" id="summary" hidden><h2>Report preview</h2><p class="mini">This is what gets sent, copied or downloaded.</p><pre id="summary-output"></pre></section>
+  <p class="cheer">Your tasks are now slightly more organised. Nicely done.</p>
 </main>
-
 <footer>Base 6 · Chilton Bridge School</footer>
-
 <script>
-(function () {
+(function(){
   'use strict';
-
-  const EMAIL_TO = 'jay.raine@chiltonbridgeschool.co.uk';
-  const STORAGE_KEY = 'base6_word_prioritise_chunked_v1';
-  const STEP_COUNT = 6;
-  const stepInfo = [
-    { icon: '🧠', name: 'Word', title: 'Start with the word', help: 'Pick the meaning of prioritise. The chaos can wait its turn.' },
-    { icon: '🧺', name: 'Sort', title: 'Sort the chaos', help: 'Move the cards into the three boxes. Drag, tap, or button your way through it.' },
-    { icon: '⭐', name: 'Top 3', title: 'Choose three', help: 'Choose the three things you would do first. Not six. Three. Maths is involved.' },
-    { icon: '💬', name: 'Why', title: 'Explain why', help: 'Choose a reason for each priority, or write one sentence if words are behaving today.' },
-    { icon: '🚪', name: 'Scenario', title: 'Try a real-life one', help: 'Pick three things to do before going out. Whole-room tidying remains suspicious.' },
-    { icon: '📧', name: 'Send', title: 'Send your work', help: 'Email Jay, copy the report, or download it. Technology permitting.' }
+  const EMAIL_TO='jay.raine@chiltonbridgeschool.co.uk';
+  const KEY='base6_word_prioritise_simple_v2';
+  const tasks=[
+    {id:'water',icon:'💧',text:'Drink some water',snark:'Water first. Very sensible. Slightly boring, but sensible.'},
+    {id:'charger',icon:'🔌',text:'Find your charger',snark:'The laptop is at 2%. Maybe do not test fate.'},
+    {id:'maths',icon:'✖️',text:'Finish the maths task',snark:'Not thrilling, but it gets the job done.'},
+    {id:'frogs',icon:'🐸',text:'Watch 47 videos about frogs',snark:'Fun, yes. Urgent, probably not.'},
+    {id:'jay',icon:'📧',text:'Send your work to Jay',snark:'Jay does like seeing what you made.'},
+    {id:'goat',icon:'🐐',text:'Feed the imaginary goat',snark:'Important to the goat. Less clear for everyone else.'},
+    {id:'cool',icon:'🧊',text:'Sit somewhere cooler',snark:'Cooler spaces make thinking easier.'},
+    {id:'huge-project',icon:'🏗️',text:'Start a huge new project for no reason',snark:'Big idea. Maybe not the first job.'},
+    {id:'instructions',icon:'📋',text:'Check the instructions',snark:'Knowing the task helps. Weird how that works.'},
+    {id:'panic',icon:'😱',text:'Panic dramatically',snark:'Understandable. Not always useful.'},
+    {id:'break',icon:'🛋️',text:'Take a short break',snark:'Short breaks can help your brain reset.'},
+    {id:'easy-job',icon:'✅',text:'Do the easiest useful job first',snark:'A small useful win can help you get started.'}
   ];
-
-  const tasks = [
-    { id: 'water', icon: '💧', text: 'Drink some water', snark: 'Survival is annoyingly important.' },
-    { id: 'charger', icon: '🔌', text: 'Find your charger', snark: 'The laptop is at 2%. Suspenseful.' },
-    { id: 'maths', icon: '✖️', text: 'Finish the maths task', snark: 'A classic plot twist.' },
-    { id: 'frogs', icon: '🐸', text: 'Watch 47 videos about frogs', snark: 'Educational? Technically debatable.' },
-    { id: 'jay', icon: '📧', text: 'Send your work to Jay', snark: 'The man does enjoy evidence.' },
-    { id: 'goat', icon: '🐐', text: 'Feed the imaginary goat', snark: 'Emotionally important to the goat, probably.' },
-    { id: 'cool', icon: '🧊', text: 'Sit somewhere cooler', snark: 'Sweating is not a learning strategy.' },
-    { id: 'huge-project', icon: '🏗️', text: 'Start a huge new project for no reason', snark: 'Ambitious. Chaotic. Suspicious.' },
-    { id: 'instructions', icon: '📋', text: 'Check the instructions', snark: 'Wild idea: know what the task is.' },
-    { id: 'panic', icon: '😱', text: 'Panic dramatically', snark: 'Tempting. Rarely efficient.' },
-    { id: 'break', icon: '🛋️', text: 'Take a short break', snark: 'Brains are not microwaves.' },
-    { id: 'easy-job', icon: '✅', text: 'Do the easiest useful job first', snark: 'Sneaky productivity. Disgusting but effective.' }
+  const scenarios=[
+    {id:'shoes',icon:'👟',text:'Find your shoes'},
+    {id:'phone',icon:'📱',text:'Charge your phone'},
+    {id:'message',icon:'💬',text:'Finish an important message'},
+    {id:'drink',icon:'💧',text:'Get a drink'},
+    {id:'music',icon:'🎧',text:'Choose music'},
+    {id:'room',icon:'🧹',text:'Tidy your whole room'},
+    {id:'keys',icon:'🔑',text:'Find your keys'}
   ];
-
-  const scenarios = [
-    { id: 'shoes', icon: '👟', text: 'Find your shoes' },
-    { id: 'phone', icon: '📱', text: 'Charge your phone' },
-    { id: 'message', icon: '💬', text: 'Finish an important message' },
-    { id: 'drink', icon: '💧', text: 'Get a drink' },
-    { id: 'music', icon: '🎧', text: 'Choose music' },
-    { id: 'room', icon: '🧹', text: 'Tidy your whole room' },
-    { id: 'keys', icon: '🔑', text: 'Find your keys' }
-  ];
-
-  const reasons = [
-    'It keeps me safe or well',
-    'It helps me learn',
-    'It helps me feel calmer',
-    'It needs doing soon',
-    'It helps someone else',
-    'It makes the next thing easier'
-  ];
-
-  const defaultState = {
-    currentStep: 0,
-    name: '',
-    meaning: '',
-    zones: {},
-    priorities: [],
-    priorityReasons: {},
-    reflection: '',
-    scenarioPriorities: [],
-    summaryOpen: false
-  };
-
-  let state = loadState();
-  let draggedTaskId = '';
-
-  function byId(id) { return document.getElementById(id); }
-
-  function loadState() {
-    const zones = {};
-    tasks.forEach(task => { zones[task.id] = 'pile'; });
-    const base = Object.assign({}, defaultState, { zones });
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      if (saved && typeof saved === 'object') {
-        const merged = Object.assign({}, base, saved);
-        merged.zones = Object.assign({}, zones, saved.zones || {});
-        merged.currentStep = Math.max(0, Math.min(STEP_COUNT - 1, Number(merged.currentStep) || 0));
-        tasks.forEach(task => {
-          if (!merged.zones[task.id]) merged.zones[task.id] = 'pile';
-        });
-        return merged;
-      }
-    } catch (error) {
-      // Corrupt storage gets ignored. Drama avoided.
-    }
-    return base;
-  }
-
-  function saveState() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (error) {}
-  }
-
-  function taskById(id) { return tasks.find(task => task.id === id); }
-  function scenarioById(id) { return scenarios.find(item => item.id === id); }
-
-  function zoneLabel(zone) {
-    if (zone === 'pile') return 'Task pile';
-    if (zone === 'first') return 'Do first';
-    if (zone === 'later') return 'Do later';
-    if (zone === 'notnow') return 'Not important right now';
-    return 'Unsorted';
-  }
-
-  function stepComplete(index) {
-    if (index === 0) return state.meaning === 'important';
-    if (index === 1) return tasks.every(task => state.zones[task.id] && state.zones[task.id] !== 'pile');
-    if (index === 2) return state.priorities.length === 3;
-    if (index === 3) return state.priorities.length === 3 && (state.priorities.every(id => Boolean(state.priorityReasons[id])) || state.reflection.trim().length > 12);
-    if (index === 4) return state.scenarioPriorities.length === 3;
-    if (index === 5) return completionCount() >= 5;
+  const reasons=['It keeps me safe or well','It helps me learn','It helps me feel calmer','It needs doing soon','It helps someone else','It makes the next thing easier'];
+  const emptyZones=()=>Object.fromEntries(tasks.map(t=>[t.id,'unsorted']));
+  const base={step:0,meaning:'',zones:emptyZones(),priorities:[],priorityReasons:{},scenarioPriorities:[],reflection:'',name:'',summaryOpen:false};
+  let state=load();
+  function $(id){return document.getElementById(id)}
+  function load(){try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved&&typeof saved==='object'){const merged=Object.assign({},base,saved);merged.zones=Object.assign(emptyZones(),saved.zones||{});merged.step=Math.max(0,Math.min(5,Number(merged.step)||0));return merged}}catch(e){}return JSON.parse(JSON.stringify(base))}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+  function task(id){return tasks.find(t=>t.id===id)} function scen(id){return scenarios.find(s=>s.id===id)}
+  function esc(v){return String(v).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+  function complete(i){
+    if(i===0)return state.meaning==='important';
+    if(i===1)return tasks.every(t=>state.zones[t.id]&&state.zones[t.id]!=='unsorted');
+    if(i===2)return state.priorities.length===3;
+    if(i===3)return state.priorities.length===3&&(state.priorities.every(id=>state.priorityReasons[id])||state.reflection.trim().length>12);
+    if(i===4)return state.scenarioPriorities.length===3;
+    if(i===5)return [0,1,2,3,4].filter(complete).length>=4;
     return false;
   }
-
-  function completionCount() {
-    let count = 0;
-    for (let i = 0; i < STEP_COUNT; i++) if (stepComplete(i)) count++;
-    return count;
-  }
-
-  function render() {
-    renderSteps();
-    renderMeaning();
-    renderSort();
-    renderPriorities();
-    renderReasons();
-    renderScenario();
-    renderProgress();
-    renderSummary();
-    byId('student-name').value = state.name || '';
-    byId('reflection').value = state.reflection || '';
-    byId('summary-panel').hidden = !state.summaryOpen;
-    saveState();
-  }
-
-  function renderSteps() {
-    document.querySelectorAll('[data-step]').forEach(section => {
-      const step = Number(section.getAttribute('data-step'));
-      section.classList.toggle('active', step === state.currentStep);
-    });
-    document.querySelectorAll('[data-step-tab]').forEach(button => {
-      const step = Number(button.getAttribute('data-step-tab'));
-      button.setAttribute('aria-current', step === state.currentStep ? 'step' : 'false');
-      button.classList.toggle('complete', stepComplete(step));
-    });
-    byId('sidebar-title').textContent = stepInfo[state.currentStep].title;
-    byId('sidebar-help').textContent = stepInfo[state.currentStep].help;
-  }
-
-  function renderMeaning() {
-    document.querySelectorAll('[data-meaning]').forEach(button => {
-      const value = button.getAttribute('data-meaning');
-      button.classList.toggle('selected', state.meaning === value);
-      button.classList.toggle('correct', state.meaning === 'important' && value === 'important');
-    });
-    const feedback = byId('meaning-feedback');
-    if (!state.meaning) feedback.textContent = '';
-    else if (state.meaning === 'important') feedback.textContent = 'Correct. The chaos has been placed on notice.';
-    else feedback.textContent = 'Not that one. Impressive confidence, though. Try again.';
-  }
-
-  function renderSort() {
-    ['pile', 'first', 'later', 'notnow'].forEach(zone => {
-      const container = byId('zone-' + zone);
-      container.innerHTML = '';
-      const zoneTasks = tasks.filter(task => state.zones[task.id] === zone);
-      byId('count-' + zone).textContent = zoneTasks.length + (zoneTasks.length === 1 ? ' card' : ' cards');
-      zoneTasks.forEach(task => container.appendChild(createTaskCard(task)));
-    });
-  }
-
-  function createTaskCard(task) {
-    const card = document.createElement('article');
-    card.className = 'task-card';
-    card.draggable = true;
-    card.setAttribute('data-task-id', task.id);
-    card.addEventListener('dragstart', event => {
-      draggedTaskId = task.id;
-      event.dataTransfer.setData('text/plain', task.id);
-      event.dataTransfer.effectAllowed = 'move';
-    });
-    card.addEventListener('dragend', () => { draggedTaskId = ''; });
-
-    const icon = document.createElement('div');
-    icon.className = 'task-img';
-    icon.textContent = task.icon;
-    const content = document.createElement('div');
-    const title = document.createElement('p');
-    title.className = 'task-title';
-    title.textContent = task.text;
-    const snark = document.createElement('p');
-    snark.className = 'task-snark';
-    snark.textContent = task.snark;
-    content.append(title, snark);
-
-    const actions = document.createElement('div');
-    actions.className = 'task-actions';
-    [
-      ['first', '🔥 First', 'orange'],
-      ['later', '🕒 Later', ''],
-      ['notnow', '🙃 Not now', 'ghost']
-    ].forEach(([zone, label, colour]) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'btn small ' + colour;
-      button.textContent = label;
-      button.setAttribute('aria-label', 'Move ' + task.text + ' to ' + zoneLabel(zone));
-      button.addEventListener('click', () => assignTask(task.id, zone));
-      actions.appendChild(button);
-    });
-    card.append(icon, content, actions);
-    return card;
-  }
-
-  function assignTask(taskId, zone) {
-    if (!taskById(taskId)) return;
-    state.zones[taskId] = zone;
-    if (state.priorities.includes(taskId) && zone !== 'first') {
-      state.priorities = state.priorities.filter(id => id !== taskId);
-      delete state.priorityReasons[taskId];
-    }
-    render();
-  }
-
-  function renderPriorities() {
-    const list = byId('priority-list');
-    list.innerHTML = '';
-    const firstTasks = tasks.filter(task => state.zones[task.id] === 'first');
-    const source = firstTasks.length ? firstTasks : tasks;
-    if (!firstTasks.length) {
-      const warning = document.createElement('p');
-      warning.className = 'mini-text';
-      warning.textContent = 'Nothing is in Do first yet, so here is every task. Chaotic, but recoverable.';
-      list.appendChild(warning);
-    }
-    source.forEach(task => {
-      const active = state.priorities.includes(task.id);
-      const item = document.createElement('div');
-      item.className = 'select-card' + (active ? ' active' : '');
-      const icon = document.createElement('div');
-      icon.className = 'mini-img';
-      icon.textContent = task.icon;
-      const label = document.createElement('span');
-      label.innerHTML = '<strong>' + escapeHtml(task.text) + '</strong><br><span class="small-text">' + escapeHtml(task.snark) + '</span>';
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'btn small ' + (active ? 'purple primary' : 'purple');
-      button.textContent = active ? 'Picked' : 'Pick';
-      button.addEventListener('click', () => togglePriority(task.id));
-      item.append(icon, label, button);
-      list.appendChild(item);
-    });
-    const fb = byId('priority-feedback');
-    if (state.priorities.length === 3) fb.textContent = 'Three priorities chosen. The chaos is mildly intimidated.';
-    else if (state.priorities.length > 0) fb.textContent = 'Choose ' + (3 - state.priorities.length) + ' more.';
-    else fb.textContent = '';
-  }
-
-  function togglePriority(taskId) {
-    if (state.priorities.includes(taskId)) {
-      state.priorities = state.priorities.filter(id => id !== taskId);
-      delete state.priorityReasons[taskId];
-    } else if (state.priorities.length < 3) {
-      state.priorities.push(taskId);
-    } else {
-      byId('priority-feedback').textContent = 'Only three. That is the whole point of prioritising. Sneaky, right?';
-      return;
-    }
-    render();
-  }
-
-  function renderReasons() {
-    const container = byId('reason-list');
-    container.innerHTML = '';
-    if (!state.priorities.length) {
-      const empty = document.createElement('p');
-      empty.className = 'mini-text';
-      empty.textContent = 'Choose your top 3 first, then reasons will appear here. Very needy, this activity.';
-      container.appendChild(empty);
-      return;
-    }
-    state.priorities.forEach((taskId, index) => {
-      const task = taskById(taskId);
-      if (!task) return;
-      const block = document.createElement('div');
-      block.className = 'reason-block';
-      const title = document.createElement('p');
-      title.innerHTML = '<strong>' + (index + 1) + '. ' + escapeHtml(task.icon + ' ' + task.text) + '</strong>';
-      const chips = document.createElement('div');
-      chips.className = 'reason-chips';
-      reasons.forEach(reason => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'btn small' + (state.priorityReasons[taskId] === reason ? ' selected' : '');
-        button.textContent = reason;
-        button.addEventListener('click', () => {
-          state.priorityReasons[taskId] = reason;
-          render();
-        });
-        chips.appendChild(button);
-      });
-      block.append(title, chips);
-      container.appendChild(block);
-    });
-  }
-
-  function renderScenario() {
-    const list = byId('scenario-list');
-    list.innerHTML = '';
-    scenarios.forEach(item => {
-      const active = state.scenarioPriorities.includes(item.id);
-      const row = document.createElement('div');
-      row.className = 'select-card' + (active ? ' active' : '');
-      const icon = document.createElement('div');
-      icon.className = 'mini-img';
-      icon.textContent = item.icon;
-      const text = document.createElement('span');
-      text.innerHTML = '<strong>' + escapeHtml(item.text) + '</strong>';
-      const badge = document.createElement('button');
-      badge.type = 'button';
-      badge.className = 'btn small ' + (active ? 'green primary' : 'green');
-      badge.textContent = active ? 'Picked' : 'Pick';
-      badge.addEventListener('click', () => toggleScenario(item.id));
-      row.append(icon, text, badge);
-      list.appendChild(row);
-    });
-    const fb = byId('scenario-feedback');
-    if (state.scenarioPriorities.length === 3) fb.textContent = 'Three picked. The whole-room tidy has probably been defeated, as it should be.';
-    else if (state.scenarioPriorities.length > 0) fb.textContent = 'Pick ' + (3 - state.scenarioPriorities.length) + ' more.';
-    else fb.textContent = '';
-  }
-
-  function toggleScenario(id) {
-    if (state.scenarioPriorities.includes(id)) {
-      state.scenarioPriorities = state.scenarioPriorities.filter(item => item !== id);
-    } else if (state.scenarioPriorities.length < 3) {
-      state.scenarioPriorities.push(id);
-    } else {
-      byId('scenario-feedback').textContent = 'Three is plenty. Prioritising, not collecting the full set.';
-      return;
-    }
-    render();
-  }
-
-  function renderProgress() {
-    const count = completionCount();
-    byId('progress-chip').textContent = count + ' of 6 chunks complete';
-    byId('progress-fill').style.width = Math.round((count / STEP_COUNT) * 100) + '%';
-    const map = byId('mini-map');
-    map.innerHTML = '';
-    stepInfo.forEach((step, index) => {
-      const item = document.createElement('div');
-      item.className = 'mini-map-item' + (stepComplete(index) ? ' done' : '');
-      item.innerHTML = '<strong>' + step.icon + ' ' + escapeHtml(step.name) + '</strong><span>' + (stepComplete(index) ? 'done' : (index === state.currentStep ? 'now' : 'later')) + '</span>';
-      map.appendChild(item);
-    });
-  }
-
-  function buildReport() {
-    const name = state.name.trim() || 'Not given';
-    const lines = [];
-    lines.push('Word of the Week: Prioritise');
-    lines.push('Student: ' + name);
-    lines.push('');
-    lines.push('Meaning check:');
-    if (state.meaning === 'important') lines.push('- Correct: prioritise means choosing what matters most and doing that first.');
-    else if (state.meaning) lines.push('- Chose an incorrect option first or has not corrected it yet.');
-    else lines.push('- Not answered yet.');
-    lines.push('');
-    lines.push('Sorted tasks:');
-    ['pile', 'first', 'later', 'notnow'].forEach(zone => {
-      lines.push(zoneLabel(zone) + ':');
-      const zoneTasks = tasks.filter(task => state.zones[task.id] === zone);
-      if (zoneTasks.length) zoneTasks.forEach(task => lines.push('  - ' + task.icon + ' ' + task.text));
-      else lines.push('  - None');
-    });
-    lines.push('');
-    lines.push('Top 3 priorities:');
-    if (state.priorities.length) {
-      state.priorities.forEach((id, index) => {
-        const task = taskById(id);
-        const reason = state.priorityReasons[id] || 'No reason chosen yet';
-        lines.push((index + 1) + '. ' + (task ? task.icon + ' ' + task.text : id) + ' — ' + reason);
-      });
-    } else lines.push('- Not chosen yet');
-    lines.push('');
-    lines.push('Real-life scenario top 3:');
-    if (state.scenarioPriorities.length) {
-      state.scenarioPriorities.forEach((id, index) => {
-        const item = scenarioById(id);
-        lines.push((index + 1) + '. ' + (item ? item.icon + ' ' + item.text : id));
-      });
-    } else lines.push('- Not chosen yet');
-    lines.push('');
-    lines.push('Reflection:');
-    lines.push(state.reflection.trim() || 'No extra reflection added. Classic mysterious learner behaviour.');
-    return lines.join('\n');
-  }
-
-  function renderSummary() {
-    byId('summary-output').textContent = buildReport();
-  }
-
-  function emailReport() {
-    const subject = 'Word of the Week: Prioritise';
-    const report = buildReport();
-    const mailto = 'mailto:' + encodeURIComponent(EMAIL_TO) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(report);
-    window.location.href = mailto;
-    byId('send-feedback').textContent = 'Email draft opened. If your device refuses, Copy report is right there being useful.';
-  }
-
-  async function copyReport() {
-    const report = buildReport();
-    try {
-      await navigator.clipboard.writeText(report);
-      byId('send-feedback').textContent = 'Copied. Clipboard: unexpectedly competent.';
-    } catch (error) {
-      state.summaryOpen = true;
-      render();
-      byId('send-feedback').textContent = 'Copy did not work, so the report preview is open. Select it manually. Technology, everyone.';
-    }
-  }
-
-  function downloadReport() {
-    const blob = new Blob([buildReport()], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    const safeName = (state.name.trim() || 'prioritise-report').replace(/[^a-z0-9_-]+/gi, '-').toLowerCase();
-    link.href = url;
-    link.download = safeName + '.txt';
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-    byId('send-feedback').textContent = 'Downloaded. A tiny file of organised thoughts. Fancy.';
-  }
-
-  function resetActivity() {
-    const ok = window.confirm('Reset this activity? The chaos will return to its original shape.');
-    if (!ok) return;
-    localStorage.removeItem(STORAGE_KEY);
-    state = loadState();
-    render();
-  }
-
-  function setStep(step) {
-    state.currentStep = Math.max(0, Math.min(STEP_COUNT - 1, step));
-    render();
-    const active = document.querySelector('.chunk-card.active');
-    if (active) active.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char]));
-  }
-
-  function attachEvents() {
-    document.querySelectorAll('[data-step-tab]').forEach(button => {
-      button.addEventListener('click', () => setStep(Number(button.getAttribute('data-step-tab'))));
-    });
-    document.querySelectorAll('[data-next]').forEach(button => button.addEventListener('click', () => setStep(state.currentStep + 1)));
-    document.querySelectorAll('[data-prev]').forEach(button => button.addEventListener('click', () => setStep(state.currentStep - 1)));
-
-    document.querySelectorAll('[data-meaning]').forEach(button => {
-      button.addEventListener('click', () => {
-        state.meaning = button.getAttribute('data-meaning');
-        render();
-      });
-    });
-
-    document.querySelectorAll('.drop-zone').forEach(zone => {
-      zone.addEventListener('dragover', event => {
-        event.preventDefault();
-        zone.classList.add('drag-over');
-      });
-      zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-      zone.addEventListener('drop', event => {
-        event.preventDefault();
-        zone.classList.remove('drag-over');
-        const id = event.dataTransfer.getData('text/plain') || draggedTaskId;
-        const targetZone = zone.getAttribute('data-zone');
-        if (id && targetZone) assignTask(id, targetZone);
-      });
-    });
-
-    byId('student-name').addEventListener('input', event => {
-      state.name = event.target.value;
-      renderProgress();
-      renderSummary();
-      saveState();
-    });
-
-    byId('reflection').addEventListener('input', event => {
-      state.reflection = event.target.value;
-      renderProgress();
-      renderSummary();
-      saveState();
-    });
-
-    byId('email-btn').addEventListener('click', emailReport);
-    byId('copy-btn').addEventListener('click', copyReport);
-    byId('download-btn').addEventListener('click', downloadReport);
-    byId('reset-btn').addEventListener('click', resetActivity);
-    byId('show-summary-btn').addEventListener('click', () => {
-      state.summaryOpen = !state.summaryOpen;
-      render();
-      if (state.summaryOpen) byId('summary-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  }
-
-  attachEvents();
-  render();
+  function render(){renderScreens();renderMeaning();renderSort();renderPriorities();renderReasons();renderScenario();renderSummary();$('student-name').value=state.name||'';$('reflection').value=state.reflection||'';$('summary').hidden=!state.summaryOpen;save()}
+  function renderScreens(){document.querySelectorAll('[data-screen]').forEach(s=>s.classList.toggle('active',Number(s.dataset.screen)===state.step));$('progress-text').textContent='Chunk '+(state.step+1)+' of 6';$('progress-fill').style.width=Math.round((state.step+1)/6*100)+'%'}
+  function setStep(n){state.step=Math.max(0,Math.min(5,n));render();document.querySelector('.screen.active').scrollIntoView({behavior:'smooth',block:'start'})}
+  function renderMeaning(){document.querySelectorAll('[data-meaning]').forEach(b=>{const v=b.dataset.meaning;b.classList.toggle('selected',state.meaning===v);b.classList.toggle('correct',state.meaning==='important'&&v==='important')});$('meaning-feedback').textContent=!state.meaning?'':state.meaning==='important'?'Correct. That is prioritising in action.':'Not quite. Have another go.'}
+  function renderSort(){const counts={first:0,later:0,notnow:0};tasks.forEach(t=>{if(counts[state.zones[t.id]]!==undefined)counts[state.zones[t.id]]++});$('count-first').textContent=counts.first;$('count-later').textContent=counts.later;$('count-notnow').textContent=counts.notnow;const unsorted=tasks.find(t=>state.zones[t.id]==='unsorted');const done=tasks.length-Object.values(state.zones).filter(z=>z==='unsorted').length;const stage=$('sort-stage');stage.innerHTML='';if(unsorted){stage.innerHTML='<p class="mini"><strong>'+done+' of '+tasks.length+'</strong> cards sorted.</p><article class="task-focus"><div class="big">'+esc(unsorted.icon)+'</div><div><h3>'+esc(unsorted.text)+'</h3><p class="snark">'+esc(unsorted.snark)+'</p></div></article><div class="sort-buttons"><button class="btn orange primary" type="button" data-zone="first">🔥 Do first</button><button class="btn primary" type="button" data-zone="later">🕒 Do later</button><button class="btn ghost" type="button" data-zone="notnow">🙃 Not right now</button></div>';stage.querySelectorAll('[data-zone]').forEach(b=>b.addEventListener('click',()=>{state.zones[unsorted.id]=b.dataset.zone;if(state.priorities.includes(unsorted.id)&&b.dataset.zone!=='first'){state.priorities=state.priorities.filter(id=>id!==unsorted.id);delete state.priorityReasons[unsorted.id]}render()}));$('sort-feedback').textContent=''}else{stage.innerHTML='<div class="definition"><strong>Sorted.</strong> Everything has a place now. Very organised of you.</div><button class="btn ghost" type="button" id="sort-again">Sort again</button>';$('sort-again').addEventListener('click',()=>{state.zones=emptyZones();state.priorities=[];state.priorityReasons={};render()});$('sort-feedback').textContent='All cards sorted. Nicely organised.'}}
+  function renderPriorities(){const list=$('priority-list');list.innerHTML='';const first=tasks.filter(t=>state.zones[t.id]==='first');const source=first.length?first:tasks;if(!first.length){const p=document.createElement('p');p.className='mini';p.textContent='Nothing is in Do first yet, so here are all tasks. You can still choose three.';list.appendChild(p)}source.forEach(t=>{const active=state.priorities.includes(t.id);const row=document.createElement('div');row.className='pick-card'+(active?' active':'');row.innerHTML='<div class="mini-icon">'+esc(t.icon)+'</div><span><strong>'+esc(t.text)+'</strong><br><span class="snark">'+esc(t.snark)+'</span></span>';const btn=document.createElement('button');btn.className='btn purple '+(active?'primary':'');btn.type='button';btn.textContent=active?'Picked':'Pick';btn.addEventListener('click',()=>togglePriority(t.id));row.appendChild(btn);list.appendChild(row)});$('priority-feedback').textContent=state.priorities.length===3?'Three priorities chosen. Clear and tidy.':state.priorities.length?'Choose '+(3-state.priorities.length)+' more.':''}
+  function togglePriority(id){if(state.priorities.includes(id)){state.priorities=state.priorities.filter(x=>x!==id);delete state.priorityReasons[id]}else if(state.priorities.length<3){state.priorities.push(id)}else{$('priority-feedback').textContent='Only three for now. That is the prioritising bit.';return}render()}
+  function renderReasons(){const box=$('reason-list');box.innerHTML='';if(!state.priorities.length){box.innerHTML='<p class="mini">Choose your top three first. The reasons are waiting politely.</p>';return}state.priorities.forEach((id,i)=>{const t=task(id);if(!t)return;const block=document.createElement('div');block.className='reason-block';block.innerHTML='<strong>'+(i+1)+'. '+esc(t.icon+' '+t.text)+'</strong>';const chips=document.createElement('div');chips.className='chips';reasons.forEach(r=>{const b=document.createElement('button');b.className='btn chip '+(state.priorityReasons[id]===r?'selected':'');b.type='button';b.textContent=r;b.addEventListener('click',()=>{state.priorityReasons[id]=r;render()});chips.appendChild(b)});block.appendChild(chips);box.appendChild(block)})}
+  function renderScenario(){const list=$('scenario-list');list.innerHTML='';scenarios.forEach(s=>{const active=state.scenarioPriorities.includes(s.id);const row=document.createElement('div');row.className='pick-card'+(active?' active':'');row.innerHTML='<div class="mini-icon">'+esc(s.icon)+'</div><span><strong>'+esc(s.text)+'</strong></span>';const b=document.createElement('button');b.className='btn green '+(active?'primary':'');b.type='button';b.textContent=active?'Picked':'Pick';b.addEventListener('click',()=>toggleScenario(s.id));row.appendChild(b);list.appendChild(row)});$('scenario-feedback').textContent=state.scenarioPriorities.length===3?'Three picked. The whole-room tidy can probably wait.':state.scenarioPriorities.length?'Pick '+(3-state.scenarioPriorities.length)+' more.':''}
+  function toggleScenario(id){if(state.scenarioPriorities.includes(id))state.scenarioPriorities=state.scenarioPriorities.filter(x=>x!==id);else if(state.scenarioPriorities.length<3)state.scenarioPriorities.push(id);else{$('scenario-feedback').textContent='Three is plenty. Choose the most important ones.';return}render()}
+  function report(){const lines=[];lines.push('Word of the Week: Prioritise');lines.push('Student: '+(state.name.trim()||'Not given'));lines.push('');lines.push('Meaning check: '+(state.meaning==='important'?'Correct':'Not completed/corrected yet'));lines.push('');['first','later','notnow','unsorted'].forEach(z=>{const label={first:'Do first',later:'Do later',notnow:'Not right now',unsorted:'Unsorted'}[z];lines.push(label+':');const group=tasks.filter(t=>state.zones[t.id]===z);if(group.length)group.forEach(t=>lines.push('  - '+t.icon+' '+t.text));else lines.push('  - None')});lines.push('');lines.push('Top 3 priorities:');if(state.priorities.length)state.priorities.forEach((id,i)=>{const t=task(id);lines.push((i+1)+'. '+(t?t.icon+' '+t.text:id)+' — '+(state.priorityReasons[id]||'No reason chosen yet'))});else lines.push('- Not chosen yet');lines.push('');lines.push('Real-life scenario top 3:');if(state.scenarioPriorities.length)state.scenarioPriorities.forEach((id,i)=>{const s=scen(id);lines.push((i+1)+'. '+(s?s.icon+' '+s.text:id))});else lines.push('- Not chosen yet');lines.push('');lines.push('Reflection:');lines.push(state.reflection.trim()||'No extra reflection added.') ;return lines.join('\n')}
+  function renderSummary(){$('summary-output').textContent=report()}
+  function emailReport(){window.location.href='mailto:'+encodeURIComponent(EMAIL_TO)+'?subject='+encodeURIComponent('Word of the Week: Prioritise')+'&body='+encodeURIComponent(report());$('send-feedback').textContent='Email draft opened. If it does not appear, use Copy report instead.'}
+  async function copyReport(){try{await navigator.clipboard.writeText(report());$('send-feedback').textContent='Copied. Nice and simple.'}catch(e){state.summaryOpen=true;render();$('send-feedback').textContent='Copy failed. Report preview opened so you can copy it manually.'}}
+  function downloadReport(){const blob=new Blob([report()],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=(state.name.trim()||'prioritise-report').replace(/[^a-z0-9_-]+/gi,'-').toLowerCase()+'.txt';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);$('send-feedback').textContent='Downloaded. A tidy little report.'}
+  function reset(){if(!confirm('Reset this activity? This will clear the answers.'))return;localStorage.removeItem(KEY);state=load();render()}
+  document.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>setStep(state.step+1)));document.querySelectorAll('[data-prev]').forEach(b=>b.addEventListener('click',()=>setStep(state.step-1)));document.querySelectorAll('[data-meaning]').forEach(b=>b.addEventListener('click',()=>{state.meaning=b.dataset.meaning;render()}));$('student-name').addEventListener('input',e=>{state.name=e.target.value;renderSummary();save()});$('reflection').addEventListener('input',e=>{state.reflection=e.target.value;renderSummary();save()});$('email-btn').addEventListener('click',emailReport);$('copy-btn').addEventListener('click',copyReport);$('download-btn').addEventListener('click',downloadReport);$('reset-btn').addEventListener('click',reset);$('preview-btn').addEventListener('click',()=>{state.summaryOpen=!state.summaryOpen;render();if(state.summaryOpen)$('summary').scrollIntoView({behavior:'smooth',block:'start'})});render();
 }());
 </script>
 </body>
