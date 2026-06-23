@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Home Learning Hub | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: #007291; padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(239,119,36,0.18); border-radius: 50%; }
+  .site-header .header-inner { position: relative; z-index: 2; }
+  .site-header h1 { font-size: 2.5rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
+  .site-header p { font-size: 1.1rem; color: #d7eef4; margin-top: 0.5rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+
+  .main { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 700; color: #007291; text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+
+  .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin-bottom: 2.25rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
+  .intro h2 { font-size: 1.3rem; color: #c05a10; margin-bottom: 0.5rem; }
+  .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
+
+  .tiles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem; }
+  .tile { position: relative; background: #ffffff; border: 2px solid var(--c); border-radius: 16px; padding: 1.5rem 1.5rem 1.25rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.45rem; transition: transform 0.18s ease, box-shadow 0.18s ease; overflow: hidden; }
+  .tile::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--c); }
+  .tile:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 10px 26px var(--shadow); }
+  .tile-badge { width: 56px; height: 56px; border-radius: 50%; background: var(--bg); border: 2px solid var(--c); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; line-height: 1; margin-bottom: 0.4rem; }
+  .tile-subject { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c); }
+  .tile-title { font-size: 1.25rem; font-weight: 700; color: var(--c); line-height: 1.3; }
+  .tile-desc { font-size: 0.92rem; color: #444; line-height: 1.55; }
+  .tile-go { margin-top: 0.7rem; font-size: 0.85rem; font-weight: 700; color: var(--c); display: inline-flex; align-items: center; gap: 0.3rem; }
+  .tile-go .arrow { transition: transform 0.18s ease; }
+  .tile:hover .tile-go .arrow { transform: translateX(4px); }
+
+  .tile.pride .tile-badge { background: linear-gradient(135deg, #e63946, #f4a261, #ffd166, #2a9d8f, #277da1, #9b5de5); border-color: #8e44ad; }
+
+  .cheer { text-align: center; margin-top: 2.5rem; font-size: 1.05rem; font-weight: 700; color: #007291; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <h1>Home Learning Hub</h1>
+    <p>It is too hot for school today, so here are some things to try from home.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <a class="back-link" href="../index.html">Back to Base 6</a>
+
+  <div class="intro">
+    <h2>Hello, and stay cool!</h2>
+    <p>It is far too hot for school today, so we are all keeping cool indoors. Here are six things to dip into whenever you fancy them, with no rush at all. Whatever you make, there is a button on each page to send it straight to Jay. Drink plenty of water, find a shady spot, and pick a tile to begin.</p>
+  </div>
+
+  <p class="section-label">Pick something to explore</p>
+  <div class="tiles-grid">
+
+    <a class="tile" style="--c:#007291; --bg:#e6f5f8; --shadow:rgba(0,114,145,0.22);" href="maths-times-tables.html">
+      <span class="tile-badge">✖️</span>
+      <span class="tile-subject">Maths</span>
+      <span class="tile-title">Times Tables</span>
+      <span class="tile-desc">Sharpen your times tables and watch your speed climb. You pick which ones to practise!</span>
+      <span class="tile-go">Let's go <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#7b4fa3; --bg:#f0eaf6; --shadow:rgba(123,79,163,0.22);" href="english-creative-writing.html">
+      <span class="tile-badge">✏️</span>
+      <span class="tile-subject">English</span>
+      <span class="tile-title">Creative Writing</span>
+      <span class="tile-desc">Let your imagination loose. A blank page, a few sparks, and a story only you can tell.</span>
+      <span class="tile-go">Let's go <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#2e8b57; --bg:#e6f3ec; --shadow:rgba(46,139,87,0.22);" href="science-why-so-hot.html">
+      <span class="tile-badge">🌡️</span>
+      <span class="tile-subject">Science</span>
+      <span class="tile-title">Why Is It So Hot?</span>
+      <span class="tile-desc">It is so hot that school is shut today. Come and find out exactly what is going on out there.</span>
+      <span class="tile-go">Let's go <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#ef7724; --bg:#fdeee0; --shadow:rgba(239,119,36,0.24);" href="word-of-the-week.html">
+      <span class="tile-badge">📖</span>
+      <span class="tile-subject">Word of the Week</span>
+      <span class="tile-title">Prioritise</span>
+      <span class="tile-desc">Meet this week's word, learn what it means, and become the master of it.</span>
+      <span class="tile-go">Let's go <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#d6336c; --bg:#fbe7ee; --shadow:rgba(214,51,108,0.22);" href="pshe-you-good.html">
+      <span class="tile-badge">💛</span>
+      <span class="tile-subject">PSHE</span>
+      <span class="tile-title">You Good?</span>
+      <span class="tile-desc">A friendly little check in. Take a moment to think about how you are doing today.</span>
+      <span class="tile-go">Let's go <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile pride" style="--c:#8e44ad; --bg:#f3ecfb; --shadow:rgba(142,68,173,0.22);" href="pride-be-the-change.html">
+      <span class="tile-badge">🌈</span>
+      <span class="tile-subject">Pride Week</span>
+      <span class="tile-title">Be the Change</span>
+      <span class="tile-desc">Small kindnesses, big difference. Discover how you can help make the world a brighter place.</span>
+      <span class="tile-go">Let's go <span class="arrow">&#8594;</span></span>
+    </a>
+
+  </div>
+
+  <p class="cheer">Keep cool, take it easy, and remember Jay loves seeing what you make!</p>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School
+</footer>
+
+</body>
+</html>
