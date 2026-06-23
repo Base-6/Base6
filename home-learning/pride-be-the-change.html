@@ -126,7 +126,7 @@
   <div class="pride-stripe"></div>
   <div class="header-inner">
     <h1>Be the Change</h1>
-    <p>A Pride Week activity. Bring your brain, leave the cringe at the door.</p>
+    <p>A Pride Week activity. No assembly, no singing, no trust falls. Promise.</p>
   </div>
   <svg class="header-wave" viewBox="0 0 1200 34" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0,17 C150,34 350,0 600,15 C850,30 1050,4 1200,17 L1200,34 L0,34 Z" fill="#fef8f4"></path>
@@ -147,7 +147,7 @@
     <!-- 1 welcome -->
     <section class="step active">
       <div class="card">
-        <h2>Right then. Pride Week.</h2>
+        <h2>Hey, it is Pride Week</h2>
         <svg class="illo" viewBox="0 0 240 130" xmlns="http://www.w3.org/2000/svg">
           <rect x="30" y="20" width="180" height="20" fill="#e63946"></rect>
           <rect x="30" y="40" width="180" height="20" fill="#f3722c"></rect>
@@ -158,7 +158,7 @@
         </svg>
         <p class="lead">Good news first: this is not an assembly. Nobody is going to make you stand in a circle and share your feelings.</p>
         <p>This is about one simple idea. <strong>Being the change</strong>. What that actually means, and the surprisingly small things that make a school a kinder place to be.</p>
-        <p class="snark">It takes about half an hour. You can go at your own speed and tap Back if you miss something. Onward.</p>
+        <p class="snark">It takes about half an hour, and you set the pace. Tap Back any time you want a second look. Let's go.</p>
       </div>
     </section>
 
@@ -205,9 +205,9 @@
           <line x1="100" y1="86" x2="100" y2="104" stroke="#5b4a33" stroke-width="4"></line>
           <line x1="78" y1="104" x2="122" y2="104" stroke="#5b4a33" stroke-width="4" stroke-linecap="round"></line>
         </svg>
-        <p>It is not changing your profile picture for one week and then forgetting about it until next June.</p>
+        <p>It is bigger than turning your profile rainbow for a week and then forgetting until next June. Nice colours though.</p>
         <p>Being the change is the small, everyday stuff. The quiet choices nobody hands out a certificate for. And honestly? Those count the most.</p>
-        <p class="snark">Plot twist: a big chunk of it is just being decent to people. Wild, we know.</p>
+        <p class="snark">Plot twist: a lot of it is just being kind to people. That is honestly the whole secret.</p>
       </div>
     </section>
 
@@ -312,7 +312,7 @@
           </defs>
         </svg>
         <p class="lead">No speeches. No certificate. Just you, choosing to make your corner a bit kinder.</p>
-        <p class="snark">Turns out that is the whole thing. Go you.</p>
+        <p class="snark">Turns out that is the whole thing. We are properly proud of you.</p>
       </div>
     </section>
 
@@ -401,7 +401,7 @@
     { t: 'A mate calls a dodgy phone charger "so gay". You laugh and pile on.', good: false, why: 'Missed it. Even aimed at a charger, that word as an insult lands on real people. A quick "mate, not that one" is being the change.' },
     { t: 'The new kid asks to be called Sam, not their old name. You just call them Sam.', good: true, why: 'Spot on. No fuss, no twenty questions, just respect. That easy.' },
     { t: 'Someone is sitting on their own at lunch again. You wander over and say hi.', good: true, why: 'Yes. Costs you nothing, means everything. That is the whole idea.' },
-    { t: 'A group is ripping into how someone dresses. You film it for a laugh.', good: false, why: 'Hard no. Step in if it is safe, or grab an adult. Filming it is picking the wrong side.' }
+    { t: 'A group is ripping into how someone dresses. You film it for a laugh.', good: false, why: 'Oof, no. Step in if it is safe, or grab an adult. Filming it makes you part of it, and you are kinder than that.' }
   ];
   var si = 0;
   var scenText = document.getElementById('scenText');
@@ -478,7 +478,7 @@
     var it = quiz[qi];
     var correct = choice === it.a;
     quizFb.className = 'feedback ' + (correct ? 'right' : 'close');
-    quizFb.textContent = (correct ? 'Correct. Gold star. We do not have gold stars, imagine one. ' : 'Close. ') + it.why;
+    quizFb.textContent = (correct ? 'Correct! Imagine a gold star, because you have earned one. ' : 'Close one. ') + it.why;
     btnLegend.disabled = true; btnNonsense.disabled = true;
     quizNext.textContent = qi < quiz.length - 1 ? 'Next question' : 'Start again';
     quizNextRow.style.display = 'flex';
