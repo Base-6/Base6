@@ -140,6 +140,36 @@
 
   .pledge-preview { font-size:1.05rem; font-weight:700; color:#075066; line-height:1.5; background:#eaf6f9; border:2px solid #bfe3ee; border-radius:12px; padding:0.9rem 1rem; margin-top:0.7rem; }
 
+
+
+  /* Layout fixes: keep sort buttons inside cards and feedback below the choice row. */
+  .sortcard {
+    display:grid;
+    grid-template-columns:52px minmax(0,1fr) auto;
+    grid-template-areas:
+      "emoji text btns"
+      ". feedback feedback";
+    align-items:center;
+    gap:0.6rem 0.75rem;
+  }
+  .sortcard .sc-emoji { grid-area:emoji; }
+  .sortcard .sc-text { grid-area:text; min-width:0; overflow-wrap:break-word; }
+  .sortcard .sc-btns { grid-area:btns; display:flex; gap:0.4rem; flex-wrap:nowrap; justify-content:flex-end; align-items:center; }
+  .sortcard .sc-fb { grid-area:feedback; width:auto; margin-top:0; }
+  .tile .tick.badmark { color:#c98a2a; }
+
+  @media (max-width:640px){
+    .sortcard {
+      grid-template-columns:46px minmax(0,1fr);
+      grid-template-areas:
+        "emoji text"
+        "btns btns"
+        "feedback feedback";
+    }
+    .sortcard .sc-btns { justify-content:flex-start; flex-wrap:wrap; }
+    .sc-pick { width:44px; height:44px; }
+  }
+
   @media (max-width:520px){
     .sortcard { align-items:flex-start; flex-wrap:wrap; }
     .sc-btns { width:100%; justify-content:flex-start; }
@@ -342,8 +372,8 @@ function buildLang(){
     });
     var fb=document.createElement('div'); fb.className='sc-fb '+(correct?'good':'soft');
     if(pick){ fb.textContent=(correct?'✓ ':'Review this: ')+item.fb; }
-    btns.appendChild(fb);
     card.appendChild(btns);
+    card.appendChild(fb);
     w.appendChild(card);
   });
   var msg=document.getElementById('langMsg');
@@ -406,7 +436,9 @@ function buildRepair(){
     var b=document.createElement('button'); b.type='button';
     b.className='tile '+(t.good?'good':'soft')+(chosen?' on':'');
     b.setAttribute('aria-pressed', chosen?'true':'false');
-    b.innerHTML='<span class="tick" aria-hidden="true">&#10003;</span><span class="tile-emoji" aria-hidden="true">'+t.e+'</span><span class="tile-label">'+esc(t.l)+'</span>';
+    var mark = t.good ? '&#10003;' : '&#10007;';
+    var markClass = t.good ? 'tick' : 'tick badmark';
+    b.innerHTML='<span class="'+markClass+'" aria-hidden="true">'+mark+'</span><span class="tile-emoji" aria-hidden="true">'+t.e+'</span><span class="tile-label">'+esc(t.l)+'</span>';
     b.onclick=function(){ var i=state.repair.indexOf(t.l); if(i>-1) state.repair.splice(i,1); else state.repair.push(t.l); save(); buildRepair(); };
     g.appendChild(b);
   });
