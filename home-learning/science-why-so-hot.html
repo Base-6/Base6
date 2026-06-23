@@ -131,6 +131,42 @@
   .dot.active { background: var(--green); transform: scale(1.3); }
 
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+
+  /* extra polish */
+  :focus-visible { outline: 4px solid rgba(239,119,36,0.45); outline-offset: 3px; }
+  .brief { background:#fff; border:2px solid var(--orange); border-radius:16px; padding:1rem 1.15rem; margin-bottom:1.15rem; box-shadow:0 4px 14px rgba(239,119,36,0.1); }
+  .brief h2 { font-size:1.05rem; color:#c05a10; margin-bottom:0.35rem; }
+  .brief p { font-size:0.96rem; line-height:1.55; color:#333; }
+  .kicker { display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--orange); margin-bottom:0.45rem; }
+  .snark-note { background:#fdeee0; border-left:5px solid var(--orange); border-radius:12px; padding:0.8rem 0.95rem; margin:0.85rem 0; font-weight:700; color:#5b3a10; line-height:1.45; }
+  .micro-task { background:#f9f4ef; border:2px dashed #e0d8d0; border-radius:14px; padding:0.85rem 1rem; margin:0.75rem 0; }
+  .micro-task strong { color:var(--teal); }
+  .chip-row { display:flex; flex-wrap:wrap; gap:0.55rem; margin:0.7rem 0; }
+  .chip { border:2px solid #e0d8d0; background:#fff; color:#333; border-radius:999px; padding:0.55rem 0.8rem; font-weight:700; font-family:inherit; cursor:pointer; }
+  .chip:hover { border-color:var(--orange); transform:translateY(-1px); }
+  .mini-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:0.7rem; margin:0.8rem 0; }
+  .mini-card { background:#fff; border:2px solid #e0d8d0; border-radius:14px; padding:0.85rem; text-align:center; }
+  .mini-card .big { display:block; font-size:1.9rem; margin-bottom:0.2rem; }
+  .mini-card strong { display:block; color:var(--teal); margin-bottom:0.25rem; }
+  .mini-card span:last-child { font-size:0.9rem; color:#444; line-height:1.35; }
+  .name-row { margin:0.65rem 0 0.85rem; }
+  .name-row label { display:block; font-weight:700; color:var(--green); margin-bottom:0.35rem; }
+  .name-row input { width:100%; border:2px solid var(--green); border-radius:12px; padding:0.75rem 0.85rem; font-family:inherit; font-size:1rem; }
+  .teacher-tools { margin-top:0.9rem; border-top:1px solid #e0d8d0; padding-top:0.8rem; }
+  .btn-danger { background:#fff; border-color:#c05a10; color:#c05a10; }
+  .aria-live { min-height:1.4rem; }
+  @media (max-width: 520px) {
+    .site-header { padding:1.55rem 1rem 2.3rem; }
+    .site-header h1 { font-size:1.8rem; }
+    .main { padding:1rem 1rem 3rem; }
+    .card { padding:1.15rem; }
+    .nav { position:sticky; bottom:0; background:#fef8f4; padding:0.75rem 0; border-top:1px solid #e0d8d0; }
+    .nav-btn { flex:1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:0.01ms !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+  }
+
 </style>
 </head>
 <body>
@@ -138,7 +174,7 @@
 <header class="site-header">
   <div class="header-inner">
     <h1>Why Is It So Hot?</h1>
-    <p>Tap, slide and explore your way through the heat.</p>
+    <p>A tiny science mission about why outside is currently doing the most.</p>
   </div>
   <svg class="header-wave" viewBox="0 0 1200 34" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0,17 C150,34 350,0 600,15 C850,30 1050,4 1200,17 L1200,34 L0,34 Z" fill="#fef8f4"></path>
@@ -148,6 +184,11 @@
 <main class="main">
 
   <a class="back-link" href="index.html">Back to the Home Learning Hub</a>
+
+  <div class="brief">
+    <h2>Science mission: survive the soup air</h2>
+    <p>Work through short tap-and-slide chunks. No timer, no score, no dramatic leaderboard nonsense. Just learn why it is so hot and what to do when the weather starts acting like a toaster.</p>
+  </div>
 
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
@@ -159,7 +200,8 @@
     <!-- 1 hello + poll -->
     <section class="step active">
       <div class="card">
-        <h2>Phew, what a scorcher!</h2>
+        <span class="kicker">Step 1 · check in</span>
+        <h2>Phew. The air has gone full dragon.</h2>
         <svg class="illo" viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" style="max-width:170px;">
           <g stroke="#f6c343" stroke-width="6" stroke-linecap="round">
             <line x1="110" y1="8" x2="110" y2="26"></line>
@@ -174,23 +216,24 @@
           <line x1="104" y1="72" x2="116" y2="72" stroke="#333" stroke-width="4"></line>
           <path d="M92,96 Q110,112 128,96" fill="none" stroke="#7a4a10" stroke-width="4" stroke-linecap="round"></path>
         </svg>
-        <p class="lead">You are home because it is <strong>too hot for school</strong>. Let's find out why!</p>
-        <p>First, how does it feel out there today?</p>
+        <p class="lead">You are home because it is <strong>too hot for school</strong>. Let's investigate the science, because apparently we do learning now.</p>
+        <p>First, how dramatic is the weather being today?</p>
         <div class="poll-row">
-          <button class="poll-btn" data-reply="Warm and lovely. Now let's see what is behind it."><span class="pe">🙂</span>Warm</button>
-          <button class="poll-btn" data-reply="Hot indeed. The Sun has been busy today."><span class="pe">😅</span>Hot</button>
-          <button class="poll-btn" data-reply="Boiling! Good job you are somewhere cooler."><span class="pe">🥵</span>Boiling</button>
+          <button class="poll-btn" data-reply="Warm. Suspiciously polite weather. Let's investigate."><span class="pe">🙂</span>Warm</button>
+          <button class="poll-btn" data-reply="Hot. The Sun has clearly chosen violence."><span class="pe">😅</span>Hot</button>
+          <button class="poll-btn" data-reply="Boiling. Excellent choice being indoors, honestly."><span class="pe">🥵</span>Boiling</button>
         </div>
-        <div class="poll-reply" id="pollReply"></div>
+        <div class="poll-reply aria-live" id="pollReply" aria-live="polite"></div>
       </div>
     </section>
 
     <!-- 2 where from -->
     <section class="step">
       <div class="card">
-        <h2>Where does all this heat come from?</h2>
-        <p class="lead">Have a quick guess in your head, then tap.</p>
-        <button class="reveal-btn" data-target="rvSun">Tap to reveal</button>
+        <span class="kicker">Step 2 · source</span>
+        <h2>Where is all this heat coming from?</h2>
+        <p class="lead">Have a quick guess. No essays. We are not trying to melt.</p>
+        <button class="reveal-btn" data-target="rvSun">Reveal the culprit</button>
         <div class="reveal-content" id="rvSun">
           <svg class="illo" viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" style="max-width:130px;">
             <g stroke="#f6c343" stroke-width="6" stroke-linecap="round">
@@ -203,7 +246,8 @@
             </g>
             <circle cx="80" cy="60" r="34" fill="#fbb615" stroke="#ef7724" stroke-width="4"></circle>
           </svg>
-          <p class="center lead"><strong>The Sun!</strong> Every bit of warmth starts there.</p>
+          <p class="center lead"><strong>The Sun.</strong> Shocking, honestly. Every bit of warmth starts there.</p>
+          <div class="snark-note">Tiny science truth: the Sun is doing the heavy lifting. Again.</div>
         </div>
       </div>
     </section>
@@ -211,7 +255,8 @@
     <!-- 3 sun warms ground + heat bar -->
     <section class="step">
       <div class="card">
-        <h2>The Sun warms the ground</h2>
+        <span class="kicker">Step 3 · experiment</span>
+        <h2>The Sun heats everything up</h2>
         <svg class="illo" viewBox="0 0 260 150" xmlns="http://www.w3.org/2000/svg">
           <rect x="0" y="0" width="260" height="150" rx="10" fill="#bfe3f2"></rect>
           <circle cx="48" cy="44" r="26" fill="#fbb615" stroke="#ef7724" stroke-width="3"></circle>
@@ -223,9 +268,9 @@
           <rect x="160" y="86" width="50" height="32" fill="#e07b54"></rect>
           <polygon points="158,86 185,64 212,86" fill="#b5482a"></polygon>
         </svg>
-        <p>Sunlight lands on roads, roofs and fields and <strong>heats them up</strong>. Give it a go below.</p>
+        <p>Sunlight lands on roads, roofs and fields and <strong>heats them up</strong>. Roads especially love becoming frying pans. Give it a go below.</p>
         <div class="heat-wrap">
-          <button class="tap-btn" id="warmBtn">Add some sunshine</button>
+          <button class="tap-btn" id="warmBtn">Add sunshine, apparently</button>
           <div class="heat-track"><div class="heat-fill" id="heatFill"></div></div>
           <div class="heat-label" id="heatLabel">Cool and comfy</div>
         </div>
@@ -235,22 +280,24 @@
     <!-- 4 speed guess -->
     <section class="step">
       <div class="card">
-        <h2>A speedy journey</h2>
-        <p class="lead">How long does sunlight take to reach your garden?</p>
+        <span class="kicker">Step 4 · quick quiz</span>
+        <h2>Sunlight has zero chill</h2>
+        <p class="lead">How long does sunlight take to reach your garden? It is quicker than most people finding their shoes.</p>
         <div class="opt-btns" id="speedOpts">
           <button class="opt-btn" data-correct="0">1 second</button>
           <button class="opt-btn" data-correct="1">8 minutes</button>
           <button class="opt-btn" data-correct="0">1 hour</button>
         </div>
-        <div class="feedback" id="speedFb"></div>
+        <div class="feedback aria-live" id="speedFb" aria-live="polite"></div>
       </div>
     </section>
 
     <!-- 5 sun slider -->
     <section class="step">
       <div class="card">
-        <h2>Why summer turns up the heat</h2>
-        <p>Our half of the world <strong>leans toward the Sun</strong>, so it climbs <strong>higher</strong>. Slide to raise it.</p>
+        <span class="kicker">Step 5 · slider</span>
+        <h2>Why summer turns the heat up</h2>
+        <p>Our half of the world <strong>leans toward the Sun</strong>, so it climbs <strong>higher</strong> in the sky. Slide it up and watch summer become smug.</p>
         <div class="slider-panel">
           <svg class="diagram" id="sunSvg" viewBox="0 0 360 180" xmlns="http://www.w3.org/2000/svg">
             <rect x="0" y="0" width="360" height="180" rx="10" fill="#bfe3f2" id="sky"></rect>
@@ -270,8 +317,9 @@
     <!-- 6 tilt toggle -->
     <section class="step">
       <div class="card">
-        <h2>Give the planet a tilt</h2>
-        <p>Tap to switch the seasons and watch our half <strong>lean</strong>.</p>
+        <span class="kicker">Step 6 · seasons</span>
+        <h2>Tilt the planet. Gently. We need it.</h2>
+        <p>Tap to switch seasons and watch our half of Earth <strong>lean</strong>. Planet posture: surprisingly important.</p>
         <svg class="diagram" viewBox="0 0 360 190" xmlns="http://www.w3.org/2000/svg">
           <rect x="0" y="0" width="360" height="190" rx="10" fill="#eaf6fb"></rect>
           <circle cx="58" cy="95" r="28" fill="#fbb615" stroke="#ef7724" stroke-width="3"></circle>
@@ -285,17 +333,19 @@
           <circle id="tiltNorth" cx="232" cy="50" r="5" fill="#c0392b"></circle>
           <text id="tiltLabel" x="258" y="178" text-anchor="middle" font-size="14" font-weight="700" fill="#5b4a33" font-family="Atkinson Hyperlegible, sans-serif">Summer</text>
         </svg>
-        <div class="center"><button class="tap-btn" id="tiltBtn">Switch season</button></div>
-        <div class="toggle-note" id="tiltNote">Summer: our half leans toward the Sun, so it feels strong.</div>
+        <div class="center"><button class="tap-btn" id="tiltBtn">Switch season, Earth</button></div>
+        <div class="toggle-note aria-live" id="tiltNote" aria-live="polite">Summer: our half leans toward the Sun, so the rays hit more directly. The Sun becomes very pleased with itself.</div>
       </div>
     </section>
 
     <!-- 7 heatwave intro -->
     <section class="step">
       <div class="card">
-        <h2>What is a heatwave?</h2>
-        <p class="lead">One hot day is normal. A <strong>heatwave</strong> is days and days of it. But why does it keep building?</p>
-        <button class="reveal-btn" data-target="rvDome">Show me why</button>
+        <span class="kicker">Step 7 · definition</span>
+        <h2>What is a heatwave, apart from rude?</h2>
+        <p class="lead">One hot day is normal. A <strong>heatwave</strong> is several hot days in a row, because apparently one day was not enough.</p>
+        <div class="micro-task"><strong>Key idea:</strong> heatwaves are about heat lasting, not just one dramatic afternoon.</div>
+        <button class="reveal-btn" data-target="rvDome">Show the weather nonsense</button>
         <div class="reveal-content" id="rvDome">
           <svg class="diagram" viewBox="0 0 360 215" xmlns="http://www.w3.org/2000/svg">
             <rect x="0" y="0" width="360" height="215" rx="10" fill="#bfe3f2"></rect>
@@ -314,7 +364,7 @@
             <rect x="0" y="180" width="360" height="35" fill="#cdb89a"></rect>
             <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#2e8b57"></path></marker></defs>
           </svg>
-          <p><strong>High pressure</strong> sits over us like a lid. The sky stays clear and the heat is trapped.</p>
+          <p><strong>High pressure</strong> sits over us like a lid. The sky stays clear, the air sinks, and the heat builds up. Basically: saucepan, but make it weather.</p>
         </div>
       </div>
     </section>
@@ -322,22 +372,24 @@
     <!-- 8 build a heatwave -->
     <section class="step">
       <div class="card">
-        <h2>Build a heatwave</h2>
-        <p>Tap to move the days along and watch the heat <strong>pile up</strong>.</p>
+        <span class="kicker">Step 8 · days build up</span>
+        <h2>Build a heatwave, because apparently we are doing this</h2>
+        <p>Tap to move the days along and watch the heat <strong>pile up</strong>. Not a recommendation. Just science.</p>
         <svg class="illo" viewBox="0 0 120 200" xmlns="http://www.w3.org/2000/svg" style="max-width:110px;">
           <rect x="46" y="20" width="28" height="140" rx="14" fill="#fff" stroke="#c0392b" stroke-width="3"></rect>
           <rect id="dayFill" x="52" y="150" width="16" height="0" rx="8" fill="#c0392b"></rect>
           <circle cx="60" cy="172" r="20" fill="#c0392b"></circle>
         </svg>
-        <div class="center"><button class="tap-btn" id="dayBtn">Next day</button></div>
-        <div class="toggle-note" id="dayCaption">Tap to begin on day one.</div>
+        <div class="center"><button class="tap-btn" id="dayBtn">Next hot day</button></div>
+        <div class="toggle-note aria-live" id="dayCaption" aria-live="polite">Tap to begin on day one.</div>
       </div>
     </section>
 
     <!-- 9 quiz -->
     <section class="step">
       <div class="card">
-        <h2>Myth or fact?</h2>
+        <span class="kicker">Step 9 · myth busting</span>
+        <h2>Myth or fact? Weather edition.</h2>
         <svg class="illo" viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg" style="max-width:150px;">
           <circle cx="100" cy="58" r="40" fill="#eaf6fb" stroke="#007291" stroke-width="7"></circle>
           <line x1="128" y1="88" x2="178" y2="120" stroke="#007291" stroke-width="13" stroke-linecap="round"></line>
@@ -349,7 +401,7 @@
           <button class="opt-btn" id="btnFact">Fact</button>
           <button class="opt-btn" id="btnMyth">Myth</button>
         </div>
-        <div class="feedback" id="quizFeedback"></div>
+        <div class="feedback aria-live" id="quizFeedback" aria-live="polite"></div>
         <div class="action-row" id="quizNextRow" style="display:none;">
           <button class="btn btn-copy" id="quizNext">Next question</button>
         </div>
@@ -359,13 +411,14 @@
     <!-- 10 warming world -->
     <section class="step">
       <div class="card">
-        <h2>A warming world</h2>
-        <p class="lead">Hot days like today are happening <strong>more often</strong> than they used to.</p>
-        <button class="reveal-btn" data-target="rvRecord">See a record breaker</button>
+        <span class="kicker">Step 10 · big picture</span>
+        <h2>A warming world, because plot twist</h2>
+        <p class="lead">Hot days like today are happening <strong>more often</strong> than they used to. The graph is not being subtle.</p>
+        <button class="reveal-btn" data-target="rvRecord">Reveal the record breaker</button>
         <div class="reveal-content" id="rvRecord">
-          <div class="fact-box"><p>In July 2022, England passed <strong>40 degrees Celsius</strong> for the first time on record, near here in Lincolnshire.</p></div>
+          <div class="fact-box"><p>In July 2022, England passed <strong>40°C</strong> for the first time on record, including in Lincolnshire. The weather really said: new high score.</p></div>
         </div>
-        <p>The planet is slowly <strong>warming</strong>, like an extra blanket holding in heat.</p>
+        <p>The planet is slowly <strong>warming</strong>, like an extra blanket holding in heat. Useful on a sofa. Less useful for the entire Earth.</p>
         <svg class="illo" viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
           <line x1="30" y1="118" x2="270" y2="118" stroke="#5b4a33" stroke-width="2"></line>
           <rect x="50" y="92" width="34" height="26" rx="4" fill="#a9d6bd"></rect>
@@ -374,15 +427,16 @@
           <rect x="230" y="30" width="34" height="88" rx="4" fill="#ef7724"></rect>
           <text x="140" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#5b4a33" font-family="Atkinson Hyperlegible, sans-serif">Very hot days, going up</text>
         </svg>
-        <p>The good news: our <strong>choices</strong> can help slow this down.</p>
+        <p>The good news: our <strong>choices</strong> can help slow this down. The planet appreciates not being roasted.</p>
       </div>
     </section>
 
     <!-- 11 stay cool reveal cards -->
     <section class="step">
       <div class="card">
+        <span class="kicker">Step 11 · survival tips</span>
         <h2>Clever ways to stay cool</h2>
-        <p>Tap each card for a top tip.</p>
+        <p>Tap each card for a tip. Revolutionary behaviour: staying alive and not crispy.</p>
         <div class="cool-grid" id="coolGrid"></div>
       </div>
     </section>
@@ -390,17 +444,19 @@
     <!-- 12 spot the cool ideas -->
     <section class="step">
       <div class="card">
-        <h2>Spot the cool ideas</h2>
-        <p>Tap the things that really help on a hot day.</p>
+        <span class="kicker">Step 12 · sort the sensible</span>
+        <h2>Spot the actually useful ideas</h2>
+        <p>Tap the things that actually help on a hot day. Some options are nonsense. Rude of them.</p>
         <div class="cool-grid" id="checkGrid"></div>
-        <p style="margin-top:0.8rem;">If anyone feels <strong>dizzy or sick</strong>, tell a grown up and get them somewhere cool with water.</p>
+        <p style="margin-top:0.8rem;">If anyone feels <strong>dizzy, sick, confused, or very weak</strong>, tell a grown up and get them somewhere cool with water. That bit is not a joke.</p>
       </div>
     </section>
 
     <!-- 13 reflection -->
     <section class="step">
       <div class="card">
-        <h2>Over to you</h2>
+        <span class="kicker">Step 13 · send it</span>
+        <h2>Over to you: tiny science report</h2>
         <svg class="illo" viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg" style="max-width:140px;">
           <rect x="60" y="16" width="100" height="98" rx="9" fill="#fff" stroke="#2e8b57" stroke-width="3"></rect>
           <line x1="60" y1="16" x2="160" y2="16" stroke="#2e8b57" stroke-width="7"></line>
@@ -408,20 +464,32 @@
           <line x1="76" y1="62" x2="146" y2="62" stroke="#cfe6da" stroke-width="3"></line>
           <line x1="76" y1="80" x2="126" y2="80" stroke="#cfe6da" stroke-width="3"></line>
         </svg>
-        <p>Tell Jay <strong>one thing you learned</strong>, or your cleverest way to stay cool.</p>
-        <textarea id="reflection" placeholder="I found out that..."></textarea>
-        <div class="action-row">
-          <a class="btn btn-send" id="sendJay">Send to Jay</a>
-          <button class="btn btn-copy" id="copyBtn">Copy</button>
+        <p>Tell Jay <strong>one thing you learned</strong>, or your cleverest way to stay cool. One sentence is fine. We are not writing a dissertation in a heatwave.</p>
+        <div class="name-row"><label for="studentName">Name, if you want Jay to know who sent it</label><input id="studentName" type="text" placeholder="Your name"></div>
+        <textarea id="reflection" placeholder="I found out that... / My best stay-cool idea is..."></textarea>
+        <div class="chip-row" aria-label="Sentence starters">
+          <button class="chip" data-starter="I found out that heatwaves happen when ">I found out that...</button>
+          <button class="chip" data-starter="The most useful stay-cool idea is ">Best cool idea...</button>
+          <button class="chip" data-starter="One thing that surprised me was ">Surprising bit...</button>
+          <button class="chip" data-starter="I would explain a heatwave as ">A heatwave is...</button>
         </div>
-        <div class="copied-note" id="copiedNote">Copied. Paste it anywhere you like.</div>
+        <div class="action-row">
+          <a class="btn btn-send" id="sendJay">Email Jay</a>
+          <button class="btn btn-copy" id="copyBtn">Copy report</button>
+          <button class="btn btn-copy" id="downloadBtn">Download report</button>
+        </div>
+        <div class="teacher-tools">
+          <button class="btn btn-danger" id="resetBtn">Reset this activity</button>
+        </div>
+        <div class="copied-note" id="copiedNote">Copied. Paste it anywhere you like. Technology behaved, for once.</div>
       </div>
     </section>
 
     <!-- 14 done -->
     <section class="step">
       <div class="card center">
-        <h2>You did it!</h2>
+        <span class="kicker">Step 14 · done</span>
+        <h2>You made it to the end.</h2>
         <svg class="illo" viewBox="0 0 160 130" xmlns="http://www.w3.org/2000/svg" style="max-width:140px;">
           <g stroke="#f6c343" stroke-width="6" stroke-linecap="round">
             <line x1="80" y1="6" x2="80" y2="22"></line>
@@ -436,8 +504,8 @@
           <path d="M64,74 Q80,90 96,74" fill="none" stroke="#5b3a10" stroke-width="4" stroke-linecap="round"></path>
           <path d="M120,40 q12,-8 18,2" fill="none" stroke="#ef7724" stroke-width="5" stroke-linecap="round"></path>
         </svg>
-        <p class="lead">Brilliant detective work today.</p>
-        <p>Now go and find some shade and a nice cold drink. You have earned it.</p>
+        <p class="lead">Excellent science detective work. The heat has been mildly explained.</p>
+        <p>Now go and find shade and a drink. The Sun has had enough attention for one day.</p>
       </div>
     </section>
 
@@ -463,6 +531,8 @@
   function loadState() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
   function saveState(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
   var state = loadState();
+
+  var stepTitles = ['Weather check', 'The culprit', 'Ground heats up', 'Sunlight speed', 'Summer Sun', 'Earth tilt', 'Heatwaves', 'Heat builds', 'Myth or fact', 'Warming world', 'Stay cool tips', 'Cool idea check', 'Tiny report', 'Finished'];
 
   var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
   var total = steps.length;
@@ -492,7 +562,7 @@
       dots[i].classList.toggle('done', i < current);
     }
     fill.style.width = ((current + 1) / total * 100) + '%';
-    ptext.textContent = 'Step ' + (current + 1) + ' of ' + total;
+    ptext.textContent = 'Step ' + (current + 1) + ' of ' + total + ': ' + stepTitles[current];
     backBtn.disabled = current === 0;
     nextBtn.textContent = current === total - 1 ? 'Done' : 'Next';
     state.step = current; saveState(state);
@@ -527,7 +597,7 @@
   document.getElementById('warmBtn').addEventListener('click', function () {
     heat = Math.min(100, heat + 20);
     heatFill.style.width = heat + '%';
-    var labels = ['Cool and comfy', 'Getting warmer', 'Nice and warm', 'Hot now', 'Really hot', 'Baking hot!'];
+    var labels = ['Cool and comfy', 'Getting warmer', 'Roads are plotting', 'Hot now', 'Really hot', 'Baking hot. The pavement is dramatic.'];
     heatLabel.textContent = labels[Math.round(heat / 20)];
   });
 
@@ -537,7 +607,7 @@
     b.addEventListener('click', function () {
       var ok = b.getAttribute('data-correct') === '1';
       speedFb.className = 'feedback ' + (ok ? 'right' : 'close');
-      speedFb.textContent = (ok ? 'Spot on! ' : 'Good guess. ') + 'It takes 8 minutes. Sunlight zooms across space at the fastest speed there is.';
+      speedFb.textContent = (ok ? 'Correct. Annoyingly impressive. ' : 'Nice try. The Sun was faster. ') + 'It takes about 8 minutes. Sunlight absolutely sprints across space.';
       document.querySelectorAll('#speedOpts .opt-btn').forEach(function (x) { x.disabled = true; });
     });
   });
@@ -556,7 +626,7 @@
     var spread = 30 + (v / 100) * 30;
     ray1.setAttribute('x2', 180 - spread);
     ray3.setAttribute('x2', 180 + spread);
-    var words = ['weak', 'gentle', 'building', 'strong', 'fierce'];
+    var words = ['weak', 'gentle', 'building', 'strong', 'fierce, frankly showing off'];
     strengthRead.textContent = 'Sun strength: ' + words[Math.min(4, Math.floor(v / 20))];
     var light = 191 + Math.round((v / 100) * 40);
     sky.setAttribute('fill', 'rgb(' + light + ',227,242)');
@@ -576,13 +646,13 @@
       tiltAxis.setAttribute('x2', 284); tiltAxis.setAttribute('y2', 140);
       tiltNorth.setAttribute('cx', 232); tiltNorth.setAttribute('cy', 50);
       tiltLabel.textContent = 'Summer';
-      tiltNote.textContent = 'Summer: our half leans toward the Sun, so it feels strong.';
+      tiltNote.textContent = 'Summer: our half leans toward the Sun, so the rays hit more directly. The Sun becomes very pleased with itself.';
     } else {
       tiltAxis.setAttribute('x1', 284); tiltAxis.setAttribute('y1', 50);
       tiltAxis.setAttribute('x2', 232); tiltAxis.setAttribute('y2', 140);
       tiltNorth.setAttribute('cx', 284); tiltNorth.setAttribute('cy', 50);
       tiltLabel.textContent = 'Winter';
-      tiltNote.textContent = 'Winter: our half leans away from the Sun, so it feels weak.';
+      tiltNote.textContent = 'Winter: our half leans away from the Sun, so the rays spread out. The Sun is still there, just less intense. Lazy vibes.';
     }
   }
   document.getElementById('tiltBtn').addEventListener('click', function () { summer = !summer; setTilt(); });
@@ -597,16 +667,16 @@
     var h = (day / 3) * 124;
     dayFill.setAttribute('height', h);
     dayFill.setAttribute('y', 150 - h);
-    var caps = ['Tap to begin on day one.', 'Day 1: a warm start.', 'Day 2: hotter still.', 'Day 3: that is a heatwave!'];
+    var caps = ['Tap to begin on day one.', 'Day 1: warm. Manageable. Everyone is pretending it is fine.', 'Day 2: hotter. The air is getting ideas.', 'Day 3: heatwave territory. Weather, please calm down.'];
     dayCaption.textContent = caps[day];
   });
 
   // quiz
   var quiz = [
-    { q: 'The Sun is much closer to us in summer, and that is why it is hotter.', answer: 'myth', why: 'Myth. The distance barely changes. Summer is hotter because our half of the planet leans toward the Sun.' },
-    { q: 'A heatwave happens when high pressure traps warm air over us for days.', answer: 'fact', why: 'Fact. High pressure acts like a lid and the warmth builds up day after day.' },
-    { q: 'Fizzy drinks are the best way to cool your body down.', answer: 'myth', why: 'Myth. Plain water is the real hero for keeping cool.' },
-    { q: 'Very hot days like today are becoming more common as the world warms up.', answer: 'fact', why: 'Fact. As the planet warms, extreme heat happens more often. Our choices can help.' }
+    { q: 'The Sun is much closer to us in summer, and that is why it is hotter.', answer: 'myth', why: 'Myth. The distance is not the main thing. Summer is hotter because our half of the planet leans toward the Sun. Earth: tilted and causing admin.' },
+    { q: 'A heatwave happens when high pressure traps warm air over us for days.', answer: 'fact', why: 'Fact. High pressure acts like a lid and the warmth builds day after day. Weather saucepan. Deeply unnecessary.' },
+    { q: 'Fizzy drinks are the best way to cool your body down.', answer: 'myth', why: 'Myth. Plain water is the main character here. Fizzy drinks can sit down.' },
+    { q: 'Very hot days like today are becoming more common as the world warms up.', answer: 'fact', why: 'Fact. As the planet warms, extreme heat happens more often. Our choices still matter, which is rude but hopeful.' }
   ];
   var qi = 0;
   var quizQ = document.getElementById('quizQ');
@@ -628,7 +698,7 @@
     var item = quiz[qi];
     var correct = choice === item.answer;
     quizFeedback.className = 'feedback ' + (correct ? 'right' : 'close');
-    quizFeedback.textContent = (correct ? 'Nice one! ' : 'Good try. ') + item.why;
+    quizFeedback.textContent = (correct ? 'Correct. Science accepts your offering. ' : 'Not quite. The weather remains confusing. ') + item.why;
     btnFact.disabled = true; btnMyth.disabled = true;
     quizNext.textContent = qi < quiz.length - 1 ? 'Next question' : 'Start again';
     quizNextRow.style.display = 'flex';
@@ -640,12 +710,12 @@
 
   // stay cool reveal cards
   var coolItems = [
-    { emoji: '💧', name: 'Water', tip: 'Sip water often, even before you feel thirsty.' },
-    { emoji: '🪟', name: 'Curtains', tip: 'Close curtains on the sunny side to keep rooms cooler.' },
-    { emoji: '👕', name: 'Light clothes', tip: 'Loose, pale clothes help your body let go of heat.' },
-    { emoji: '🏠', name: 'Cool spot', tip: 'Find the coolest room, often a shady one downstairs.' },
-    { emoji: '🐢', name: 'Take it slow', tip: 'Save running about for the cooler evening.' },
-    { emoji: '🐶', name: 'Others too', tip: 'Check pets and people around you have water and shade.' }
+    { emoji: '💧', name: 'Water', tip: 'Sip water often, even before you feel thirsty. Hydration: boring but elite.' },
+    { emoji: '🪟', name: 'Curtains', tip: 'Close curtains on the sunny side. Make your room mysteriously cave-like.' },
+    { emoji: '👕', name: 'Light clothes', tip: 'Loose, pale clothes help your body let go of heat. Fashion can cope.' },
+    { emoji: '🏠', name: 'Cool spot', tip: 'Find the coolest room, often a shady one downstairs. Become a sensible lizard.' },
+    { emoji: '🐢', name: 'Take it slow', tip: 'Save running about for the cooler evening. Your PE teacher is not here.' },
+    { emoji: '🐶', name: 'Others too', tip: 'Check pets and people around you have water and shade. Be the responsible side character.' }
   ];
   var coolGrid = document.getElementById('coolGrid');
   coolItems.forEach(function (c) {
@@ -658,12 +728,12 @@
 
   // spot the cool ideas
   var checkItems = [
-    { emoji: '💧', name: 'Drink water', good: true, mark: 'Yes! The best one.' },
-    { emoji: '🌳', name: 'Find shade', good: true, mark: 'Yes, lovely and cool.' },
-    { emoji: '🧣', name: 'Woolly jumper', good: false, mark: 'Maybe save that for winter!' },
-    { emoji: '🪟', name: 'Close curtains', good: true, mark: 'Yes, keeps rooms cooler.' },
-    { emoji: '🏃', name: 'Sprint at noon', good: false, mark: 'Better to rest in the heat.' },
-    { emoji: '🧢', name: 'Sun hat', good: true, mark: 'Yes, shades your head.' }
+    { emoji: '💧', name: 'Drink water', good: true, mark: 'Yes. Boring. Correct. Iconic.' },
+    { emoji: '🌳', name: 'Find shade', good: true, mark: 'Yes. Trees understood the assignment.' },
+    { emoji: '🧣', name: 'Woolly jumper', good: false, mark: 'Bold choice. Terrible, but bold.' },
+    { emoji: '🪟', name: 'Close curtains', good: true, mark: 'Yes. Block the giant sky lamp.' },
+    { emoji: '🏃', name: 'Sprint at noon', good: false, mark: 'Absolutely not. Main-character mistake.' },
+    { emoji: '🧢', name: 'Sun hat', good: true, mark: 'Yes. Tiny roof for your head.' }
   ];
   var checkGrid = document.getElementById('checkGrid');
   checkItems.forEach(function (c) {
@@ -678,22 +748,61 @@
   });
 
   // reflection
+  var studentName = document.getElementById('studentName');
   var reflection = document.getElementById('reflection');
+  if (typeof state.studentName === 'string') studentName.value = state.studentName;
   if (typeof state.reflection === 'string') reflection.value = state.reflection;
+  studentName.addEventListener('input', function () { state.studentName = studentName.value; saveState(state); });
   reflection.addEventListener('input', function () { state.reflection = reflection.value; saveState(state); });
+
+  Array.prototype.slice.call(document.querySelectorAll('.chip')).forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      var starter = chip.getAttribute('data-starter') || '';
+      if (reflection.value && reflection.value.slice(-1) !== ' ') reflection.value += '\n';
+      reflection.value += starter;
+      reflection.focus();
+      state.reflection = reflection.value; saveState(state);
+    });
+  });
+
+  function buildReport() {
+    var name = studentName.value.trim() || 'Someone mysterious';
+    var body = reflection.value.trim() || '(I did not write anything yet. Extremely mysterious.)';
+    return 'Why Is It So Hot? - Base 6 report\n\n' +
+           'Name: ' + name + '\n\n' +
+           'My answer:\n' + body + '\n\n' +
+           'Tiny science summary:\n' +
+           '- Heat starts with the Sun. Shocking but true.\n' +
+           '- Summer is hotter because our half of Earth leans toward the Sun.\n' +
+           '- Heatwaves happen when hot weather sticks around for several days.\n' +
+           '- Water, shade, light clothes and taking it slow are actually useful.\n';
+  }
+
   document.getElementById('sendJay').addEventListener('click', function () {
-    var body = reflection.value.trim() || '(I did not write anything yet)';
     var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(EMAIL) +
-              '&su=' + encodeURIComponent('Why Is It So Hot? from Base 6') + '&body=' + encodeURIComponent(body);
+              '&su=' + encodeURIComponent('Why Is It So Hot? from Base 6') + '&body=' + encodeURIComponent(buildReport());
     window.open(url, '_blank');
   });
   var copiedNote = document.getElementById('copiedNote');
   document.getElementById('copyBtn').addEventListener('click', function () {
-    var text = reflection.value;
+    var text = buildReport();
     function done() { copiedNote.style.display = 'block'; setTimeout(function () { copiedNote.style.display = 'none'; }, 2500); }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(done, function () { reflection.select(); done(); });
     } else { reflection.select(); try { document.execCommand('copy'); } catch (e) {} done(); }
+  });
+  document.getElementById('downloadBtn').addEventListener('click', function () {
+    var blob = new Blob([buildReport()], { type: 'text/plain' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'why-is-it-so-hot-report.txt';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  });
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    if (!confirm('Reset this activity? The weather will still be dramatic, but your answers will clear.')) return;
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    window.location.reload();
   });
 
   render();
