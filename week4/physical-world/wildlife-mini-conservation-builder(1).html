@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini-Conservation Builder · Physical World & Exploration · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root { --green:#6b8e23; --green-dark:#4f6f16; --green-soft:#eef6e4; --teal:#007291; --orange:#ef7724; --cream:#fef8f4; --line:#e0d8d0; }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:var(--cream); color:#1a1a1a; min-height:100vh; }
+  .site-header { background:var(--green); padding:1.25rem 2rem; }
+  .back-link { color:#fff; font-size:0.9rem; font-weight:700; text-decoration:none; opacity:0.9; }
+  .back-link:hover { opacity:1; }
+  .hero { background:var(--green); padding:1.4rem 2rem 2.1rem; text-align:center; }
+  .hero .subject-label { font-size:0.85rem; font-weight:700; color:#fff; opacity:0.88; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.45rem; }
+  .hero h1 { font-size:1.95rem; font-weight:700; color:#fff; line-height:1.2; }
+  .hero p { font-size:0.96rem; color:#fff; opacity:0.94; max-width:620px; margin:0.55rem auto 0; line-height:1.55; }
+  .main { max-width:900px; margin:0 auto; padding:1.4rem 1.5rem 4rem; }
+
+  .progress { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.2rem; position:sticky; top:0; background:var(--cream); padding:0.7rem 0; z-index:6; }
+  .pchip { font-size:0.72rem; font-weight:700; padding:5px 11px; border-radius:20px; background:#f0ede8; color:#999; border:1.5px solid #e0d8d0; }
+  .pchip.active { background:#edf7df; color:var(--green-dark); border-color:#b9d99b; }
+  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; }
+
+  .stage { display:none; } .stage.show { display:block; }
+  .stage-card { background:#fff; border:2px solid var(--line); border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .stage-eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--green); margin-bottom:0.3rem; }
+  .stage-card h2 { font-size:1.25rem; font-weight:700; color:var(--teal); line-height:1.25; margin-bottom:0.5rem; }
+  .intro { font-size:0.95rem; color:#444; line-height:1.65; margin-bottom:1rem; }
+  .mini-label { font-size:0.86rem; font-weight:700; color:#555; margin:0.6rem 0 0.35rem; }
+
+  .ranger-say { display:flex; gap:0.7rem; align-items:flex-start; background:var(--green-soft); border:2px solid #b9d99b; border-radius:14px; padding:0.85rem 1rem; margin:0.7rem 0 1rem; }
+  .ranger-face { font-size:2rem; line-height:1; }
+  .ranger-say .bubble { font-size:0.98rem; line-height:1.55; color:#2c4a18; }
+
+  .toggle-row, .button-row { display:flex; gap:0.55rem; flex-wrap:wrap; margin:0.75rem 0; }
+  .toggle-btn, .small-btn, .next-btn, .action-btn, .ghost-btn { font-family:inherit; font-weight:700; border-radius:9px; cursor:pointer; }
+  .toggle-btn { flex:1 1 170px; font-size:0.95rem; padding:0.75rem; border:2px solid #cbb9a8; background:#fff; color:#6a5a4a; }
+  .toggle-btn.on { background:var(--green); border-color:var(--green); color:#fff; }
+  .small-btn { font-size:0.82rem; padding:0.45rem 0.8rem; border:1.5px solid #b9d99b; background:#f7fff0; color:var(--green-dark); }
+  .small-btn:hover { border-color:var(--green); }
+  .next-btn, .action-btn { font-size:0.92rem; padding:0.65rem 1.4rem; border:none; color:#fff; background:var(--teal); margin-top:1rem; }
+  .next-btn:hover, .action-btn:hover { background:#00576e; }
+  .ghost-btn { font-size:0.9rem; padding:0.65rem 1.2rem; border:2px solid var(--teal); color:var(--teal); background:#fff; margin-top:1rem; }
+  .ghost-btn:hover { background:#e8f2f7; }
+
+  .site-preview { background:#faf6f1; border:1.5px solid #ece3da; border-radius:14px; padding:1rem; display:flex; gap:0.8rem; align-items:center; margin-top:0.8rem; }
+  .site-preview .big { font-size:2.4rem; }
+  .site-preview strong { color:var(--green-dark); }
+  .site-preview p { font-size:0.9rem; color:#555; line-height:1.55; }
+
+  .builder-wrap { display:grid; grid-template-columns:minmax(240px, 320px) 1fr; gap:1rem; align-items:start; }
+  .palette, .analysis-panel { background:#faf6f1; border:1.5px solid #ece3da; border-radius:14px; padding:0.9rem; }
+  .palette-title { font-size:0.78rem; text-transform:uppercase; letter-spacing:0.07em; font-weight:700; color:#7a6b5b; margin-bottom:0.65rem; }
+  .item-card { width:100%; text-align:left; background:#fff; border:2px solid #d8c8b8; border-radius:12px; padding:0.65rem 0.7rem; margin-bottom:0.5rem; cursor:grab; display:flex; gap:0.55rem; align-items:flex-start; font-family:inherit; }
+  .item-card:hover, .item-card.sel { border-color:var(--green); box-shadow:0 0 0 3px #dceec4; }
+  .item-card.used { opacity:0.48; cursor:not-allowed; }
+  .item-emoji { font-size:1.55rem; line-height:1; }
+  .item-name { font-size:0.9rem; font-weight:700; color:#1a1a1a; display:block; }
+  .item-tags { display:flex; gap:0.25rem; flex-wrap:wrap; margin-top:0.3rem; }
+  .tag { font-size:0.66rem; border-radius:20px; padding:1px 7px; background:#edf7df; color:var(--green-dark); border:1px solid #cce4ad; font-weight:700; }
+  .item-hint { font-size:0.77rem; color:#666; line-height:1.35; margin-top:0.25rem; }
+
+  .plot-card { background:#fff; border:2px solid var(--line); border-radius:16px; padding:1rem; }
+  .plot-top { display:flex; justify-content:space-between; gap:0.8rem; align-items:flex-start; flex-wrap:wrap; margin-bottom:0.8rem; }
+  .plot-top h3 { font-size:1rem; color:var(--teal); }
+  .plot-top p { font-size:0.82rem; color:#555; line-height:1.45; }
+  .count-pill { font-size:0.78rem; font-weight:700; color:var(--green-dark); background:#edf7df; border:1.5px solid #b9d99b; border-radius:20px; padding:0.35rem 0.7rem; white-space:nowrap; }
+  .plot { display:grid; grid-template-columns:repeat(3, minmax(82px, 1fr)); gap:0.55rem; background:#dfeacc; padding:0.7rem; border-radius:14px; border:2px solid #b9d99b; }
+  .cell { min-height:92px; border:2px dashed #9ebd71; border-radius:12px; background:#f7fff0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.25rem; padding:0.45rem; cursor:pointer; text-align:center; }
+  .cell.hot { box-shadow:0 0 0 4px rgba(107,142,35,0.25); background:#fff; }
+  .cell.full { border-style:solid; background:#fff; }
+  .cell .emoji { font-size:2rem; line-height:1; }
+  .cell .name { font-size:0.76rem; font-weight:700; color:#394b16; line-height:1.25; }
+  .cell .remove { font-size:0.68rem; color:#777; }
+  .plot-note { font-size:0.82rem; color:#555; line-height:1.5; margin-top:0.7rem; }
+
+  .meter { margin:0.55rem 0; }
+  .meter-label { display:flex; justify-content:space-between; font-size:0.82rem; font-weight:700; color:#555; margin-bottom:0.25rem; }
+  .bar { height:12px; background:#ece3da; border-radius:12px; overflow:hidden; border:1px solid #ddd2c7; }
+  .bar-fill { height:100%; width:0%; background:var(--green); border-radius:12px; transition:width 0.2s; }
+  .wildlife-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:0.55rem; margin-top:0.75rem; }
+  .animal-card { background:#fff; border:1.5px solid #e2d8cc; border-radius:12px; padding:0.65rem; min-height:92px; }
+  .animal-card strong { display:block; color:#1a1a1a; font-size:0.88rem; line-height:1.25; }
+  .animal-card .animal-icon { font-size:1.65rem; display:block; margin-bottom:0.25rem; }
+  .animal-card .chance { display:inline-block; margin-top:0.4rem; font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:20px; background:#f0ede8; color:#777; }
+  .animal-card.medium { border-color:#b9d99b; background:#f7fff0; }
+  .animal-card.high { border-color:var(--green); background:#edf7df; }
+  .animal-card.medium .chance, .animal-card.high .chance { background:#fff; color:var(--green-dark); border:1px solid #cce4ad; }
+  .reason-list { list-style:none; margin:0.8rem 0 0; }
+  .reason-list li { font-size:0.86rem; color:#444; line-height:1.5; padding:0.35rem 0 0.35rem 1.45rem; position:relative; }
+  .reason-list li::before { content:'•'; position:absolute; left:0.35rem; color:var(--green); font-weight:700; }
+
+  .data-table { width:100%; border-collapse:collapse; margin:0.8rem 0 0; background:#fff; border-radius:12px; overflow:hidden; }
+  .data-table th, .data-table td { border:1px solid #e6ddd4; padding:0.55rem; font-size:0.84rem; text-align:left; }
+  .data-table th { background:#edf7df; color:var(--green-dark); font-weight:700; }
+  .data-table td:last-child { font-weight:700; color:var(--teal); }
+
+  textarea, input[type=text], select { font-family:inherit; font-size:0.96rem; width:100%; padding:0.7rem 0.85rem; border:2px solid var(--teal); border-radius:10px; background:#fff; outline:none; line-height:1.55; }
+  textarea { min-height:110px; resize:vertical; }
+  textarea:focus, input[type=text]:focus, select:focus { border-color:var(--green); }
+  .wordbank { display:flex; gap:0.4rem; flex-wrap:wrap; margin:0.6rem 0; }
+  .bank-btn { font-family:inherit; font-size:0.8rem; font-weight:700; padding:0.4rem 0.75rem; border-radius:18px; cursor:pointer; border:1.5px solid #cce4ad; background:#f7fff0; color:var(--green-dark); }
+  .bank-btn:hover { background:#edf7df; }
+
+  .checklist { list-style:none; margin:0.8rem 0 0; }
+  .checklist li { font-size:0.9rem; line-height:1.6; padding:0.3rem 0 0.3rem 1.7rem; position:relative; color:#888; }
+  .checklist li::before { content:"○"; position:absolute; left:0; font-weight:700; color:#c8b6a4; }
+  .checklist li.met { color:#1a5e1a; } .checklist li.met::before { content:"✓"; color:#2e8b57; }
+
+  .tip-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:0.7rem; margin-top:0.7rem; }
+  .tip-card { background:#faf6f1; border:1.5px solid #ece3da; border-radius:12px; padding:0.8rem; }
+  .tip-card h3 { font-size:0.92rem; color:var(--teal); margin-bottom:0.35rem; }
+  .tip-card p { font-size:0.82rem; color:#555; line-height:1.45; }
+  .tip-card button { margin-top:0.55rem; }
+
+  .send-card { background:#f7fff0; border:2px solid #b9d99b; border-radius:14px; padding:1.3rem 1.5rem; margin-top:1.2rem; text-align:center; }
+  .send-card p { font-size:0.92rem; color:#555; line-height:1.6; margin-bottom:0.9rem; }
+  .notify { display:none; margin-top:0.9rem; font-size:0.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:0.65rem 1rem; line-height:1.5; }
+  .notify.show { display:block; }
+  .report-box { background:#fff; border:2px solid var(--line); border-radius:14px; padding:1rem; margin-top:0.8rem; }
+  .report-box h3 { color:var(--teal); font-size:1rem; margin-bottom:0.55rem; }
+  .report-box p { font-size:0.9rem; color:#444; line-height:1.55; margin:0.3rem 0; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, .item-card:focus-visible, .cell:focus-visible { outline:3px solid var(--teal); outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:0.8rem; color:#888; border-top:1px solid #e0d8d0; }
+
+  @media (max-width:760px) { .builder-wrap { grid-template-columns:1fr; } .plot { grid-template-columns:repeat(3, minmax(70px, 1fr)); } .cell { min-height:80px; } }
+
+  @media print {
+    body { background:#fff; color:#000; }
+    .site-header, .progress, .next-btn, .ghost-btn, .action-btn, .small-btn, .palette, .no-print, .wordbank { display:none !important; }
+    .hero { background:#fff; border-bottom:2px solid #000; padding:0 0 1rem; }
+    .hero .subject-label, .hero h1, .hero p { color:#000; }
+    .main { max-width:none; padding:0.5rem; }
+    .stage { display:block !important; page-break-inside:avoid; }
+    .stage-card, .send-card, .report-box, .plot-card { border:1.5px solid #000; page-break-inside:avoid; }
+    .builder-wrap { display:block; }
+    textarea { border:1px solid #000; min-height:70px; }
+    .cell { min-height:70px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header"><a class="back-link" href="index.html">← Physical World &amp; Exploration</a></header>
+
+<div class="hero">
+  <p class="subject-label">Physical World &amp; Exploration · Wildlife Exploration</p>
+  <h1>🦋 Mini-Conservation Builder</h1>
+  <p>Create a tiny wildlife-friendly area in a digital simulation. Choose habitat items, predict visitors, and explain how biodiversity could change.</p>
+</div>
+
+<main class="main">
+  <div class="progress" id="progress"></div>
+
+  <section class="stage" id="stage-1">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 1 of 5 · Mission</p>
+      <h2>Choose your starting space</h2>
+      <div class="ranger-say"><span class="ranger-face">🧭</span><span class="bubble">"A conservation area does not have to be huge. A small space can still offer food, water, shelter and safe places for wildlife."</span></div>
+      <p class="intro">Pick one digital starting space. Then you will build it up using conservation items.</p>
+      <div class="toggle-row" id="siteChoices"></div>
+      <div class="site-preview" id="sitePreview"></div>
+      <button class="next-btn" onclick="goStage(2)">Start building →</button>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-2">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 2 of 5 · Build</p>
+      <h2>Add conservation items</h2>
+      <p class="intro">Tap an item to add it, or drag it into the grid. You can choose up to six. Tap a placed item to remove it.</p>
+      <div class="builder-wrap">
+        <div class="palette">
+          <p class="palette-title">Habitat items</p>
+          <div id="palette"></div>
+        </div>
+        <div class="plot-card">
+          <div class="plot-top">
+            <div>
+              <h3 id="plotTitle">Your mini-conservation area</h3>
+              <p id="plotHint">Try to include food, water and shelter.</p>
+            </div>
+            <span class="count-pill" id="chosenCount">0 / 6 chosen</span>
+          </div>
+          <div class="plot" id="plot" aria-label="Habitat building grid"></div>
+          <p class="plot-note" id="plotNote">The calculator updates as you build.</p>
+          <div class="button-row no-print">
+            <button class="ghost-btn" onclick="clearPlot()" type="button">Reset my area</button>
+            <button class="next-btn" onclick="goStage(3)" type="button">See wildlife forecast →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-3">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 3 of 5 · Wildlife Forecast</p>
+      <h2>What might your area attract?</h2>
+      <p class="intro">This is a simulation. It uses your items to estimate likely wildlife groups.</p>
+      <div class="analysis-panel">
+        <div id="resourceMeters"></div>
+        <div class="wildlife-grid" id="animalGrid"></div>
+        <ul class="reason-list" id="reasonList"></ul>
+      </div>
+      <button class="next-btn" onclick="goStage(4)">Improve the design →</button>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-4">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 4 of 5 · Improve</p>
+      <h2>Make one careful improvement</h2>
+      <p class="intro">Look at your forecast. What would help your conservation area become more balanced?</p>
+      <div class="tip-grid" id="tips"></div>
+      <p class="mini-label">Explain your design choice:</p>
+      <div class="wordbank">
+        <button class="bank-btn" type="button" onclick="insertWord('reasonText','I chose')">+ I chose</button>
+        <button class="bank-btn" type="button" onclick="insertWord('reasonText','because it gives')">+ because it gives</button>
+        <button class="bank-btn" type="button" onclick="insertWord('reasonText','food')">+ food</button>
+        <button class="bank-btn" type="button" onclick="insertWord('reasonText','water')">+ water</button>
+        <button class="bank-btn" type="button" onclick="insertWord('reasonText','shelter')">+ shelter</button>
+      </div>
+      <textarea id="reasonText" data-save="reasonText" placeholder="I chose these items because…"></textarea>
+      <ul class="checklist" id="buildCheck">
+        <li data-ck="four">Choose at least four items</li>
+        <li data-ck="food">Include food</li>
+        <li data-ck="water">Include water</li>
+        <li data-ck="shelter">Include shelter</li>
+        <li data-ck="reason">Write a reason</li>
+      </ul>
+      <button class="next-btn" onclick="goStage(5)">Record changes →</button>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-5">
+    <div class="stage-card">
+      <p class="stage-eyebrow">Stage 5 of 5 · Record and Analyse</p>
+      <h2>Your biodiversity prediction</h2>
+      <p class="intro">Compare the starting space with your improved conservation area. Which wildlife group changes the most?</p>
+      <table class="data-table" aria-label="Predicted biodiversity changes">
+        <thead><tr><th>Wildlife group</th><th>Before</th><th>After</th><th>Change</th></tr></thead>
+        <tbody id="dataRows"></tbody>
+      </table>
+      <p class="mini-label">My analysis:</p>
+      <div class="wordbank">
+        <button class="bank-btn" type="button" onclick="insertWord('analysisText','The biggest change is')">+ The biggest change is</button>
+        <button class="bank-btn" type="button" onclick="insertWord('analysisText','I think this happened because')">+ I think this happened because</button>
+        <button class="bank-btn" type="button" onclick="insertWord('analysisText','more biodiversity')">+ more biodiversity</button>
+        <button class="bank-btn" type="button" onclick="insertWord('analysisText','habitat')">+ habitat</button>
+      </div>
+      <textarea id="analysisText" data-save="analysisText" placeholder="The biggest change is…"></textarea>
+
+      <p class="mini-label">Optional real-world extension idea:</p>
+      <select id="extensionPick" data-save="extensionPick">
+        <option value="">choose one…</option>
+        <option value="Look for a safe place where a small water saucer could go.">Look for a safe place where a small water saucer could go.</option>
+        <option value="Draw a real mini-conservation area for a window box or tray.">Draw a real mini-conservation area for a window box or tray.</option>
+        <option value="Notice one outdoor space and list what wildlife might need there.">Notice one outdoor space and list what wildlife might need there.</option>
+        <option value="Ask an adult before making any real wildlife changes outside.">Ask an adult before making any real wildlife changes outside.</option>
+      </select>
+
+      <div class="report-box" id="reportBox">
+        <h3>Report summary</h3>
+        <p id="reportSite">Starting space: —</p>
+        <p id="reportItems">Items: —</p>
+        <p id="reportVisitors">Top predicted visitors: —</p>
+        <p id="reportChange">Biggest predicted change: —</p>
+      </div>
+    </div>
+
+    <div class="send-card">
+      <p>Save your report as a PDF, or send your work to Jay.</p>
+      <div class="button-row" style="justify-content:center">
+        <button class="action-btn" onclick="saveAsPdf()" type="button">🖨️ Save as PDF</button>
+        <button class="action-btn" onclick="emailWork()" type="button">📧 Send my work to Jay</button>
+      </div>
+      <div class="notify" id="notify"></div>
+    </div>
+  </section>
+</main>
+
+<footer>Base 6 · Chilton Bridge School · Physical World &amp; Exploration</footer>
+
+<script>
+const STORE_KEY = 'base6_physical_wildlife_mini_conservation_builder';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+const DONE_KEY = 'base6Done-week4-day4';
+const DONE_ID = 'physical-wildlife-mini-conservation';
+const MAX_ITEMS = 6;
+
+const SITES = [
+  { id:'bare', icon:'🟫', name:'Bare patch', desc:'A plain patch with space to add new habitats.' },
+  { id:'corner', icon:'🧱', name:'Quiet corner', desc:'A tucked-away corner that could become safer for wildlife.' },
+  { id:'tray', icon:'🪴', name:'Container tray', desc:'A small contained space, like a pot, tray or window box.' }
+];
+
+const ITEMS = [
+  { id:'wildflowers', icon:'🌼', name:'Wildflowers', tags:['food'], hint:'Nectar and pollen.', res:{food:4,water:0,shelter:1,nesting:0}, boost:{bees:4,butterflies:3,ladybirds:1,birds:1}, reason:'Wildflowers add nectar and pollen for pollinators.' },
+  { id:'water', icon:'💧', name:'Pebble water dish', tags:['water'], hint:'A safe shallow drink.', res:{food:0,water:5,shelter:0,nesting:0}, boost:{bees:2,birds:2,frogs:2,hedgehogs:2,dragonflies:1}, reason:'A shallow water dish helps birds, insects and small mammals drink.' },
+  { id:'logpile', icon:'🪵', name:'Log pile', tags:['shelter','food'], hint:'Damp hiding places.', res:{food:2,water:0,shelter:4,nesting:1}, boost:{beetles:4,worms:1,spiders:2,frogs:2,hedgehogs:2,birds:1}, reason:'A log pile creates hiding places and supports tiny invertebrates.' },
+  { id:'leaflitter', icon:'🍂', name:'Leaf litter', tags:['shelter','food'], hint:'A soft layer of leaves.', res:{food:3,water:0,shelter:3,nesting:0}, boost:{worms:3,beetles:3,spiders:2,hedgehogs:1,birds:1}, reason:'Leaf litter gives small creatures food and cover.' },
+  { id:'longgrass', icon:'🌾', name:'Long grass', tags:['shelter'], hint:'Cover and movement space.', res:{food:1,water:0,shelter:4,nesting:2}, boost:{butterflies:1,spiders:3,beetles:1,hedgehogs:1,birds:1}, reason:'Long grass makes cover for insects and small animals.' },
+  { id:'berryhedge', icon:'🌳', name:'Berry hedge', tags:['food','shelter'], hint:'Berries, insects and cover.', res:{food:4,water:0,shelter:4,nesting:3}, boost:{birds:4,bees:1,butterflies:1,hedgehogs:2,spiders:1}, reason:'A berry hedge offers food, cover and nesting space.' },
+  { id:'birdbox', icon:'🏠', name:'Bird box', tags:['nesting'], hint:'A safe nesting spot.', res:{food:0,water:0,shelter:2,nesting:5}, boost:{birds:5}, reason:'A bird box can add a safe nesting place for small birds.' },
+  { id:'insecthotel', icon:'🏨', name:'Insect hotel', tags:['nesting','shelter'], hint:'Holes and tubes for insects.', res:{food:0,water:0,shelter:3,nesting:4}, boost:{bees:3,ladybirds:3,beetles:1,spiders:1}, reason:'An insect hotel gives some insects shelter and nesting spaces.' },
+  { id:'stonepile', icon:'🪨', name:'Stone pile', tags:['shelter'], hint:'Cool gaps and shade.', res:{food:0,water:0,shelter:3,nesting:1}, boost:{spiders:3,beetles:2,frogs:1}, reason:'Stones create small gaps where cool, damp wildlife can shelter.' },
+  { id:'baresoil', icon:'🟤', name:'Bare soil patch', tags:['nesting'], hint:'Open soil for burrowing insects.', res:{food:0,water:0,shelter:1,nesting:3}, boost:{bees:3,beetles:1,spiders:1}, reason:'Bare soil can help ground-nesting insects.' },
+  { id:'compost', icon:'♻️', name:'Compost corner', tags:['food','shelter'], hint:'Rotting plant material.', res:{food:4,water:0,shelter:2,nesting:1}, boost:{worms:4,beetles:2,hedgehogs:1,birds:1}, reason:'Compost supports worms and other invertebrates.' }
+];
+
+const ANIMALS = [
+  { id:'bees', icon:'🐝', name:'Bees' },
+  { id:'butterflies', icon:'🦋', name:'Butterflies' },
+  { id:'beetles', icon:'🪲', name:'Beetles' },
+  { id:'ladybirds', icon:'🐞', name:'Ladybirds' },
+  { id:'birds', icon:'🐦', name:'Small birds' },
+  { id:'frogs', icon:'🐸', name:'Frogs / toads' },
+  { id:'hedgehogs', icon:'🦔', name:'Hedgehogs' },
+  { id:'worms', icon:'🪱', name:'Worms' },
+  { id:'spiders', icon:'🕷️', name:'Spiders' },
+  { id:'dragonflies', icon:'💧', name:'Dragonflies' }
+];
+
+const BASELINE = { bees:1, butterflies:0, beetles:1, ladybirds:0, birds:1, frogs:0, hedgehogs:0, worms:1, spiders:1, dragonflies:0 };
+let state = { stage:1, site:'bare', placed:Array(9).fill(null), selected:'', fields:{} };
+try {
+  const stored = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+  if(stored) state = Object.assign(state, stored);
+} catch(e) {}
+if(!Array.isArray(state.placed)) state.placed = Array(9).fill(null);
+while(state.placed.length < 9) state.placed.push(null);
+state.placed = state.placed.slice(0,9);
+if(!state.fields) state.fields = {};
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+
+const PLABELS = ['Mission','Build','Forecast','Improve','Report'];
+function renderProgress(){
+  const p=document.getElementById('progress'); p.innerHTML='';
+  PLABELS.forEach((lab,i)=>{ const n=i+1; const c=document.createElement('span');
+    c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':''); c.textContent=n+'. '+lab; p.appendChild(c); });
+}
+function goStage(n){
+  state.stage=Math.max(state.stage,n); save();
+  for(let i=1;i<=5;i++){ const el=document.getElementById('stage-'+i); if(el) el.classList.toggle('show', i<=state.stage); }
+  renderProgress(); renderAll();
+  const t=document.getElementById('stage-'+n); if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function itemById(id){ return ITEMS.find(x=>x.id===id); }
+function animalById(id){ return ANIMALS.find(x=>x.id===id); }
+function chosenIds(){ return state.placed.filter(Boolean); }
+function chosenItems(){ return chosenIds().map(itemById).filter(Boolean); }
+
+function renderSites(){
+  const row=document.getElementById('siteChoices'); row.innerHTML='';
+  SITES.forEach(s=>{
+    const b=document.createElement('button'); b.className='toggle-btn'+(state.site===s.id?' on':''); b.type='button';
+    b.textContent=s.icon+' '+s.name;
+    b.onclick=()=>{ state.site=s.id; save(); renderSites(); renderReport(); };
+    row.appendChild(b);
+  });
+  const s=SITES.find(x=>x.id===state.site) || SITES[0];
+  const prev=document.getElementById('sitePreview');
+  prev.innerHTML='<span class="big">'+s.icon+'</span><div><strong>'+s.name+'</strong><p>'+s.desc+'</p></div>';
+}
+
+function renderPalette(){
+  const pal=document.getElementById('palette'); pal.innerHTML='';
+  const used = new Set(chosenIds());
+  ITEMS.forEach(it=>{
+    const b=document.createElement('div');
+    b.className='item-card'+(state.selected===it.id?' sel':'')+(used.has(it.id)?' used':'');
+    b.setAttribute('role','button'); b.setAttribute('tabindex','0'); b.setAttribute('draggable', used.has(it.id) ? 'false' : 'true');
+    b.dataset.item=it.id;
+    b.innerHTML='<span class="item-emoji">'+it.icon+'</span><span><span class="item-name">'+it.name+'</span><span class="item-tags">'+it.tags.map(t=>'<span class="tag">'+t+'</span>').join('')+'</span><span class="item-hint">'+it.hint+'</span></span>';
+    b.addEventListener('click',()=>{ if(!used.has(it.id)) addItem(it.id); });
+    b.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&!used.has(it.id)){ e.preventDefault(); addItem(it.id); } });
+    b.addEventListener('dragstart',e=>{ if(used.has(it.id)){ e.preventDefault(); return; } e.dataTransfer.setData('text/plain', it.id); state.selected=it.id; save(); renderPalette(); });
+    pal.appendChild(b);
+  });
+}
+
+function renderPlot(){
+  const plot=document.getElementById('plot'); plot.innerHTML='';
+  state.placed.forEach((id,idx)=>{
+    const cell=document.createElement('div'); cell.className='cell'+(id?' full':''); cell.setAttribute('tabindex','0'); cell.dataset.idx=idx;
+    const it=itemById(id);
+    if(it) cell.innerHTML='<span class="emoji">'+it.icon+'</span><span class="name">'+it.name+'</span><span class="remove">tap to remove</span>';
+    else cell.innerHTML='<span class="emoji">＋</span><span class="name">empty space</span>';
+    cell.addEventListener('click',()=>{ if(id) removeAt(idx); else if(state.selected) addItem(state.selected, idx); });
+    cell.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); if(id) removeAt(idx); else if(state.selected) addItem(state.selected, idx); } });
+    cell.addEventListener('dragover',e=>{ e.preventDefault(); cell.classList.add('hot'); });
+    cell.addEventListener('dragleave',()=>cell.classList.remove('hot'));
+    cell.addEventListener('drop',e=>{ e.preventDefault(); cell.classList.remove('hot'); const itemId=e.dataTransfer.getData('text/plain')||state.selected; if(itemId) addItem(itemId, idx); });
+    plot.appendChild(cell);
+  });
+  document.getElementById('chosenCount').textContent=chosenIds().length+' / '+MAX_ITEMS+' chosen';
+  document.getElementById('plotNote').textContent = chosenIds().length ? 'Chosen: '+chosenItems().map(x=>x.name).join(', ') : 'The calculator updates as you build.';
+}
+
+function addItem(id, idx){
+  if(chosenIds().includes(id)){ note('That item is already in your area.'); return; }
+  if(chosenIds().length >= MAX_ITEMS){ note('You have filled your mini area. Remove one item to swap.'); return; }
+  let pos = (idx !== undefined && idx !== null && !state.placed[idx]) ? idx : state.placed.findIndex(x=>!x);
+  if(pos < 0){ note('There is no empty space yet.'); return; }
+  state.placed[pos]=id; state.selected=''; save(); renderAll();
+}
+function removeAt(idx){ state.placed[idx]=null; save(); renderAll(); }
+function clearPlot(){ state.placed=Array(9).fill(null); state.selected=''; save(); renderAll(); }
+
+function analyse(){
+  const animals={}; const res={food:0, water:0, shelter:0, nesting:0}; const reasons=[];
+  ANIMALS.forEach(a=>animals[a.id]=0);
+  chosenItems().forEach(it=>{
+    Object.keys(res).forEach(k=>res[k]+=it.res[k]||0);
+    Object.keys(it.boost).forEach(k=>animals[k]=(animals[k]||0)+it.boost[k]);
+    reasons.push(it.reason);
+  });
+  const have = new Set(chosenIds());
+  if(have.has('water') && have.has('logpile')) { animals.frogs += 2; reasons.push('Water plus logs is especially helpful for damp shelter.'); }
+  if(have.has('wildflowers') && have.has('insecthotel')) { animals.bees += 2; animals.ladybirds += 1; reasons.push('Flowers plus an insect hotel support pollinators and helpful insects.'); }
+  if(have.has('berryhedge') && have.has('water')) { animals.birds += 2; reasons.push('Birds do better when food, water and cover are close together.'); }
+  if(have.has('leaflitter') && have.has('logpile')) { animals.beetles += 2; animals.hedgehogs += 1; reasons.push('Leaf litter plus logs creates more hidden invertebrate habitat.'); }
+  if(have.has('longgrass') && have.has('wildflowers')) { animals.butterflies += 1; animals.spiders += 1; reasons.push('Long grass and flowers create a more mixed mini-meadow area.'); }
+  return {animals,res,reasons};
+}
+
+function renderAnalysis(){
+  const a=analyse();
+  const meters=document.getElementById('resourceMeters');
+  meters.innerHTML='';
+  [['food','Food'],['water','Water'],['shelter','Shelter'],['nesting','Nesting spaces']].forEach(([k,label])=>{
+    const score=Math.min(100, Math.round((a.res[k]/10)*100));
+    const div=document.createElement('div'); div.className='meter';
+    div.innerHTML='<div class="meter-label"><span>'+label+'</span><span>'+Math.min(a.res[k],10)+' / 10</span></div><div class="bar"><div class="bar-fill" style="width:'+score+'%"></div></div>';
+    meters.appendChild(div);
+  });
+
+  const grid=document.getElementById('animalGrid'); grid.innerHTML='';
+  ANIMALS.forEach(an=>{
+    const sc=a.animals[an.id]||0;
+    let cls='', chance='not yet';
+    if(sc>=5){ cls=' high'; chance='strong'; }
+    else if(sc>=3){ cls=' medium'; chance='likely'; }
+    else if(sc>0){ chance='possible'; }
+    const card=document.createElement('div'); card.className='animal-card'+cls;
+    card.innerHTML='<span class="animal-icon">'+an.icon+'</span><strong>'+an.name+'</strong><span class="chance">'+chance+'</span>';
+    grid.appendChild(card);
+  });
+
+  const list=document.getElementById('reasonList'); list.innerHTML='';
+  const topReasons=a.reasons.slice(0,5);
+  if(!topReasons.length){ const li=document.createElement('li'); li.textContent='Add some items to create food, water, shelter or nesting spaces.'; list.appendChild(li); }
+  topReasons.forEach(r=>{ const li=document.createElement('li'); li.textContent=r; list.appendChild(li); });
+}
+
+function renderTips(){
+  const box=document.getElementById('tips'); box.innerHTML='';
+  const a=analyse(); const tips=[];
+  if(a.res.water===0) tips.push({title:'Add water', text:'Water helps many wildlife groups. A shallow dish is enough in this simulation.', item:'water'});
+  if(a.res.food<4) tips.push({title:'Add food', text:'Flowers, berries, leaves or compost can feed insects and birds.', item:'wildflowers'});
+  if(a.res.shelter<4) tips.push({title:'Add shelter', text:'Logs, leaves, long grass or stones create hiding places.', item:'logpile'});
+  if(a.res.nesting<3) tips.push({title:'Add a nesting space', text:'A bird box or insect hotel gives a safer place to rest or nest.', item:'insecthotel'});
+  if(chosenIds().length<4) tips.push({title:'Add variety', text:'More different habitat types usually means more biodiversity.', item:'leaflitter'});
+  if(!tips.length) tips.push({title:'Balanced habitat', text:'Your area has food, water, shelter and nesting spaces. Explain why it works.', item:''});
+  tips.slice(0,4).forEach(t=>{
+    const card=document.createElement('div'); card.className='tip-card';
+    const btn=t.item && !chosenIds().includes(t.item) && chosenIds().length<MAX_ITEMS ? '<button class="small-btn" type="button" onclick="addItem(\''+t.item+'\')">Add this</button>' : '';
+    card.innerHTML='<h3>'+t.title+'</h3><p>'+t.text+'</p>'+btn;
+    box.appendChild(card);
+  });
+}
+
+function predictedCounts(){
+  const a=analyse(); const rows=[];
+  ANIMALS.forEach(an=>{
+    const before=BASELINE[an.id] || 0;
+    const sc=a.animals[an.id]||0;
+    const add = sc>=5 ? 4 : sc>=3 ? 3 : sc>0 ? 1 : 0;
+    const after=before+add;
+    rows.push({id:an.id, icon:an.icon, name:an.name, before, after, change:after-before, score:sc});
+  });
+  return rows.sort((x,y)=> y.change-x.change || y.score-x.score || x.name.localeCompare(y.name));
+}
+function renderData(){
+  const body=document.getElementById('dataRows'); body.innerHTML='';
+  predictedCounts().forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td>'+r.icon+' '+r.name+'</td><td>'+r.before+'</td><td>'+r.after+'</td><td>'+(r.change>0?'+':'')+r.change+'</td>';
+    body.appendChild(tr);
+  });
+}
+
+function renderChecks(){
+  const ids=chosenIds(); const a=analyse();
+  const text=(state.fields.reasonText||'').trim();
+  const li=k=>document.querySelector('#buildCheck li[data-ck="'+k+'"]');
+  if(!li('four')) return;
+  li('four').classList.toggle('met', ids.length>=4);
+  li('four').textContent='Choose at least four items ('+ids.length+' chosen)';
+  li('food').classList.toggle('met', a.res.food>0);
+  li('water').classList.toggle('met', a.res.water>0);
+  li('shelter').classList.toggle('met', a.res.shelter>0);
+  li('reason').classList.toggle('met', text.length>=12);
+}
+function renderReport(){
+  const s=SITES.find(x=>x.id===state.site) || SITES[0];
+  const items=chosenItems().map(x=>x.name);
+  const counts=predictedCounts();
+  const top=counts.filter(x=>x.change>0).slice(0,3).map(x=>x.icon+' '+x.name).join(', ') || 'add habitat items to calculate this';
+  const big=counts[0] && counts[0].change>0 ? counts[0].icon+' '+counts[0].name+' (+'+counts[0].change+')' : 'no change yet';
+  document.getElementById('reportSite').textContent='Starting space: '+s.name;
+  document.getElementById('reportItems').textContent='Items: '+(items.length?items.join(', '):'none yet');
+  document.getElementById('reportVisitors').textContent='Top predicted visitors: '+top;
+  document.getElementById('reportChange').textContent='Biggest predicted change: '+big;
+}
+
+function restoreFields(){
+  document.querySelectorAll('[data-save]').forEach(el=>{
+    const k=el.dataset.save;
+    if(state.fields[k]!==undefined) el.value=state.fields[k];
+    el.addEventListener('input',()=>{ state.fields[k]=el.value; save(); renderChecks(); renderReport(); });
+    el.addEventListener('change',()=>{ state.fields[k]=el.value; save(); renderChecks(); renderReport(); });
+  });
+}
+function insertWord(taId, word){
+  const ta=document.getElementById(taId); const v=ta.value; const needSpace=v.length && !/\s$/.test(v);
+  ta.value=v+(needSpace?' ':'')+word+' '; ta.focus(); ta.dispatchEvent(new Event('input'));
+}
+function note(msg){ const n=document.getElementById('notify'); if(!n) return; n.textContent=msg; n.classList.add('show'); setTimeout(()=>n.classList.remove('show'),2200); }
+
+function markDone(){
+  try{
+    let done=JSON.parse(localStorage.getItem(DONE_KEY)||'[]');
+    if(!Array.isArray(done)) done=[];
+    if(!done.includes(DONE_ID)) done.push(DONE_ID);
+    localStorage.setItem(DONE_KEY, JSON.stringify(done));
+  } catch(e){}
+}
+function reportText(){
+  const s=SITES.find(x=>x.id===state.site) || SITES[0];
+  const ids=chosenIds(); const items=chosenItems(); const a=analyse(); const counts=predictedCounts();
+  const top=counts.filter(x=>x.change>0).slice(0,5).map(x=>x.name+' +'+x.change).join(', ') || '(none yet)';
+  const g=k=>(state.fields[k]&&String(state.fields[k]).trim()?String(state.fields[k]).trim():'(not written)');
+  let b='MINI-CONSERVATION BUILDER — PHYSICAL WORLD & EXPLORATION\n';
+  b+='Date: '+new Date().toLocaleDateString('en-GB')+'\n\n';
+  b+='Starting space: '+s.name+'\n';
+  b+='Items chosen ('+ids.length+'/'+MAX_ITEMS+'): '+(items.map(x=>x.name).join(', ')||'(none)')+'\n\n';
+  b+='Resource scores\n';
+  b+='  Food: '+a.res.food+'\n  Water: '+a.res.water+'\n  Shelter: '+a.res.shelter+'\n  Nesting: '+a.res.nesting+'\n\n';
+  b+='Top predicted biodiversity changes: '+top+'\n\n';
+  b+='Design reason: '+g('reasonText')+'\n\n';
+  b+='Analysis: '+g('analysisText')+'\n\n';
+  b+='Real-world extension: '+g('extensionPick')+'\n\n';
+  b+='Important: This is a learning simulation, not a guarantee of wildlife sightings.\n\n—\nSent from Base 6';
+  return b;
+}
+function emailWork(){
+  markDone();
+  const su=encodeURIComponent('Base 6 · Mini-Conservation Builder');
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+su+'&body='+encodeURIComponent(reportText()),'_blank');
+  const n=document.getElementById('notify'); n.textContent='✓ Opening your email — your work is ready to send.'; n.classList.add('show');
+}
+function saveAsPdf(){
+  markDone();
+  const n=document.getElementById('notify'); n.textContent='✓ Choose “Save as PDF” in the print window.'; n.classList.add('show');
+  setTimeout(()=>window.print(),150);
+}
+
+function renderAll(){ renderSites(); renderPalette(); renderPlot(); renderAnalysis(); renderTips(); renderData(); renderChecks(); renderReport(); }
+restoreFields();
+goStage(state.stage||1);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bodyweight Strength Coach · Physical World & Exploration · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root { --green:#6b8e23; --green-dark:#4f6f16; --green-soft:#eef6e4; --teal:#007291; --orange:#ef7724; --cream:#fef8f4; --line:#e0d8d0; --soft:#faf6f1; }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:var(--cream); color:#1a1a1a; min-height:100vh; }
+  .site-header { background:var(--green); padding:1.25rem 2rem; display:flex; gap:.75rem; align-items:center; }
+  .back-link { color:#fff; font-size:.9rem; font-weight:700; text-decoration:none; opacity:.92; }
+  .back-link:hover { opacity:1; }
+  .breadcrumb { color:#fff; font-size:.9rem; font-weight:700; opacity:.7; }
+  .hero { background:var(--green); padding:1.4rem 2rem 2.1rem; text-align:center; }
+  .hero .subject-label { font-size:.85rem; font-weight:700; color:#fff; opacity:.88; letter-spacing:.1em; text-transform:uppercase; margin-bottom:.45rem; }
+  .hero h1 { font-size:1.95rem; font-weight:700; color:#fff; line-height:1.2; }
+  .hero p { font-size:.96rem; color:#fff; opacity:.94; max-width:660px; margin:.55rem auto 0; line-height:1.55; }
+  .main { max-width:900px; margin:0 auto; padding:1.4rem 1.5rem 4rem; }
+  .progress { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1.2rem; position:sticky; top:0; background:var(--cream); padding:.7rem 0; z-index:6; }
+  .pchip { font-size:.72rem; font-weight:700; padding:5px 11px; border-radius:20px; background:#f0ede8; color:#999; border:1.5px solid var(--line); }
+  .pchip.active { background:#edf7df; color:var(--green-dark); border-color:#b9d99b; }
+  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; }
+  .stage { display:none; } .stage.show { display:block; }
+  .stage-card { background:#fff; border:2px solid var(--line); border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .stage-eyebrow { font-size:.74rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--green); margin-bottom:.3rem; }
+  .stage-card h2 { font-size:1.25rem; font-weight:700; color:var(--teal); line-height:1.25; margin-bottom:.5rem; }
+  .intro { font-size:.95rem; color:#444; line-height:1.65; margin-bottom:1rem; }
+  .mini-label { font-size:.86rem; font-weight:700; color:#555; margin:.7rem 0 .35rem; }
+  .coach-say, .ranger-say { display:flex; gap:.7rem; align-items:flex-start; background:var(--green-soft); border:2px solid #b9d99b; border-radius:14px; padding:.85rem 1rem; margin:.7rem 0 1rem; }
+  .face { font-size:2rem; line-height:1; }
+  .bubble { font-size:.98rem; line-height:1.55; color:#2c4a18; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:.75rem; }
+  .two-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
+  .card { background:var(--soft); border:1.5px solid #ece3da; border-radius:14px; padding:.9rem 1rem; }
+  .pick-card { background:#fff; border:2px solid #d8c8b8; border-radius:13px; padding:.85rem .9rem; cursor:pointer; font-family:inherit; text-align:left; }
+  .pick-card:hover { border-color:var(--green); box-shadow:0 0 0 3px #dceec4; }
+  .pick-card.on { border-color:var(--green); background:#f7fff0; }
+  .pick-card.bad { border-color:#e0a050; background:#fff8ed; }
+  .pick-card .emoji { font-size:1.7rem; display:block; margin-bottom:.35rem; }
+  .pick-card strong { display:block; font-size:.94rem; color:#1a1a1a; line-height:1.25; }
+  .pick-card span, .small { font-size:.8rem; color:#555; line-height:1.45; }
+  .tagrow { display:flex; gap:.3rem; flex-wrap:wrap; margin-top:.45rem; }
+  .tag { font-size:.67rem; font-weight:700; border-radius:20px; padding:1px 7px; background:#edf7df; color:var(--green-dark); border:1px solid #cce4ad; }
+  .btn-row { display:flex; gap:.55rem; flex-wrap:wrap; margin:.75rem 0; }
+  .next-btn, .action-btn, .ghost-btn, .small-btn { font-family:inherit; font-weight:700; border-radius:9px; cursor:pointer; }
+  .next-btn, .action-btn { font-size:.92rem; padding:.65rem 1.4rem; border:none; color:#fff; background:var(--teal); margin-top:1rem; }
+  .next-btn:hover, .action-btn:hover { background:#00576e; }
+  .ghost-btn { font-size:.9rem; padding:.65rem 1.2rem; border:2px solid var(--teal); color:var(--teal); background:#fff; margin-top:1rem; }
+  .ghost-btn:hover { background:#e8f2f7; }
+  .small-btn { font-size:.82rem; padding:.45rem .8rem; border:1.5px solid #b9d99b; background:#f7fff0; color:var(--green-dark); }
+  .small-btn.on { background:var(--green); color:#fff; border-color:var(--green); }
+  textarea, input[type=text], select { font-family:inherit; font-size:.96rem; width:100%; padding:.7rem .85rem; border:2px solid var(--teal); border-radius:10px; background:#fff; outline:none; line-height:1.6; }
+  textarea { min-height:96px; resize:vertical; }
+  textarea:focus, input:focus, select:focus { border-color:var(--orange); }
+  .checklist { list-style:none; margin:.8rem 0 0; }
+  .checklist li { font-size:.9rem; line-height:1.6; padding:.3rem 0 .3rem 1.7rem; position:relative; color:#888; }
+  .checklist li::before { content:'○'; position:absolute; left:0; font-weight:700; color:#c8b6a4; }
+  .checklist li.met { color:#1a5e1a; } .checklist li.met::before { content:'✓'; color:#2e8b57; }
+  .meter { margin:.65rem 0; }
+  .meter-label { display:flex; justify-content:space-between; font-size:.82rem; font-weight:700; color:#555; margin-bottom:.25rem; }
+  .bar { height:13px; background:#eee6de; border-radius:20px; overflow:hidden; border:1px solid #e0d8d0; }
+  .fill { height:100%; width:0%; background:var(--green); border-radius:20px; transition:width .2s; }
+  .score-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:.6rem; margin:.8rem 0; }
+  .score { background:#fff; border:1.5px solid #e0d8d0; border-radius:12px; padding:.75rem; }
+  .score strong { display:block; color:var(--teal); font-size:1.05rem; }
+  .score span { font-size:.78rem; color:#555; line-height:1.35; }
+  table { width:100%; border-collapse:collapse; margin:.7rem 0; background:#fff; border-radius:12px; overflow:hidden; }
+  th, td { border:1px solid #e8e0d8; padding:.55rem .6rem; text-align:left; font-size:.86rem; line-height:1.35; }
+  th { background:#edf7df; color:var(--green-dark); font-weight:700; }
+  .fb { display:none; font-size:.86rem; margin-top:.5rem; padding:.55rem .8rem; border-radius:8px; line-height:1.5; }
+  .fb.show { display:block; background:#e6f5e6; color:#1a5e1a; border:1.5px solid #a9dfbf; }
+  .fb.warn { display:block; background:#fff3e6; color:#7a4a00; border:1.5px solid #f0c88a; }
+  .send-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:14px; padding:1.3rem 1.5rem; margin-top:1.2rem; text-align:center; }
+  .send-card p { font-size:.92rem; color:#555; line-height:1.6; margin-bottom:.6rem; }
+  .notify { display:none; margin-top:.9rem; font-size:.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:.65rem 1rem; line-height:1.5; }
+  .notify.show { display:block; }
+  .extension { background:#e8f2f7; border:2px solid #9ccbe0; border-radius:14px; padding:1rem; margin-top:1rem; }
+  .extension h3 { color:#0b5a72; font-size:1rem; margin-bottom:.45rem; }
+  .extension li { margin-left:1.2rem; font-size:.9rem; color:#333; line-height:1.6; }
+  a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-visible { outline:3px solid var(--teal); outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:.8rem; color:#888; border-top:1px solid var(--line); }
+  @media(max-width:720px){ .two-grid{grid-template-columns:1fr;} .hero h1{font-size:1.65rem;} .main{padding-left:1rem;padding-right:1rem;} }
+  @media print { .site-header,.progress,.no-print,.send-card,footer{display:none!important;} .hero{padding:1rem;background:#fff;color:#111;border-bottom:2px solid #ddd;} .hero *{color:#111!important;} .main{max-width:100%;padding:.5rem;} .stage{display:block!important;} .stage-card{break-inside:avoid;border:1px solid #aaa;} body{background:#fff;} }
+  body.printing .stage{display:block!important;}
+
+</style>
+</head>
+<body>
+
+<header class="site-header"><a class="back-link" href="index.html">← Physical World & Exploration</a><span class="breadcrumb">/ Bodyweight Strength Coach</span></header>
+<div class="hero"><p class="subject-label">Physical World & Exploration · Strength Training</p><h1>💪 Bodyweight Strength Coach</h1><p>Use a digital coach to choose safe bodyweight movements, build a balanced strength plan, and explain how to train safely.</p></div>
+<main class="main"><div class="progress" id="progress"></div>
+<section class="stage" id="stage-1"><div class="stage-card"><p class="stage-eyebrow">Stage 1 of 5 · Safety first</p><h2>Set up your safe training rules</h2><div class="coach-say"><span class="face">🧢</span><span class="bubble">Strength training is about control, not rushing. Choose the safety rules your digital coach should check.</span></div><p class="intro">Tap the safe choices. The simulator will not ask you to physically exercise.</p><div class="grid" id="safetyGrid"></div><ul class="checklist"><li id="safetyReady">Choose at least four safe rules</li></ul><button class="next-btn" onclick="goStage(2)">Learn movements →</button></div></section>
+<section class="stage" id="stage-2"><div class="stage-card"><p class="stage-eyebrow">Stage 2 of 5 · Movement lab</p><h2>Match movements to safe technique</h2><p class="intro">Pick a movement, then choose the safest coaching cue. Good form helps muscles work and reduces risk.</p><div class="two-grid"><div><div class="grid" id="moveGrid"></div></div><div class="card"><h3 id="moveTitle" style="font-size:1rem;color:var(--teal);">Choose a movement</h3><p class="small" id="moveDesc">Your coach cues will appear here.</p><div id="cueBox" class="grid" style="margin-top:.7rem;"></div><div id="cueFb" class="fb"></div></div></div><button class="next-btn" onclick="goStage(3)">Build plan →</button></div></section>
+<section class="stage" id="stage-3"><div class="stage-card"><p class="stage-eyebrow">Stage 3 of 5 · Build a plan</p><h2>Create a balanced bodyweight plan</h2><p class="intro">Choose three or more movements. The simulator will show which strength areas you have trained.</p><div class="grid" id="planGrid"></div><div class="score-grid"><div class="score"><strong id="planCount">0</strong><span>movements chosen</span></div><div class="score"><strong id="balanceWord">Starting</strong><span>balance rating</span></div></div><div class="card"><div class="meter"><div class="meter-label"><span>Legs</span><span id="legsNum">0</span></div><div class="bar"><div class="fill" id="legsFill"></div></div></div><div class="meter"><div class="meter-label"><span>Push</span><span id="pushNum">0</span></div><div class="bar"><div class="fill" id="pushFill"></div></div></div><div class="meter"><div class="meter-label"><span>Core</span><span id="coreNum">0</span></div><div class="bar"><div class="fill" id="coreFill"></div></div></div><div class="meter"><div class="meter-label"><span>Control</span><span id="controlNum">0</span></div><div class="bar"><div class="fill" id="controlFill"></div></div></div></div><button class="next-btn" onclick="goStage(4)">Run digital set →</button></div></section>
+<section class="stage" id="stage-4"><div class="stage-card"><p class="stage-eyebrow">Stage 4 of 5 · Digital set</p><h2>Coach a virtual set</h2><p class="intro">Choose the sensible rep range and effort for your plan. This is a simulation, so choose what would be safe and controlled.</p><div class="grid"><button class="pick-card" onclick="setReps('low')"><span class="emoji">🌱</span><strong>Low reps</strong><span>Good for learning the movement.</span></button><button class="pick-card" onclick="setReps('steady')"><span class="emoji">✅</span><strong>Steady reps</strong><span>Controlled practice with good form.</span></button><button class="pick-card bad" onclick="setReps('rush')"><span class="emoji">⚡</span><strong>Rush lots of reps</strong><span>Fast but form may get messy.</span></button></div><div id="repFb" class="fb"></div><div class="score-grid"><div class="score"><strong id="qualityScore">0%</strong><span>movement quality</span></div><div class="score"><strong id="safetyScore">0%</strong><span>safety score</span></div></div><button class="next-btn" onclick="goStage(5)">Reflect →</button></div></section>
+<section class="stage" id="stage-5"><div class="stage-card"><p class="stage-eyebrow">Stage 5 of 5 · Coach reflection</p><h2>Explain your strength choices</h2><p class="mini-label">My plan includes:</p><textarea id="planText" data-save="planText" placeholder="My plan includes..."></textarea><p class="mini-label">One safe form cue I would remember:</p><textarea id="safeCue" data-save="safeCue" placeholder="I would remember to..."></textarea><p class="mini-label">One thing I would change next time:</p><textarea id="changeNext" data-save="changeNext" placeholder="Next time I would..."></textarea><ul class="checklist" id="finalCheck"><li data-ck="rules">Safety rules chosen</li><li data-ck="cues">Technique cues practised</li><li data-ck="plan">Balanced plan built</li><li data-ck="reflect">Reflection written</li></ul><div class="extension"><h3>Optional real-world extension</h3><ul><li>With adult/staff agreement, demonstrate one safe bodyweight movement slowly.</li><li>Stop if anything feels painful or unsafe.</li><li>Focus on control, breathing and balance rather than doing more.</li></ul></div></div><div class="send-card no-print"><p>Save your coach notes, or send them to Jay.</p><button class="ghost-btn" onclick="savePdf()">🖨️ Save as PDF</button> <button class="action-btn" onclick="emailWork()">📧 Send my work to Jay</button><div class="notify" id="notify"></div></div></section>
+</main><footer>Base 6 · Chilton Bridge School · Physical World & Exploration</footer>
+<script>
+const STORE_KEY='base6_w4_physical_bodyweight_coach'; const TEACHER_EMAIL='jay.raine@chiltonbridgeschool.co.uk';
+let state={stage:1,safety:{},cues:{},plan:{},reps:'',fields:{}}; try{state=Object.assign(state,JSON.parse(localStorage.getItem(STORE_KEY))||{});}catch(e){}; ['safety','cues','plan','fields'].forEach(k=>{if(!state[k])state[k]={};});
+const PLABELS=['Safety','Technique','Plan','Digital set','Reflect'];
+const SAFETY=[['space','🧹','Clear space','No clutter around feet.'],['warm','🔥','Warm up gently','Get the body ready.'],['slow','🐢','Move with control','No rushing.'],['pain','✋','Stop for pain','Pain is a stop sign.'],['breathe','🌬️','Breathe steadily','Do not hold breath.'],['choice','🟢','Choose a level','Make it manageable.']];
+const MOVES=[
+ {id:'squat',emoji:'🪑',name:'Chair squat',desc:'Sit back towards a chair and stand tall.',areas:{legs:3,push:0,core:1,control:2},right:'Knees track over toes and chest stays proud.',wrong:['Drop fast and bounce.','Hold breath and twist.']},
+ {id:'wallpush',emoji:'🧱',name:'Wall press',desc:'Hands on a wall, body straight, press away.',areas:{legs:0,push:3,core:1,control:2},right:'Body stays long and elbows bend with control.',wrong:['Let hips sag.','Crash into the wall.']},
+ {id:'bridge',emoji:'🌉',name:'Glute bridge',desc:'Lift hips with control, then lower slowly.',areas:{legs:2,push:0,core:2,control:2},right:'Feet stay planted and hips lift smoothly.',wrong:['Arch the back hard.','Race up and down.']},
+ {id:'calf',emoji:'🦶',name:'Calf raise',desc:'Rise onto toes and lower with balance.',areas:{legs:2,push:0,core:0,control:3},right:'Use a support if needed and lower slowly.',wrong:['Wobble on purpose.','Bounce quickly.']},
+ {id:'plank',emoji:'📏',name:'Plank shape',desc:'Hold a strong straight shape in an adapted way.',areas:{legs:0,push:1,core:3,control:2},right:'Choose an easier version and keep breathing.',wrong:['Hold breath.','Keep going after pain.']}
+];
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}}
+function goStage(n){state.stage=Math.max(state.stage,n);save();for(let i=1;i<=5;i++){document.getElementById('stage-'+i).classList.toggle('show',i<=n);}renderProgress();document.getElementById('stage-'+n).scrollIntoView({behavior:'smooth',block:'start'});updateAll();}
+function renderProgress(){const p=document.getElementById('progress');p.innerHTML='';PLABELS.forEach((lab,i)=>{const n=i+1,c=document.createElement('span');c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':'');c.textContent=n+'. '+lab;p.appendChild(c);});}
+function buildSafety(){const el=document.getElementById('safetyGrid');el.innerHTML='';SAFETY.forEach(([id,em,n,h])=>{const b=document.createElement('button');b.className='pick-card'+(state.safety[id]?' on':'');b.innerHTML='<span class="emoji">'+em+'</span><strong>'+n+'</strong><span>'+h+'</span>';b.onclick=()=>{state.safety[id]=!state.safety[id];if(!state.safety[id])delete state.safety[id];save();buildSafety();updateAll();};el.appendChild(b);});}
+function buildMoves(){const el=document.getElementById('moveGrid');el.innerHTML='';MOVES.forEach(m=>{const b=document.createElement('button');b.className='pick-card';b.innerHTML='<span class="emoji">'+m.emoji+'</span><strong>'+m.name+'</strong><span>'+m.desc+'</span><div class="tagrow"><span class="tag">'+Object.keys(m.areas).filter(k=>m.areas[k]>0).join('</span><span class="tag">')+'</span></div>';b.onclick=()=>showMove(m.id);el.appendChild(b);});}
+function showMove(id){const m=MOVES.find(x=>x.id===id);document.getElementById('moveTitle').textContent=m.emoji+' '+m.name;document.getElementById('moveDesc').textContent=m.desc;const opts=[m.right,...m.wrong].sort(()=>0.5-Math.random());const box=document.getElementById('cueBox');box.innerHTML='';opts.forEach(txt=>{const b=document.createElement('button');b.className='pick-card';b.innerHTML='<strong>'+txt+'</strong>';b.onclick=()=>{const fb=document.getElementById('cueFb');if(txt===m.right){state.cues[id]=true;save();fb.className='fb show';fb.textContent='✓ Safe coach cue saved.';}else{fb.className='fb warn';fb.textContent='Try a cue with more control and less rushing.';}updateAll();};box.appendChild(b);});}
+function buildPlan(){const el=document.getElementById('planGrid');el.innerHTML='';MOVES.forEach(m=>{const b=document.createElement('button');b.className='pick-card'+(state.plan[m.id]?' on':'');b.innerHTML='<span class="emoji">'+m.emoji+'</span><strong>'+m.name+'</strong><span>'+m.desc+'</span>';b.onclick=()=>{state.plan[m.id]=!state.plan[m.id];if(!state.plan[m.id])delete state.plan[m.id];save();buildPlan();updateAll();};el.appendChild(b);});}
+function areaTotals(){const t={legs:0,push:0,core:0,control:0};MOVES.filter(m=>state.plan[m.id]).forEach(m=>{for(const k in t)t[k]+=m.areas[k];});return t;}
+function setReps(r){state.reps=r;save();const fb=document.getElementById('repFb');if(r==='rush'){fb.className='fb warn';fb.textContent='Rushing lowers the safety score. Strength work is better with control.';}else{fb.className='fb show';fb.textContent=r==='steady'?'✓ Steady, controlled reps are a strong choice.':'✓ Low reps are sensible when learning a movement.';}updateAll();}
+function updateAll(){document.getElementById('safetyReady').classList.toggle('met',Object.keys(state.safety).length>=4);const t=areaTotals();['legs','push','core','control'].forEach(k=>{document.getElementById(k+'Num').textContent=t[k];document.getElementById(k+'Fill').style.width=Math.min(100,t[k]*18)+'%';});const count=Object.keys(state.plan).length;document.getElementById('planCount').textContent=count;const bal=Object.values(t).filter(v=>v>0).length;document.getElementById('balanceWord').textContent=count>=3&&bal>=3?'Balanced':count>=2?'Developing':'Starting';const cueCount=Object.keys(state.cues).length;let quality=20+cueCount*12+bal*10+(state.reps==='steady'?12:state.reps==='low'?8:state.reps==='rush'?-20:0);let safety=20+Object.keys(state.safety).length*10+cueCount*8+(state.reps==='rush'?-30:state.reps?10:0);document.getElementById('qualityScore').textContent=Math.max(0,Math.min(100,quality))+'%';document.getElementById('safetyScore').textContent=Math.max(0,Math.min(100,safety))+'%';updateCheck();}
+function updateCheck(){const li=k=>document.querySelector('#finalCheck li[data-ck="'+k+'"]');if(!li('rules'))return;li('rules').classList.toggle('met',Object.keys(state.safety).length>=4);li('cues').classList.toggle('met',Object.keys(state.cues).length>=3);li('plan').classList.toggle('met',Object.keys(state.plan).length>=3);li('reflect').classList.toggle('met',(document.getElementById('safeCue')?.value||'').trim().length>5);}
+document.querySelectorAll('[data-save]').forEach(el=>{const k=el.id;if(state.fields[k])el.value=state.fields[k];el.addEventListener('input',()=>{state.fields[k]=el.value;save();updateCheck();});});
+function savePdf(){document.body.classList.add('printing');setTimeout(()=>{window.print();document.body.classList.remove('printing');},50);} 
+function emailWork(){const f=k=>(document.getElementById(k)?.value||'').trim()||'(not written)';let b='BODYWEIGHT STRENGTH COACH — PHYSICAL WORLD & EXPLORATION\nDate: '+new Date().toLocaleDateString('en-GB')+'\n\nSafety rules: '+Object.keys(state.safety).join(', ')+'\nTechnique cues completed: '+Object.keys(state.cues).join(', ')+'\nPlan: '+Object.keys(state.plan).join(', ')+'\nRep choice: '+(state.reps||'(none)')+'\n\nPlan notes: '+f('planText')+'\nSafe cue: '+f('safeCue')+'\nChange next time: '+f('changeNext')+'\n\n—\nSent from Base 6';window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+encodeURIComponent('Base 6 · Bodyweight Strength Coach')+'&body='+encodeURIComponent(b),'_blank');document.getElementById('notify').textContent='✓ Opening your email — your work is ready to send.';document.getElementById('notify').classList.add('show');}
+buildSafety();buildMoves();buildPlan();renderProgress();goStage(state.stage||1);updateAll();
+</script></body></html>

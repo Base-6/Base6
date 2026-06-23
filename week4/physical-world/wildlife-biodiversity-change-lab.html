@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biodiversity Change Lab · Physical World & Exploration · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root { --green:#6b8e23; --green-dark:#4f6f16; --green-soft:#eef6e4; --teal:#007291; --orange:#ef7724; --cream:#fef8f4; --line:#e0d8d0; --soft:#faf6f1; }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:var(--cream); color:#1a1a1a; min-height:100vh; }
+  .site-header { background:var(--green); padding:1.25rem 2rem; display:flex; gap:.75rem; align-items:center; }
+  .back-link { color:#fff; font-size:.9rem; font-weight:700; text-decoration:none; opacity:.92; }
+  .back-link:hover { opacity:1; }
+  .breadcrumb { color:#fff; font-size:.9rem; font-weight:700; opacity:.7; }
+  .hero { background:var(--green); padding:1.4rem 2rem 2.1rem; text-align:center; }
+  .hero .subject-label { font-size:.85rem; font-weight:700; color:#fff; opacity:.88; letter-spacing:.1em; text-transform:uppercase; margin-bottom:.45rem; }
+  .hero h1 { font-size:1.95rem; font-weight:700; color:#fff; line-height:1.2; }
+  .hero p { font-size:.96rem; color:#fff; opacity:.94; max-width:660px; margin:.55rem auto 0; line-height:1.55; }
+  .main { max-width:900px; margin:0 auto; padding:1.4rem 1.5rem 4rem; }
+  .progress { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1.2rem; position:sticky; top:0; background:var(--cream); padding:.7rem 0; z-index:6; }
+  .pchip { font-size:.72rem; font-weight:700; padding:5px 11px; border-radius:20px; background:#f0ede8; color:#999; border:1.5px solid var(--line); }
+  .pchip.active { background:#edf7df; color:var(--green-dark); border-color:#b9d99b; }
+  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; }
+  .stage { display:none; } .stage.show { display:block; }
+  .stage-card { background:#fff; border:2px solid var(--line); border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .stage-eyebrow { font-size:.74rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--green); margin-bottom:.3rem; }
+  .stage-card h2 { font-size:1.25rem; font-weight:700; color:var(--teal); line-height:1.25; margin-bottom:.5rem; }
+  .intro { font-size:.95rem; color:#444; line-height:1.65; margin-bottom:1rem; }
+  .mini-label { font-size:.86rem; font-weight:700; color:#555; margin:.7rem 0 .35rem; }
+  .coach-say, .ranger-say { display:flex; gap:.7rem; align-items:flex-start; background:var(--green-soft); border:2px solid #b9d99b; border-radius:14px; padding:.85rem 1rem; margin:.7rem 0 1rem; }
+  .face { font-size:2rem; line-height:1; }
+  .bubble { font-size:.98rem; line-height:1.55; color:#2c4a18; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:.75rem; }
+  .two-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
+  .card { background:var(--soft); border:1.5px solid #ece3da; border-radius:14px; padding:.9rem 1rem; }
+  .pick-card { background:#fff; border:2px solid #d8c8b8; border-radius:13px; padding:.85rem .9rem; cursor:pointer; font-family:inherit; text-align:left; }
+  .pick-card:hover { border-color:var(--green); box-shadow:0 0 0 3px #dceec4; }
+  .pick-card.on { border-color:var(--green); background:#f7fff0; }
+  .pick-card.bad { border-color:#e0a050; background:#fff8ed; }
+  .pick-card .emoji { font-size:1.7rem; display:block; margin-bottom:.35rem; }
+  .pick-card strong { display:block; font-size:.94rem; color:#1a1a1a; line-height:1.25; }
+  .pick-card span, .small { font-size:.8rem; color:#555; line-height:1.45; }
+  .tagrow { display:flex; gap:.3rem; flex-wrap:wrap; margin-top:.45rem; }
+  .tag { font-size:.67rem; font-weight:700; border-radius:20px; padding:1px 7px; background:#edf7df; color:var(--green-dark); border:1px solid #cce4ad; }
+  .btn-row { display:flex; gap:.55rem; flex-wrap:wrap; margin:.75rem 0; }
+  .next-btn, .action-btn, .ghost-btn, .small-btn { font-family:inherit; font-weight:700; border-radius:9px; cursor:pointer; }
+  .next-btn, .action-btn { font-size:.92rem; padding:.65rem 1.4rem; border:none; color:#fff; background:var(--teal); margin-top:1rem; }
+  .next-btn:hover, .action-btn:hover { background:#00576e; }
+  .ghost-btn { font-size:.9rem; padding:.65rem 1.2rem; border:2px solid var(--teal); color:var(--teal); background:#fff; margin-top:1rem; }
+  .ghost-btn:hover { background:#e8f2f7; }
+  .small-btn { font-size:.82rem; padding:.45rem .8rem; border:1.5px solid #b9d99b; background:#f7fff0; color:var(--green-dark); }
+  .small-btn.on { background:var(--green); color:#fff; border-color:var(--green); }
+  textarea, input[type=text], select { font-family:inherit; font-size:.96rem; width:100%; padding:.7rem .85rem; border:2px solid var(--teal); border-radius:10px; background:#fff; outline:none; line-height:1.6; }
+  textarea { min-height:96px; resize:vertical; }
+  textarea:focus, input:focus, select:focus { border-color:var(--orange); }
+  .checklist { list-style:none; margin:.8rem 0 0; }
+  .checklist li { font-size:.9rem; line-height:1.6; padding:.3rem 0 .3rem 1.7rem; position:relative; color:#888; }
+  .checklist li::before { content:'○'; position:absolute; left:0; font-weight:700; color:#c8b6a4; }
+  .checklist li.met { color:#1a5e1a; } .checklist li.met::before { content:'✓'; color:#2e8b57; }
+  .meter { margin:.65rem 0; }
+  .meter-label { display:flex; justify-content:space-between; font-size:.82rem; font-weight:700; color:#555; margin-bottom:.25rem; }
+  .bar { height:13px; background:#eee6de; border-radius:20px; overflow:hidden; border:1px solid #e0d8d0; }
+  .fill { height:100%; width:0%; background:var(--green); border-radius:20px; transition:width .2s; }
+  .score-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:.6rem; margin:.8rem 0; }
+  .score { background:#fff; border:1.5px solid #e0d8d0; border-radius:12px; padding:.75rem; }
+  .score strong { display:block; color:var(--teal); font-size:1.05rem; }
+  .score span { font-size:.78rem; color:#555; line-height:1.35; }
+  table { width:100%; border-collapse:collapse; margin:.7rem 0; background:#fff; border-radius:12px; overflow:hidden; }
+  th, td { border:1px solid #e8e0d8; padding:.55rem .6rem; text-align:left; font-size:.86rem; line-height:1.35; }
+  th { background:#edf7df; color:var(--green-dark); font-weight:700; }
+  .fb { display:none; font-size:.86rem; margin-top:.5rem; padding:.55rem .8rem; border-radius:8px; line-height:1.5; }
+  .fb.show { display:block; background:#e6f5e6; color:#1a5e1a; border:1.5px solid #a9dfbf; }
+  .fb.warn { display:block; background:#fff3e6; color:#7a4a00; border:1.5px solid #f0c88a; }
+  .send-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:14px; padding:1.3rem 1.5rem; margin-top:1.2rem; text-align:center; }
+  .send-card p { font-size:.92rem; color:#555; line-height:1.6; margin-bottom:.6rem; }
+  .notify { display:none; margin-top:.9rem; font-size:.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:.65rem 1rem; line-height:1.5; }
+  .notify.show { display:block; }
+  .extension { background:#e8f2f7; border:2px solid #9ccbe0; border-radius:14px; padding:1rem; margin-top:1rem; }
+  .extension h3 { color:#0b5a72; font-size:1rem; margin-bottom:.45rem; }
+  .extension li { margin-left:1.2rem; font-size:.9rem; color:#333; line-height:1.6; }
+  a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-visible { outline:3px solid var(--teal); outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:.8rem; color:#888; border-top:1px solid var(--line); }
+  @media(max-width:720px){ .two-grid{grid-template-columns:1fr;} .hero h1{font-size:1.65rem;} .main{padding-left:1rem;padding-right:1rem;} }
+  @media print { .site-header,.progress,.no-print,.send-card,footer{display:none!important;} .hero{padding:1rem;background:#fff;color:#111;border-bottom:2px solid #ddd;} .hero *{color:#111!important;} .main{max-width:100%;padding:.5rem;} .stage{display:block!important;} .stage-card{break-inside:avoid;border:1px solid #aaa;} body{background:#fff;} }
+  body.printing .stage{display:block!important;}
+
+</style>
+</head>
+<body>
+
+<header class="site-header"><a class="back-link" href="index.html">← Physical World & Exploration</a><span class="breadcrumb">/ Biodiversity Change Lab</span></header>
+<div class="hero"><p class="subject-label">Physical World & Exploration · Wildlife Exploration</p><h1>📊 Biodiversity Change Lab</h1><p>Run two digital wildlife surveys. Record what changes, compare the evidence, and explain what your mini-conservation area might be doing.</p></div>
+<main class="main">
+<div class="progress" id="progress"></div>
+<section class="stage" id="stage-1"><div class="stage-card"><p class="stage-eyebrow">Stage 1 of 5 · Set up the survey</p><h2>Choose your mini-conservation area</h2><div class="ranger-say"><span class="face">🦉</span><span class="bubble">A good scientist records the starting point first. Pick what your area already has, then we can look for change.</span></div><p class="intro">Tap the habitat features that are in your area now. The simulator will use them to create a starting biodiversity survey.</p><div class="grid" id="featureGrid"></div><div class="score-grid"><div class="score"><strong id="featureCount">0</strong><span>features chosen</span></div><div class="score"><strong id="habitatScore">0</strong><span>habitat support score</span></div></div><button class="next-btn" onclick="goStage(2)">Run first survey →</button></div></section>
+<section class="stage" id="stage-2"><div class="stage-card"><p class="stage-eyebrow">Stage 2 of 5 · Survey 1</p><h2>Record the first biodiversity survey</h2><p class="intro">This is your baseline. Baseline means the first set of results you compare against later.</p><button class="small-btn" onclick="runSurvey('before')">🔍 Run / refresh Survey 1</button><div id="beforeTable"></div><div class="score-grid"><div class="score"><strong id="beforeRich">0</strong><span>species groups found</span></div><div class="score"><strong id="beforeTotal">0</strong><span>total sightings</span></div></div><p class="mini-label">One thing I notice in Survey 1:</p><textarea id="notice1" data-save="notice1" placeholder="I notice that..."></textarea><button class="next-btn" onclick="goStage(3)">Improve the area →</button></div></section>
+<section class="stage" id="stage-3"><div class="stage-card"><p class="stage-eyebrow">Stage 3 of 5 · Change one thing</p><h2>Choose conservation actions</h2><div class="ranger-say"><span class="face">🌱</span><span class="bubble">Now make careful changes. Try to add food, water, shelter or nesting places.</span></div><p class="intro">Choose up to three actions. The simulator will predict how they could change the next survey.</p><div class="grid" id="actionGrid"></div><div class="score-grid"><div class="score"><strong id="actionCount">0</strong><span>actions chosen</span></div><div class="score"><strong id="addedSupport">0</strong><span>extra support points</span></div></div><button class="next-btn" onclick="goStage(4)">Run second survey →</button></div></section>
+<section class="stage" id="stage-4"><div class="stage-card"><p class="stage-eyebrow">Stage 4 of 5 · Survey 2</p><h2>Compare the biodiversity change</h2><p class="intro">Survey 2 shows what might happen after your conservation actions. Compare it with Survey 1 and look for patterns.</p><button class="small-btn" onclick="runSurvey('after')">🔍 Run / refresh Survey 2</button><div id="afterTable"></div><h3 style="font-size:1rem;color:var(--teal);margin-top:1rem;">Change table</h3><div id="changeTable"></div><div class="score-grid"><div class="score"><strong id="richChange">0</strong><span>change in species groups</span></div><div class="score"><strong id="totalChange">0</strong><span>change in sightings</span></div></div><button class="next-btn" onclick="goStage(5)">Analyse evidence →</button></div></section>
+<section class="stage" id="stage-5"><div class="stage-card"><p class="stage-eyebrow">Stage 5 of 5 · Analyse</p><h2>Write your scientist conclusion</h2><p class="intro">Use the evidence. Which wildlife group changed most? What might explain that change?</p><p class="mini-label">The biggest change I found was:</p><select id="biggest" data-save="biggest"><option value="">choose one…</option><option>Bees</option><option>Butterflies</option><option>Beetles</option><option>Worms</option><option>Birds</option><option>Frogs</option><option>Hedgehogs</option></select><p class="mini-label">I think this changed because:</p><textarea id="because" data-save="because" placeholder="I think this changed because..."></textarea><p class="mini-label">My next conservation idea:</p><textarea id="nextIdea" data-save="nextIdea" placeholder="Next I would..."></textarea><ul class="checklist" id="finalCheck"><li data-ck="survey1">Run Survey 1</li><li data-ck="survey2">Run Survey 2</li><li data-ck="explain">Write an explanation</li><li data-ck="next">Choose a next idea</li></ul><div class="extension"><h3>Optional real-world extension</h3><ul><li>Look safely from a window or outdoor seat and record two living things you can see.</li><li>Sketch one small change you could make to help wildlife.</li><li>Ask an adult before touching soil, water, plants or insects.</li></ul></div></div><div class="send-card no-print"><p>Save your biodiversity evidence, or send it to Jay.</p><button class="ghost-btn" onclick="savePdf()">🖨️ Save as PDF</button> <button class="action-btn" onclick="emailWork()">📧 Send my work to Jay</button><div class="notify" id="notify"></div></div></section>
+</main><footer>Base 6 · Chilton Bridge School · Physical World & Exploration</footer>
+<script>
+const STORE_KEY='base6_w4_physical_biodiversity_lab'; const TEACHER_EMAIL='jay.raine@chiltonbridgeschool.co.uk';
+let state={stage:1,features:{},actions:{},before:null,after:null,fields:{}}; try{state=Object.assign(state,JSON.parse(localStorage.getItem(STORE_KEY))||{});}catch(e){}; ['features','actions','fields'].forEach(k=>{if(!state[k])state[k]={};});
+const PLABELS=['Set up','Survey 1','Actions','Survey 2','Analyse'];
+const GROUPS=[['Bees','🐝'],['Butterflies','🦋'],['Beetles','🪲'],['Worms','🪱'],['Birds','🐦'],['Frogs','🐸'],['Hedgehogs','🦔']];
+const FEATURES=[
+ {id:'flowers',emoji:'🌼',name:'Some flowers',hint:'Nectar and pollen.',support:2,boost:{Bees:3,Butterflies:2,Beetles:1}},
+ {id:'water',emoji:'💧',name:'Small water dish',hint:'A safe drink spot.',support:2,boost:{Birds:2,Frogs:2,Bees:1}},
+ {id:'logs',emoji:'🪵',name:'Log pile',hint:'Cool damp shelter.',support:2,boost:{Beetles:3,Worms:2,Hedgehogs:1}},
+ {id:'leaves',emoji:'🍂',name:'Leaf litter',hint:'Mini shelter and food.',support:1,boost:{Worms:3,Beetles:2,Hedgehogs:1}},
+ {id:'grass',emoji:'🌿',name:'Long grass patch',hint:'Hiding and hunting.',support:1,boost:{Beetles:1,Butterflies:1,Hedgehogs:1}},
+ {id:'none',emoji:'🟫',name:'Mostly bare ground',hint:'Less food and shelter.',support:0,boost:{}}
+];
+const ACTIONS=[
+ {id:'addflowers',emoji:'🌸',name:'Add pollinator flowers',hint:'More nectar and pollen.',support:3,boost:{Bees:4,Butterflies:3,Beetles:1}},
+ {id:'addwater',emoji:'💦',name:'Add clean shallow water',hint:'A drink and damp habitat.',support:3,boost:{Birds:3,Frogs:3,Bees:1}},
+ {id:'addlogs',emoji:'🪵',name:'Add logs and bark',hint:'More hiding places.',support:2,boost:{Beetles:4,Worms:2,Hedgehogs:1}},
+ {id:'addleaves',emoji:'🍁',name:'Leave a leaf corner',hint:'Food and cover.',support:2,boost:{Worms:4,Beetles:2,Hedgehogs:2}},
+ {id:'quiet',emoji:'🤫',name:'Make a quiet corner',hint:'Less disturbance.',support:1,boost:{Birds:1,Hedgehogs:3,Frogs:1}},
+ {id:'nest',emoji:'🏠',name:'Add a tiny shelter',hint:'A place to hide.',support:2,boost:{Hedgehogs:2,Beetles:1,Frogs:1}}
+];
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}}
+function goStage(n){state.stage=Math.max(state.stage,n);save(); for(let i=1;i<=5;i++){document.getElementById('stage-'+i).classList.toggle('show',i<=n);} renderProgress(); document.getElementById('stage-'+n).scrollIntoView({behavior:'smooth',block:'start'}); updateAll();}
+function renderProgress(){const p=document.getElementById('progress');p.innerHTML='';PLABELS.forEach((lab,i)=>{const n=i+1,c=document.createElement('span');c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':'');c.textContent=n+'. '+lab;p.appendChild(c);});}
+function buildPickGrid(elId,items,store,max){const el=document.getElementById(elId);el.innerHTML='';items.forEach(it=>{const b=document.createElement('button');b.className='pick-card'+(state[store][it.id]?' on':'');b.innerHTML='<span class="emoji">'+it.emoji+'</span><strong>'+it.name+'</strong><span>'+it.hint+'</span><div class="tagrow"><span class="tag">support +'+it.support+'</span></div>';b.onclick=()=>{if(!state[store][it.id] && Object.keys(state[store]).length>=max){return;} state[store][it.id]=!state[store][it.id]; if(!state[store][it.id]) delete state[store][it.id]; save(); buildPickGrid(elId,items,store,max); updateAll();};el.appendChild(b);});}
+function support(items,store){return items.filter(x=>state[store][x.id]).reduce((s,x)=>s+x.support,0);} 
+function boosts(includeActions){const b={}; GROUPS.forEach(g=>b[g[0]]=0); FEATURES.filter(x=>state.features[x.id]).forEach(it=>{for(const k in it.boost)b[k]+=it.boost[k];}); if(includeActions) ACTIONS.filter(x=>state.actions[x.id]).forEach(it=>{for(const k in it.boost)b[k]+=it.boost[k];}); return b;}
+function makeSurvey(includeActions){const b=boosts(includeActions); const base={Bees:1,Butterflies:0,Beetles:1,Worms:1,Birds:1,Frogs:0,Hedgehogs:0}; const survey={}; GROUPS.forEach(([name])=>{survey[name]=Math.min(12,base[name]+b[name]+(includeActions?1:0));}); return survey;}
+function runSurvey(which){if(which==='before') state.before=makeSurvey(false); else { if(!state.before) state.before=makeSurvey(false); state.after=makeSurvey(true);} save(); updateAll();}
+function table(survey){if(!survey)return '<p class="small">No survey yet — press the survey button.</p>'; let h='<table><tr><th>Wildlife group</th><th>Count</th><th>Evidence mark</th></tr>'; GROUPS.forEach(([n,e])=>{h+='<tr><td>'+e+' '+n+'</td><td>'+survey[n]+'</td><td>'+('●'.repeat(Math.min(10,survey[n]))||'none')+'</td></tr>';}); return h+'</table>';}
+function changeTable(){if(!state.before||!state.after)return '<p class="small">Run both surveys to compare change.</p>'; let h='<table><tr><th>Group</th><th>Survey 1</th><th>Survey 2</th><th>Change</th></tr>'; GROUPS.forEach(([n,e])=>{const d=state.after[n]-state.before[n]; h+='<tr><td>'+e+' '+n+'</td><td>'+state.before[n]+'</td><td>'+state.after[n]+'</td><td>'+(d>0?'+'+d:d)+'</td></tr>';}); return h+'</table>';}
+function richness(s){return s?Object.values(s).filter(v=>v>0).length:0;} function total(s){return s?Object.values(s).reduce((a,b)=>a+b,0):0;}
+function updateAll(){document.getElementById('featureCount').textContent=Object.keys(state.features).length; document.getElementById('habitatScore').textContent=support(FEATURES,'features'); document.getElementById('actionCount').textContent=Object.keys(state.actions).length; document.getElementById('addedSupport').textContent=support(ACTIONS,'actions'); document.getElementById('beforeTable').innerHTML=table(state.before); document.getElementById('afterTable').innerHTML=table(state.after); document.getElementById('changeTable').innerHTML=changeTable(); document.getElementById('beforeRich').textContent=richness(state.before); document.getElementById('beforeTotal').textContent=total(state.before); document.getElementById('richChange').textContent=state.after&&state.before?(richness(state.after)-richness(state.before)>=0?'+':'')+(richness(state.after)-richness(state.before)):'0'; document.getElementById('totalChange').textContent=state.after&&state.before?(total(state.after)-total(state.before)>=0?'+':'')+(total(state.after)-total(state.before)):'0'; updateCheck();}
+function updateCheck(){const t=(id)=>document.getElementById(id)?.value.trim()||''; const li=k=>document.querySelector('#finalCheck li[data-ck="'+k+'"]'); if(!li('survey1'))return; li('survey1').classList.toggle('met',!!state.before); li('survey2').classList.toggle('met',!!state.after); li('explain').classList.toggle('met',t('because').length>8); li('next').classList.toggle('met',t('nextIdea').length>5);}
+document.querySelectorAll('[data-save]').forEach(el=>{const k=el.id;if(state.fields[k])el.value=state.fields[k];el.addEventListener('input',()=>{state.fields[k]=el.value;save();updateCheck();});el.addEventListener('change',()=>{state.fields[k]=el.value;save();updateCheck();});});
+function savePdf(){document.body.classList.add('printing');setTimeout(()=>{window.print();document.body.classList.remove('printing');},50);} 
+function emailWork(){updateAll(); const f=k=>(document.getElementById(k)?.value||'').trim()||'(not written)'; let b='BIODIVERSITY CHANGE LAB — PHYSICAL WORLD & EXPLORATION\nDate: '+new Date().toLocaleDateString('en-GB')+'\n\nFeatures: '+Object.keys(state.features).join(', ')+'\nActions: '+Object.keys(state.actions).join(', ')+'\n\nSurvey 1: '+JSON.stringify(state.before||{})+'\nSurvey 2: '+JSON.stringify(state.after||{})+'\n\nBiggest change: '+f('biggest')+'\nBecause: '+f('because')+'\nNext idea: '+f('nextIdea')+'\nNotice: '+f('notice1')+'\n\n—\nSent from Base 6'; window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+encodeURIComponent('Base 6 · Biodiversity Change Lab')+'&body='+encodeURIComponent(b),'_blank'); document.getElementById('notify').textContent='✓ Opening your email — your work is ready to send.'; document.getElementById('notify').classList.add('show');}
+buildPickGrid('featureGrid',FEATURES,'features',5); buildPickGrid('actionGrid',ACTIONS,'actions',3); renderProgress(); goStage(state.stage||1); updateAll();
+</script></body></html>

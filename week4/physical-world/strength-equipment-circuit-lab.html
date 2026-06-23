@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dumbbell & Kettlebell Circuit Lab · Physical World & Exploration · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root { --green:#6b8e23; --green-dark:#4f6f16; --green-soft:#eef6e4; --teal:#007291; --orange:#ef7724; --cream:#fef8f4; --line:#e0d8d0; --soft:#faf6f1; }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:var(--cream); color:#1a1a1a; min-height:100vh; }
+  .site-header { background:var(--green); padding:1.25rem 2rem; display:flex; gap:.75rem; align-items:center; }
+  .back-link { color:#fff; font-size:.9rem; font-weight:700; text-decoration:none; opacity:.92; }
+  .back-link:hover { opacity:1; }
+  .breadcrumb { color:#fff; font-size:.9rem; font-weight:700; opacity:.7; }
+  .hero { background:var(--green); padding:1.4rem 2rem 2.1rem; text-align:center; }
+  .hero .subject-label { font-size:.85rem; font-weight:700; color:#fff; opacity:.88; letter-spacing:.1em; text-transform:uppercase; margin-bottom:.45rem; }
+  .hero h1 { font-size:1.95rem; font-weight:700; color:#fff; line-height:1.2; }
+  .hero p { font-size:.96rem; color:#fff; opacity:.94; max-width:660px; margin:.55rem auto 0; line-height:1.55; }
+  .main { max-width:900px; margin:0 auto; padding:1.4rem 1.5rem 4rem; }
+  .progress { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1.2rem; position:sticky; top:0; background:var(--cream); padding:.7rem 0; z-index:6; }
+  .pchip { font-size:.72rem; font-weight:700; padding:5px 11px; border-radius:20px; background:#f0ede8; color:#999; border:1.5px solid var(--line); }
+  .pchip.active { background:#edf7df; color:var(--green-dark); border-color:#b9d99b; }
+  .pchip.done { background:#e6f5e6; color:#1a5e1a; border-color:#a9dfbf; }
+  .stage { display:none; } .stage.show { display:block; }
+  .stage-card { background:#fff; border:2px solid var(--line); border-radius:16px; padding:1.4rem 1.5rem; margin-bottom:1.2rem; }
+  .stage-eyebrow { font-size:.74rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--green); margin-bottom:.3rem; }
+  .stage-card h2 { font-size:1.25rem; font-weight:700; color:var(--teal); line-height:1.25; margin-bottom:.5rem; }
+  .intro { font-size:.95rem; color:#444; line-height:1.65; margin-bottom:1rem; }
+  .mini-label { font-size:.86rem; font-weight:700; color:#555; margin:.7rem 0 .35rem; }
+  .coach-say, .ranger-say { display:flex; gap:.7rem; align-items:flex-start; background:var(--green-soft); border:2px solid #b9d99b; border-radius:14px; padding:.85rem 1rem; margin:.7rem 0 1rem; }
+  .face { font-size:2rem; line-height:1; }
+  .bubble { font-size:.98rem; line-height:1.55; color:#2c4a18; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:.75rem; }
+  .two-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
+  .card { background:var(--soft); border:1.5px solid #ece3da; border-radius:14px; padding:.9rem 1rem; }
+  .pick-card { background:#fff; border:2px solid #d8c8b8; border-radius:13px; padding:.85rem .9rem; cursor:pointer; font-family:inherit; text-align:left; }
+  .pick-card:hover { border-color:var(--green); box-shadow:0 0 0 3px #dceec4; }
+  .pick-card.on { border-color:var(--green); background:#f7fff0; }
+  .pick-card.bad { border-color:#e0a050; background:#fff8ed; }
+  .pick-card .emoji { font-size:1.7rem; display:block; margin-bottom:.35rem; }
+  .pick-card strong { display:block; font-size:.94rem; color:#1a1a1a; line-height:1.25; }
+  .pick-card span, .small { font-size:.8rem; color:#555; line-height:1.45; }
+  .tagrow { display:flex; gap:.3rem; flex-wrap:wrap; margin-top:.45rem; }
+  .tag { font-size:.67rem; font-weight:700; border-radius:20px; padding:1px 7px; background:#edf7df; color:var(--green-dark); border:1px solid #cce4ad; }
+  .btn-row { display:flex; gap:.55rem; flex-wrap:wrap; margin:.75rem 0; }
+  .next-btn, .action-btn, .ghost-btn, .small-btn { font-family:inherit; font-weight:700; border-radius:9px; cursor:pointer; }
+  .next-btn, .action-btn { font-size:.92rem; padding:.65rem 1.4rem; border:none; color:#fff; background:var(--teal); margin-top:1rem; }
+  .next-btn:hover, .action-btn:hover { background:#00576e; }
+  .ghost-btn { font-size:.9rem; padding:.65rem 1.2rem; border:2px solid var(--teal); color:var(--teal); background:#fff; margin-top:1rem; }
+  .ghost-btn:hover { background:#e8f2f7; }
+  .small-btn { font-size:.82rem; padding:.45rem .8rem; border:1.5px solid #b9d99b; background:#f7fff0; color:var(--green-dark); }
+  .small-btn.on { background:var(--green); color:#fff; border-color:var(--green); }
+  textarea, input[type=text], select { font-family:inherit; font-size:.96rem; width:100%; padding:.7rem .85rem; border:2px solid var(--teal); border-radius:10px; background:#fff; outline:none; line-height:1.6; }
+  textarea { min-height:96px; resize:vertical; }
+  textarea:focus, input:focus, select:focus { border-color:var(--orange); }
+  .checklist { list-style:none; margin:.8rem 0 0; }
+  .checklist li { font-size:.9rem; line-height:1.6; padding:.3rem 0 .3rem 1.7rem; position:relative; color:#888; }
+  .checklist li::before { content:'○'; position:absolute; left:0; font-weight:700; color:#c8b6a4; }
+  .checklist li.met { color:#1a5e1a; } .checklist li.met::before { content:'✓'; color:#2e8b57; }
+  .meter { margin:.65rem 0; }
+  .meter-label { display:flex; justify-content:space-between; font-size:.82rem; font-weight:700; color:#555; margin-bottom:.25rem; }
+  .bar { height:13px; background:#eee6de; border-radius:20px; overflow:hidden; border:1px solid #e0d8d0; }
+  .fill { height:100%; width:0%; background:var(--green); border-radius:20px; transition:width .2s; }
+  .score-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:.6rem; margin:.8rem 0; }
+  .score { background:#fff; border:1.5px solid #e0d8d0; border-radius:12px; padding:.75rem; }
+  .score strong { display:block; color:var(--teal); font-size:1.05rem; }
+  .score span { font-size:.78rem; color:#555; line-height:1.35; }
+  table { width:100%; border-collapse:collapse; margin:.7rem 0; background:#fff; border-radius:12px; overflow:hidden; }
+  th, td { border:1px solid #e8e0d8; padding:.55rem .6rem; text-align:left; font-size:.86rem; line-height:1.35; }
+  th { background:#edf7df; color:var(--green-dark); font-weight:700; }
+  .fb { display:none; font-size:.86rem; margin-top:.5rem; padding:.55rem .8rem; border-radius:8px; line-height:1.5; }
+  .fb.show { display:block; background:#e6f5e6; color:#1a5e1a; border:1.5px solid #a9dfbf; }
+  .fb.warn { display:block; background:#fff3e6; color:#7a4a00; border:1.5px solid #f0c88a; }
+  .send-card { background:#fff7f0; border:2px solid #fcd8bc; border-radius:14px; padding:1.3rem 1.5rem; margin-top:1.2rem; text-align:center; }
+  .send-card p { font-size:.92rem; color:#555; line-height:1.6; margin-bottom:.6rem; }
+  .notify { display:none; margin-top:.9rem; font-size:.88rem; font-weight:700; background:#e6f5e6; border:1.5px solid #2d4a2d; color:#1a2e1a; border-radius:8px; padding:.65rem 1rem; line-height:1.5; }
+  .notify.show { display:block; }
+  .extension { background:#e8f2f7; border:2px solid #9ccbe0; border-radius:14px; padding:1rem; margin-top:1rem; }
+  .extension h3 { color:#0b5a72; font-size:1rem; margin-bottom:.45rem; }
+  .extension li { margin-left:1.2rem; font-size:.9rem; color:#333; line-height:1.6; }
+  a:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-visible { outline:3px solid var(--teal); outline-offset:2px; }
+  footer { text-align:center; padding:1.5rem; font-size:.8rem; color:#888; border-top:1px solid var(--line); }
+  @media(max-width:720px){ .two-grid{grid-template-columns:1fr;} .hero h1{font-size:1.65rem;} .main{padding-left:1rem;padding-right:1rem;} }
+  @media print { .site-header,.progress,.no-print,.send-card,footer{display:none!important;} .hero{padding:1rem;background:#fff;color:#111;border-bottom:2px solid #ddd;} .hero *{color:#111!important;} .main{max-width:100%;padding:.5rem;} .stage{display:block!important;} .stage-card{break-inside:avoid;border:1px solid #aaa;} body{background:#fff;} }
+  body.printing .stage{display:block!important;}
+
+</style>
+</head>
+<body>
+
+<header class="site-header"><a class="back-link" href="index.html">← Physical World & Exploration</a><span class="breadcrumb">/ Strength Circuit Lab</span></header>
+<div class="hero"><p class="subject-label">Physical World & Exploration · Strength Training</p><h1>🏋️ Strength Circuit Lab</h1><p>Design a simple dumbbell or kettlebell circuit in a digital simulator. Choose safe technique, sensible effort and a balanced set of movements.</p></div>
+<main class="main"><div class="progress" id="progress"></div>
+<section class="stage" id="stage-1"><div class="stage-card"><p class="stage-eyebrow">Stage 1 of 5 · Choose equipment</p><h2>Pick the training set-up</h2><div class="coach-say"><span class="face">🛡️</span><span class="bubble">Equipment is only useful when it is manageable. In this simulation, lighter and controlled usually scores better than heavy and messy.</span></div><div class="grid" id="kitGrid"></div><p class="mini-label">My safety promise:</p><textarea id="promise" data-save="promise" placeholder="I would choose a weight I can control..."></textarea><button class="next-btn" onclick="goStage(2)">Technique checks →</button></div></section>
+<section class="stage" id="stage-2"><div class="stage-card"><p class="stage-eyebrow">Stage 2 of 5 · Technique</p><h2>Spot the safe technique</h2><p class="intro">For each equipment movement, tap the safest cue. The simulator saves each correct coach cue.</p><div class="grid" id="techGrid"></div><div id="techQuestion" class="card" style="margin-top:1rem;"><h3 id="techTitle" style="font-size:1rem;color:var(--teal);">Choose a movement</h3><div id="techOptions" class="grid" style="margin-top:.7rem;"></div><div id="techFb" class="fb"></div></div><button class="next-btn" onclick="goStage(3)">Build circuit →</button></div></section>
+<section class="stage" id="stage-3"><div class="stage-card"><p class="stage-eyebrow">Stage 3 of 5 · Circuit design</p><h2>Build your digital circuit</h2><p class="intro">Choose three movements. Try to include legs, hinge, carry/pull and core control.</p><div class="grid" id="circuitGrid"></div><div class="score-grid"><div class="score"><strong id="circuitCount">0</strong><span>movements chosen</span></div><div class="score"><strong id="circuitRating">Starting</strong><span>circuit rating</span></div></div><div class="card"><div class="meter"><div class="meter-label"><span>Legs</span><span id="legsNum">0</span></div><div class="bar"><div class="fill" id="legsFill"></div></div></div><div class="meter"><div class="meter-label"><span>Hinge / back body</span><span id="hingeNum">0</span></div><div class="bar"><div class="fill" id="hingeFill"></div></div></div><div class="meter"><div class="meter-label"><span>Carry / pull</span><span id="carryNum">0</span></div><div class="bar"><div class="fill" id="carryFill"></div></div></div><div class="meter"><div class="meter-label"><span>Core control</span><span id="coreNum">0</span></div><div class="bar"><div class="fill" id="coreFill"></div></div></div></div><button class="next-btn" onclick="goStage(4)">Set effort →</button></div></section>
+<section class="stage" id="stage-4"><div class="stage-card"><p class="stage-eyebrow">Stage 4 of 5 · Effort simulator</p><h2>Choose load and effort</h2><p class="intro">A good circuit should feel controlled. Pick a load and pace for the digital athlete.</p><div class="two-grid"><div class="card"><p class="mini-label">Load choice</p><div class="btn-row"><button class="small-btn" onclick="setEffort('load','light')">Light</button><button class="small-btn" onclick="setEffort('load','medium')">Medium</button><button class="small-btn" onclick="setEffort('load','heavy')">Too heavy</button></div></div><div class="card"><p class="mini-label">Pace choice</p><div class="btn-row"><button class="small-btn" onclick="setEffort('pace','slow')">Slow control</button><button class="small-btn" onclick="setEffort('pace','steady')">Steady</button><button class="small-btn" onclick="setEffort('pace','rush')">Rush</button></div></div></div><div id="effortFb" class="fb"></div><div class="score-grid"><div class="score"><strong id="controlScore">0%</strong><span>control score</span></div><div class="score"><strong id="riskScore">0%</strong><span>safe-choice score</span></div></div><button class="next-btn" onclick="goStage(5)">Coach summary →</button></div></section>
+<section class="stage" id="stage-5"><div class="stage-card"><p class="stage-eyebrow">Stage 5 of 5 · Coach summary</p><h2>Write your circuit card</h2><p class="mini-label">My chosen equipment:</p><textarea id="kitNote" data-save="kitNote" placeholder="I chose..."></textarea><p class="mini-label">My circuit includes:</p><textarea id="circuitNote" data-save="circuitNote" placeholder="My circuit includes..."></textarea><p class="mini-label">The most important safety cue is:</p><textarea id="safetyCue" data-save="safetyCue" placeholder="The most important safety cue is..."></textarea><ul class="checklist" id="finalCheck"><li data-ck="kit">Equipment chosen</li><li data-ck="tech">Technique cues checked</li><li data-ck="circuit">Circuit built</li><li data-ck="summary">Summary written</li></ul><div class="extension"><h3>Optional real-world extension</h3><ul><li>With adult/staff agreement, practise the shape of one movement without weight first.</li><li>If using equipment, choose a light load that can be controlled.</li><li>Stop if the movement feels painful, unsafe or too difficult.</li></ul></div></div><div class="send-card no-print"><p>Save your circuit card, or send it to Jay.</p><button class="ghost-btn" onclick="savePdf()">🖨️ Save as PDF</button> <button class="action-btn" onclick="emailWork()">📧 Send my work to Jay</button><div class="notify" id="notify"></div></div></section>
+</main><footer>Base 6 · Chilton Bridge School · Physical World & Exploration</footer>
+<script>
+const STORE_KEY='base6_w4_physical_strength_circuit'; const TEACHER_EMAIL='jay.raine@chiltonbridgeschool.co.uk';
+let state={stage:1,kit:'',tech:{},circuit:{},effort:{load:'',pace:''},fields:{}}; try{state=Object.assign(state,JSON.parse(localStorage.getItem(STORE_KEY))||{});}catch(e){}; ['tech','circuit','effort','fields'].forEach(k=>{if(!state[k])state[k]={};});
+const PLABELS=['Equipment','Technique','Circuit','Effort','Summary'];
+const KITS=[['none','👐','No equipment','Best for learning shapes first.'],['dumbbell','🏋️','Light dumbbell','Good for simple controlled movements.'],['kettlebell','🔔','Light kettlebell','Useful for goblet hold and carries.']];
+const MOVES=[
+ {id:'goblet',emoji:'🏆',name:'Goblet squat',areas:{legs:3,hinge:0,carry:0,core:2},right:'Hold close to chest and squat with control.',wrong:['Hold far away from body.','Drop quickly and bounce.']},
+ {id:'hinge',emoji:'🚪',name:'Deadlift hinge',areas:{legs:1,hinge:3,carry:0,core:2},right:'Push hips back and keep the weight close.',wrong:['Round the back to reach.','Swing the weight fast.']},
+ {id:'carry',emoji:'🧳',name:'Suitcase carry',areas:{legs:1,hinge:0,carry:3,core:2},right:'Stand tall, ribs stacked, walk with control.',wrong:['Lean to one side.','Run with the weight.']},
+ {id:'press',emoji:'⬆️',name:'Floor press / push',areas:{legs:0,hinge:0,carry:2,core:1},right:'Press smoothly and keep shoulders comfortable.',wrong:['Force a painful range.','Drop the weight down.']},
+ {id:'row',emoji:'🚣',name:'Supported row',areas:{legs:0,hinge:1,carry:3,core:1},right:'Use support and pull slowly towards ribs.',wrong:['Twist and yank.','Hold breath hard.']}
+];
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}}
+function goStage(n){state.stage=Math.max(state.stage,n);save();for(let i=1;i<=5;i++){document.getElementById('stage-'+i).classList.toggle('show',i<=n);}renderProgress();document.getElementById('stage-'+n).scrollIntoView({behavior:'smooth',block:'start'});updateAll();}
+function renderProgress(){const p=document.getElementById('progress');p.innerHTML='';PLABELS.forEach((lab,i)=>{const n=i+1,c=document.createElement('span');c.className='pchip'+(n<state.stage?' done':'')+(n===state.stage?' active':'');c.textContent=n+'. '+lab;p.appendChild(c);});}
+function buildKit(){const el=document.getElementById('kitGrid');el.innerHTML='';KITS.forEach(([id,em,n,h])=>{const b=document.createElement('button');b.className='pick-card'+(state.kit===id?' on':'');b.innerHTML='<span class="emoji">'+em+'</span><strong>'+n+'</strong><span>'+h+'</span>';b.onclick=()=>{state.kit=id;save();buildKit();updateAll();};el.appendChild(b);});}
+function buildTech(){const el=document.getElementById('techGrid');el.innerHTML='';MOVES.forEach(m=>{const b=document.createElement('button');b.className='pick-card';b.innerHTML='<span class="emoji">'+m.emoji+'</span><strong>'+m.name+'</strong><span>Tap to check technique.</span>';b.onclick=()=>showTech(m.id);el.appendChild(b);});}
+function showTech(id){const m=MOVES.find(x=>x.id===id);document.getElementById('techTitle').textContent=m.emoji+' '+m.name;const box=document.getElementById('techOptions');box.innerHTML='';[m.right,...m.wrong].sort(()=>0.5-Math.random()).forEach(txt=>{const b=document.createElement('button');b.className='pick-card';b.innerHTML='<strong>'+txt+'</strong>';b.onclick=()=>{const fb=document.getElementById('techFb');if(txt===m.right){state.tech[id]=true;save();fb.className='fb show';fb.textContent='✓ Safe technique cue saved.';}else{fb.className='fb warn';fb.textContent='Try the cue that keeps the movement close, controlled and comfortable.';}updateAll();};box.appendChild(b);});}
+function buildCircuit(){const el=document.getElementById('circuitGrid');el.innerHTML='';MOVES.forEach(m=>{const b=document.createElement('button');b.className='pick-card'+(state.circuit[m.id]?' on':'');b.innerHTML='<span class="emoji">'+m.emoji+'</span><strong>'+m.name+'</strong><span>'+Object.keys(m.areas).filter(k=>m.areas[k]>0).join(', ')+'</span>';b.onclick=()=>{state.circuit[m.id]=!state.circuit[m.id];if(!state.circuit[m.id])delete state.circuit[m.id];save();buildCircuit();updateAll();};el.appendChild(b);});}
+function totals(){const t={legs:0,hinge:0,carry:0,core:0};MOVES.filter(m=>state.circuit[m.id]).forEach(m=>{for(const k in t)t[k]+=m.areas[k];});return t;}
+function setEffort(k,v){state.effort[k]=v;save();const fb=document.getElementById('effortFb');if(v==='heavy'||v==='rush'){fb.className='fb warn';fb.textContent='That choice raises risk in the simulator. Controlled and manageable is stronger.';}else{fb.className='fb show';fb.textContent='✓ Good coaching choice: controlled and manageable.';}updateAll();}
+function updateAll(){const t=totals();['legs','hinge','carry','core'].forEach(k=>{document.getElementById(k+'Num').textContent=t[k];document.getElementById(k+'Fill').style.width=Math.min(100,t[k]*18)+'%';});const count=Object.keys(state.circuit).length;document.getElementById('circuitCount').textContent=count;const bal=Object.values(t).filter(v=>v>0).length;document.getElementById('circuitRating').textContent=count>=3&&bal>=3?'Balanced':count>=2?'Developing':'Starting';let control=20+Object.keys(state.tech).length*10+bal*10+(state.effort.pace==='slow'?15:state.effort.pace==='steady'?12:state.effort.pace==='rush'?-20:0);let safe=20+(state.kit?15:0)+Object.keys(state.tech).length*8+(state.effort.load==='light'?15:state.effort.load==='medium'?10:state.effort.load==='heavy'?-25:0)+(state.effort.pace==='rush'?-20:state.effort.pace?10:0);document.getElementById('controlScore').textContent=Math.max(0,Math.min(100,control))+'%';document.getElementById('riskScore').textContent=Math.max(0,Math.min(100,safe))+'%';updateCheck();}
+function updateCheck(){const li=k=>document.querySelector('#finalCheck li[data-ck="'+k+'"]');if(!li('kit'))return;li('kit').classList.toggle('met',!!state.kit);li('tech').classList.toggle('met',Object.keys(state.tech).length>=3);li('circuit').classList.toggle('met',Object.keys(state.circuit).length>=3);li('summary').classList.toggle('met',(document.getElementById('safetyCue')?.value||'').trim().length>5);}
+document.querySelectorAll('[data-save]').forEach(el=>{const k=el.id;if(state.fields[k])el.value=state.fields[k];el.addEventListener('input',()=>{state.fields[k]=el.value;save();updateCheck();});});
+function savePdf(){document.body.classList.add('printing');setTimeout(()=>{window.print();document.body.classList.remove('printing');},50);} 
+function emailWork(){const f=k=>(document.getElementById(k)?.value||'').trim()||'(not written)';let b='STRENGTH CIRCUIT LAB — PHYSICAL WORLD & EXPLORATION\nDate: '+new Date().toLocaleDateString('en-GB')+'\n\nEquipment: '+(state.kit||'(none)')+'\nTechnique cues: '+Object.keys(state.tech).join(', ')+'\nCircuit: '+Object.keys(state.circuit).join(', ')+'\nLoad: '+(state.effort.load||'(none)')+'\nPace: '+(state.effort.pace||'(none)')+'\n\nPromise: '+f('promise')+'\nKit note: '+f('kitNote')+'\nCircuit note: '+f('circuitNote')+'\nSafety cue: '+f('safetyCue')+'\n\n—\nSent from Base 6';window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+encodeURIComponent('Base 6 · Strength Circuit Lab')+'&body='+encodeURIComponent(b),'_blank');document.getElementById('notify').textContent='✓ Opening your email — your work is ready to send.';document.getElementById('notify').classList.add('show');}
+buildKit();buildTech();buildCircuit();renderProgress();goStage(state.stage||1);updateAll();
+</script></body></html>
