@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Why Is It So Hot? | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --green: #2e8b57; --green-bg: #e6f3ec; --teal: #007291; --orange: #ef7724; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: var(--green); padding: 2rem 2rem 2.75rem; text-align: center; overflow: hidden; }
+  .site-header::after { content: ""; position: absolute; top: -50px; right: -40px; width: 170px; height: 170px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+  .site-header .header-inner { position: relative; z-index: 2; }
+  .site-header h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .site-header p { font-size: 1rem; color: #dff0e7; margin-top: 0.35rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 34px; z-index: 1; }
+
+  .main { max-width: 680px; margin: 0 auto; padding: 1.25rem 1.25rem 4rem; }
+  .back-link { display: inline-block; margin-bottom: 1rem; font-size: 0.9rem; font-weight: 700; color: var(--teal); text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+
+  .progress-wrap { margin-bottom: 1.25rem; }
+  .progress-track { background: #e7ded6; border-radius: 20px; height: 12px; overflow: hidden; }
+  .progress-fill { background: var(--green); height: 100%; width: 0%; border-radius: 20px; transition: width 0.3s ease; }
+  .progress-text { font-size: 0.8rem; font-weight: 700; color: var(--green); margin-top: 0.4rem; }
+
+  .step { display: none; }
+  .step.active { display: block; animation: fade 0.25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { background: #ffffff; border: 2px solid var(--green); border-radius: 16px; padding: 1.4rem 1.5rem 1.5rem; box-shadow: 0 4px 14px rgba(46,139,87,0.1); }
+  .card h2 { font-size: 1.4rem; color: var(--green); line-height: 1.25; margin-bottom: 0.7rem; }
+  .card p { font-size: 1.05rem; line-height: 1.6; color: #2a2a2a; margin-bottom: 0.8rem; }
+  .card p:last-child { margin-bottom: 0; }
+  .card strong { color: var(--green); }
+  .lead { font-size: 1.12rem; }
+
+  .illo { display: block; width: 100%; max-width: 280px; margin: 0.3rem auto 1rem; }
+  .diagram { display: block; width: 100%; max-width: 420px; margin: 0.8rem auto; }
+
+  .fact-box { background: var(--green-bg); border-left: 5px solid var(--green); border-radius: 10px; padding: 0.9rem 1.1rem; margin: 0.6rem 0; }
+  .fact-box .fact-label { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--green); display: block; margin-bottom: 0.3rem; }
+  .fact-box p { margin: 0; font-size: 1rem; }
+
+  /* tap poll */
+  .poll-row { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin: 0.8rem 0; }
+  .poll-btn { background: #fff; border: 2px solid var(--teal); border-radius: 14px; padding: 0.8rem 1rem; min-width: 92px; font-family: inherit; font-weight: 700; color: var(--teal); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; transition: transform 0.12s ease; }
+  .poll-btn .pe { font-size: 1.7rem; }
+  .poll-btn:hover { transform: translateY(-2px); }
+  .poll-btn.chosen { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+  .poll-reply { text-align: center; font-weight: 700; color: var(--orange); margin-top: 0.4rem; min-height: 1.4rem; }
+
+  /* reveal */
+  .reveal-btn { background: var(--orange); color: #fff; border: none; border-radius: 12px; padding: 0.85rem 1.3rem; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; display: block; margin: 0.4rem auto; transition: transform 0.12s ease; }
+  .reveal-btn:hover { transform: translateY(-2px); }
+  .reveal-content { display: none; margin-top: 0.8rem; animation: fade 0.25s ease; }
+  .reveal-content.open { display: block; }
+
+  /* guess / quiz buttons */
+  .opt-btns { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+  .opt-btn { flex: 1; min-width: 90px; padding: 0.8rem; border: 2px solid var(--teal); background: #fff; color: var(--teal); border-radius: 12px; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.12s ease; }
+  .opt-btn:hover { transform: translateY(-2px); }
+  .feedback { border-radius: 10px; padding: 0.85rem 1.05rem; font-size: 1rem; line-height: 1.5; display: none; }
+  .feedback.right { background: var(--green-bg); border-left: 5px solid var(--green); display: block; }
+  .feedback.close { background: #fdeee0; border-left: 5px solid var(--orange); display: block; }
+
+  /* heat bar */
+  .heat-wrap { text-align: center; margin: 0.6rem 0; }
+  .heat-track { background: #e7ded6; border-radius: 20px; height: 26px; overflow: hidden; margin: 0.6rem 0; }
+  .heat-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #f6c343, #ef7724, #c0392b); border-radius: 20px; transition: width 0.25s ease; }
+  .heat-label { font-weight: 700; color: var(--orange); min-height: 1.4rem; }
+  .tap-btn { background: var(--green); color: #fff; border: none; border-radius: 12px; padding: 0.8rem 1.4rem; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: transform 0.12s ease; }
+  .tap-btn:hover { transform: translateY(-2px); }
+
+  /* slider */
+  .slider-panel { background: var(--green-bg); border-radius: 12px; padding: 1rem; margin: 0.6rem 0; }
+  .slider-panel label { display: block; font-weight: 700; color: var(--green); margin-bottom: 0.5rem; font-size: 0.95rem; }
+  input[type=range] { width: 100%; accent-color: var(--orange); height: 28px; }
+  .slider-ends { display: flex; justify-content: space-between; font-size: 0.8rem; color: #555; font-weight: 700; }
+  .strength-read { text-align: center; font-weight: 700; color: var(--orange); margin-top: 0.5rem; font-size: 1.05rem; }
+
+  /* toggle */
+  .center { text-align: center; }
+  .toggle-note { text-align: center; font-weight: 700; color: var(--green); margin-top: 0.5rem; min-height: 2.6rem; }
+
+  /* tap reveal cards */
+  .cool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.7rem; margin: 0.7rem 0; }
+  .cool-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 0.9rem; text-align: center; cursor: pointer; transition: transform 0.12s ease, border-color 0.12s ease; min-height: 92px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem; }
+  .cool-card:hover { transform: translateY(-2px); }
+  .cool-card .emoji { font-size: 1.7rem; }
+  .cool-card .name { font-weight: 700; font-size: 0.95rem; color: var(--teal); }
+  .cool-card .tip { font-size: 0.86rem; color: #444; line-height: 1.4; display: none; }
+  .cool-card.open { border-color: var(--green); background: var(--green-bg); }
+  .cool-card.open .emoji, .cool-card.open .name { display: none; }
+  .cool-card.open .tip { display: block; }
+
+  /* check grid */
+  .check-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 0.9rem; text-align: center; cursor: pointer; transition: transform 0.12s ease; min-height: 92px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.3rem; }
+  .check-card:hover { transform: translateY(-2px); }
+  .check-card .emoji { font-size: 1.7rem; }
+  .check-card .name { font-weight: 700; font-size: 0.95rem; color: #444; }
+  .check-card .mark { font-size: 0.84rem; font-weight: 700; display: none; }
+  .check-card.good { border-color: var(--green); background: var(--green-bg); }
+  .check-card.good .mark { display: block; color: var(--green); }
+  .check-card.nope { border-color: var(--orange); background: #fdeee0; }
+  .check-card.nope .mark { display: block; color: #c05a10; }
+
+  textarea { width: 100%; min-height: 120px; border: 2px solid var(--green); border-radius: 12px; padding: 0.9rem; font-family: inherit; font-size: 1rem; line-height: 1.5; resize: vertical; background: #fff; color: #1a1a1a; }
+  textarea:focus { outline: none; border-color: var(--orange); }
+
+  .action-row { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 0.9rem; }
+  .btn { padding: 0.85rem 1.3rem; border-radius: 12px; font-family: inherit; font-size: 0.98rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; border: 2px solid; transition: transform 0.12s ease; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-send { background: var(--green); border-color: var(--green); color: #fff; }
+  .btn-copy { background: #fff; border-color: var(--teal); color: var(--teal); }
+  .copied-note { font-size: 0.85rem; color: var(--green); font-weight: 700; margin-top: 0.6rem; display: none; }
+
+  .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.4rem; gap: 0.75rem; }
+  .nav-btn { padding: 0.85rem 1.5rem; border-radius: 12px; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; border: 2px solid var(--green); transition: transform 0.12s ease; }
+  .nav-btn:hover { transform: translateY(-2px); }
+  .nav-back { background: #fff; color: var(--green); }
+  .nav-next { background: var(--green); color: #fff; }
+  .nav-btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+
+  .dots { display: flex; justify-content: center; gap: 0.35rem; margin-top: 1.1rem; flex-wrap: wrap; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; background: #d8cfc6; border: none; cursor: pointer; padding: 0; }
+  .dot.done { background: #a9d6bd; }
+  .dot.active { background: var(--green); transform: scale(1.3); }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <h1>Why Is It So Hot?</h1>
+    <p>Tap, slide and explore your way through the heat.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 34" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,17 C150,34 350,0 600,15 C850,30 1050,4 1200,17 L1200,34 L0,34 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <a class="back-link" href="index.html">Back to the Home Learning Hub</a>
+
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">Step 1</div>
+  </div>
+
+  <div class="stage" id="stage">
+
+    <!-- 1 hello + poll -->
+    <section class="step active">
+      <div class="card">
+        <h2>Phew, what a scorcher!</h2>
+        <svg class="illo" viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" style="max-width:170px;">
+          <g stroke="#f6c343" stroke-width="6" stroke-linecap="round">
+            <line x1="110" y1="8" x2="110" y2="26"></line>
+            <line x1="62" y1="22" x2="72" y2="38"></line>
+            <line x1="158" y1="22" x2="148" y2="38"></line>
+            <line x1="40" y1="78" x2="58" y2="78"></line>
+            <line x1="180" y1="78" x2="162" y2="78"></line>
+          </g>
+          <circle cx="110" cy="78" r="44" fill="#fbb615" stroke="#ef7724" stroke-width="4"></circle>
+          <rect x="82" y="66" width="22" height="17" rx="6" fill="#333"></rect>
+          <rect x="116" y="66" width="22" height="17" rx="6" fill="#333"></rect>
+          <line x1="104" y1="72" x2="116" y2="72" stroke="#333" stroke-width="4"></line>
+          <path d="M92,96 Q110,112 128,96" fill="none" stroke="#7a4a10" stroke-width="4" stroke-linecap="round"></path>
+        </svg>
+        <p class="lead">You are home because it is <strong>too hot for school</strong>. Let's find out why!</p>
+        <p>First, how does it feel out there today?</p>
+        <div class="poll-row">
+          <button class="poll-btn" data-reply="Warm and lovely. Now let's see what is behind it."><span class="pe">🙂</span>Warm</button>
+          <button class="poll-btn" data-reply="Hot indeed. The Sun has been busy today."><span class="pe">😅</span>Hot</button>
+          <button class="poll-btn" data-reply="Boiling! Good job you are somewhere cooler."><span class="pe">🥵</span>Boiling</button>
+        </div>
+        <div class="poll-reply" id="pollReply"></div>
+      </div>
+    </section>
+
+    <!-- 2 where from -->
+    <section class="step">
+      <div class="card">
+        <h2>Where does all this heat come from?</h2>
+        <p class="lead">Have a quick guess in your head, then tap.</p>
+        <button class="reveal-btn" data-target="rvSun">Tap to reveal</button>
+        <div class="reveal-content" id="rvSun">
+          <svg class="illo" viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" style="max-width:130px;">
+            <g stroke="#f6c343" stroke-width="6" stroke-linecap="round">
+              <line x1="80" y1="6" x2="80" y2="24"></line>
+              <line x1="20" y1="60" x2="38" y2="60"></line>
+              <line x1="140" y1="60" x2="122" y2="60"></line>
+              <line x1="80" y1="114" x2="80" y2="96"></line>
+              <line x1="34" y1="22" x2="46" y2="34"></line>
+              <line x1="126" y1="22" x2="114" y2="34"></line>
+            </g>
+            <circle cx="80" cy="60" r="34" fill="#fbb615" stroke="#ef7724" stroke-width="4"></circle>
+          </svg>
+          <p class="center lead"><strong>The Sun!</strong> Every bit of warmth starts there.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 sun warms ground + heat bar -->
+    <section class="step">
+      <div class="card">
+        <h2>The Sun warms the ground</h2>
+        <svg class="illo" viewBox="0 0 260 150" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="260" height="150" rx="10" fill="#bfe3f2"></rect>
+          <circle cx="48" cy="44" r="26" fill="#fbb615" stroke="#ef7724" stroke-width="3"></circle>
+          <g stroke="#f6c343" stroke-width="5" stroke-linecap="round">
+            <line x1="100" y1="52" x2="150" y2="108"></line>
+            <line x1="130" y1="50" x2="172" y2="108"></line>
+          </g>
+          <rect x="0" y="118" width="260" height="32" fill="#cdb89a"></rect>
+          <rect x="160" y="86" width="50" height="32" fill="#e07b54"></rect>
+          <polygon points="158,86 185,64 212,86" fill="#b5482a"></polygon>
+        </svg>
+        <p>Sunlight lands on roads, roofs and fields and <strong>heats them up</strong>. Give it a go below.</p>
+        <div class="heat-wrap">
+          <button class="tap-btn" id="warmBtn">Add some sunshine</button>
+          <div class="heat-track"><div class="heat-fill" id="heatFill"></div></div>
+          <div class="heat-label" id="heatLabel">Cool and comfy</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 speed guess -->
+    <section class="step">
+      <div class="card">
+        <h2>A speedy journey</h2>
+        <p class="lead">How long does sunlight take to reach your garden?</p>
+        <div class="opt-btns" id="speedOpts">
+          <button class="opt-btn" data-correct="0">1 second</button>
+          <button class="opt-btn" data-correct="1">8 minutes</button>
+          <button class="opt-btn" data-correct="0">1 hour</button>
+        </div>
+        <div class="feedback" id="speedFb"></div>
+      </div>
+    </section>
+
+    <!-- 5 sun slider -->
+    <section class="step">
+      <div class="card">
+        <h2>Why summer turns up the heat</h2>
+        <p>Our half of the world <strong>leans toward the Sun</strong>, so it climbs <strong>higher</strong>. Slide to raise it.</p>
+        <div class="slider-panel">
+          <svg class="diagram" id="sunSvg" viewBox="0 0 360 180" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="360" height="180" rx="10" fill="#bfe3f2" id="sky"></rect>
+            <rect x="0" y="145" width="360" height="35" fill="#cdb89a"></rect>
+            <line id="ray1" x1="180" y1="40" x2="120" y2="145" stroke="#f6c343" stroke-width="4" stroke-linecap="round"></line>
+            <line id="ray2" x1="180" y1="40" x2="180" y2="145" stroke="#f6c343" stroke-width="4" stroke-linecap="round"></line>
+            <line id="ray3" x1="180" y1="40" x2="240" y2="145" stroke="#f6c343" stroke-width="4" stroke-linecap="round"></line>
+            <circle id="sun" cx="180" cy="40" r="20" fill="#fbb615" stroke="#ef7724" stroke-width="3"></circle>
+          </svg>
+          <div class="slider-ends"><span>Deep winter</span><span>Midsummer</span></div>
+          <input type="range" id="seasonSlider" min="0" max="100" value="100">
+          <div class="strength-read" id="strengthRead">Sun strength: fierce</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 tilt toggle -->
+    <section class="step">
+      <div class="card">
+        <h2>Give the planet a tilt</h2>
+        <p>Tap to switch the seasons and watch our half <strong>lean</strong>.</p>
+        <svg class="diagram" viewBox="0 0 360 190" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="360" height="190" rx="10" fill="#eaf6fb"></rect>
+          <circle cx="58" cy="95" r="28" fill="#fbb615" stroke="#ef7724" stroke-width="3"></circle>
+          <g stroke="#f6c343" stroke-width="4" stroke-linecap="round">
+            <line x1="92" y1="88" x2="200" y2="80"></line>
+            <line x1="92" y1="102" x2="200" y2="110"></line>
+          </g>
+          <circle cx="258" cy="95" r="48" fill="#4a90d9"></circle>
+          <path d="M236,70 q18,-6 34,4 q12,10 4,26 q-16,10 -34,2 q-14,-16 -8,-32 Z" fill="#3a9d5d"></path>
+          <line id="tiltAxis" x1="232" y1="50" x2="284" y2="140" stroke="#1a1a1a" stroke-width="2.5" stroke-dasharray="6 5"></line>
+          <circle id="tiltNorth" cx="232" cy="50" r="5" fill="#c0392b"></circle>
+          <text id="tiltLabel" x="258" y="178" text-anchor="middle" font-size="14" font-weight="700" fill="#5b4a33" font-family="Atkinson Hyperlegible, sans-serif">Summer</text>
+        </svg>
+        <div class="center"><button class="tap-btn" id="tiltBtn">Switch season</button></div>
+        <div class="toggle-note" id="tiltNote">Summer: our half leans toward the Sun, so it feels strong.</div>
+      </div>
+    </section>
+
+    <!-- 7 heatwave intro -->
+    <section class="step">
+      <div class="card">
+        <h2>What is a heatwave?</h2>
+        <p class="lead">One hot day is normal. A <strong>heatwave</strong> is days and days of it. But why does it keep building?</p>
+        <button class="reveal-btn" data-target="rvDome">Show me why</button>
+        <div class="reveal-content" id="rvDome">
+          <svg class="diagram" viewBox="0 0 360 215" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="360" height="215" rx="10" fill="#bfe3f2"></rect>
+            <g stroke="#f6c343" stroke-width="4" stroke-linecap="round">
+              <line x1="44" y1="9" x2="44" y2="21"></line>
+              <line x1="19" y1="36" x2="31" y2="36"></line>
+              <line x1="26" y1="18" x2="34" y2="26"></line>
+            </g>
+            <circle cx="44" cy="36" r="16" fill="#fbb615" stroke="#ef7724" stroke-width="3"></circle>
+            <text x="200" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#5b4a33" font-family="Atkinson Hyperlegible, sans-serif">High pressure lid</text>
+            <path d="M28,90 Q180,48 332,90" fill="none" stroke="#5b4a33" stroke-width="3" stroke-dasharray="7 6"></path>
+            <line x1="90" y1="108" x2="90" y2="140" stroke="#2e8b57" stroke-width="3" marker-end="url(#arr)"></line>
+            <line x1="180" y1="108" x2="180" y2="140" stroke="#2e8b57" stroke-width="3" marker-end="url(#arr)"></line>
+            <line x1="270" y1="108" x2="270" y2="140" stroke="#2e8b57" stroke-width="3" marker-end="url(#arr)"></line>
+            <text x="180" y="166" text-anchor="middle" font-size="12" fill="#2e8b57" font-family="Atkinson Hyperlegible, sans-serif">warm air sinking</text>
+            <rect x="0" y="180" width="360" height="35" fill="#cdb89a"></rect>
+            <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#2e8b57"></path></marker></defs>
+          </svg>
+          <p><strong>High pressure</strong> sits over us like a lid. The sky stays clear and the heat is trapped.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 build a heatwave -->
+    <section class="step">
+      <div class="card">
+        <h2>Build a heatwave</h2>
+        <p>Tap to move the days along and watch the heat <strong>pile up</strong>.</p>
+        <svg class="illo" viewBox="0 0 120 200" xmlns="http://www.w3.org/2000/svg" style="max-width:110px;">
+          <rect x="46" y="20" width="28" height="140" rx="14" fill="#fff" stroke="#c0392b" stroke-width="3"></rect>
+          <rect id="dayFill" x="52" y="150" width="16" height="0" rx="8" fill="#c0392b"></rect>
+          <circle cx="60" cy="172" r="20" fill="#c0392b"></circle>
+        </svg>
+        <div class="center"><button class="tap-btn" id="dayBtn">Next day</button></div>
+        <div class="toggle-note" id="dayCaption">Tap to begin on day one.</div>
+      </div>
+    </section>
+
+    <!-- 9 quiz -->
+    <section class="step">
+      <div class="card">
+        <h2>Myth or fact?</h2>
+        <svg class="illo" viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg" style="max-width:150px;">
+          <circle cx="100" cy="58" r="40" fill="#eaf6fb" stroke="#007291" stroke-width="7"></circle>
+          <line x1="128" y1="88" x2="178" y2="120" stroke="#007291" stroke-width="13" stroke-linecap="round"></line>
+          <text x="100" y="70" text-anchor="middle" font-size="32" font-weight="700" fill="#ef7724" font-family="Atkinson Hyperlegible, sans-serif">?</text>
+        </svg>
+        <p class="quiz-counter" id="quizCounter" style="font-size:0.8rem;font-weight:700;color:var(--green);margin-bottom:0.4rem;">Question 1 of 4</p>
+        <p style="font-size:1.1rem;font-weight:700;" id="quizQ"></p>
+        <div class="opt-btns">
+          <button class="opt-btn" id="btnFact">Fact</button>
+          <button class="opt-btn" id="btnMyth">Myth</button>
+        </div>
+        <div class="feedback" id="quizFeedback"></div>
+        <div class="action-row" id="quizNextRow" style="display:none;">
+          <button class="btn btn-copy" id="quizNext">Next question</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 warming world -->
+    <section class="step">
+      <div class="card">
+        <h2>A warming world</h2>
+        <p class="lead">Hot days like today are happening <strong>more often</strong> than they used to.</p>
+        <button class="reveal-btn" data-target="rvRecord">See a record breaker</button>
+        <div class="reveal-content" id="rvRecord">
+          <div class="fact-box"><p>In July 2022, England passed <strong>40 degrees Celsius</strong> for the first time on record, near here in Lincolnshire.</p></div>
+        </div>
+        <p>The planet is slowly <strong>warming</strong>, like an extra blanket holding in heat.</p>
+        <svg class="illo" viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+          <line x1="30" y1="118" x2="270" y2="118" stroke="#5b4a33" stroke-width="2"></line>
+          <rect x="50" y="92" width="34" height="26" rx="4" fill="#a9d6bd"></rect>
+          <rect x="110" y="72" width="34" height="46" rx="4" fill="#7cc6a0"></rect>
+          <rect x="170" y="52" width="34" height="66" rx="4" fill="#f6a623"></rect>
+          <rect x="230" y="30" width="34" height="88" rx="4" fill="#ef7724"></rect>
+          <text x="140" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#5b4a33" font-family="Atkinson Hyperlegible, sans-serif">Very hot days, going up</text>
+        </svg>
+        <p>The good news: our <strong>choices</strong> can help slow this down.</p>
+      </div>
+    </section>
+
+    <!-- 11 stay cool reveal cards -->
+    <section class="step">
+      <div class="card">
+        <h2>Clever ways to stay cool</h2>
+        <p>Tap each card for a top tip.</p>
+        <div class="cool-grid" id="coolGrid"></div>
+      </div>
+    </section>
+
+    <!-- 12 spot the cool ideas -->
+    <section class="step">
+      <div class="card">
+        <h2>Spot the cool ideas</h2>
+        <p>Tap the things that really help on a hot day.</p>
+        <div class="cool-grid" id="checkGrid"></div>
+        <p style="margin-top:0.8rem;">If anyone feels <strong>dizzy or sick</strong>, tell a grown up and get them somewhere cool with water.</p>
+      </div>
+    </section>
+
+    <!-- 13 reflection -->
+    <section class="step">
+      <div class="card">
+        <h2>Over to you</h2>
+        <svg class="illo" viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg" style="max-width:140px;">
+          <rect x="60" y="16" width="100" height="98" rx="9" fill="#fff" stroke="#2e8b57" stroke-width="3"></rect>
+          <line x1="60" y1="16" x2="160" y2="16" stroke="#2e8b57" stroke-width="7"></line>
+          <line x1="76" y1="44" x2="146" y2="44" stroke="#cfe6da" stroke-width="3"></line>
+          <line x1="76" y1="62" x2="146" y2="62" stroke="#cfe6da" stroke-width="3"></line>
+          <line x1="76" y1="80" x2="126" y2="80" stroke="#cfe6da" stroke-width="3"></line>
+        </svg>
+        <p>Tell Jay <strong>one thing you learned</strong>, or your cleverest way to stay cool.</p>
+        <textarea id="reflection" placeholder="I found out that..."></textarea>
+        <div class="action-row">
+          <a class="btn btn-send" id="sendJay">Send to Jay</a>
+          <button class="btn btn-copy" id="copyBtn">Copy</button>
+        </div>
+        <div class="copied-note" id="copiedNote">Copied. Paste it anywhere you like.</div>
+      </div>
+    </section>
+
+    <!-- 14 done -->
+    <section class="step">
+      <div class="card center">
+        <h2>You did it!</h2>
+        <svg class="illo" viewBox="0 0 160 130" xmlns="http://www.w3.org/2000/svg" style="max-width:140px;">
+          <g stroke="#f6c343" stroke-width="6" stroke-linecap="round">
+            <line x1="80" y1="6" x2="80" y2="22"></line>
+            <line x1="24" y1="60" x2="40" y2="60"></line>
+            <line x1="136" y1="60" x2="120" y2="60"></line>
+            <line x1="36" y1="22" x2="48" y2="34"></line>
+            <line x1="124" y1="22" x2="112" y2="34"></line>
+          </g>
+          <circle cx="80" cy="62" r="36" fill="#fbb615" stroke="#ef7724" stroke-width="4"></circle>
+          <circle cx="68" cy="56" r="4" fill="#5b3a10"></circle>
+          <circle cx="92" cy="56" r="4" fill="#5b3a10"></circle>
+          <path d="M64,74 Q80,90 96,74" fill="none" stroke="#5b3a10" stroke-width="4" stroke-linecap="round"></path>
+          <path d="M120,40 q12,-8 18,2" fill="none" stroke="#ef7724" stroke-width="5" stroke-linecap="round"></path>
+        </svg>
+        <p class="lead">Brilliant detective work today.</p>
+        <p>Now go and find some shade and a nice cold drink. You have earned it.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn nav-back" id="backBtn">Back</button>
+    <button class="nav-btn nav-next" id="nextBtn">Next</button>
+  </div>
+
+  <div class="dots" id="dots"></div>
+
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+(function () {
+  var KEY = 'base6HomeLearningWhyHot';
+  var EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+  function loadState() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function saveState(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var state = loadState();
+
+  var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
+  var total = steps.length;
+  var current = (typeof state.step === 'number' && state.step >= 0 && state.step < total) ? state.step : 0;
+
+  var fill = document.getElementById('progressFill');
+  var ptext = document.getElementById('progressText');
+  var backBtn = document.getElementById('backBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var dotsWrap = document.getElementById('dots');
+
+  for (var i = 0; i < total; i++) {
+    (function (idx) {
+      var d = document.createElement('button');
+      d.className = 'dot';
+      d.setAttribute('aria-label', 'Go to step ' + (idx + 1));
+      d.addEventListener('click', function () { goTo(idx); });
+      dotsWrap.appendChild(d);
+    })(i);
+  }
+  var dots = Array.prototype.slice.call(dotsWrap.children);
+
+  function render() {
+    for (var i = 0; i < total; i++) {
+      steps[i].classList.toggle('active', i === current);
+      dots[i].classList.toggle('active', i === current);
+      dots[i].classList.toggle('done', i < current);
+    }
+    fill.style.width = ((current + 1) / total * 100) + '%';
+    ptext.textContent = 'Step ' + (current + 1) + ' of ' + total;
+    backBtn.disabled = current === 0;
+    nextBtn.textContent = current === total - 1 ? 'Done' : 'Next';
+    state.step = current; saveState(state);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function goTo(i) { if (i >= 0 && i < total) { current = i; render(); } }
+  backBtn.addEventListener('click', function () { goTo(current - 1); });
+  nextBtn.addEventListener('click', function () { if (current < total - 1) goTo(current + 1); });
+
+  // poll
+  var pollReply = document.getElementById('pollReply');
+  Array.prototype.slice.call(document.querySelectorAll('.poll-btn')).forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.poll-btn').forEach(function (x) { x.classList.remove('chosen'); });
+      b.classList.add('chosen');
+      pollReply.textContent = b.getAttribute('data-reply');
+    });
+  });
+
+  // generic reveals
+  Array.prototype.slice.call(document.querySelectorAll('.reveal-btn')).forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = document.getElementById(b.getAttribute('data-target'));
+      if (t) { t.classList.add('open'); b.style.display = 'none'; }
+    });
+  });
+
+  // heat bar
+  var heat = 0;
+  var heatFill = document.getElementById('heatFill');
+  var heatLabel = document.getElementById('heatLabel');
+  document.getElementById('warmBtn').addEventListener('click', function () {
+    heat = Math.min(100, heat + 20);
+    heatFill.style.width = heat + '%';
+    var labels = ['Cool and comfy', 'Getting warmer', 'Nice and warm', 'Hot now', 'Really hot', 'Baking hot!'];
+    heatLabel.textContent = labels[Math.round(heat / 20)];
+  });
+
+  // speed guess
+  var speedFb = document.getElementById('speedFb');
+  Array.prototype.slice.call(document.querySelectorAll('#speedOpts .opt-btn')).forEach(function (b) {
+    b.addEventListener('click', function () {
+      var ok = b.getAttribute('data-correct') === '1';
+      speedFb.className = 'feedback ' + (ok ? 'right' : 'close');
+      speedFb.textContent = (ok ? 'Spot on! ' : 'Good guess. ') + 'It takes 8 minutes. Sunlight zooms across space at the fastest speed there is.';
+      document.querySelectorAll('#speedOpts .opt-btn').forEach(function (x) { x.disabled = true; });
+    });
+  });
+
+  // sun slider
+  var slider = document.getElementById('seasonSlider');
+  var sun = document.getElementById('sun');
+  var ray1 = document.getElementById('ray1'), ray2 = document.getElementById('ray2'), ray3 = document.getElementById('ray3');
+  var sky = document.getElementById('sky');
+  var strengthRead = document.getElementById('strengthRead');
+  function updateSun() {
+    var v = parseInt(slider.value, 10);
+    var cy = 135 - (v / 100) * 95;
+    sun.setAttribute('cy', cy);
+    ray1.setAttribute('y1', cy); ray2.setAttribute('y1', cy); ray3.setAttribute('y1', cy);
+    var spread = 30 + (v / 100) * 30;
+    ray1.setAttribute('x2', 180 - spread);
+    ray3.setAttribute('x2', 180 + spread);
+    var words = ['weak', 'gentle', 'building', 'strong', 'fierce'];
+    strengthRead.textContent = 'Sun strength: ' + words[Math.min(4, Math.floor(v / 20))];
+    var light = 191 + Math.round((v / 100) * 40);
+    sky.setAttribute('fill', 'rgb(' + light + ',227,242)');
+  }
+  slider.addEventListener('input', updateSun);
+  updateSun();
+
+  // tilt toggle
+  var summer = true;
+  var tiltAxis = document.getElementById('tiltAxis');
+  var tiltNorth = document.getElementById('tiltNorth');
+  var tiltLabel = document.getElementById('tiltLabel');
+  var tiltNote = document.getElementById('tiltNote');
+  function setTilt() {
+    if (summer) {
+      tiltAxis.setAttribute('x1', 232); tiltAxis.setAttribute('y1', 50);
+      tiltAxis.setAttribute('x2', 284); tiltAxis.setAttribute('y2', 140);
+      tiltNorth.setAttribute('cx', 232); tiltNorth.setAttribute('cy', 50);
+      tiltLabel.textContent = 'Summer';
+      tiltNote.textContent = 'Summer: our half leans toward the Sun, so it feels strong.';
+    } else {
+      tiltAxis.setAttribute('x1', 284); tiltAxis.setAttribute('y1', 50);
+      tiltAxis.setAttribute('x2', 232); tiltAxis.setAttribute('y2', 140);
+      tiltNorth.setAttribute('cx', 284); tiltNorth.setAttribute('cy', 50);
+      tiltLabel.textContent = 'Winter';
+      tiltNote.textContent = 'Winter: our half leans away from the Sun, so it feels weak.';
+    }
+  }
+  document.getElementById('tiltBtn').addEventListener('click', function () { summer = !summer; setTilt(); });
+  setTilt();
+
+  // day builder
+  var day = 0;
+  var dayFill = document.getElementById('dayFill');
+  var dayCaption = document.getElementById('dayCaption');
+  document.getElementById('dayBtn').addEventListener('click', function () {
+    if (day < 3) day++;
+    var h = (day / 3) * 124;
+    dayFill.setAttribute('height', h);
+    dayFill.setAttribute('y', 150 - h);
+    var caps = ['Tap to begin on day one.', 'Day 1: a warm start.', 'Day 2: hotter still.', 'Day 3: that is a heatwave!'];
+    dayCaption.textContent = caps[day];
+  });
+
+  // quiz
+  var quiz = [
+    { q: 'The Sun is much closer to us in summer, and that is why it is hotter.', answer: 'myth', why: 'Myth. The distance barely changes. Summer is hotter because our half of the planet leans toward the Sun.' },
+    { q: 'A heatwave happens when high pressure traps warm air over us for days.', answer: 'fact', why: 'Fact. High pressure acts like a lid and the warmth builds up day after day.' },
+    { q: 'Fizzy drinks are the best way to cool your body down.', answer: 'myth', why: 'Myth. Plain water is the real hero for keeping cool.' },
+    { q: 'Very hot days like today are becoming more common as the world warms up.', answer: 'fact', why: 'Fact. As the planet warms, extreme heat happens more often. Our choices can help.' }
+  ];
+  var qi = 0;
+  var quizQ = document.getElementById('quizQ');
+  var quizCounter = document.getElementById('quizCounter');
+  var btnFact = document.getElementById('btnFact');
+  var btnMyth = document.getElementById('btnMyth');
+  var quizFeedback = document.getElementById('quizFeedback');
+  var quizNextRow = document.getElementById('quizNextRow');
+  var quizNext = document.getElementById('quizNext');
+  function showQuestion() {
+    var item = quiz[qi];
+    quizQ.textContent = item.q;
+    quizCounter.textContent = 'Question ' + (qi + 1) + ' of ' + quiz.length;
+    quizFeedback.className = 'feedback'; quizFeedback.textContent = '';
+    quizNextRow.style.display = 'none';
+    btnFact.disabled = false; btnMyth.disabled = false;
+  }
+  function answer(choice) {
+    var item = quiz[qi];
+    var correct = choice === item.answer;
+    quizFeedback.className = 'feedback ' + (correct ? 'right' : 'close');
+    quizFeedback.textContent = (correct ? 'Nice one! ' : 'Good try. ') + item.why;
+    btnFact.disabled = true; btnMyth.disabled = true;
+    quizNext.textContent = qi < quiz.length - 1 ? 'Next question' : 'Start again';
+    quizNextRow.style.display = 'flex';
+  }
+  btnFact.addEventListener('click', function () { answer('fact'); });
+  btnMyth.addEventListener('click', function () { answer('myth'); });
+  quizNext.addEventListener('click', function () { qi = (qi + 1) % quiz.length; showQuestion(); });
+  showQuestion();
+
+  // stay cool reveal cards
+  var coolItems = [
+    { emoji: '💧', name: 'Water', tip: 'Sip water often, even before you feel thirsty.' },
+    { emoji: '🪟', name: 'Curtains', tip: 'Close curtains on the sunny side to keep rooms cooler.' },
+    { emoji: '👕', name: 'Light clothes', tip: 'Loose, pale clothes help your body let go of heat.' },
+    { emoji: '🏠', name: 'Cool spot', tip: 'Find the coolest room, often a shady one downstairs.' },
+    { emoji: '🐢', name: 'Take it slow', tip: 'Save running about for the cooler evening.' },
+    { emoji: '🐶', name: 'Others too', tip: 'Check pets and people around you have water and shade.' }
+  ];
+  var coolGrid = document.getElementById('coolGrid');
+  coolItems.forEach(function (c) {
+    var card = document.createElement('div');
+    card.className = 'cool-card';
+    card.innerHTML = '<span class="emoji">' + c.emoji + '</span><span class="name">' + c.name + '</span><span class="tip">' + c.tip + '</span>';
+    card.addEventListener('click', function () { card.classList.toggle('open'); });
+    coolGrid.appendChild(card);
+  });
+
+  // spot the cool ideas
+  var checkItems = [
+    { emoji: '💧', name: 'Drink water', good: true, mark: 'Yes! The best one.' },
+    { emoji: '🌳', name: 'Find shade', good: true, mark: 'Yes, lovely and cool.' },
+    { emoji: '🧣', name: 'Woolly jumper', good: false, mark: 'Maybe save that for winter!' },
+    { emoji: '🪟', name: 'Close curtains', good: true, mark: 'Yes, keeps rooms cooler.' },
+    { emoji: '🏃', name: 'Sprint at noon', good: false, mark: 'Better to rest in the heat.' },
+    { emoji: '🧢', name: 'Sun hat', good: true, mark: 'Yes, shades your head.' }
+  ];
+  var checkGrid = document.getElementById('checkGrid');
+  checkItems.forEach(function (c) {
+    var card = document.createElement('div');
+    card.className = 'check-card';
+    card.innerHTML = '<span class="emoji">' + c.emoji + '</span><span class="name">' + c.name + '</span><span class="mark">' + c.mark + '</span>';
+    card.addEventListener('click', function () {
+      card.classList.remove('good', 'nope');
+      card.classList.add(c.good ? 'good' : 'nope');
+    });
+    checkGrid.appendChild(card);
+  });
+
+  // reflection
+  var reflection = document.getElementById('reflection');
+  if (typeof state.reflection === 'string') reflection.value = state.reflection;
+  reflection.addEventListener('input', function () { state.reflection = reflection.value; saveState(state); });
+  document.getElementById('sendJay').addEventListener('click', function () {
+    var body = reflection.value.trim() || '(I did not write anything yet)';
+    var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(EMAIL) +
+              '&su=' + encodeURIComponent('Why Is It So Hot? from Base 6') + '&body=' + encodeURIComponent(body);
+    window.open(url, '_blank');
+  });
+  var copiedNote = document.getElementById('copiedNote');
+  document.getElementById('copyBtn').addEventListener('click', function () {
+    var text = reflection.value;
+    function done() { copiedNote.style.display = 'block'; setTimeout(function () { copiedNote.style.display = 'none'; }, 2500); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { reflection.select(); done(); });
+    } else { reflection.select(); try { document.execCommand('copy'); } catch (e) {} done(); }
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
