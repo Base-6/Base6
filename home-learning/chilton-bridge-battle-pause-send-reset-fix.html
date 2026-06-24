@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chilton Bridge Battle</title>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<style>
+:root{
+  --bg0:#090b1e;
+  --bg1:#16113a;
+  --bg2:#30125c;
+  --ink:#f8fbff;
+  --soft:#cbd7ff;
+  --line:rgba(255,255,255,0.18);
+  --panel:rgba(12,16,42,0.82);
+  --panel2:rgba(255,255,255,0.08);
+  --gold:#ffd166;
+  --cyan:#45e6ff;
+  --pink:#ff61d8;
+  --green:#7dff9d;
+  --orange:#ff955c;
+  --violet:#a98bff;
+  --danger:#ff758f;
+  --good:#6dffb2;
+}
+*{box-sizing:border-box;font-style:normal;}
+html,body{margin:0;min-height:100%;font-family:"Atkinson Hyperlegible",Arial,sans-serif;background:radial-gradient(circle at 10% 0%,#3347a8 0%,transparent 27%),radial-gradient(circle at 88% 8%,#9c2b92 0%,transparent 27%),linear-gradient(180deg,var(--bg1),var(--bg0));color:var(--ink);text-align:left;}
+body{font-size:19px;line-height:1.4;overflow-x:hidden;}
+button,input,select{font-family:"Atkinson Hyperlegible",Arial,sans-serif;font-size:1rem;}
+button{position:relative;z-index:40;border:0;border-radius:18px;min-height:56px;padding:14px 18px;background:linear-gradient(135deg,var(--cyan),#5d79ff);color:#071125;font-weight:900;cursor:pointer;box-shadow:0 12px 30px rgba(69,230,255,0.24);text-align:center;touch-action:manipulation;}
+button:hover,button:focus{outline:4px solid rgba(255,209,102,0.45);outline-offset:2px;}
+button.secondary{background:rgba(255,255,255,0.1);color:var(--ink);border:2px solid rgba(255,255,255,0.24);box-shadow:none;}
+button.gold{background:linear-gradient(135deg,var(--gold),var(--orange));color:#1b1205;}
+button.ghost{background:transparent;color:var(--soft);border:2px solid rgba(255,255,255,0.22);box-shadow:none;}
+button.danger{background:linear-gradient(135deg,#ff8fb1,#ff5d75);color:#22050a;}
+button:disabled{opacity:0.6;cursor:not-allowed;}
+input,select{width:100%;min-height:56px;border-radius:16px;border:2px solid rgba(255,255,255,0.22);padding:13px 14px;background:rgba(255,255,255,0.94);color:#101828;}
+label{display:block;margin:12px 0 6px;font-weight:900;color:var(--ink);}
+h1,h2,h3,p{margin-top:0;}
+h1{font-size:clamp(2rem,5vw,4.8rem);line-height:0.96;letter-spacing:-0.03em;text-shadow:0 6px 24px rgba(255,97,216,0.22);}
+h2{font-size:clamp(1.45rem,3vw,2.5rem);line-height:1.04;}
+h3{font-size:1.15rem;}
+a{color:inherit;}
+main{width:min(1380px,100vw);margin:0 auto;padding:14px;}
+.hidden{display:none !important;}
+.screen{min-height:calc(100vh - 28px);display:grid;gap:14px;}
+.panel{position:relative;z-index:25;background:var(--panel);border:1px solid var(--line);border-radius:28px;box-shadow:0 24px 80px rgba(0,0,0,0.36);backdrop-filter:blur(16px);}
+.hero{position:relative;overflow:hidden;min-height:calc(100vh - 28px);display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch;padding:18px;}
+.hero:before{content:"";position:absolute;inset:-20%;background:radial-gradient(circle at 70% 22%,rgba(255,209,102,0.22),transparent 20%),radial-gradient(circle at 26% 74%,rgba(69,230,255,0.20),transparent 24%);pointer-events:none;}
+.heroCopy{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:clamp(16px,4vw,44px);}
+.kicker{display:inline-flex;width:max-content;align-items:center;gap:8px;border-radius:999px;padding:8px 12px;background:rgba(255,209,102,0.12);border:1px solid rgba(255,209,102,0.4);color:var(--gold);font-weight:900;letter-spacing:0.08em;text-transform:uppercase;font-size:0.78rem;margin-bottom:14px;}
+.lead{font-size:clamp(1.1rem,2vw,1.35rem);color:var(--soft);max-width:62ch;}
+.buttonRow{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:14px;}
+.animePoster{position:relative;z-index:2;min-height:560px;border-radius:28px;overflow:hidden;background:linear-gradient(180deg,rgba(69,230,255,0.14),rgba(255,97,216,0.10)),radial-gradient(circle at 50% 30%,rgba(255,255,255,0.2),transparent 28%);border:1px solid var(--line);}
+.posterCanvas,.sceneCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;z-index:1;}
+.posterFallback{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(circle at 50% 34%,rgba(69,230,255,0.18),transparent 26%);z-index:1;}
+.fallbackHero{width:220px;height:310px;border-radius:120px 120px 70px 70px;background:linear-gradient(180deg,#ffdfc4 0 28%,#243b8f 28% 62%,#12172f 62%);border:8px solid rgba(255,255,255,0.2);position:relative;box-shadow:0 30px 80px rgba(0,0,0,0.45);}
+.fallbackHero:before,.fallbackHero:after{content:"";position:absolute;top:78px;width:20px;height:20px;border-radius:50%;background:#071125;}
+.fallbackHero:before{left:70px;}.fallbackHero:after{right:70px;}
+.cardGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
+.cardGrid.two{grid-template-columns:repeat(2,minmax(0,1fr));}
+.cardGrid.three{grid-template-columns:repeat(3,minmax(0,1fr));}
+.setupWrap{display:grid;grid-template-columns:0.8fr 1.2fr;gap:14px;align-items:stretch;}
+.builderPreview{min-height:520px;overflow:hidden;padding:18px;display:grid;align-content:space-between;}
+.formPanel{padding:22px;}
+.characterStage{height:360px;border-radius:24px;background:radial-gradient(circle at 50% 20%,rgba(255,255,255,0.14),transparent 30%),linear-gradient(180deg,#262b6e,#11162f);border:1px solid var(--line);position:relative;overflow:hidden;}
+.characterAvatar{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);width:160px;height:270px;}
+.avatarHead{position:absolute;left:38px;top:18px;width:86px;height:94px;border-radius:46px 46px 42px 42px;background:#d99a73;box-shadow:inset 0 -10px rgba(0,0,0,0.08);}
+.avatarHair{position:absolute;left:28px;top:0;width:106px;height:74px;border-radius:60px 60px 28px 28px;background:#1e1e2a;}
+.avatarHair.spikes{clip-path:polygon(0 100%,10% 18%,22% 72%,34% 0,48% 70%,62% 10%,78% 76%,92% 18%,100% 100%);}
+.avatarHair.wave{border-radius:70px 40px 55px 32px;transform:rotate(-3deg);}
+.avatarHair.short{height:52px;border-radius:42px 42px 24px 24px;}
+.avatarEye{position:absolute;top:54px;width:12px;height:16px;border-radius:50%;background:#071125;}
+.avatarEye.left{left:58px}.avatarEye.right{right:58px}
+.avatarBody{position:absolute;left:28px;top:116px;width:106px;height:112px;border-radius:38px 38px 24px 24px;background:#45e6ff;box-shadow:inset 0 -16px rgba(0,0,0,0.12);}
+.avatarLeg{position:absolute;top:222px;width:38px;height:54px;border-radius:12px;background:#11182f;}
+.avatarLeg.left{left:42px}.avatarLeg.right{right:42px}
+ .heroCardName{position:absolute;left:14px;right:14px;top:12px;display:flex;justify-content:space-between;gap:8px;align-items:center;z-index:3;font-weight:900;color:var(--ink);}
+.heroCardName span{font-size:0.86rem;color:var(--soft);}
+.heroCardBadge{position:absolute;left:14px;bottom:14px;border-radius:999px;padding:8px 12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);font-weight:900;color:var(--gold);z-index:3;}
+.characterStage:after{content:"";position:absolute;inset:auto 12% 0;height:42%;background:radial-gradient(ellipse at center,rgba(69,230,255,0.2),transparent 70%);pointer-events:none;}
+.avatarAcc{position:absolute;z-index:5;}
+.avatarAcc.scarf{left:20px;top:116px;width:122px;height:20px;border-radius:999px;background:rgba(255,209,102,0.95);box-shadow:0 0 18px rgba(255,209,102,0.38);}
+.avatarAcc.scarf:after{content:"";position:absolute;right:-12px;top:10px;width:38px;height:16px;border-radius:12px;background:rgba(255,209,102,0.95);transform:rotate(18deg);}
+.avatarAcc.pin{left:102px;top:140px;width:28px;height:28px;background:var(--gold);clip-path:polygon(50% 0,61% 36%,100% 36%,68% 58%,80% 100%,50% 74%,20% 100%,32% 58%,0 36%,39% 36%);box-shadow:0 0 18px rgba(255,209,102,0.5);}
+.avatarAcc.headset{left:33px;top:44px;width:94px;height:70px;border:7px solid var(--pink);border-bottom:0;border-radius:58px 58px 0 0;box-shadow:0 0 18px rgba(255,97,216,0.35);}
+.avatarAcc.headset:before,.avatarAcc.headset:after{content:"";position:absolute;top:40px;width:18px;height:32px;border-radius:10px;background:var(--pink);}
+.avatarAcc.headset:before{left:-14px}.avatarAcc.headset:after{right:-14px}
+.avatarAcc.cape{left:21px;top:119px;width:120px;height:135px;background:linear-gradient(180deg,var(--pink),#4d2b9d);clip-path:polygon(12% 0,88% 0,100% 100%,0 100%);border-radius:18px 18px 48px 48px;z-index:0;box-shadow:0 24px 46px rgba(255,97,216,0.25);}
+.avatarAcc.cape:after{content:"";position:absolute;left:40px;right:40px;top:0;height:135px;background:rgba(255,255,255,0.12);}
+.avatarHair.spikes:after{content:"";position:absolute;left:44px;top:-12px;width:22px;height:34px;background:inherit;clip-path:polygon(50% 0,100% 100%,0 100%);}
+.avatarHair.wave:after{content:"";position:absolute;left:-6px;top:25px;width:48px;height:36px;border-radius:0 0 34px 34px;background:inherit;transform:rotate(14deg);}
+.avatarHair.short:after{content:"";position:absolute;left:18px;right:18px;bottom:-8px;height:14px;border-radius:0 0 20px 20px;background:inherit;}
+.setupHint{margin-top:12px;color:var(--gold);font-weight:900;min-height:1.2em;}
+.setupHint.dim{color:var(--soft);}
+.buddySpotlight{display:grid;gap:8px;place-items:center;text-align:center;padding:8px;}
+.buddySpotlight h3{margin:0;font-size:1.35rem;}
+.buddySpotlight p{margin:0;color:var(--soft);}
+.buddyMiniRow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px;}
+.buddyMini{min-height:50px;padding:8px 6px;border-radius:16px;font-size:0.9rem;}
+
+.pickerRow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:10px;}
+.pick{min-height:48px;padding:8px;border-radius:14px;}
+.pick.selected{outline:4px solid rgba(255,209,102,0.52);}
+.swatch{height:48px;border-radius:16px;border:3px solid rgba(255,255,255,0.82);box-shadow:none;padding:0;min-height:48px;}
+.buddyCard{position:relative;overflow:hidden;min-height:280px;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0.05));border:1px solid rgba(255,255,255,0.18);border-radius:26px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;z-index:30;}
+.buddyCard:hover,.buddyCard:focus{transform:translateY(-3px);border-color:rgba(255,209,102,0.8);box-shadow:0 20px 60px rgba(0,0,0,0.34);outline:none;}
+.buddyCard.selected{border-color:var(--gold);box-shadow:0 0 0 4px rgba(255,209,102,0.24),0 22px 70px rgba(0,0,0,0.38);}
+.buddySprite{height:155px;border-radius:22px;display:grid;place-items:center;position:relative;background:radial-gradient(circle at 50% 45%,rgba(255,255,255,0.25),transparent 42%);}
+.creature{position:relative;width:128px;height:128px;filter:drop-shadow(0 22px 18px rgba(0,0,0,0.34));transform-origin:50% 82%;animation:bobCreature 3.2s ease-in-out infinite;}
+@keyframes bobCreature{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-6px) rotate(1deg)}}
+.creature span{position:absolute;display:none;}
+.creature .body,.creature .head,.creature .eye,.creature .mouth,.creature .foot,.creature .cheek,.creature .belly,.creature .nose{display:block;}
+.creature .eye{width:11px;height:15px;border-radius:50%;background:#061427;z-index:8;box-shadow:inset 0 4px rgba(255,255,255,0.42);}
+.creature .mouth{z-index:9;border-radius:0 0 999px 999px;border-bottom:4px solid #061427;}
+.creature .cheek{z-index:7;width:13px;height:9px;border-radius:50%;background:rgba(255,117,143,0.72);}
+.creature .belly{z-index:4;background:rgba(255,255,255,0.52);}
+.creature .foot{z-index:2;background:rgba(6,20,39,0.22);}
+.creature .nose{z-index:9;background:#061427;}
+.creature.add .body{display:block;left:28px;top:48px;width:74px;height:58px;border-radius:42px 44px 34px 38px;background:linear-gradient(180deg,#69f0ff,#25c8e8);box-shadow:inset 0 -14px rgba(0,0,0,0.12);}
+.creature.add .head{display:block;left:34px;top:16px;width:70px;height:58px;border-radius:44px 44px 32px 36px;background:linear-gradient(180deg,#98f5ff,#45e6ff);transform:rotate(5deg);}
+.creature.add .ear{display:block;top:2px;width:25px;height:43px;background:#45e6ff;clip-path:polygon(50% 0,100% 100%,0 100%);z-index:1;}
+.creature.add .ear.l{left:30px;transform:rotate(-28deg)}.creature.add .ear.r{right:20px;transform:rotate(24deg)}
+.creature.add .eye.one{left:55px;top:35px}.creature.add .eye.two{left:80px;top:33px;height:20px;transform:rotate(8deg)}
+.creature.add .nose{left:74px;top:51px;width:14px;height:10px;border-radius:50%;}
+.creature.add .mouth{left:67px;top:57px;width:23px;height:12px;transform:rotate(-4deg)}
+.creature.add .cheek.l{left:48px;top:52px}.creature.add .cheek.r{right:23px;top:50px}
+.creature.add .belly{left:48px;top:68px;width:40px;height:31px;border-radius:50%;}
+.creature.add .tail{display:block;right:0;bottom:31px;width:54px;height:36px;background:var(--gold);clip-path:polygon(0 46%,55% 46%,55% 18%,100% 50%,55% 82%,55% 56%,0 56%);z-index:0;animation:tailWag .85s ease-in-out infinite;transform-origin:0 50%;}
+@keyframes tailWag{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(16deg)}}
+.creature.add .foot.l{left:41px;top:97px;width:23px;height:14px;border-radius:50%}.creature.add .foot.r{left:77px;top:96px;width:25px;height:15px;border-radius:50%}
+.creature.add:after{content:"+";position:absolute;left:57px;top:71px;font-size:30px;color:#061427;font-weight:900;z-index:8;transform:rotate(-8deg)}
+.creature.subtract .body{display:block;left:29px;top:54px;width:76px;height:56px;border-radius:38px 38px 30px 30px;background:linear-gradient(180deg,#bda9ff,#795cf5);box-shadow:inset 0 -14px rgba(0,0,0,0.16);}
+.creature.subtract .head{display:block;left:33px;top:20px;width:66px;height:58px;border-radius:46px 46px 34px 34px;background:linear-gradient(180deg,#cabdff,#a98bff);}
+.creature.subtract .ear{display:block;top:5px;width:28px;height:37px;background:#a98bff;clip-path:polygon(50% 0,100% 100%,0 100%);z-index:1;}
+.creature.subtract .ear.l{left:30px;transform:rotate(-22deg)}.creature.subtract .ear.r{right:28px;transform:rotate(22deg)}
+.creature.subtract .eye.one{left:52px;top:42px;width:14px;height:6px;border-radius:999px;transform:rotate(10deg)}.creature.subtract .eye.two{left:78px;top:42px;width:14px;height:6px;border-radius:999px;transform:rotate(-10deg)}
+.creature.subtract .brow{display:block;z-index:10;background:#061427;width:20px;height:5px;border-radius:999px;top:34px;}
+.creature.subtract .brow.l{left:47px;transform:rotate(18deg)}.creature.subtract .brow.r{left:77px;transform:rotate(-18deg)}
+.creature.subtract .nose{left:65px;top:52px;width:12px;height:9px;border-radius:50%;}
+.creature.subtract .mouth{left:58px;top:59px;width:26px;height:12px;transform:rotate(180deg);border-bottom:0;border-top:4px solid #061427;border-radius:999px 999px 0 0;}
+.creature.subtract .cloak{display:block;left:13px;top:57px;width:101px;height:64px;background:linear-gradient(180deg,#2f1a62,#090b1e);border-radius:14px 14px 58px 58px;z-index:0;}
+.creature.subtract .belly{left:51px;top:72px;width:34px;height:25px;border-radius:50%;}
+.creature.subtract .foot.l{left:39px;top:102px;width:23px;height:13px;border-radius:50%}.creature.subtract .foot.r{left:76px;top:102px;width:23px;height:13px;border-radius:50%}
+.creature.subtract:after{content:"";position:absolute;left:47px;top:82px;width:42px;height:10px;border-radius:999px;background:#fff;z-index:7;box-shadow:0 0 14px rgba(255,255,255,0.55);}
+.creature.multiply .body{display:block;left:31px;top:48px;width:70px;height:62px;border-radius:52px 52px 34px 34px;background:linear-gradient(180deg,#ffb06e,#ff7b3c);box-shadow:inset 0 -14px rgba(0,0,0,0.14);}
+.creature.multiply .head{display:block;left:37px;top:15px;width:66px;height:60px;border-radius:38px 46px 36px 34px;background:linear-gradient(180deg,#ffd166,#ff955c);transform:rotate(-7deg);}
+.creature.multiply .horn{display:block;top:0;width:23px;height:39px;background:var(--gold);clip-path:polygon(50% 0,100% 100%,0 100%);z-index:2;}
+.creature.multiply .horn.l{left:42px;transform:rotate(-18deg)}.creature.multiply .horn.r{right:23px;transform:rotate(26deg)}
+.creature.multiply .wing{display:block;top:55px;width:52px;height:50px;background:#ff61d8;clip-path:polygon(0 0,100% 48%,0 100%);opacity:0.96;z-index:0;animation:wingFlap 1.25s ease-in-out infinite;}
+.creature.multiply .wing.l{left:0}.creature.multiply .wing.r{right:0;transform:scaleX(-1)}
+@keyframes wingFlap{0%,100%{filter:brightness(1)}50%{filter:brightness(1.25)}}
+.creature.multiply .eye.one{left:56px;top:36px}.creature.multiply .eye.two{left:82px;top:34px;width:15px;height:19px;}
+.creature.multiply .nose{left:73px;top:52px;width:13px;height:9px;border-radius:50%;}
+.creature.multiply .mouth{left:66px;top:58px;width:30px;height:16px;}
+.creature.multiply .tooth{display:block;left:80px;top:64px;width:9px;height:13px;background:#fff;clip-path:polygon(0 0,100% 0,50% 100%);z-index:10;}
+.creature.multiply .belly{left:52px;top:70px;width:37px;height:32px;border-radius:50%;}
+.creature.multiply .foot.l{left:43px;top:101px;width:24px;height:14px;border-radius:50%}.creature.multiply .foot.r{left:78px;top:101px;width:24px;height:14px;border-radius:50%}
+.creature.multiply:after{content:"x";position:absolute;left:60px;top:76px;font-size:28px;color:#061427;font-weight:900;z-index:8;transform:rotate(8deg)}
+.creature.divide .body{display:block;left:27px;top:53px;width:78px;height:56px;border-radius:50%;background:linear-gradient(180deg,#a7ffd4,#7dff9d);box-shadow:inset 0 -12px rgba(0,0,0,0.12);}
+.creature.divide .head{display:block;left:45px;top:25px;width:52px;height:44px;border-radius:44px 44px 30px 30px;background:linear-gradient(180deg,#ceffe1,#7dff9d);}
+.creature.divide .shell{display:block;left:18px;top:55px;width:92px;height:60px;border-radius:50%;background:linear-gradient(135deg,#45e6ff,#1f9c72);border:6px solid rgba(255,255,255,0.72);z-index:3;box-shadow:inset 0 -10px rgba(0,0,0,0.12);}
+.creature.divide .antenna{display:block;top:7px;width:4px;height:34px;background:#7dff9d;border-radius:999px;z-index:0;}
+.creature.divide .antenna.l{left:55px;transform:rotate(-24deg)}.creature.divide .antenna.r{left:84px;transform:rotate(24deg)}
+.creature.divide .bubble{display:block;top:3px;width:13px;height:13px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px rgba(69,230,255,0.6);z-index:1;}
+.creature.divide .bubble.l{left:46px}.creature.divide .bubble.r{left:91px;width:10px;height:10px;top:8px}
+.creature.divide .eye.one{left:57px;top:40px}.creature.divide .eye.two{left:79px;top:40px}
+.creature.divide .nose{left:67px;top:52px;width:11px;height:8px;border-radius:50%;}
+.creature.divide .mouth{left:61px;top:58px;width:25px;height:13px;}
+.creature.divide .foot.l{left:28px;top:101px;width:21px;height:14px;border-radius:50%}.creature.divide .foot.r{left:86px;top:101px;width:21px;height:14px;border-radius:50%}
+.creature.divide .tail{display:block;left:10px;top:80px;width:26px;height:24px;background:#7dff9d;clip-path:polygon(0 50%,100% 0,100% 100%);z-index:1;}
+.creature.divide:after{content:"÷";position:absolute;left:59px;top:73px;font-size:31px;color:#061427;font-weight:900;z-index:8;}
+.typePill{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:6px 10px;font-size:0.85rem;font-weight:900;border:1px solid rgba(255,255,255,0.35);background:rgba(255,255,255,0.12);}
+.typeAdd{color:#061427;background:linear-gradient(135deg,#45e6ff,#98f5ff);}.typeSubtract{color:#100924;background:linear-gradient(135deg,#a98bff,#e1d7ff);}.typeMultiply{color:#1b0900;background:linear-gradient(135deg,#ff955c,#ffd166);}.typeDivide{color:#03180b;background:linear-gradient(135deg,#7dff9d,#a7ffd4);}
+.hud{position:relative;z-index:30;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;background:rgba(5,8,24,0.72);border:1px solid var(--line);border-radius:24px;box-shadow:0 20px 70px rgba(0,0,0,0.32);backdrop-filter:blur(14px);}
+.hudTitle{display:grid;gap:2px;}.hudTitle h1{font-size:clamp(1.45rem,3vw,2.6rem);margin:0;}.hudTitle p{margin:0;color:var(--soft);}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}.chip{border-radius:999px;padding:8px 11px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.16);font-weight:900;color:var(--ink);}
+.stage{position:relative;z-index:1;min-height:680px;border-radius:32px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(180deg,#17264b,#080b19);box-shadow:0 26px 90px rgba(0,0,0,0.42);}
+.stageOverlay{position:absolute;z-index:28;left:16px;right:16px;bottom:16px;display:flex;justify-content:space-between;gap:12px;align-items:end;pointer-events:none;}
+.mission{width:min(450px,100%);background:rgba(5,8,24,0.78);border:1px solid var(--line);border-radius:24px;padding:16px;backdrop-filter:blur(12px);}
+.mission h2{margin:4px 0 6px;}.mission p{color:var(--soft);margin:0;}
+.progressCard{width:min(420px,100%);background:rgba(5,8,24,0.78);border:1px solid var(--line);border-radius:24px;padding:14px;backdrop-filter:blur(12px);}
+.progressBar{height:16px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,0.12);}.progressFill{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--gold),var(--pink));}
+.dock{position:relative;z-index:45;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;padding:10px;}
+.dock button{min-width:170px;}
+.bridgeFallback{position:absolute;inset:0;z-index:1;display:grid;place-items:center;background:radial-gradient(circle at 50% 15%,rgba(69,230,255,0.18),transparent 28%),linear-gradient(180deg,#17264b,#080b19);}
+.bridgeRoad{width:min(920px,88%);height:310px;border-radius:40px;background:linear-gradient(90deg,#36215e,#6b45d9,#45e6ff,#ffd166);border:8px solid rgba(255,255,255,0.2);transform:perspective(780px) rotateX(58deg);box-shadow:0 60px 90px rgba(0,0,0,0.44);}
+.battleLayout{display:grid;gap:12px;min-height:calc(100vh - 28px);grid-template-rows:auto 1fr;}
+.battleTop{position:relative;z-index:35;display:grid;grid-template-columns:minmax(210px,1fr) minmax(220px,1.1fr) minmax(210px,1fr);gap:12px;}
+.fighterCard,.centerCallout{background:rgba(5,8,24,0.76);border:1px solid var(--line);border-radius:22px;padding:13px;backdrop-filter:blur(14px);box-shadow:0 18px 54px rgba(0,0,0,0.26);}
+.fighterCard h2{font-size:1.1rem;margin-bottom:8px;}.centerCallout{display:grid;place-items:center;text-align:center;font-weight:900;color:var(--gold);}
+.hp{height:18px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,0.12);}.hp span{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));width:100%;}
+.battleStage{position:relative;z-index:1;min-height:650px;border-radius:32px;overflow:hidden;border:1px solid var(--line);background:radial-gradient(circle at 50% 24%,rgba(255,97,216,0.20),transparent 26%),linear-gradient(180deg,#20204d,#070913 70%);box-shadow:0 26px 90px rgba(0,0,0,0.42);}
+.fallbackArena{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:space-around;gap:18px;background:radial-gradient(circle at 50% 24%,rgba(69,230,255,0.18),transparent 32%);}
+.bigSprite{transform:scale(1.45);}
+.actionDock{position:absolute;left:16px;right:16px;bottom:16px;z-index:50;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end;pointer-events:auto;}
+.actionPanel{background:rgba(5,8,24,0.86);border:1px solid var(--line);border-radius:26px;padding:16px;backdrop-filter:blur(14px);box-shadow:0 20px 70px rgba(0,0,0,0.42);}
+.actionPanel h2{font-size:1.35rem;margin-bottom:10px;}.question{font-size:clamp(1.8rem,4vw,3.2rem);font-weight:900;margin:8px 0 12px;color:var(--gold);}
+.moveGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.moveButton{min-height:82px;display:grid;gap:5px;align-content:center;justify-items:center;background:linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06));color:var(--ink);border:1px solid rgba(255,255,255,0.18);box-shadow:none;}
+.moveButton.best{border-color:rgba(109,255,178,0.75);box-shadow:0 0 0 3px rgba(109,255,178,0.14);}
+.moveName{font-size:1.12rem;}.match{font-size:0.82rem;border-radius:999px;padding:4px 9px;font-weight:900;}.match.strong{background:rgba(109,255,178,0.16);color:var(--green);}.match.neutral{background:rgba(255,255,255,0.12);color:var(--soft);}.match.weak{background:rgba(255,117,143,0.16);color:#ffb1c0;}
+.answerGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}.answerGrid button{font-size:1.3rem;min-height:74px;}
+.sideActions{display:grid;gap:10px;min-width:150px;}
+
+/* Open bridge exploration */
+.exploreScreen{position:relative;min-height:calc(100vh - 28px);border-radius:32px;overflow:hidden;background:radial-gradient(circle at 18% 12%,rgba(255,97,216,0.24),transparent 28%),radial-gradient(circle at 86% 18%,rgba(69,230,255,0.20),transparent 26%),linear-gradient(180deg,#10173e,#070914);border:1px solid var(--line);box-shadow:0 30px 100px rgba(0,0,0,0.45);}
+.exploreCanvasWrap{position:absolute;inset:0;z-index:1;}
+.exploreHud{position:absolute;z-index:35;left:14px;right:14px;top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;pointer-events:none;}
+.exploreTitle,.exploreStats,.nearPanel,.talkPanel,.miniGuide{pointer-events:auto;background:rgba(4,7,24,0.72);border:1px solid rgba(255,255,255,0.18);box-shadow:0 18px 60px rgba(0,0,0,0.32);backdrop-filter:blur(16px);border-radius:24px;}
+.exploreTitle{padding:12px 16px;max-width:min(520px,72vw);}
+.exploreTitle h1{font-size:clamp(1.45rem,3vw,2.65rem);margin:0;text-shadow:0 8px 24px rgba(69,230,255,0.22);}
+.exploreTitle p{margin:4px 0 0;color:var(--soft);}
+.exploreStats{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;padding:10px;}
+.exploreBottom{position:absolute;z-index:38;left:14px;right:14px;bottom:14px;display:grid;grid-template-columns:minmax(260px,440px) 1fr minmax(190px,250px);gap:12px;align-items:end;pointer-events:none;}
+.nearPanel{padding:14px;pointer-events:auto;min-height:118px;}
+.nearPanel h2{font-size:1.28rem;margin:0 0 4px;}
+.nearPanel p{margin:0;color:var(--soft);}
+.nearActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.nearActions button{min-height:48px;border-radius:16px;padding:10px 14px;}
+.talkPanel{padding:14px;pointer-events:auto;align-self:stretch;display:grid;align-content:center;}
+.talkPanel .speaker{font-weight:900;color:var(--gold);letter-spacing:0.03em;text-transform:uppercase;font-size:0.78rem;margin-bottom:4px;}
+.talkPanel p{margin:0;color:var(--ink);font-size:1.06rem;}
+.controlsPanel{pointer-events:auto;justify-self:end;display:grid;gap:10px;place-items:center;}
+.dpad{display:grid;grid-template-columns:58px 58px 58px;grid-template-rows:58px 58px 58px;gap:6px;}
+.dpad button{min-height:58px;border-radius:18px;padding:0;background:rgba(255,255,255,0.12);color:var(--ink);border:2px solid rgba(255,255,255,0.24);box-shadow:0 16px 44px rgba(0,0,0,0.28);font-size:1.25rem;}
+.dpad .up{grid-column:2;grid-row:1}.dpad .left{grid-column:1;grid-row:2}.dpad .right{grid-column:3;grid-row:2}.dpad .down{grid-column:2;grid-row:3}
+.exploreTopButtons{position:absolute;z-index:39;right:14px;top:92px;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+.exploreTopButtons button{min-height:46px;border-radius:16px;padding:9px 13px;font-size:0.95rem;}
+.bridgeFallbackMap{position:absolute;inset:0;z-index:1;padding-top:100px;background:linear-gradient(180deg,#14204d,#070914);display:grid;place-items:center;}
+.fallbackTrack{position:relative;width:min(780px,86vw);height:470px;border-radius:46px;background:linear-gradient(90deg,#23194d,#5639dd,#38d8ff,#ffd166);transform:perspective(800px) rotateX(54deg);border:9px solid rgba(255,255,255,0.22);box-shadow:0 60px 100px rgba(0,0,0,0.42);}
+.fallbackDot{position:absolute;width:34px;height:34px;border-radius:50%;background:#ffd166;border:4px solid #071125;left:50%;top:58%;box-shadow:0 0 30px rgba(255,209,102,0.85);}
+.guideGrid.combo{grid-template-columns:repeat(2,minmax(0,1fr));}.guideCard.comboCard{text-align:left;display:flex;align-items:center;gap:12px;}.guideCard.comboCard h3{margin:0;}.guideCard.comboCard p{margin:2px 0 0;text-align:left;}
+@media(max-width:980px){.exploreBottom{grid-template-columns:1fr;}.controlsPanel{justify-self:start}.exploreHud{display:grid;}.exploreStats{justify-content:flex-start}.exploreTopButtons{top:auto;left:14px;right:14px;bottom:236px;justify-content:flex-start}.talkPanel{min-height:92px}.guideGrid.combo{grid-template-columns:1fr;}}
+@media(max-width:620px){.exploreScreen{min-height:calc(100vh - 16px);}.exploreTitle{max-width:100%;}.exploreTitle p{display:none;}.exploreStats .chip:nth-child(3){display:none}.exploreBottom{left:8px;right:8px;bottom:8px;gap:8px;}.dpad{grid-template-columns:52px 52px 52px;grid-template-rows:52px 52px 52px}.dpad button{min-height:52px}.exploreTopButtons{left:8px;right:8px;bottom:222px}.nearPanel{padding:12px}.talkPanel{padding:12px}.exploreHud{left:8px;right:8px;top:8px;}}
+
+.drawer{position:fixed;z-index:100;left:50%;top:50%;transform:translate(-50%,-50%);width:min(940px,94vw);max-height:90vh;overflow:auto;background:rgba(5,8,24,0.96);border:1px solid var(--line);border-radius:30px;padding:20px;box-shadow:0 30px 100px rgba(0,0,0,0.64);}
+.guideGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}.guideCard{border-radius:24px;padding:14px;background:linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0.05));border:1px solid rgba(255,255,255,0.16);text-align:center;}.guideCard p{text-align:center;color:var(--soft);margin:8px 0 0;}
+.arrow{font-size:2rem;color:var(--gold);font-weight:900;}.guideNote{margin-top:12px;color:var(--soft);}
+.report{white-space:pre-wrap;background:rgba(255,255,255,0.92);color:#101828;border-radius:22px;padding:18px;max-height:520px;overflow:auto;}
+@media(max-width:980px){.hero,.setupWrap{grid-template-columns:1fr;}.animePoster{min-height:360px;}.cardGrid,.cardGrid.two,.cardGrid.three,.guideGrid{grid-template-columns:1fr 1fr;}.battleTop{grid-template-columns:1fr;}.stage,.battleStage{min-height:560px;}.stageOverlay,.actionDock{grid-template-columns:1fr;display:grid;}.sideActions{grid-template-columns:1fr 1fr;display:grid;}.moveGrid,.answerGrid{grid-template-columns:1fr;}}
+@media(max-width:620px){body{font-size:17px;}main{padding:8px;}.cardGrid,.guideGrid{grid-template-columns:1fr;}.hud{display:grid;}.chips{justify-content:flex-start;}.stageOverlay{left:10px;right:10px;bottom:10px;}.actionDock{left:10px;right:10px;bottom:10px;}.dock button{width:100%;}.battleStage{min-height:610px;}.bigSprite{transform:scale(1.15);}.setupWrap{gap:8px;}.pickerRow{grid-template-columns:repeat(2,1fr);}}
+
+
+/* QA pass: cleaner free roam game UI */
+.sceneCanvas{pointer-events:none;}
+.exploreScreen{min-height:calc(100vh - 18px);cursor:crosshair;}
+.gameHud{position:absolute;z-index:45;left:14px;right:14px;top:14px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;pointer-events:none;}
+.gameLogo,.gameStats,.gameMenu{pointer-events:auto;background:rgba(5,8,24,0.58);border:1px solid rgba(255,255,255,0.14);backdrop-filter:blur(14px);box-shadow:0 16px 48px rgba(0,0,0,0.28);border-radius:20px;}
+.gameLogo{padding:10px 14px;min-width:190px;}
+.gameLogo h1{font-size:1.28rem;line-height:1;margin:0;text-shadow:0 6px 20px rgba(69,230,255,0.2);}
+.gameLogo p{margin:4px 0 0;color:var(--soft);font-size:0.9rem;}
+.gameStats{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:8px;}
+.gameStats .chip{font-size:0.86rem;padding:7px 9px;background:rgba(255,255,255,0.1);}
+.gameMenu{display:flex;gap:6px;padding:8px;}
+.gameMenu button{min-height:42px;border-radius:14px;padding:8px 11px;font-size:0.9rem;box-shadow:none;}
+.nearPrompt{position:absolute;z-index:48;left:50%;bottom:18px;transform:translateX(-50%);width:min(620px,calc(100vw - 32px));background:rgba(5,8,24,0.72);border:1px solid rgba(255,255,255,0.16);border-radius:24px;padding:12px;box-shadow:0 20px 70px rgba(0,0,0,0.38);backdrop-filter:blur(16px);pointer-events:auto;transition:opacity .16s ease,transform .16s ease;}
+.nearPrompt.quiet{display:none;}
+.nearPrompt h2{font-size:1.18rem;margin:0 0 3px;}
+.nearPrompt p{margin:0;color:var(--soft);font-size:0.96rem;}
+.promptTop{display:flex;gap:10px;align-items:center;justify-content:space-between;}
+.promptCopy{min-width:0;}
+.promptActions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end;}
+.promptActions button{min-height:44px;border-radius:15px;padding:9px 13px;font-size:0.95rem;box-shadow:none;}
+.talkLine{margin-top:8px;color:var(--ink);font-size:0.96rem;}
+.touchPad{position:absolute;z-index:46;right:16px;bottom:18px;width:136px;height:136px;border-radius:50%;background:rgba(5,8,24,0.28);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(10px);pointer-events:auto;display:none;}
+.touchPad button{position:absolute;width:48px;height:48px;min-height:48px;border-radius:18px;padding:0;background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.18);box-shadow:none;font-size:1.05rem;}
+.touchPad .up{left:44px;top:6px}.touchPad .left{left:6px;top:44px}.touchPad .right{right:6px;top:44px}.touchPad .down{left:44px;bottom:6px}
+.tapHint{position:absolute;z-index:35;left:50%;top:50%;transform:translate(-50%,-50%);padding:8px 12px;border-radius:999px;background:rgba(5,8,24,0.4);border:1px solid rgba(255,255,255,0.12);color:rgba(248,251,255,0.76);font-size:0.9rem;pointer-events:none;}
+@media(pointer:coarse){.touchPad{display:block}.nearPrompt{bottom:164px}.nearPrompt.quiet{display:none}.tapHint{display:none}}
+@media(max-width:820px){.gameHud{display:grid;grid-template-columns:1fr auto;}.gameStats{grid-column:1/-1;justify-content:flex-start}.gameMenu{justify-self:end}.gameLogo p{display:none}.nearPrompt{left:10px;right:10px;bottom:12px;transform:none;width:auto}.touchPad{right:12px;bottom:12px}.nearPrompt:not(.quiet){bottom:154px}.gameStats .chip:nth-child(3){display:none}}
+@media(max-width:520px){main{padding:6px}.exploreScreen{min-height:calc(100vh - 12px);border-radius:22px}.gameHud{left:8px;right:8px;top:8px}.gameLogo{min-width:0;padding:9px 11px}.gameLogo h1{font-size:1.02rem}.gameStats{padding:6px}.gameStats .chip{font-size:0.78rem;padding:6px 7px}.gameMenu button{min-height:38px;font-size:0.82rem}.touchPad{width:124px;height:124px}.touchPad button{width:44px;height:44px;min-height:44px}.touchPad .up{left:40px;top:5px}.touchPad .left{left:5px;top:40px}.touchPad .right{right:5px;top:40px}.touchPad .down{left:40px;bottom:5px}.nearPrompt:not(.quiet){bottom:142px}}
+
+
+/* Immersive bridge interaction pass */
+.nearPrompt{display:none !important;}
+.worldLabels{position:absolute;inset:0;z-index:44;pointer-events:none;overflow:hidden;}
+.worldLabel{position:absolute;left:50%;top:50%;transform:translate(-50%,-112%);min-width:54px;text-align:center;transition:opacity .14s ease,transform .14s ease;opacity:.72;}
+.worldLabel.awake{opacity:1;transform:translate(-50%,-120%);}
+.markerDot{width:15px;height:15px;margin:0 auto 5px;border-radius:999px;background:radial-gradient(circle at 35% 30%,#fff,#45e6ff 42%,#5d79ff);box-shadow:0 0 18px rgba(69,230,255,.78),0 0 36px rgba(255,97,216,.22);border:2px solid rgba(255,255,255,.62);}
+.worldLabel.sign .markerDot{background:radial-gradient(circle at 35% 30%,#fff,#ffd166 42%,#ef7724);box-shadow:0 0 18px rgba(255,209,102,.8);}
+.worldLabel.rival .markerDot{background:radial-gradient(circle at 35% 30%,#fff,#ff61d8 42%,#8e67ff);box-shadow:0 0 20px rgba(255,97,216,.8);}
+.worldLabel.stephen .markerDot{background:radial-gradient(circle at 35% 30%,#fff,#ffd166 42%,#45e6ff);box-shadow:0 0 24px rgba(255,209,102,.85);}
+.floatPrompt{display:none;margin:auto;width:max-content;max-width:220px;padding:7px 10px;border-radius:999px;background:rgba(7,10,26,.78);border:1px solid rgba(255,255,255,.22);box-shadow:0 14px 42px rgba(0,0,0,.34);backdrop-filter:blur(12px);font-weight:900;font-size:.86rem;color:#f8fbff;white-space:nowrap;}
+.worldLabel.awake .floatPrompt{display:block;}
+.speechBubble{display:none;margin:0 auto 8px;width:max-content;max-width:min(280px,70vw);padding:10px 13px;border-radius:18px 18px 18px 6px;background:rgba(248,251,255,.94);color:#101427;box-shadow:0 16px 48px rgba(0,0,0,.34);border:2px solid rgba(255,209,102,.74);font-weight:850;font-size:.96rem;line-height:1.25;text-align:left;}
+.worldLabel.speaking .speechBubble{display:block;}
+.quickDock{position:absolute;z-index:50;left:50%;bottom:18px;transform:translateX(-50%);width:min(540px,calc(100vw - 28px));display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:24px;background:rgba(5,8,24,.62);border:1px solid rgba(255,255,255,.15);box-shadow:0 18px 56px rgba(0,0,0,.36);backdrop-filter:blur(14px);pointer-events:auto;}
+.quickDock.quiet{display:none;}
+.quickCopy{min-width:0;display:flex;align-items:center;gap:10px;}
+.quickIcon{width:34px;height:34px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#45e6ff,#ff61d8);color:#071125;font-weight:900;box-shadow:0 0 18px rgba(69,230,255,.35);flex:0 0 auto;}
+.quickText{min-width:0;}
+.quickText h2{font-size:1rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.quickText p{font-size:.84rem;color:var(--soft);margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.quickButtons{display:flex;gap:7px;flex-wrap:nowrap;}
+.quickButtons button{min-height:42px;border-radius:15px;padding:8px 12px;font-size:.9rem;box-shadow:none;}
+.worldToast{position:absolute;z-index:43;left:50%;top:92px;transform:translateX(-50%);padding:7px 12px;border-radius:999px;background:rgba(5,8,24,.5);border:1px solid rgba(255,255,255,.12);color:rgba(248,251,255,.82);font-weight:800;font-size:.88rem;pointer-events:none;}
+.tapHint{display:none;}
+@media(pointer:coarse){.quickDock{bottom:154px}.worldToast{top:84px}.touchPad{display:block}}
+@media(max-width:820px){.quickDock{left:10px;right:10px;bottom:154px;transform:none;width:auto}.quickText p{display:none}.quickButtons button{padding:8px 10px}.worldToast{display:none}}
+@media(max-width:520px){.quickDock{bottom:140px;padding:8px;border-radius:20px}.quickIcon{width:30px;height:30px}.quickText h2{font-size:.92rem}.quickButtons button{min-height:38px;font-size:.82rem}.speechBubble{max-width:220px;font-size:.88rem}}
+
+/* Full playability polish */
+.auraRead{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;font-weight:900;color:var(--soft);}
+.auraRead span{border-radius:999px;padding:5px 9px;background:rgba(109,255,178,.14);color:var(--green);}
+.battleHint{position:absolute;z-index:42;left:50%;top:18px;transform:translateX(-50%);padding:8px 13px;border-radius:999px;background:rgba(5,8,24,.58);border:1px solid rgba(109,255,178,.32);box-shadow:0 16px 48px rgba(0,0,0,.28);font-weight:900;color:#f8fbff;pointer-events:none;}
+.moveButton.best{animation:bestPulse 1.8s ease-in-out infinite;}
+@keyframes bestPulse{0%,100%{transform:translateY(0);box-shadow:0 0 0 3px rgba(109,255,178,.14),0 0 18px rgba(109,255,178,.12);}50%{transform:translateY(-2px);box-shadow:0 0 0 4px rgba(109,255,178,.26),0 0 28px rgba(109,255,178,.24);}}
+@media(prefers-reduced-motion:reduce){.moveButton.best{animation:none}.worldLabel,.quickDock{transition:none}}
+@media(max-width:620px){.battleHint{top:8px;font-size:.86rem;max-width:calc(100vw - 24px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+
+/* Final polish: arc breaks, focus, Stephen evidence phases */
+.focusMeter{display:flex;gap:5px;align-items:center;margin-top:8px;color:var(--soft);font-size:.86rem;font-weight:900;}
+.focusDot{width:13px;height:13px;border-radius:999px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 0 8px rgba(0,0,0,.22);}
+.focusDot.full{background:var(--gold);box-shadow:0 0 14px rgba(255,209,102,.65);}
+.focusReady{color:var(--gold);}
+.phaseStrip{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px;}
+.phasePip{border-radius:999px;padding:5px 7px;text-align:center;font-size:.76rem;font-weight:900;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:var(--soft);}
+.phasePip.live{background:rgba(255,209,102,.18);border-color:rgba(255,209,102,.55);color:#fff;box-shadow:0 0 18px rgba(255,209,102,.2);}
+.phasePip.done{background:rgba(109,255,178,.16);border-color:rgba(109,255,178,.45);color:var(--green);}
+.arcClear{min-height:calc(100vh - 28px);display:grid;place-items:center;padding:18px;position:relative;overflow:hidden;}
+.arcClear:before{content:"";position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,rgba(255,209,102,.26),transparent 58%);filter:blur(12px);}
+.arcCard{position:relative;z-index:1;width:min(960px,100%);display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:center;}
+.arcBadge{display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:rgba(255,209,102,.15);border:1px solid rgba(255,209,102,.45);padding:8px 12px;font-weight:900;color:#fff;}
+.arcRewards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0;}
+.rewardTile{border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);padding:12px;font-weight:900;}
+.rewardTile span{display:block;color:var(--soft);font-size:.86rem;font-weight:800;margin-top:3px;}
+.evolveFlash{position:absolute;z-index:45;left:50%;bottom:200px;transform:translateX(-50%);background:rgba(255,209,102,.18);border:1px solid rgba(255,209,102,.58);box-shadow:0 0 36px rgba(255,209,102,.28);padding:10px 15px;border-radius:999px;font-weight:900;color:#fff;pointer-events:none;}
+.partialReportWrap{max-width:960px;margin:0 auto;padding:18px;}
+@media(max-width:860px){.arcCard{grid-template-columns:1fr}.arcRewards{grid-template-columns:1fr}.evolveFlash{bottom:260px}}
+@media(prefers-reduced-motion:reduce){.evolveFlash,.arcClear:before{animation:none}}
+
+
+/* Dynamic creature battler polish */
+.battleStage{isolation:isolate;}
+.battleStage:before{content:"";position:absolute;inset:-20%;z-index:2;pointer-events:none;background:radial-gradient(circle at 70% 28%,rgba(255,209,102,.20),transparent 24%),radial-gradient(circle at 28% 58%,rgba(69,230,255,.17),transparent 26%);mix-blend-mode:screen;opacity:.85;}
+.battleStage.fxHit:after,.battleStage.fxGlow:after,.battleStage.fxMiss:after,.battleStage.fxRival:after,.battleStage.fxHeal:after,.battleStage.fxDust:after{content:"";position:absolute;inset:0;z-index:14;pointer-events:none;opacity:.78;}
+.battleStage.fxHit:after{background:radial-gradient(circle at 56% 47%,rgba(109,255,178,.38),transparent 20%);animation:hitFlash .52s ease-out both;}
+.battleStage.fxGlow:after{background:radial-gradient(circle at 47% 48%,rgba(255,209,102,.45),transparent 24%);animation:glowFlash .76s ease-out both;}
+.battleStage.fxMiss:after{background:radial-gradient(circle at 43% 54%,rgba(255,255,255,.18),transparent 19%);animation:missWisp .72s ease-out both;}
+.battleStage.fxRival:after{background:radial-gradient(circle at 62% 48%,rgba(255,97,216,.28),transparent 24%);animation:rivalPulse .72s ease-out both;}
+.battleStage.fxHeal:after{background:radial-gradient(circle at 72% 48%,rgba(125,255,157,.26),transparent 22%);animation:healRise .82s ease-out both;}
+.battleStage.fxDust:after{background:radial-gradient(circle at 28% 52%,rgba(255,255,255,.18),transparent 23%);animation:dustSoft .82s ease-out both;}
+@keyframes hitFlash{0%{opacity:0;transform:scale(.96)}35%{opacity:1}100%{opacity:0;transform:scale(1.04)}}
+@keyframes glowFlash{0%{opacity:0;filter:blur(0)}30%{opacity:1;filter:blur(1px)}100%{opacity:0;filter:blur(8px)}}
+@keyframes missWisp{0%{opacity:0;transform:translateX(-18px)}35%{opacity:.8}100%{opacity:0;transform:translateX(35px)}}
+@keyframes rivalPulse{0%{opacity:0;transform:scale(.98)}35%{opacity:1}100%{opacity:0;transform:scale(1.03)}}
+@keyframes healRise{0%{opacity:0;transform:translateY(18px)}35%{opacity:1}100%{opacity:0;transform:translateY(-34px)}}
+@keyframes dustSoft{0%{opacity:0}30%{opacity:.9}100%{opacity:0}}
+.auraBackdrop{position:absolute;z-index:4;right:7%;top:12%;width:190px;height:190px;border-radius:50%;pointer-events:none;filter:blur(.2px);opacity:.88;background:radial-gradient(circle,rgba(255,255,255,.24),transparent 36%);}
+.auraBackdrop:before,.auraBackdrop:after{content:"";position:absolute;inset:18px;border-radius:50%;border:2px solid rgba(255,255,255,.25);animation:auraSpin 6s linear infinite;}
+.auraBackdrop:after{inset:42px;animation-direction:reverse;animation-duration:4.8s;}
+.auraBackdrop.typeAdd{box-shadow:0 0 70px rgba(69,230,255,.38);background:radial-gradient(circle,rgba(69,230,255,.32),transparent 62%);}
+.auraBackdrop.typeSubtract{box-shadow:0 0 70px rgba(169,139,255,.38);background:radial-gradient(circle,rgba(169,139,255,.34),transparent 62%);}
+.auraBackdrop.typeMultiply{box-shadow:0 0 70px rgba(255,149,92,.38);background:radial-gradient(circle,rgba(255,149,92,.34),transparent 62%);}
+.auraBackdrop.typeDivide{box-shadow:0 0 70px rgba(125,255,157,.34);background:radial-gradient(circle,rgba(125,255,157,.30),transparent 62%);}
+@keyframes auraSpin{to{transform:rotate(360deg)}}
+.battleOverlayText{position:absolute;z-index:42;left:50%;top:38%;transform:translate(-50%,-50%);max-width:min(520px,84vw);text-align:center;font-weight:1000;font-size:clamp(1.7rem,5vw,3.8rem);letter-spacing:.02em;color:#fff;text-shadow:0 12px 35px rgba(0,0,0,.7),0 0 26px rgba(255,209,102,.35);pointer-events:none;animation:calloutPop 1.05s ease-out both;}
+@keyframes calloutPop{0%{opacity:0;transform:translate(-50%,-44%) scale(.82)}22%{opacity:1;transform:translate(-50%,-50%) scale(1.04)}100%{opacity:.02;transform:translate(-50%,-58%) scale(1)}}
+.battleReadMini{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 10px;color:var(--soft);font-weight:900;}
+.battleReadMini strong{color:#fff;}
+.moveButton{position:relative;overflow:hidden;text-align:left;justify-items:start;padding:14px;}
+.moveButton:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.16),transparent 34%);opacity:.55;pointer-events:none;}
+.moveButton.best{transform:translateY(-1px);}
+.moveButton.best:after{content:"";position:absolute;inset:-2px;border-radius:inherit;border:2px solid rgba(109,255,178,.72);box-shadow:0 0 24px rgba(109,255,178,.34);pointer-events:none;animation:bestPulse 1.4s ease-in-out infinite;}
+.moveButton.glowSelected{border-color:rgba(255,209,102,.88);box-shadow:0 0 0 3px rgba(255,209,102,.18),0 0 34px rgba(255,209,102,.28);}
+.moveDesc{font-size:.84rem;color:var(--soft);font-weight:800;line-height:1.2;}
+.battleTags{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.statusChips{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px;}
+.statusChip{border-radius:999px;padding:5px 9px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.13);color:var(--soft);font-size:.78rem;font-weight:900;}
+.statusChip.live{color:#fff;background:rgba(255,209,102,.16);border-color:rgba(255,209,102,.42);}
+.statusChip.good{color:var(--green);background:rgba(109,255,178,.13);border-color:rgba(109,255,178,.34);}
+.glowToggle{margin-top:10px;width:100%;min-height:50px;border-radius:18px;}
+.resultPanel{display:grid;gap:10px;}
+.resultPanel h2{font-size:clamp(1.45rem,3vw,2.2rem);margin:0;color:var(--gold);}
+.resultPanel p{margin:0;color:var(--ink);font-size:1.05rem;}
+.resultLine{border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);padding:10px;color:var(--soft);font-weight:800;}
+.perkLine{color:var(--green);font-weight:900;}
+.moodLine{color:var(--gold);font-weight:900;}
+.auraRead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.auraRead span:last-child{font-weight:900;color:var(--soft);}
+.battleStage.stephenPhaseAdd{background:radial-gradient(circle at 72% 28%,rgba(69,230,255,.24),transparent 28%),linear-gradient(180deg,#20204d,#070913 70%);}
+.battleStage.stephenPhaseSubtract{background:radial-gradient(circle at 72% 28%,rgba(169,139,255,.24),transparent 28%),linear-gradient(180deg,#1b1947,#070913 70%);}
+.battleStage.stephenPhaseMultiply{background:radial-gradient(circle at 72% 28%,rgba(255,149,92,.24),transparent 28%),linear-gradient(180deg,#2b1b3a,#070913 70%);}
+.battleStage.stephenPhaseDivide{background:radial-gradient(circle at 72% 28%,rgba(125,255,157,.22),transparent 28%),linear-gradient(180deg,#173447,#070913 70%);}
+@media(prefers-reduced-motion:reduce){.battleStage:after,.battleOverlayText,.auraBackdrop:before,.auraBackdrop:after,.moveButton.best:after{animation:none}}
+
+
+/* Minimal non overwhelming UI pass */
+.minimalBattle .battleTop{grid-template-columns:180px minmax(100px,1fr) 180px;gap:8px;}
+.miniBattleTop{opacity:.94;}
+.miniFighter{padding:9px 11px;border-radius:18px;background:rgba(5,8,24,.58);}
+.miniFighter h2{font-size:.96rem;margin:0 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.miniFighter .hp{height:12px;}
+.miniPhase{padding:6px 8px;min-height:0;background:rgba(5,8,24,.34);border-color:rgba(255,255,255,.08);box-shadow:none;}
+.miniPhase:empty{display:none;}
+.tinyAura{margin-top:6px;}
+.tinyAura .typePill{font-size:.75rem;padding:4px 7px;}
+.compactDock{left:18px;right:18px;bottom:18px;grid-template-columns:minmax(0,1fr) auto;}
+.compactPanel{padding:12px;border-radius:22px;background:rgba(5,8,24,.74);}
+.compactPanel h2{font-size:1.02rem;margin:0 0 8px;}
+.miniRead{display:flex;gap:8px;align-items:center;margin:0 0 8px;font-weight:900;color:var(--gold);}
+.miniRead span:last-child{padding:5px 9px;border-radius:999px;background:rgba(255,209,102,.13);font-size:.86rem;}
+.compactMoves{gap:8px;}
+.compactMoves .moveButton{min-height:58px;padding:10px 12px;gap:4px;}
+.compactMoves .moveName{font-size:1rem;}
+.compactMoves .typePill{display:none;}
+.compactMoves .match{font-size:.72rem;padding:3px 7px;}
+.compactSide{min-width:88px;}
+.compactSide button{min-height:40px;border-radius:14px;padding:8px 10px;font-size:.86rem;}
+.battleHint{top:14px;font-size:.86rem;padding:6px 10px;background:rgba(5,8,24,.42);}
+.statusChips,.moveDesc,.battleReadMini,.resultLine,.perkLine,.moodLine{display:none !important;}
+.compactResult{justify-items:center;text-align:center;}
+.compactResult h2{font-size:clamp(1.45rem,4vw,2.6rem);}
+.compactResult p{display:none;}
+.focusMeter span:first-child{display:none;}
+.focusMeter{margin-top:6px;}
+.focusReady{font-size:0;}.focusReady:after{content:"Ready";font-size:.78rem;}
+.phaseStrip{grid-template-columns:repeat(4,minmax(34px,1fr));gap:4px;margin-top:0;}
+.phasePip{font-size:0;padding:5px 6px;}
+.phasePip:after{font-size:.72rem;}
+.phasePip:nth-child(1):after{content:"+";}
+.phasePip:nth-child(2):after{content:"-";}
+.phasePip:nth-child(3):after{content:"x";}
+.phasePip:nth-child(4):after{content:"÷";}
+.worldToast:empty{display:none;}
+.worldToast{top:76px;font-size:.78rem;padding:5px 9px;opacity:.82;}
+.gameLogo{min-width:132px;padding:8px 11px;}
+.gameLogo h1{font-size:1rem;}
+.gameLogo p{display:none;}
+.gameStats .chip{font-size:.78rem;padding:6px 8px;}
+.gameMenu button{min-height:38px;font-size:.82rem;padding:7px 9px;}
+.quickDock{width:auto;min-width:280px;max-width:min(460px,calc(100vw - 28px));padding:8px 10px;}
+.quickIcon{width:28px;height:28px;border-radius:10px;}
+.quickText h2{font-size:.92rem;}
+.quickButtons button{min-height:38px;font-size:.84rem;padding:7px 10px;}
+.speechBubble{font-size:.86rem;max-width:220px;padding:8px 10px;line-height:1.18;}
+.floatPrompt{font-size:.78rem;padding:5px 8px;}
+.drawer{padding:16px;}
+.drawer .lead,.guideNote{display:none;}
+.guideGrid.combo{grid-template-columns:repeat(2,minmax(0,1fr));}
+.guideCard.comboCard{padding:10px;border-radius:18px;}
+.guideCard.comboCard h3{font-size:.95rem;}
+.guideCard.comboCard p{font-size:.95rem;color:var(--gold);font-weight:900;}
+@media(max-width:720px){.minimalBattle .battleTop{grid-template-columns:1fr 1fr;}.miniPhase{grid-column:1/-1;order:3}.compactDock{left:10px;right:10px;bottom:10px;grid-template-columns:1fr}.compactSide{grid-template-columns:1fr 1fr;display:grid;min-width:0}.battleStage{min-height:600px}.battleHint{top:8px}.guideGrid.combo{grid-template-columns:1fr}}
+
+
+/* Evolution visual upgrade pass */
+.creature.stage2{filter:drop-shadow(0 22px 18px rgba(0,0,0,0.34)) drop-shadow(0 0 12px rgba(255,209,102,.24));}
+.creature.stage3{filter:drop-shadow(0 24px 20px rgba(0,0,0,0.36)) drop-shadow(0 0 18px rgba(69,230,255,.28));}
+.creature.stage4{filter:drop-shadow(0 26px 22px rgba(0,0,0,0.38)) drop-shadow(0 0 26px rgba(255,209,102,.42));}
+.creature.stage2 .cheek{box-shadow:0 0 12px rgba(255,117,143,.6);}
+.creature.stage3 .head{outline:3px solid rgba(255,255,255,.18);outline-offset:2px;}
+.creature.stage4 .body{outline:4px solid rgba(255,209,102,.42);outline-offset:2px;}
+.creature.add.stage2 .tail{background:linear-gradient(90deg,#ffd166,#45e6ff);}
+.creature.add.stage3 .ear{filter:brightness(1.2);}
+.creature.add.stage4:before{content:"";position:absolute;display:block;left:48px;top:4px;width:46px;height:24px;border-radius:50%;border:5px solid rgba(255,209,102,.95);box-shadow:0 0 18px rgba(255,209,102,.55);z-index:11;transform:rotate(-8deg);}
+.creature.subtract.stage2 .cloak{box-shadow:0 0 18px rgba(169,139,255,.35);}
+.creature.subtract.stage3 .ear{background:linear-gradient(180deg,#fff,#a98bff);}
+.creature.subtract.stage4:before{content:"";position:absolute;display:block;left:40px;top:7px;width:58px;height:18px;border-radius:999px;background:linear-gradient(90deg,#fff,#ffd166,#fff);box-shadow:0 0 22px rgba(255,209,102,.55);z-index:12;transform:rotate(-5deg);}
+.creature.multiply.stage2 .wing{filter:brightness(1.18);}
+.creature.multiply.stage3 .horn{background:linear-gradient(180deg,#fff,#ffd166);}
+.creature.multiply.stage4:before{content:"";position:absolute;display:block;left:48px;top:5px;width:44px;height:30px;background:#ffd166;clip-path:polygon(0 100%,18% 18%,38% 82%,56% 0,74% 82%,92% 18%,100% 100%);filter:drop-shadow(0 0 14px rgba(255,209,102,.7));z-index:12;}
+.creature.divide.stage2 .shell{box-shadow:0 0 18px rgba(69,230,255,.38);}
+.creature.divide.stage3 .bubble{filter:brightness(1.2);}
+.creature.divide.stage4:before{content:"";position:absolute;display:block;left:34px;top:14px;width:72px;height:72px;border-radius:50%;border:4px dotted rgba(255,209,102,.92);box-shadow:0 0 22px rgba(255,209,102,.4);z-index:1;animation:auraSpin 5s linear infinite;}
+.evolutionScreen{min-height:calc(100vh - 28px);display:grid;place-items:center;padding:18px;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 38%,rgba(255,209,102,.22),transparent 32%);}
+.evolutionCard{position:relative;z-index:1;width:min(940px,100%);display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center;}
+.evolutionStage{min-height:430px;border-radius:28px;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.18),transparent 34%),linear-gradient(180deg,#212862,#070913);border:1px solid rgba(255,255,255,.16);display:grid;place-items:center;overflow:hidden;position:relative;}
+.evolutionStage:before{content:"";position:absolute;width:280px;height:280px;border-radius:50%;border:3px solid rgba(255,209,102,.38);box-shadow:0 0 50px rgba(255,209,102,.24);animation:auraSpin 6s linear infinite;}
+.evoCopy{padding:8px;}
+.evoCopy h1{font-size:clamp(2rem,5vw,4rem);}
+.evoPills{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0;}
+.evoPill{border-radius:999px;padding:8px 11px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);font-weight:900;color:#fff;}
+.evoPill.gold{background:rgba(255,209,102,.18);border-color:rgba(255,209,102,.48);color:var(--gold);}
+@media(max-width:820px){.evolutionCard{grid-template-columns:1fr}.evolutionStage{min-height:300px}}
+@media(prefers-reduced-motion:reduce){.creature.divide.stage4:before,.evolutionStage:before{animation:none}}
+
+
+/* Next polish: calm assist, cards, checkpoints, Jay view */
+.checkpointChip{border-color:rgba(255,209,102,.38) !important;color:var(--gold);}
+.cardAlbum{min-height:calc(100vh - 28px);padding:18px;display:grid;align-content:start;gap:14px;}
+.cardAlbumTop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;}
+.rivalCardGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;}
+.rivalCollectCard{min-height:180px;border-radius:24px;padding:14px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.15);box-shadow:0 18px 50px rgba(0,0,0,.24);overflow:hidden;}
+.rivalCollectCard h3{margin:8px 0 3px;font-size:1rem;}
+.rivalCollectCard p{margin:0;color:var(--soft);font-size:.9rem;line-height:1.2;}
+.cardIcon{height:82px;border-radius:20px;display:grid;place-items:center;background:radial-gradient(circle at 50% 38%,rgba(255,255,255,.22),transparent 52%);}
+.cardIcon .typePill{font-size:.78rem;}
+.emptyCards{border-radius:24px;padding:22px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:var(--soft);}
+.nudgeLine{margin:8px 0 0;padding:8px 10px;border-radius:16px;background:rgba(255,209,102,.12);border:1px solid rgba(255,209,102,.3);color:#fff;font-weight:900;font-size:.92rem;}
+.nudgeButton{min-height:42px;border-radius:14px;padding:8px 11px;font-size:.9rem;box-shadow:none;}
+.battleStage.fxHit.moveAdd:after{background:radial-gradient(circle at 48% 48%,rgba(69,230,255,.40),transparent 20%),linear-gradient(90deg,transparent 0 42%,rgba(69,230,255,.22) 42% 58%,transparent 58%);}
+.battleStage.fxHit.moveSubtract:after{background:linear-gradient(135deg,transparent 0 42%,rgba(169,139,255,.48) 42% 48%,transparent 48%),radial-gradient(circle at 54% 47%,rgba(255,255,255,.24),transparent 22%);}
+.battleStage.fxHit.moveMultiply:after{background:radial-gradient(circle at 44% 45%,rgba(255,149,92,.35),transparent 12%),radial-gradient(circle at 58% 45%,rgba(255,149,92,.35),transparent 12%),radial-gradient(circle at 51% 58%,rgba(255,97,216,.30),transparent 15%);}
+.battleStage.fxHit.moveDivide:after{background:repeating-radial-gradient(circle at 50% 50%,rgba(125,255,157,.30) 0 8px,transparent 9px 24px);}
+.battleStage.fxGlow.moveAdd:after,.battleStage.fxGlow.moveSubtract:after,.battleStage.fxGlow.moveMultiply:after,.battleStage.fxGlow.moveDivide:after{filter:saturate(1.35);}
+.jaySummary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 14px;}
+.jayTile{border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);padding:12px;}
+.jayTile strong{display:block;font-size:1.15rem;color:#fff;margin-bottom:3px;}
+.jayTile span{display:block;color:var(--soft);font-size:.86rem;font-weight:800;}
+@media(max-width:760px){.jaySummary{grid-template-columns:1fr 1fr}.cardAlbumTop{display:grid}.rivalCardGrid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.jaySummary,.rivalCardGrid{grid-template-columns:1fr}}
+
+
+
+/* Premium anime RPG mockup style pass */
+:root{
+  --bg0:#061026;
+  --bg1:#111b4d;
+  --bg2:#35205f;
+  --ink:#f9fbff;
+  --soft:#dbe6ff;
+  --line:rgba(169,139,255,0.42);
+  --panel:rgba(11,18,48,0.82);
+  --panel2:rgba(255,255,255,0.10);
+  --gold:#ffd25e;
+  --cyan:#5cf0ff;
+  --pink:#ff6bd6;
+  --green:#62ff9c;
+  --orange:#ff9958;
+  --violet:#a98bff;
+}
+html,body{
+  background:
+    radial-gradient(circle at 18% 8%,rgba(92,240,255,.28),transparent 24%),
+    radial-gradient(circle at 82% 5%,rgba(255,107,214,.26),transparent 25%),
+    radial-gradient(circle at 55% 105%,rgba(255,210,94,.16),transparent 34%),
+    linear-gradient(180deg,#101b4d 0%,#090e29 54%,#040713 100%);
+  color:var(--ink);
+}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(circle,rgba(255,255,255,.42) 0 1px,transparent 1.5px);background-size:54px 54px;opacity:.16;mask-image:linear-gradient(180deg,#000,transparent 75%);}
+main{position:relative;z-index:1;max-width:1600px;}
+.panel,.exploreTitle,.exploreStats,.quickDock,.fighterCard,.centerCallout,.actionPanel,.nearPanel,.talkPanel,.miniGuide,.gameLogo,.gameStats,.gameMenu{
+  background:linear-gradient(180deg,rgba(27,33,82,.86),rgba(8,14,39,.78));
+  border:1px solid rgba(169,139,255,.42);
+  box-shadow:0 22px 70px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.12),0 0 32px rgba(92,240,255,.08);
+}
+button{background:linear-gradient(135deg,#66f4ff,#6f8dff 54%,#b58dff);color:#071225;box-shadow:0 12px 28px rgba(92,240,255,.22),inset 0 1px 0 rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.28);}
+button.gold{background:linear-gradient(135deg,#ffe27a,#ffac56 58%,#ff7a77);box-shadow:0 14px 32px rgba(255,210,94,.28),inset 0 1px 0 rgba(255,255,255,.55);}
+button.secondary{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.05));border:1px solid rgba(169,139,255,.44);}
+.kicker{background:linear-gradient(135deg,rgba(255,210,94,.20),rgba(255,107,214,.12));border-color:rgba(255,210,94,.58);box-shadow:0 0 22px rgba(255,210,94,.13);}
+.hero{background:linear-gradient(135deg,rgba(12,18,48,.92),rgba(19,23,69,.66));border-color:rgba(169,139,255,.48);}
+.hero:after{content:"";position:absolute;inset:10px;border-radius:22px;border:1px solid rgba(255,255,255,.08);pointer-events:none;}
+.animePoster,.characterStage,.evolutionStage{background:
+  radial-gradient(circle at 48% 28%,rgba(92,240,255,.25),transparent 25%),
+  radial-gradient(circle at 78% 72%,rgba(255,107,214,.18),transparent 24%),
+  linear-gradient(180deg,#202b72,#071025 70%);
+  border:1px solid rgba(169,139,255,.44);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 26px 70px rgba(0,0,0,.35);
+}
+.animePoster:after,.characterStage:before{content:"";position:absolute;inset:0;pointer-events:none;background:
+  linear-gradient(transparent 0 72%,rgba(0,0,0,.28)),
+  radial-gradient(circle at 20% 80%,rgba(255,210,94,.18),transparent 24%);
+}
+.buddyCard{background:linear-gradient(180deg,rgba(42,53,123,.82),rgba(11,16,43,.78));border-color:rgba(169,139,255,.42);box-shadow:0 16px 42px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.08);}
+.buddyCard.selected{border-color:var(--gold);box-shadow:0 0 0 4px rgba(255,210,94,.20),0 22px 70px rgba(0,0,0,.42),0 0 38px rgba(255,210,94,.15);}
+.buddySprite{background:radial-gradient(circle at 50% 44%,rgba(255,255,255,.30),transparent 38%),radial-gradient(circle at 50% 76%,rgba(92,240,255,.16),transparent 34%);}
+.creature{filter:drop-shadow(0 22px 20px rgba(0,0,0,.44)) drop-shadow(0 0 12px rgba(255,210,94,.10));}
+
+/* Battle like the mockup */
+.battleLayout{position:relative;display:block;min-height:calc(100vh - 28px);}
+.battleTop{position:absolute;z-index:75;top:16px;left:16px;right:16px;display:grid;grid-template-columns:minmax(190px,260px) minmax(180px,1fr) minmax(190px,260px);gap:14px;pointer-events:none;}
+.battleTop>*{pointer-events:auto;}
+.minimalBattle .battleTop{grid-template-columns:minmax(190px,260px) minmax(180px,1fr) minmax(190px,260px);gap:14px;}
+.fighterCard,.centerCallout,.miniFighter,.miniPhase{border-radius:22px;background:linear-gradient(180deg,rgba(37,43,104,.90),rgba(10,16,48,.86));border:1px solid rgba(169,139,255,.55);box-shadow:0 18px 54px rgba(0,0,0,.42),0 0 24px rgba(92,240,255,.10),inset 0 1px 0 rgba(255,255,255,.15);}
+.fighterCard h2,.miniFighter h2{letter-spacing:.02em;text-transform:none;color:#fff;text-shadow:0 3px 18px rgba(0,0,0,.42);}
+.hp{height:16px;background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.16);padding:2px;box-shadow:inset 0 0 12px rgba(0,0,0,.35);}
+.hp span{border-radius:999px;background:linear-gradient(90deg,#62ff9c 0%,#ffe66e 60%,#ff9958 100%);box-shadow:0 0 16px rgba(98,255,156,.26);}
+.battleStage{min-height:calc(100vh - 28px);border-radius:34px;background:
+  radial-gradient(circle at 55% 20%,rgba(169,139,255,.30),transparent 24%),
+  radial-gradient(circle at 24% 70%,rgba(92,240,255,.16),transparent 28%),
+  radial-gradient(circle at 82% 68%,rgba(255,210,94,.12),transparent 25%),
+  linear-gradient(180deg,#14205a 0%,#080d27 66%,#040711 100%);
+  border:1px solid rgba(169,139,255,.48);
+  box-shadow:0 30px 100px rgba(0,0,0,.50),inset 0 1px 0 rgba(255,255,255,.10);
+}
+.battleStage:before{opacity:1;background:
+  radial-gradient(circle at 76% 25%,rgba(255,210,94,.22),transparent 20%),
+  radial-gradient(circle at 25% 48%,rgba(92,240,255,.19),transparent 24%),
+  linear-gradient(transparent 0 64%,rgba(0,0,0,.34) 100%);}
+.auraBackdrop{width:220px;height:220px;right:14%;top:18%;opacity:.92;}
+.battleHint{top:96px;background:linear-gradient(180deg,rgba(26,33,88,.82),rgba(8,13,37,.66));border-color:rgba(255,210,94,.48);box-shadow:0 14px 40px rgba(0,0,0,.36),0 0 24px rgba(255,210,94,.13);}
+.actionDock.compactDock{left:50%;right:auto;bottom:22px;transform:translateX(-50%);width:min(880px,calc(100vw - 42px));grid-template-columns:minmax(0,1fr) auto;align-items:stretch;gap:12px;}
+.actionPanel.compactPanel{background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(229,230,244,.76));color:#0a1029;border:1px solid rgba(255,255,255,.74);box-shadow:0 22px 70px rgba(0,0,0,.48),0 0 0 4px rgba(169,139,255,.16);}
+.compactPanel h2{color:#1a1b42;text-shadow:0 1px 0 rgba(255,255,255,.5);}
+.question{color:#2c2d50;text-shadow:none;background:rgba(255,255,255,.42);border:1px solid rgba(27,33,82,.16);border-radius:20px;padding:10px 14px;text-align:center;}
+.moveGrid.compactMoves{grid-template-columns:repeat(4,minmax(0,1fr));}
+.moveButton{background:linear-gradient(180deg,#202859,#0b1130);border-color:rgba(169,139,255,.54);box-shadow:0 12px 30px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.10);}
+.moveButton.best{border-color:#62ff9c;box-shadow:0 0 0 3px rgba(98,255,156,.20),0 0 30px rgba(98,255,156,.22),0 12px 30px rgba(0,0,0,.28);}
+.moveButton.glowSelected{border-color:#ffd25e;box-shadow:0 0 0 3px rgba(255,210,94,.24),0 0 36px rgba(255,210,94,.28),0 12px 30px rgba(0,0,0,.28);}
+.compactMoves .moveButton{min-height:66px;justify-items:center;text-align:center;border-radius:18px;}
+.moveName{font-weight:1000;color:#fff;}
+.match{background:rgba(255,255,255,.11);}
+.match.strong{background:rgba(98,255,156,.18);color:#8affb8;}
+.answerGrid button{background:linear-gradient(180deg,#ffffff,#d9dff3);color:#171b3f;border:1px solid rgba(27,33,82,.20);box-shadow:0 8px 18px rgba(0,0,0,.16);}
+.answerGrid button:hover,.answerGrid button:focus{background:linear-gradient(180deg,#8cffae,#47d56f);color:#031b0b;}
+.sideActions.compactSide{display:grid;gap:10px;align-content:stretch;}
+.compactSide button{background:linear-gradient(180deg,rgba(36,44,103,.92),rgba(9,14,42,.88));color:#fff;border-color:rgba(169,139,255,.48);}
+.battleOverlayText{color:#fff;text-shadow:0 16px 42px rgba(0,0,0,.78),0 0 26px rgba(255,210,94,.46);}
+.focusDot.full{background:linear-gradient(135deg,#ffe66e,#ff9a59);box-shadow:0 0 18px rgba(255,210,94,.72);}
+
+/* Bridge becomes a rich anime route */
+.exploreScreen{border-radius:34px;background:
+  radial-gradient(circle at 40% 16%,rgba(92,240,255,.24),transparent 26%),
+  radial-gradient(circle at 80% 18%,rgba(255,107,214,.20),transparent 24%),
+  linear-gradient(180deg,#111d55 0%,#080f2d 62%,#050816 100%);
+  border:1px solid rgba(169,139,255,.48);box-shadow:0 30px 100px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.10);
+}
+.exploreScreen:after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(transparent 0 62%,rgba(0,0,0,.26) 100%),radial-gradient(circle at 50% 80%,rgba(255,210,94,.11),transparent 35%);}
+.exploreHud{z-index:60;}
+.exploreTitle{max-width:min(440px,62vw);padding:10px 14px;border-radius:22px;}
+.exploreTitle h1{font-size:clamp(1.22rem,2.35vw,2.1rem);letter-spacing:.01em;}
+.exploreTitle p{font-size:.92rem;}
+.exploreStats{border-radius:22px;}
+.chip,.gameStats .chip{background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.06));border:1px solid rgba(169,139,255,.34);box-shadow:inset 0 1px 0 rgba(255,255,255,.09);}
+.quickDock{background:linear-gradient(180deg,rgba(28,34,92,.86),rgba(9,14,38,.80));border-color:rgba(169,139,255,.52);box-shadow:0 20px 65px rgba(0,0,0,.45),0 0 26px rgba(92,240,255,.10);}
+.quickIcon{background:linear-gradient(135deg,#ffd25e,#ff6bd6 48%,#5cf0ff);box-shadow:0 0 22px rgba(255,210,94,.28);}
+.worldLabel .floatPrompt{background:rgba(9,14,38,.78);border:1px solid rgba(255,210,94,.48);box-shadow:0 12px 30px rgba(0,0,0,.32),0 0 16px rgba(255,210,94,.12);}
+.worldLabel .markerDot{background:var(--gold);box-shadow:0 0 20px rgba(255,210,94,.60);}
+.speechBubble{background:rgba(9,14,38,.88);border-color:rgba(169,139,255,.48);box-shadow:0 14px 34px rgba(0,0,0,.42);color:#f8fbff;}
+.touchPad{background:rgba(8,14,42,.42);border-color:rgba(169,139,255,.30);}
+
+/* Reward and report screens like game cards */
+.arcClear{background:radial-gradient(circle at 50% 28%,rgba(255,210,94,.28),transparent 25%),radial-gradient(circle at 18% 70%,rgba(92,240,255,.18),transparent 28%);}
+.arcCard,.evolutionCard{background:linear-gradient(180deg,rgba(28,34,92,.88),rgba(8,14,38,.78));border-color:rgba(169,139,255,.48);box-shadow:0 30px 100px rgba(0,0,0,.50),0 0 40px rgba(255,210,94,.10);}
+.arcRewards{grid-template-columns:repeat(4,minmax(0,1fr));}
+.rewardTile{background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,.06));border-color:rgba(169,139,255,.34);box-shadow:inset 0 1px 0 rgba(255,255,255,.10);}
+.rivalCollectCard{background:linear-gradient(180deg,rgba(47,41,112,.92),rgba(17,19,56,.86));border-color:rgba(255,210,94,.38);box-shadow:0 20px 60px rgba(0,0,0,.36),0 0 22px rgba(255,210,94,.08);}
+.cardIcon{background:radial-gradient(circle at 50% 38%,rgba(255,210,94,.24),transparent 46%),linear-gradient(180deg,rgba(92,240,255,.10),rgba(255,107,214,.08));}
+.report{background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(223,230,249,.94));border:1px solid rgba(27,33,82,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.88);}
+.teacherSummary,.summaryGrid,.quickSummary{background:linear-gradient(180deg,rgba(27,33,82,.86),rgba(8,14,39,.78));border-color:rgba(169,139,255,.42);}
+
+/* Better small screens */
+@media(max-width:980px){
+  .battleTop,.minimalBattle .battleTop{grid-template-columns:1fr 1fr;top:10px;left:10px;right:10px;}
+  .centerCallout,.miniPhase{grid-column:1 / -1;order:3;min-height:0;padding:6px;}
+  .battleHint{top:126px;}
+  .moveGrid.compactMoves{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .actionDock.compactDock{bottom:12px;width:calc(100vw - 24px);}
+}
+@media(max-width:620px){
+  .battleStage{min-height:calc(100vh - 16px);border-radius:24px;}
+  .battleTop,.minimalBattle .battleTop{gap:8px;}
+  .fighterCard,.miniFighter{padding:8px;border-radius:16px;}
+  .actionDock.compactDock{grid-template-columns:1fr;bottom:10px;}
+  .compactSide{grid-template-columns:1fr 1fr;}
+  .question{font-size:1.55rem;}
+  .exploreTitle p{display:none;}
+  .arcRewards{grid-template-columns:1fr 1fr;}
+}
+
+
+/* Optimisation + pause/support pass */
+.pauseDrawer{
+  width:min(520px,92vw);
+  text-align:left;
+}
+.pauseDrawer h2{margin-bottom:8px;}
+.pauseDrawer p{color:var(--soft);margin-bottom:14px;}
+.pauseActions{display:grid;gap:10px;}
+.pauseActions button{width:100%;}
+.pauseNote{margin-top:10px;font-size:.9rem;color:var(--soft);}
+.pauseBackdrop{position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.52);backdrop-filter:blur(3px);}
+
+.supportLine{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  margin:8px 0 10px;
+  padding:9px 11px;
+  border-radius:16px;
+  background:rgba(7,12,38,.08);
+  border:1px solid rgba(27,33,82,.16);
+  color:#24304d;
+  font-weight:900;
+  line-height:1.25;
+}
+.supportLine.open{
+  background:rgba(255,209,102,.22);
+  border-color:rgba(255,149,92,.42);
+}
+.supportChip{
+  flex:0 0 auto;
+  border-radius:999px;
+  padding:4px 8px;
+  background:rgba(69,230,255,.18);
+  color:#0a3046;
+  font-size:.8rem;
+  font-weight:1000;
+}
+.nudgeButton{min-height:50px;}
+.compactPanel input#answerInput{
+  font-size:1.35rem;
+  font-weight:900;
+  text-align:center;
+}
+@media(max-width:620px){
+  .supportLine{font-size:.9rem;padding:8px 9px;}
+  .supportChip{font-size:.74rem;}
+}
+
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+(function(){
+"use strict";
+const CBB_KEY="cbb_save";
+const app=document.getElementById("app");
+const ops=["Add","Subtract","Multiply","Divide"];
+const counters={Add:"Subtract",Subtract:"Divide",Multiply:"Add",Divide:"Multiply"};
+const beats={Add:"Multiply",Subtract:"Add",Divide:"Subtract",Multiply:"Divide"};
+const moveNames={Add:"Spark Stack",Subtract:"Moon Slice",Multiply:"Mega Bloom",Divide:"Split Wave"};
+const moveVibes={Add:"",Subtract:"",Multiply:"",Divide:""};
+const moodData={
+  Charging:{label:"Charge",text:"",kind:"live"},
+  Guarding:{label:"Guard",text:"",kind:"live"},
+  Wobbly:{label:"Wobble",text:"",kind:"good"},
+  Focused:{label:"Focus",text:"",kind:"good"},
+  Chill:{label:"Calm",text:"",kind:""}
+};
+const eventData={
+  BridgeGlow:{label:"Glow",text:"",kind:"good"},
+  BuddyFocus:{label:"Focus",text:"",kind:"good"},
+  RivalWobble:{label:"Wobble",text:"",kind:"good"},
+  CrowdCheer:{label:"Cheer",text:"",kind:""},
+  None:{label:"Read",text:"",kind:""}
+};
+const buddyData={
+  Add:{name:"Pluspup",tag:"Zoomy spark pup",colour:0x45e6ff,css:"add"},
+  Subtract:{name:"Mooncub",tag:"Sleepy moon cat",colour:0xa98bff,css:"subtract"},
+  Multiply:{name:"Starwyrm",tag:"Tiny drama dragon",colour:0xff955c,css:"multiply"},
+  Divide:{name:"Orbitot",tag:"Snack shell turtle",colour:0x7dff9d,css:"divide"}
+};
+const zoneNames=["Spark Arc","Moon Arc","Star Arc","Orbit Arc","Remix Arc"];
+const zoneTypes=["Add","Subtract","Multiply","Divide","Mixed"];
+const foeNames=["Nova","Kiro","Mika","Rin","Ari","Zen","Tao","Niko","Sora","Kai"];
+let threeWorld=null;
+let saveTimer=null;
+let bridgeEntityCacheKey="";
+let bridgeEntityCache=[];
+let nearestCache=null;
+let nearestCacheAt=0;
+const BRIDGE_X_LIMIT=2.72;
+const BRIDGE_Z_MIN=-4.35;
+const BRIDGE_Z_MAX=3.25;
+function freshState(){
+  const stats={};const stephenStats={};ops.forEach(o=>{stats[o]={attempted:0,correct:0};stephenStats[o]={attempted:0,correct:0};});
+  return {screen:"start",setup:"hero",playMode:"arc",arcGoal:10,startedAt:Date.now(),character:{name:"",skin:"#d99a73",hair:"#1e1e2a",hairStyle:"spikes",outfit:"#45e6ff",accessory:"Aura scarf"},buddyType:"",knownMoves:[],buddyStage:1,xp:0,focus:0,foeIndex:0,message:"Ready when you are.",stats,stephenStats,strategy:{total:0,advantage:0},battle:null,paused:false,arcClear:null,partialReportText:"",lastEvolution:null,pendingEvolution:null,rivalCards:[],lastCard:null,reportText:""};
+}
+let state=freshState();
+
+function jayText(value){
+  return String(value==null?"":value)
+    .replace(/m(?:r|ister)\.?\s*raine/gi,"Jay")
+    .replace(/mr\s*\.\s*raine/gi,"Jay");
+}
+function cleanJayNamesInStorage(){
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const key=localStorage.key(i);
+      if(!key||!key.startsWith("cbb_"))continue;
+      const raw=localStorage.getItem(key);
+      const cleaned=jayText(raw);
+      if(raw!==cleaned)localStorage.setItem(key,cleaned);
+    }
+  }catch(e){}
+}
+function cleanStateText(obj){
+  if(typeof obj==="string")return jayText(obj);
+  if(Array.isArray(obj))return obj.map(cleanStateText);
+  if(obj&&typeof obj==="object"){
+    Object.keys(obj).forEach(k=>{obj[k]=cleanStateText(obj[k]);});
+  }
+  return obj;
+}
+function saveNow(){try{localStorage.setItem(CBB_KEY,JSON.stringify(cleanStateText(state)));}catch(e){}}
+function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,250);}
+function loadSave(){try{cleanJayNamesInStorage();const raw=localStorage.getItem(CBB_KEY);return raw?normaliseState(JSON.parse(jayText(raw))):null;}catch(e){return null;}}
+function normaliseState(s){
+  const f=freshState();
+  if(!s||typeof s!=="object")return f;
+  s={...f,...s};
+  s.character={...f.character,...(s.character||{})};
+  s.stats=s.stats||f.stats;s.stephenStats=s.stephenStats||f.stephenStats;
+  ops.forEach(o=>{s.stats[o]={attempted:0,correct:0,...(s.stats[o]||{})};s.stephenStats[o]={attempted:0,correct:0,...(s.stephenStats[o]||{})};});
+  s.strategy={...f.strategy,...(s.strategy||{})};
+  s.bridge={x:0,z:1.9,target:null,talk:"Use WASD, arrow keys, or the pad. Wander first, spar when it feels good.",...(s.bridge||{})};
+  if(!Array.isArray(s.knownMoves))s.knownMoves=s.buddyType?[s.buddyType]:[];
+  if(!Array.isArray(s.clearedFoes))s.clearedFoes=Array.from({length:Math.max(0,Math.min(50,Number(s.foeIndex)||0))},(_,i)=>i);
+  s.clearedFoes=[...new Set(s.clearedFoes.map(n=>parseInt(n,10)).filter(n=>Number.isFinite(n)&&n>=0&&n<50))];
+  s.foeIndex=s.clearedFoes.length;
+  if(!s.setup)s.setup=s.setupStep==="buddy"?"buddy":"hero";
+  if(!s.startedAt)s.startedAt=Date.now();
+  s.focus=Math.max(0,Math.min(3,Number(s.focus)||0));
+  s.arcClear=s.arcClear||null;
+  if(s.playMode==="stephen"){s.playMode="arc";s.clearedFoes=[];s.foeIndex=0;if(s.bridge){s.bridge.x=0;s.bridge.z=1.9;s.bridge.talk="Bridge route ready. Start with the first arc.";}}
+  s.playMode=["arc","full"].includes(s.playMode)?s.playMode:"arc";
+  s.arcGoal=Math.max(10,Math.min(50,Number(s.arcGoal)||10));
+  s.partialReportText=s.partialReportText||"";
+  s.lastEvolution=s.lastEvolution||null;
+  s.pendingEvolution=s.pendingEvolution||null;
+  if(!Array.isArray(s.rivalCards))s.rivalCards=[];
+  s.rivalCards=s.rivalCards.filter(c=>c&&typeof c==="object").slice(0,60);
+  s.lastCard=s.lastCard||null;
+  s.paused=!!s.paused;
+  if(s.screen!=="bridge"&&s.screen!=="battle")s.paused=false;
+  return cleanStateText(s);
+}
+
+function esc(v){return jayText(v).replace(/[&<>"]/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[s]));}
+function btn(text,act,cls){return `<button class="${cls||""}" type="button" data-act="${act}">${esc(text)}</button>`;}
+function typePill(t){return `<span class="typePill type${t}">${esc(t)}</span>`;}
+function relation(move,foe){if(move===foe)return "neutral";if(beats[move]===foe)return "strong";if(beats[foe]===move)return "weak";return "neutral";}
+function relText(r){return r==="strong"?"Strong":r==="weak"?"Soft":"Steady";}
+function stageName(){return ["","Stage 1","Stage 2","Stage 3","Stage 4"][state.buddyStage]||"Stage 1";}
+function stageLabel(stage){return ["","Stage 1","Stage 2","Stage 3","Stage 4"][Math.max(1,Math.min(4,Number(stage)||1))]||"Stage 1";}
+function buddyStageName(type,stage){const base=buddyData[type]?.name||"Buddy";const s=Math.max(1,Math.min(4,Number(stage)||1));if(s===1)return base;if(s===2)return base+" Spark";if(s===3)return base+" Nova";return base+" Ultra";}
+function currentBuddyName(){return buddyStageName(state.buddyType,state.buddyStage);}
+function getZone(i){return Math.min(4,Math.floor(i/10));}
+function foeAt(i){const z=getZone(i);const type=z<4?ops[z]:ops[i%4];return {name:foeNames[i%10]+" " + zoneNames[z],type,zone:z};}
+function checkpointName(){if(state.foeIndex>=50)return "Stephen Lookout";return zoneNames[getZone(Math.min(state.foeIndex,49))]||"Bridge";}
+function modeLabel(){return state.playMode==="full"?"Full bridge":"One arc";}
+function journeyProgressText(){if(state.playMode==="arc")return Math.min(state.foeIndex,state.arcGoal||10)+"/"+(state.arcGoal||10);return state.foeIndex+"/50";}
+function setPlayMode(mode){localStorage.removeItem(CBB_KEY);state=freshState();state.playMode=mode==="full"?"full":"arc";state.arcGoal=state.playMode==="arc"?10:50;state.screen="setup";state.setup="hero";state.message=state.playMode==="full"?"Full bridge selected.":"One arc selected.";}
+function randomChoice(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function surpriseHero(){const names=["Noodle Nova","Bridge Bean","Captain Snack","Pixel Kai","Turbo Pip","Glow Moth","Orbit Jinx","Snack Wizard"];state.character.name=randomChoice(names);state.character.skin=randomChoice(["#f2c7a5","#d99a73","#9b6347","#6a3f2f"]);state.character.hairStyle=randomChoice(["spikes","wave","short"]);state.character.hair=randomChoice(["#1e1e2a","#6b3f28","#f5d66b","#6a8dff"]);state.character.outfit=randomChoice(["#45e6ff","#ff61d8","#7dff9d","#ffd166"]);state.character.accessory=randomChoice(["Aura scarf","Star pin","Headset","Cape"]);state.message="New hero look ready.";}
+function rivalQuote(type){return {Add:"Too much sparkle, still friendly.",Subtract:"Looks grumpy, actually kind.",Multiply:"Tiny drama. Big pose.",Divide:"Snack shell energy."}[type]||"Bridge rival met.";}
+function addRivalCard(foe){
+  if(!foe||foe.name==="Stephen")return;
+  if(!Array.isArray(state.rivalCards))state.rivalCards=[];
+  const id=foe.name+"_"+foe.type+"_"+foe.zone;
+  if(state.rivalCards.some(c=>c.id===id))return;
+  const card={id,name:foe.name,type:foe.type,arc:zoneNames[foe.zone]||"Bridge",quote:rivalQuote(foe.type),time:Date.now()};
+  state.rivalCards.push(card);
+  state.lastCard=card;
+}
+function bestWholeOperation(){let best=ops[0],bestPc=-1;ops.forEach(o=>{const st=state.stats[o]||{attempted:0,correct:0};const pc=percent(st.attempted,st.correct);if(st.attempted>0&&pc>bestPc){best=o;bestPc=pc;}});return bestPc<0?"Not enough yet":best+" "+bestPc+" percent";}
+function developingOperation(){let pick="Not enough yet",score=101;ops.forEach(o=>{const st=state.stats[o]||{attempted:0,correct:0};const pc=percent(st.attempted,st.correct);if(st.attempted>0&&pc<score){score=pc;pick=o+" "+pc+" percent";}});return pick;}
+function teacherSummaryHtml(){
+  const typed=ops.reduce((n,o)=>n+(state.stephenStats[o]?.attempted||0),0);
+  const strat=percent(state.strategy.total,state.strategy.advantage);
+  return `<div class="jaySummary"><div class="jayTile"><strong>${esc(bestWholeOperation())}</strong><span>Strongest area</span></div><div class="jayTile"><strong>${esc(developingOperation())}</strong><span>Next focus</span></div><div class="jayTile"><strong>${typed}</strong><span>Stephen answers</span></div><div class="jayTile"><strong>${strat} percent</strong><span>Strategy use</span></div></div>`;
+}
+function answerHint(q){
+  if(!q)return "";
+  if(q.tip)return q.tip;
+  const a=Number(q.answer)||0;
+  const lo=Math.max(0,a-10),hi=a+10;
+  return (a%2===0?"Even":"Odd")+" answer, near "+lo+" to "+hi;
+}
+function quickQuestionTip(q){
+  if(!q)return "";
+  if(q.quickTip)return q.quickTip;
+  if(q.type==="Multiply")return "Times-table read";
+  if(q.type==="Divide")return "Use inverse times";
+  if(q.type==="Subtract")return "Count back in chunks";
+  return "Chunk the numbers";
+}
+function supportHtml(b){
+  if(!b||!b.question)return "";
+  const q=b.question;
+  if(b.assistActive){
+    return `<div class="supportLine open"><span class="supportChip">Support</span><span>${esc(answerHint(q))}</span></div>`;
+  }
+  if(q.tough){
+    return `<div class="supportLine"><span class="supportChip">Tip</span><span>${esc(quickQuestionTip(q))}</span></div>`;
+  }
+  return "";
+}
+function visibleOptions(b){
+  if(!b||!b.question)return [];
+  const opts=Array.isArray(b.options)?b.options.slice():[];
+  if(!b.assistActive)return opts;
+  const ans=b.question.answer;
+  const wrong=opts.filter(o=>o!==ans).slice(0,1);
+  return [ans,...wrong].sort(()=>Math.random()-0.5);
+}
+function percent(a,c){return a?Math.round((c/a)*100):0;}
+function timeText(ms){const m=Math.max(1,Math.round(ms/60000));return m+" minute"+(m===1?"":"s");}
+function nextStageForXp(xp){if(xp>=4100)return 4;if(xp>=2400)return 3;if(xp>=560)return 2;return 1;}
+function forceStageFourForRemix(){
+  if(state.foeIndex<40||state.buddyStage>=4)return;
+  state.xp=Math.max(state.xp,4100);
+  while(state.buddyStage<4){
+    const from=state.buddyStage;
+    state.buddyStage++;
+    const add=pickMoveToLearn();
+    if(add&&!state.knownMoves.includes(add))state.knownMoves.push(add);
+    const evo={from,to:state.buddyStage,move:add||"",time:Date.now(),buddy:state.buddyType};
+    state.lastEvolution=evo;
+    state.pendingEvolution=evo;
+  }
+}
+function pickMoveToLearn(){
+  for(let i=state.foeIndex;i<50;i++){const need=counters[foeAt(i).type];if(!state.knownMoves.includes(need))return need;}
+  return ops.find(o=>!state.knownMoves.includes(o));
+}
+function gainXp(amount){
+  const beforeStage=state.buddyStage;
+  state.xp+=amount;
+  const target=nextStageForXp(state.xp);
+  while(state.buddyStage<target){
+    const from=state.buddyStage;
+    state.buddyStage++;
+    const add=pickMoveToLearn();
+    if(add&&!state.knownMoves.includes(add))state.knownMoves.push(add);
+    const evo={from,to:state.buddyStage,move:add||"",time:Date.now(),buddy:state.buddyType};
+    state.lastEvolution=evo;
+    state.pendingEvolution=evo;
+    state.message=`${buddyStageName(state.buddyType,state.buddyStage)} glows up.`;
+  }
+}
+function render(){disposeWorld();if(state.screen==="start")renderStart();else if(state.screen==="setup")renderSetup();else if(state.screen==="bridge")renderBridge();else if(state.screen==="battle")renderBattle();else if(state.screen==="arcClear")renderArcClear();else if(state.screen==="evolve")renderEvolution();else if(state.screen==="partialReport")renderPartialReport();else if(state.screen==="cards")renderCards();else if(state.screen==="report")renderReport();}
+function renderStart(){const saved=loadSave();app.innerHTML=`<section class="hero panel"><div class="heroCopy"><span class="kicker">Anime maths adventure</span><h1>Chilton Bridge Battle</h1><p class="lead">Build a hero, choose one buddy, and cross a glowing bridge one calm arc at a time.</p><div class="buttonRow">${saved?btn("Continue", "continue", "gold"):""}${btn("Play one arc", "modeArc", saved?"secondary":"gold")}${btn("Full bridge", "modeFull", "secondary")}</div></div><div class="animePoster"><canvas id="posterCanvas" class="posterCanvas"></canvas><div id="posterFallback" class="posterFallback hidden"><div class="fallbackHero"></div></div></div></section>`;setTimeout(()=>initPoster(),20);}
+function renderSetup(){app.innerHTML=`<section class="screen setupWrap"><div class="builderPreview panel"><div><span class="kicker">Hero setup</span><h1>${state.setup==="buddy"?"Choose your buddy":"Create your hero"}</h1><p class="lead">A quick anime hero card. No real name needed.</p></div>${state.setup==="buddy"?buddyPreview():characterPreview()}<div class="buttonRow">${state.setup==="buddy"?btn("Back", "character", "secondary"):""}${state.setup==="hero"?btn("Surprise me", "surpriseHero", "secondary"):""}</div></div><div class="formPanel panel">${state.setup==="buddy"?buddyForm():characterForm()}</div></section>`;}
+function accessoryClass(v){const x=(v||"").toLowerCase();if(x.includes("star"))return "pin";if(x.includes("head"))return "headset";if(x.includes("cape"))return "cape";return "scarf";}
+function accessoryLabel(v){const x=accessoryClass(v);return x==="pin"?"Star pin":x==="headset"?"Headset":x==="cape"?"Cape":"Aura scarf";}
+function heroDisplayName(){return (state.character.name||"Bridge Hero").trim().slice(0,18)||"Bridge Hero";}
+function characterPreview(){const acc=accessoryClass(state.character.accessory);return `<div class="characterStage"><div class="heroCardName"><strong id="heroCardName">${esc(heroDisplayName())}</strong><span>Bridge hero</span></div><div class="heroCardBadge">${esc(accessoryLabel(state.character.accessory))}</div><div class="characterAvatar"><div class="avatarAcc ${acc}"></div><div class="avatarHair ${esc(state.character.hairStyle)}" style="background:${esc(state.character.hair)}"></div><div class="avatarHead" style="background:${esc(state.character.skin)}"></div><div class="avatarEye left"></div><div class="avatarEye right"></div><div class="avatarBody" style="background:${esc(state.character.outfit)}"></div><div class="avatarLeg left"></div><div class="avatarLeg right"></div></div></div>`;}
+function buddyPreview(){const t=state.buddyType;return `<div class="characterStage" style="display:grid;place-items:center">${t?`<div class="buddySpotlight">${buddySprite(t,"bigSprite",state.buddyStage)}<h3>${esc(buddyData[t].name)}</h3><p>${esc(buddyData[t].tag)}</p></div>`:"<p class=\"lead\">Pick one buddy. The Start button will wake up.</p>"}</div>`;}
+function pickRow(field,items){return `<div class="pickerRow">${items.map(it=>`<button class="pick secondary ${state.character[field]===it.value?"selected":""}" type="button" data-pick="${field}" data-value="${esc(it.value)}">${esc(it.label)}</button>`).join("")}</div>`;}
+function swatches(field,arr){return `<div class="pickerRow">${arr.map(c=>`<button class="swatch ${state.character[field]===c?"selected":""}" type="button" aria-label="Colour" style="background:${c}" data-pick="${field}" data-value="${c}"></button>`).join("")}</div>`;}
+function characterForm(){return `<h2>Your bridge hero</h2><label for="heroName">Hero name</label><input id="heroName" maxlength="18" value="${esc(state.character.name)}" placeholder="Bridge Hero"><label>Skin tone</label>${swatches("skin",["#f2c7a5","#d99a73","#9b6347","#6a3f2f"])}<label>Hair style</label>${pickRow("hairStyle",[{label:"Spiky",value:"spikes"},{label:"Wave",value:"wave"},{label:"Short",value:"short"}])}<label>Hair colour</label>${swatches("hair",["#1e1e2a","#6b3f28","#f5d66b","#6a8dff"])}<label>Outfit glow</label>${swatches("outfit",["#45e6ff","#ff61d8","#7dff9d","#ffd166"])}<label>Accessory</label>${pickRow("accessory",[{label:"Scarf",value:"Aura scarf"},{label:"Star",value:"Star pin"},{label:"Headset",value:"Headset"},{label:"Cape",value:"Cape"}])}<div class="buttonRow">${btn("Looks good", "buddy", "gold")}${btn("Surprise me", "surpriseHero", "secondary")}</div><p class="setupHint dim">You can change the look first, or jump to a buddy.</p>`;}
+function buddySprite(type,extra,stageOverride){const d=buddyData[type]||buddyData.Add;const st=Math.max(1,Math.min(4,Number(stageOverride)||1));return `<div class="buddySprite ${extra||""} stage${st}"><div class="creature ${d.css} stage${st}"><span class="cloak"></span><span class="tail"></span><span class="wing l"></span><span class="wing r"></span><span class="shell"></span><span class="body"></span><span class="belly"></span><span class="head"></span><span class="ear l"></span><span class="ear r"></span><span class="horn l"></span><span class="horn r"></span><span class="antenna l"></span><span class="antenna r"></span><span class="bubble l"></span><span class="bubble r"></span><span class="eye one"></span><span class="eye two"></span><span class="brow l"></span><span class="brow r"></span><span class="cheek l"></span><span class="cheek r"></span><span class="nose"></span><span class="mouth"></span><span class="tooth"></span><span class="foot l"></span><span class="foot r"></span></div></div>`;}
+function buddyForm(){const ready=!!state.buddyType;return `<h2>Choose your buddy</h2><p class="lead">One buddy stays with you and glows up.</p><div class="cardGrid">${ops.map(t=>`<button class="buddyCard ${state.buddyType===t?"selected":""}" type="button" data-buddy="${t}">${buddySprite(t)}<h3>${esc(buddyData[t].name)}</h3><p>${esc(buddyData[t].tag)}</p>${typePill(t)}</button>`).join("")}</div><div class="buttonRow"><button class="gold" type="button" data-act="bridge" ${ready?"":"disabled"}>Start bridge</button></div><p class="setupHint ${ready?"dim":""}">${ready?"Ready when the bridge feels good.":"Choose one buddy first."}</p>`;}
+function ensureBridgeState(){
+  if(!state.bridge||typeof state.bridge!=="object")state.bridge={x:0,z:1.9,target:null,talk:"Move around. Step close to someone to chat or spar."};
+  state.bridge.x=Math.max(-BRIDGE_X_LIMIT,Math.min(BRIDGE_X_LIMIT,Number(state.bridge.x)||0));
+  state.bridge.z=Math.max(BRIDGE_Z_MIN,Math.min(BRIDGE_Z_MAX,Number(state.bridge.z)||1.9));
+  if(!state.bridge.talk)state.bridge.talk="Move around. Step close to someone to chat or spar.";
+  if(!Array.isArray(state.clearedFoes))state.clearedFoes=Array.from({length:Math.max(0,Math.min(50,Number(state.foeIndex)||0))},(_,i)=>i);
+  state.clearedFoes=[...new Set(state.clearedFoes.map(n=>parseInt(n,10)).filter(n=>Number.isFinite(n)&&n>=0&&n<50))];
+  state.foeIndex=state.clearedFoes.length;
+}
+function bridgeRivals(){
+  ensureBridgeState();
+  const open=[];
+  for(let i=0;i<50;i++)if(!state.clearedFoes.includes(i))open.push(i);
+  const spots=[[-1.55,-1.05],[1.5,-1.65],[-1.35,-2.45],[1.35,-3.15],[0,-3.85]];
+  return open.slice(0,5).map((idx,n)=>{const f=foeAt(idx);return {kind:"rival",id:"rival"+idx,index:idx,name:f.name,type:f.type,zone:f.zone,x:spots[n][0],z:spots[n][1],line:rivalLine(f,n)};});
+}
+function bridgeEntities(){
+  ensureBridgeState();
+  const z=getZone(Math.min(state.foeIndex,49));
+  const key=state.foeIndex+"_"+state.buddyStage+"_"+(state.clearedFoes||[]).join(".");
+  if(bridgeEntityCacheKey===key&&bridgeEntityCache.length)return bridgeEntityCache;
+  const nextType=state.foeIndex<50?foeAt(state.foeIndex).type:"Add";
+  const counter=counters[nextType]||"Subtract";
+  const arcClears=Math.floor(state.foeIndex/10);
+  const buddy=buddyData[state.buddyType]?.name||"Your buddy";
+  const mossLines=[
+    `Moss says: ${nextType} aura ahead. ${counter} is the clean read.`,
+    `Moss says: Arc ${arcClears+1} energy. You can still wander before a spar.`,
+    `Moss says: Glow meter likes correct answers. Tiny anime science.`
+  ];
+  const beanLines=[
+    "Bean says: WASD or arrows to wander. Space spars nearby.",
+    "Bean says: Cleared arcs unlock a breather. Very civilised bridge.",
+    "Bean says: If the screen feels busy, just watch the glow ring."
+  ];
+  const floLines=[
+    `Flo says: ${buddy} is ${stageName()}. Clean glow up.`,
+    `Flo says: ${buddy} has ${state.knownMoves.length} move${state.knownMoves.length===1?"":"s"}. Main character behaviour.`,
+    `Flo says: Strong is lovely. Steady still helps. Soft is not a disaster.`
+  ];
+  const base=[
+    {kind:"sign",id:"sign1",name:"Snack sign",x:-2.25,z:1.0,line:"Sign says: Aura crystals are not snacks. Mean, but fair."},
+    {kind:"sign",id:"sign2",name:"Jay note",x:2.25,z:-0.25,line:"Jay note: Strong hits sparkle. Steady hits still count."},
+    {kind:"npc",id:"npc1",name:"Moss",x:-1.95,z:-0.55,line:mossLines[arcClears%mossLines.length]},
+    {kind:"npc",id:"npc2",name:"Bean",x:2.05,z:1.35,line:beanLines[arcClears%beanLines.length]},
+    {kind:"npc",id:"npc3",name:"Flo",x:0.2,z:-0.05,line:floLines[arcClears%floLines.length]}
+  ];
+  if(state.foeIndex>=50)base.push({kind:"stephen",id:"stephen",name:"Stephen",x:0,z:-3.65,line:"Stephen says: Four calm aura phases. We will gather a clean sample for Jay."});
+  else base.push(...bridgeRivals());
+  bridgeEntityCacheKey=key;
+  bridgeEntityCache=base.map(e=>({...e,arc:zoneNames[z]}));
+  return bridgeEntityCache;
+}
+function nearestEntity(force){
+  ensureBridgeState();
+  const now=Date.now();
+  if(!force&&nearestCache&&now-nearestCacheAt<90)return nearestCache.entity;
+  let best=null;let bestD=999;
+  bridgeEntities().forEach(e=>{const dx=e.x-state.bridge.x,dz=e.z-state.bridge.z;const d=Math.hypot(dx,dz);if(d<bestD){best=e;bestD=d;}});
+  const entity=bestD<0.82?best:null;
+  nearestCache={entity,distance:bestD};
+  nearestCacheAt=now;
+  return entity;
+}
+function rivalLine(f,n){
+  const lines=[
+    `${f.name} says: I can spar, or I can stand here looking dramatic. Both are valid.`,
+    `${f.name} says: I warmed up by counting bridge planks. Wild Friday energy.`,
+    `${f.name} says: Pick me for a clean little spar. Low drama, high sparkle.`,
+    `${f.name} says: My aura is ${f.type}. Do with that information what you will.`
+  ];
+  return lines[n%lines.length];
+}
+function renderBridge(){
+  ensureBridgeState();
+  const pct=Math.round((state.foeIndex/50)*100);
+  const z=getZone(Math.min(state.foeIndex,49));
+  app.innerHTML=`<section class="exploreScreen" id="exploreScreen" aria-label="Free roam bridge"><div class="exploreCanvasWrap"><canvas id="worldCanvas" class="sceneCanvas"></canvas><div id="worldFallback" class="bridgeFallbackMap hidden"><div class="fallbackTrack"><div id="fallbackDot" class="fallbackDot"></div></div></div></div><div id="worldLabels" class="worldLabels" aria-hidden="true"></div><div id="worldToast" class="worldToast">E Chat  Space Spar</div><div class="gameHud"><div class="gameLogo"><h1>${esc(zoneNames[z])}</h1><p id="arcLabel">${esc(checkpointName())}</p></div><div class="gameStats" id="bridgeProgress"><span class="chip checkpointChip">${esc(checkpointName())}</span><span class="chip">${esc(journeyProgressText())}</span><span class="chip">${esc(stageName())}</span></div><div class="gameMenu">${btn("Guide","guide","secondary")}${(state.rivalCards&&state.rivalCards.length)?btn("Cards","cards","secondary"):""}${state.foeIndex>0?btn("Report","partialReport","secondary"):""}${btn("Save","save","ghost")}${btn("Pause","pause","ghost")}</div></div><div id="quickDock" class="quickDock quiet"></div><div class="touchPad" aria-label="Move"><button class="up" data-dir="up" aria-label="Move up">▲</button><button class="left" data-dir="left" aria-label="Move left">◀</button><button class="right" data-dir="right" aria-label="Move right">▶</button><button class="down" data-dir="down" aria-label="Move down">▼</button></div>${pauseMenuHtml()}<div id="guide" class="drawer hidden">${guideHtml()}<div class="dock">${btn("Close","guide","gold")}</div></div></section>`;
+  setTimeout(()=>{initWorld(false);updateBridgeOverlay(true);},20);
+}
+function nearActions(e){
+  if(e.kind==="rival")return `<button type="button" class="secondary" data-act="talk:${e.id}">Chat</button><button type="button" class="gold" data-act="spar:${e.index}">Spar</button>`;
+  if(e.kind==="stephen")return `<button type="button" class="secondary" data-act="talk:${e.id}">Chat</button><button type="button" class="gold" data-act="startStephen">Final spar</button>`;
+  return `<button type="button" class="gold" data-act="talk:${e.id}">Read</button>`;
+}
+function nearHint(e){
+  if(!e)return "Move close";
+  if(e.kind==="rival")return "E Chat  Space Spar";
+  if(e.kind==="stephen")return "E Chat  Space Final";
+  return "E Read";
+}
+function nearDetail(e){
+  if(e.kind==="rival")return `${e.type} aura`;
+  if(e.kind==="stephen")return "Final spar";
+  if(e.kind==="sign")return "Read";
+  return "Chat";
+}
+function nearIcon(e){
+  if(e.kind==="rival")return "✦";
+  if(e.kind==="stephen")return "★";
+  if(e.kind==="sign")return "?";
+  return "hi";
+}
+function guideHtml(){return `<h2>Type guide</h2><div class="guideGrid combo">${ops.map(foe=>`<div class="guideCard comboCard"><div>${typePill(foe)}</div><div><h3>${foe}</h3><p>${counters[foe]}</p></div></div>`).join("")}</div>`;}
+function updateBridgeOverlay(force){
+  ensureBridgeState();
+  const near=nearestEntity(force);
+  const nearId=near?near.id:"";
+  if(!force&&state.bridge.lastNear===nearId){return;}
+  state.bridge.lastNear=nearId;
+  const dock=document.getElementById("quickDock");
+  if(dock){
+    if(near){
+      dock.classList.remove("quiet");
+      dock.innerHTML=`<div class="quickCopy"><div class="quickIcon">${esc(nearIcon(near))}</div><div class="quickText"><h2>${esc(near.name)}</h2></div></div><div class="quickButtons">${nearActions(near)}</div>`;
+    }else{
+      dock.classList.add("quiet");
+      dock.innerHTML="";
+    }
+  }
+  const toast=document.getElementById("worldToast");
+  if(toast){const reward=state.bridge.rewardUntil&&Date.now()<state.bridge.rewardUntil;toast.textContent=reward?state.bridge.rewardText:(near?nearHint(near):"");}
+  const pct=Math.round((state.foeIndex/50)*100);
+  const progress=document.getElementById("bridgeProgress");
+  if(progress)progress.innerHTML=`<span class="chip">${state.foeIndex}/50</span><span class="chip">${esc(stageName())}</span>`;
+  const arc=document.getElementById("arcLabel");
+  if(arc)arc.textContent="Bridge";const logo=document.querySelector(".gameLogo h1");if(logo)logo.textContent=zoneNames[getZone(Math.min(state.foeIndex,49))];
+}
+function talkToEntity(id){
+  ensureBridgeState();
+  const e=bridgeEntities().find(x=>x.id===id);
+  if(!e)return;
+  state.bridge.speechId=e.id;
+  state.bridge.speechLine=e.line||"Hello from the bridge.";
+  state.bridge.speechUntil=Date.now()+4200;
+  state.message=state.bridge.speechLine;
+  saveNow();
+  updateBridgeOverlay(true);
+}
+function moveBridge(dx,dz){
+  if(state.paused)return;
+  ensureBridgeState();
+  state.bridge.target=null;
+  state.bridge.x=Math.max(-BRIDGE_X_LIMIT,Math.min(BRIDGE_X_LIMIT,state.bridge.x+dx));
+  state.bridge.z=Math.max(BRIDGE_Z_MIN,Math.min(BRIDGE_Z_MAX,state.bridge.z+dz));
+  scheduleSave();
+  updateBridgeOverlay(true);
+}
+function interactNear(kind){
+  if(state.paused)return;
+  const n=nearestEntity();
+  if(!n)return;
+  if(kind==="chat")talkToEntity(n.id);
+  if(kind==="spar"&&n.kind==="rival")startBattle(false,n.index);
+  if(kind==="spar"&&n.kind==="stephen")startBattle(true);
+}
+function buddyPerkTitle(){
+  if(state.buddyType==="Add")return "Pluspup perk";
+  if(state.buddyType==="Subtract")return "Mooncub perk";
+  if(state.buddyType==="Multiply")return "Starwyrm perk";
+  if(state.buddyType==="Divide")return "Orbitot perk";
+  return "Buddy perk";
+}
+function buddyPerkText(){
+  if(state.buddyType==="Add")return "First clean Add hit heals a little.";
+  if(state.buddyType==="Subtract")return "Soft hits still keep some bite.";
+  if(state.buddyType==="Multiply")return "Strong hits build extra Glow.";
+  if(state.buddyType==="Divide")return "One missed answer can be shielded.";
+  return "Your buddy brings a small boost.";
+}
+function stephenTarget(b){return b&&b.stephenOps?b.stephenOps[Math.max(0,Math.min(b.stephenOps.length-1,b.stephenPhase||0))]:"Add";}
+function stephenAuraFor(target){return beats[target]||"Multiply";}
+function stephenPhaseTitle(b){const target=stephenTarget(b);return target+" sample";}
+function pickMood(b){
+  if(b&&b.isStephen){return ["Focused","Charging","Guarding","Wobbly"][(b.stephenPhase||0)%4];}
+  const list=["Chill","Charging","Guarding","Wobbly","Focused"];
+  return list[r(0,list.length-1)];
+}
+function pickEvent(b){
+  if(b&&b.isStephen){return ["BridgeGlow","BuddyFocus","RivalWobble","CrowdCheer"][(b.stephenTurn||0)%4];}
+  const list=["None","BridgeGlow","BuddyFocus","RivalWobble","CrowdCheer"];
+  return list[r(0,list.length-1)];
+}
+function statusChips(b){
+  const mood=moodData[b.rivalMood||"Chill"]||moodData.Chill;
+  const ev=eventData[b.microEvent||"None"]||eventData.None;
+  return `<div class="statusChips"><span class="statusChip ${mood.kind}">${esc(mood.label)}</span><span class="statusChip ${ev.kind}">${esc(ev.label)}</span><span class="statusChip good">${esc(buddyPerkTitle())}</span></div>`;
+}
+function battleStageClass(b){
+  const parts=[];
+  if(b&&b.fxType)parts.push("fx"+b.fxType.charAt(0).toUpperCase()+b.fxType.slice(1));
+  if(b&&b.fxMove)parts.push("move"+b.fxMove);
+  if(b&&b.isStephen)parts.push("stephenPhase"+stephenTarget(b));
+  return parts.join(" ");
+}
+function fxText(b){
+  if(!b||!b.fxText)return "";
+  return `<div class="battleOverlayText">${esc(b.fxText)}</div>`;
+}
+function resultPanel(){
+  const b=state.battle;
+  return `<div class="resultPanel compactResult"><h2>${esc(b.resultTitle||"Nice")}</h2><div class="buttonRow">${btn(b.pendingFinish?"Finish":"Next","battleNext","gold")}</div></div>`;
+}
+function rivalPanel(){
+  const b=state.battle;
+  return `<div class="resultPanel compactResult"><h2>${esc(b.resultTitle||"Rival")}</h2><div class="buttonRow">${btn("Next","battleNext","gold")}</div></div>`;
+}
+function pauseMenuHtml(){
+  const b=state.battle;
+  const inBattle=state.screen==="battle"&&!!b;
+  const isPaused=inBattle?!!b.paused:!!state.paused;
+  const cls=isPaused?"drawer pauseDrawer":"drawer pauseDrawer hidden";
+  const backdrop=isPaused?"<div class=\"pauseBackdrop\" aria-hidden=\"true\"></div>":"";
+  const context=inBattle?"This spar is paused. Progress already earned stays safe.":"The bridge is paused. Progress is saved on this device.";
+  const extra=inBattle?btn("Back to bridge","pauseBridge","ghost"):"";
+  return `${backdrop}<div id="pauseMenu" class="${cls}" role="dialog" aria-modal="true" aria-label="Pause menu"><h2>Paused</h2><p>${esc(context)}</p><div class="pauseActions">${btn("Resume","resumeBattle","gold")}${btn("Send progress to Jay","sendProgress","secondary")}${extra}${btn("Reset game","resetGame","danger")}</div><div class="pauseNote">Reset starts again from the title screen.</div></div>`;
+}
+function progressEmailUrl(){
+  const report=state.reportText||state.partialReportText||buildProgressReport();
+  const subject=encodeURIComponent("Chilton Bridge Battle progress note");
+  const body=encodeURIComponent(report);
+  return `https://mail.google.com/mail/?view=cm&fs=1&to=jay.raine@chiltonbridgeschool.co.uk&su=${subject}&body=${body}`;
+}
+function openProgressEmail(){
+  state.partialReportText=buildProgressReport();
+  saveNow();
+  const url=progressEmailUrl();
+  const win=window.open(url,"_blank","noopener");
+  if(!win)window.location.href=url;
+  state.message="Progress email opened for Jay.";
+  if(state.bridge)state.bridge.talk=state.message;
+  if(state.battle)state.battle.message=state.message;
+}
+function resetWholeGame(){
+  const ok=window.confirm("Reset the whole game and clear saved progress?");
+  if(!ok)return;
+  try{localStorage.removeItem(CBB_KEY);}catch(e){}
+  state=freshState();
+  bridgeEntityCacheKey="";bridgeEntityCache=[];nearestCache=null;nearestCacheAt=0;
+  render();
+}
+function resetBattleRead(b,msg){
+  b.phase="choose";b.chosenMove="";b.question=null;b.options=[];b.resultLines=[];b.resultTitle="";b.pendingFinish=false;b.skipFoeTurn=false;b.fxType="";b.fxText="";b.fxMove="";b.useGlow=false;b.paused=false;b.assistUsed=false;b.assistActive=false;
+  b.rivalMood=pickMood(b);b.microEvent=pickEvent(b);
+  if(b.isStephen)b.foeType=stephenAuraFor(stephenTarget(b));
+  b.message=msg||"Read the aura. Choose when ready.";
+}
+function advanceBattle(){
+  const b=state.battle;if(!b)return;
+  if(b.phase==="result"){
+    if(b.pendingFinish){finishBattle();return;}
+    if(b.skipFoeTurn){resetBattleRead(b,"Your buddy made space. Read the next aura.");saveNow();render();return;}
+    foeTurn();return;
+  }
+  if(b.phase==="rivalResult"){
+    resetBattleRead(b,b.afterRivalMessage||"Read the aura. Choose when ready.");saveNow();render();return;
+  }
+}
+function actionPanelHtml(){
+  const b=state.battle;
+  if(!b)return "";
+  if(b.phase==="choose")return movePanel();
+  if(b.phase==="question")return questionPanel();
+  if(b.phase==="result")return resultPanel();
+  if(b.phase==="rivalResult")return rivalPanel();
+  return movePanel();
+}
+function shouldAutoAdvanceBattle(b){
+  if(!b||!(b.phase==="result"||b.phase==="rivalResult"))return false;
+  if(b.pendingFinish||b.holdResult||b.fxType==="dust"||b.fxType==="miss")return false;
+  if(b.resultTitle==="Glow Hit")return false;
+  return true;
+}
+function maybeAutoAdvanceBattle(){
+  const b=state.battle;
+  if(!shouldAutoAdvanceBattle(b))return;
+  const phase=b.phase;const title=b.resultTitle;
+  setTimeout(()=>{if(state.screen==="battle"&&state.battle===b&&b.phase===phase&&b.resultTitle===title&&shouldAutoAdvanceBattle(b))advanceBattle();},900);
+}
+function glowReady(){return (Number(state.focus)||0)>=3;}
+function startBattle(isStephen,foeIndex){
+  if(isStephen){ops.forEach(o=>{if(!state.knownMoves.includes(o))state.knownMoves.push(o);});state.buddyStage=Math.max(4,state.buddyStage||1);}
+  const foe=isStephen?{name:"Stephen",type:"Multiply",zone:5,index:50}:foeAt(Math.max(0,Math.min(49,typeof foeIndex==="number"?foeIndex:state.foeIndex)));
+  const hpCurve=[70,88,106,126,148];
+  const maxHp=isStephen?480:(hpCurve[foe.zone]||120);
+  const battle={isStephen,foeIndex:foe.index==null?foeIndex:foe.index,foeName:foe.name,foeType:foe.type,foeZone:foe.zone||0,foeHpMax:maxHp,foeHp:maxHp,buddyHpMax:120+(state.buddyStage*24),buddyHp:120+(state.buddyStage*24),phase:"choose",chosenMove:"",question:null,options:[],message:isStephen?"Stephen reads the bridge aura with you. Four calm phases, clean evidence for Jay.":"Friendly spar loaded. Read the aura, then choose your move.",stephenTurn:0,checkpointHp:maxHp,rivalMood:"Chill",microEvent:"None",resultLines:[],resultTitle:"",fxType:"",fxText:"",useGlow:false,missStreak:0,assistUsed:false,assistActive:false,fxMove:"",buddyPerks:{addHeal:false,divideShield:false}};
+  if(isStephen){
+    battle.stephenOps=["Add","Subtract","Multiply","Divide"];
+    battle.stephenPhase=0;
+    battle.stephenNeeded=3;
+    battle.stephenSamples={Add:0,Subtract:0,Multiply:0,Divide:0};
+    battle.foeType=stephenAuraFor(stephenTarget(battle));
+    battle.message="Stephen phase 1. Read the aura. The best move will glow.";
+  }
+  battle.rivalMood=pickMood(battle);
+  battle.microEvent=pickEvent(battle);
+  state.screen="battle";
+  state.paused=false;
+  state.battle=battle;
+  saveNow();render();
+}
+function focusHtml(){
+  const f=Math.max(0,Math.min(3,Number(state.focus)||0));
+  const dots=[0,1,2].map(i=>`<span class="focusDot ${i<f?"full":""}"></span>`).join("");
+  return `<div class="focusMeter"><span>Glow</span>${dots}<span class="${f>=3?"focusReady":""}">${f>=3?"Ready":""}</span></div>`;
+}
+function stephenPhaseStrip(b){
+  if(!b||!b.isStephen)return "";
+  return `<div class="phaseStrip">${b.stephenOps.map((op,i)=>{const got=b.stephenSamples[op]||0;const done=got>=b.stephenNeeded;const live=i===b.stephenPhase;return `<div class="phasePip ${done?"done":live?"live":""}">${op} ${Math.min(got,b.stephenNeeded)}/${b.stephenNeeded}</div>`;}).join("")}</div>`;
+}
+function completeStephenPhaseIfReady(b){
+  if(!b||!b.isStephen)return false;
+  const target=stephenTarget(b);
+  if((b.stephenSamples[target]||0)<b.stephenNeeded)return false;
+  const completed=b.stephenOps.filter(op=>(b.stephenSamples[op]||0)>=b.stephenNeeded).length;
+  b.foeHp=Math.min(b.foeHp,b.foeHpMax-(completed*(b.foeHpMax/4)));
+  if(completed>=4){return true;}
+  while(b.stephenPhase<b.stephenOps.length&&(b.stephenSamples[stephenTarget(b)]||0)>=b.stephenNeeded){b.stephenPhase++;}
+  b.foeType=stephenAuraFor(stephenTarget(b));
+  b.message=`Phase ${b.stephenPhase+1}. ${stephenTarget(b)} is glowing now.`;
+  return false;
+}
+function renderBattle(){
+  const b=state.battle;
+  const best=b.isStephen?stephenTarget(b):counters[b.foeType];
+  const phaseHtml=b.isStephen?stephenPhaseStrip(b):"";
+  const evo=state.lastEvolution&&Date.now()-state.lastEvolution.time<5200?`<div class="evolveFlash">${esc(stageName())}</div>`:"";
+  app.innerHTML=`<section class="battleLayout minimalBattle"><div class="battleTop miniBattleTop"><div class="fighterCard miniFighter"><h2>${esc(currentBuddyName())}</h2><div class="hp"><span style="width:${Math.max(0,(b.buddyHp/b.buddyHpMax)*100)}%"></span></div>${focusHtml()}</div><div class="centerCallout miniPhase">${phaseHtml}</div><div class="fighterCard miniFighter"><h2>${esc(b.foeName)}</h2><div class="hp"><span style="width:${Math.max(0,(b.foeHp/b.foeHpMax)*100)}%"></span></div><div class="tinyAura">${typePill(b.foeType)}</div></div></div><div class="battleStage ${battleStageClass(b)}"><canvas id="worldCanvas" class="sceneCanvas"></canvas><div id="worldFallback" class="fallbackArena hidden">${buddySprite(state.buddyType,"bigSprite",state.buddyStage)}${buddySprite(b.foeType,"bigSprite",1)}</div><div class="auraBackdrop type${esc(b.foeType)}"></div><div class="battleHint">Best: ${esc(best)}</div>${fxText(b)}${evo}<div class="actionDock compactDock"><div class="actionPanel compactPanel">${actionPanelHtml()}</div><div class="sideActions compactSide">${btn("?", "guide", "secondary")}${btn("Pause", "pause", "ghost")}</div></div></div>${pauseMenuHtml()}<div id="guide" class="drawer hidden">${guideHtml()}<div class="dock">${btn("Close", "guide", "gold")}</div></div></section>`;
+  setTimeout(()=>{initWorld(true);maybeAutoAdvanceBattle();},20);
+}
+function movePanel(){
+  const b=state.battle;
+  const target=b.isStephen?stephenTarget(b):counters[b.foeType];
+  const glow=glowReady();
+  return `<div class="miniRead"><span>${typePill(b.foeType)}</span><span>Best ${esc(target)}</span>${glow?"<span>Glow ready</span>":""}</div><div class="moveGrid compactMoves">${state.knownMoves.map(m=>{const r=relation(m,b.foeType);const isBest=m===target;return `<button type="button" class="moveButton ${isBest?"best":""} ${isBest&&glow?"glowSelected":""}" data-move="${m}"><span class="moveName">${esc(moveNames[m])}</span><span class="battleTags"><span class="match ${r}">${isBest?"Strong":relText(r)}</span></span></button>`;}).join("")}</div>`;
+}
+function questionPanel(){const b=state.battle;const q=b.question;if(!q)return "";const typed=state.buddyStage>=3||b.isStephen;const glow=glowReady()?" Glow":"";const supportButton=!b.assistActive?`<button type="button" class="secondary nudgeButton" data-act="buddyNudge">Support</button>`:"";const hint=supportHtml(b);if(typed){return `<h2>${esc(moveNames[b.chosenMove]+glow)}</h2><div class="question">${esc(q.prompt)}</div>${hint}<input id="answerInput" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="Number"><div class="buttonRow">${btn("Launch", "submit", "gold")}${supportButton}${btn("Back", "backMove", "secondary")}</div>`;}return `<h2>${esc(moveNames[b.chosenMove]+glow)}</h2><div class="question">${esc(q.prompt)}</div>${hint}<div class="answerGrid">${visibleOptions(b).map(o=>`<button type="button" class="secondary" data-answer="${o}">${o}</button>`).join("")}</div><div class="buttonRow">${supportButton}${btn("Back", "backMove", "secondary")}</div>`;}
+function chooseMove(move){
+  const b=state.battle;
+  b.chosenMove=move;
+  b.question=makeQuestion(move,state.buddyStage,b.isStephen);
+  b.options=makeOptions(b.question.answer);
+  b.assistUsed=false;
+  b.assistActive=Number(b.missStreak||0)>=2;
+  b.phase="question";
+  b.fxType="";b.fxText="";
+  if(b.isStephen&&move!==stephenTarget(b))b.message=`${moveNames[move]} can still launch. ${stephenTarget(b)} is the glowing sample move.`;
+  else b.message=b.question.tough?"Tricky one. Use the support chip if useful.":`${moveNames[move]} is charged. Aim with the number.`;
+  saveNow();render();
+}
+function makeQuestion(type,stage,isStephen){
+  const s=isStephen?4:stage;
+  let a,b,c,ans,p,quickTip="",tip="",tough=s>=3||isStephen;
+  if(type==="Add"){
+    if(s===1){a=r(10,60);b=r(5,40);ans=a+b;p=`${a} + ${b}`;quickTip="Add tens, then ones";tip=`Split into tens and ones. ${a} plus ${b} is near ${Math.round((a+b)/10)*10}.`;}
+    else if(s===2){a=r(35,120);b=r(20,90);ans=a+b;p=`${a} + ${b}`;quickTip="Bridge to the next ten";tip=`Try ${a} + ${b}: make the next ten first, then add what is left.`;}
+    else if(s===3){a=r(100,260);b=r(70,190);ans=a+b;p=`${a} + ${b}`;quickTip="Add hundreds, tens, ones";tip=`Add the hundreds/tens first, then tidy the ones. Estimate first: about ${Math.round(ans/10)*10}.`;}
+    else{a=r(80,220);b=r(50,160);c=r(10,90);ans=a+b+c;p=`${a} + ${b} + ${c}`;quickTip="Pair the easiest two first";tip=`Add two numbers first, then the last one. A good first chunk is ${a} + ${b} = ${a+b}.`;tough=true;}
+  }
+  if(type==="Subtract"){
+    if(s===1){a=r(30,100);b=r(5,Math.min(55,a-1));ans=a-b;p=`${a} - ${b}`;quickTip="Count back in chunks";tip=`Take off ${b} in friendly chunks. Estimate: the answer is below ${a}.`;}
+    else if(s===2){a=r(90,180);b=r(20,90);ans=a-b;p=`${a} - ${b}`;quickTip="Subtract tens first";tip=`Take off the tens first, then the ones. Check by adding your answer back to ${b}.`;}
+    else if(s===3){a=r(180,420);b=r(70,170);ans=a-b;p=`${a} - ${b}`;quickTip="Count up from the smaller number";tip=`Count up from ${b} to ${a}: jump to the next hundred, then finish the gap.`;}
+    else{b=r(80,220);c=r(10,80);ans=r(25,260);a=b+c+ans;p=`${a} - ${b} - ${c}`;quickTip="Take off both chunks";tip=`You can do ${a} - ${b} first, then - ${c}. Or combine: ${b} + ${c} = ${b+c}, then ${a} - ${b+c}.`;tough=true;}
+  }
+  if(type==="Multiply"){
+    if(s===1){a=r(2,6);b=r(2,10);ans=a*b;p=`${a} x ${b}`;quickTip="Equal groups";tip=`Think ${a} groups of ${b}, or ${b} groups of ${a}.`;}
+    else if(s===2){a=r(3,12);b=r(3,12);ans=a*b;p=`${a} x ${b}`;quickTip="Use a known table fact";tip=`Swap it if easier: ${a} x ${b} is the same as ${b} x ${a}.`;}
+    else if(s===3){a=r(12,24);b=r(3,9);ans=a*b;p=`${a} x ${b}`;quickTip="Break the bigger number";tip=`Break ${a} into ${Math.floor(a/10)*10} + ${a%10}. Multiply each part by ${b}, then add them.`;}
+    else{a=r(12,18);b=r(6,12);c=r(5,30);ans=a*b+c;p=`${a} x ${b} + ${c}`;quickTip="Multiply first, then add";tip=`Do the times part first: ${a} x ${b} = ${a*b}. Then add ${c}.`;tough=true;}
+  }
+  if(type==="Divide"){
+    if(s===1){b=r(2,10);ans=r(2,10);a=b*ans;p=`${a} ÷ ${b}`;quickTip="Use times table backwards";tip=`Ask: ${b} times what equals ${a}?`;}
+    else if(s===2){b=r(3,12);ans=r(3,12);a=b*ans;p=`${a} ÷ ${b}`;quickTip="Find the missing factor";tip=`Use the matching times table: ${b} x ? = ${a}.`;}
+    else if(s===3){b=r(4,12);ans=r(8,22);a=b*ans;p=`${a} ÷ ${b}`;quickTip="Use inverse multiplication";tip=`Think backwards: ${b} x ? = ${a}. Start with a close table fact, then adjust.`;}
+    else{b=r(6,14);ans=r(10,28);c=r(2,20);a=b*ans;ans=ans+c;p=`${a} ÷ ${b} + ${c}`;quickTip="Divide first, then add";tip=`Do the divide part first: ${a} ÷ ${b} = ${a/b}. Then add ${c}.`;tough=true;}
+  }
+  return {type,prompt:p,answer:ans,quickTip,tip,tough};
+}
+function r(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+function makeOptions(ans){
+  const set=new Set([ans]);
+  const step=ans>180?10:ans>80?5:1;
+  const deltas=[-10,-5,-2,-1,1,2,5,10,12,-12,step,-step,step*2,-step*2];
+  let guard=0;
+  while(set.size<4&&guard<80){
+    guard++;
+    const d=deltas[r(0,deltas.length-1)];
+    const v=Math.max(0,ans+d);
+    if(v!==ans)set.add(v);
+  }
+  while(set.size<4)set.add(Math.max(0,ans+r(-15,15)));
+  return Array.from(set).sort(()=>Math.random()-0.5);
+}
+function submitAnswer(value){
+  const b=state.battle;if(!b||b.phase!=="question")return;
+  const val=parseInt(value,10);
+  if(Number.isNaN(val)){b.message="Pop a number in when you are ready.";render();return;}
+  const q=b.question;const correct=val===q.answer;const rel=relation(b.chosenMove,b.foeType);
+  b.resultLines=[];b.pendingFinish=false;b.skipFoeTurn=false;b.holdResult=false;b.fxMove=b.chosenMove||"";
+  state.stats[q.type].attempted++;if(correct)state.stats[q.type].correct++;
+  if(b.isStephen){state.stephenStats[q.type].attempted++;if(correct)state.stephenStats[q.type].correct++;}
+  state.strategy.total++;if(rel==="strong")state.strategy.advantage++;
+  if(b.isStephen&&b.chosenMove===stephenTarget(b)){b.stephenSamples[b.chosenMove]=(b.stephenSamples[b.chosenMove]||0)+1;}
+  if(correct){
+    b.missStreak=0;b.assistActive=false;
+    let dmg=(rel==="strong"?34:rel==="weak"?14:24)+(state.buddyStage*3);
+    let xp=(rel==="strong"?28:rel==="weak"?16:22)+(state.buddyStage*3);
+    let glowGain=1;
+    if(rel==="strong")glowGain++;
+    if(b.rivalMood==="Guarding"&&rel==="weak"){dmg=Math.max(8,dmg-8);b.resultLines.push("Guarding softened the hit, but it still counted.");}
+    if(b.rivalMood==="Charging"&&rel==="strong"){dmg+=16;xp+=8;b.resultLines.push("Strong read broke the charge.");}
+    if(b.rivalMood==="Wobbly"){glowGain++;b.resultLines.push("Wobbly rival gave extra Glow.");}
+    if(b.rivalMood==="Focused"&&rel==="strong"){dmg+=12;xp+=8;b.resultLines.push("Focused aura made the Strong hit sparkle.");}
+    if(b.microEvent==="BridgeGlow"&&rel==="strong"){glowGain++;b.resultLines.push("Bridge glow added extra Glow.");}
+    if(b.microEvent==="RivalWobble"){dmg+=10;b.resultLines.push("Rival wobble boosted the hit.");}
+    if(b.microEvent==="BuddyFocus"){b.buddyHp=Math.min(b.buddyHpMax,b.buddyHp+12);b.resultLines.push("Buddy focus restored a little HP.");}
+    if(state.buddyType==="Add"&&q.type==="Add"&&!b.buddyPerks.addHeal){b.buddyPerks.addHeal=true;b.buddyHp=Math.min(b.buddyHpMax,b.buddyHp+14);b.resultLines.push("Pluspup perk healed a little HP.");}
+    if(state.buddyType==="Subtract"&&rel==="weak"){dmg+=8;b.resultLines.push("Mooncub perk kept the Soft hit useful.");}
+    if(state.buddyType==="Multiply"&&rel==="strong"){glowGain++;b.resultLines.push("Starwyrm perk added extra Glow.");}
+    if(glowReady()){dmg+=b.isStephen?34:44;state.focus=0;b.fxType="glow";b.fxText="Glow Hit";b.resultTitle="Glow Hit";b.resultLines.push("Glow Hit landed with extra sparkle.");b.holdResult=true;}
+    else{state.focus=Math.min(3,(Number(state.focus)||0)+glowGain);b.fxType="hit";b.fxText=rel==="strong"?"Strong hit":"Clean hit";b.resultTitle=rel==="strong"?"Strong hit":rel==="weak"?"Soft hit":"Steady hit";}
+    if(!b.isStephen){gainXp(xp);}
+    b.foeHp=Math.max(0,b.foeHp-dmg);
+    b.message=`${moveNames[b.chosenMove]} landed. ${relText(rel)} move.`;
+    if(!b.isStephen)b.resultLines.push(`+${xp} XP`);
+    if(b.foeHp<=0){b.pendingFinish=true;b.message="Clean spar. The rival gives you the win pose.";b.fxText="Win pose";}
+  }else{
+    b.missStreak=(Number(b.missStreak)||0)+1;b.assistActive=false;
+    b.fxType="miss";b.fxText="Almost";b.resultTitle="Almost had it";b.holdResult=true;b.message=`${moveNames[b.chosenMove]} slipped past. The number was ${q.answer}. No stress.`;
+    if(state.buddyType==="Divide"&&!b.buddyPerks.divideShield){b.buddyPerks.divideShield=true;b.skipFoeTurn=true;b.resultLines.push("Orbitot perk shielded this miss. No rival move this time.");}
+  }
+  if(b.isStephen){
+    const before=b.stephenPhase;
+    const finished=completeStephenPhaseIfReady(b);
+    if(finished){b.pendingFinish=true;b.message="Stephen nods. Four phase sample complete.";b.fxText="Bridge clear";}
+    else if(b.stephenPhase!==before){b.resultLines.push(`New phase: ${stephenTarget(b)} sample.`);b.holdResult=true;}
+  }
+  b.phase="result";
+  b.useGlow=false;
+  saveNow();render();
+}
+function foeTurn(){
+  const b=state.battle;if(!b)return;
+  let action="Bridge Bounce";
+  const roll=r(1,100);
+  if(b.rivalMood==="Charging")action="Charge Pop";
+  else if(roll<=18)action="Drama Spin";
+  else if(roll<=34)action="Snack Break";
+  else if(roll<=50)action="Pose Shift";
+  let hit=0;
+  b.resultLines=[];b.resultTitle=action;b.holdResult=false;b.fxType="rival";b.fxText=action;
+  if(action==="Snack Break"){
+    const heal=b.isStephen?18:12;
+    b.foeHp=Math.min(b.foeHpMax,b.foeHp+heal);
+    b.message=`${b.foeName} takes a tiny snack break. Very professional.`;
+    b.resultLines.push(`Rival restored ${heal} HP.`);
+    b.fxType="heal";
+  }else if(action==="Drama Spin"){
+    b.message=`${b.foeName} does a dramatic spin. No damage, just style.`;
+    b.resultLines.push("The bridge respects the flair.");
+  }else if(action==="Pose Shift"){
+    b.message=`${b.foeName} changes stance. Watch the next aura read.`;
+    b.resultLines.push("No damage this turn.");
+  }else{
+    hit=action==="Charge Pop"?24+(b.foeZone*3)+(b.isStephen?6:0):13+(b.foeZone*3)+(b.isStephen?4:0);
+    b.buddyHp-=hit;
+    b.message=`${b.foeName} uses ${action}. Your buddy holds steady.`;
+    b.resultLines.push(`${hit} HP pressure.`);
+  }
+  if(b.buddyHp<=0){
+    b.buddyHp=b.buddyHpMax;
+    b.fxType="dust";b.fxText="Dust off";b.holdResult=true;
+    if(b.isStephen){b.message="Your buddy dusts off. Stephen gives you space. The phase sample stays saved.";}
+    else{b.foeHp=b.foeHpMax;b.message="Your buddy dusts off. Same rival, fresh start.";}
+  }
+  b.phase="rivalResult";b.afterRivalMessage=b.isStephen?"Stephen shifts the aura. Read the glow.":"Read the aura. Choose when ready.";
+  if(b.isStephen){b.stephenTurn=(b.stephenTurn||0)+1;b.foeType=stephenAuraFor(stephenTarget(b));}
+  b.question=null;b.options=[];b.chosenMove="";saveNow();render();
+}
+function finishBattle(){
+  const b=state.battle;
+  if(b.isStephen){state.battle=null;state.screen="report";state.message="Bridge cleared.";saveNow();render();return;}
+  ensureBridgeState();
+  const idx=Number.isFinite(parseInt(b.foeIndex,10))?parseInt(b.foeIndex,10):state.foeIndex;
+  if(idx>=0&&idx<50)addRivalCard(foeAt(idx));
+  if(idx>=0&&idx<50&&!state.clearedFoes.includes(idx))state.clearedFoes.push(idx);
+  state.clearedFoes.sort((a,b)=>a-b);
+  state.foeIndex=state.clearedFoes.length;
+  state.battle=null;
+  state.bridge.target=null;
+  const midArc=state.foeIndex>0&&state.foeIndex%10===5;
+  state.bridge.rewardText=state.foeIndex>=50?"Bridge clear. Stephen is ready.":midArc?"Mid arc sparkle. Buddy pose unlocked.":"Clean spar. New rival wave stepped in.";
+  state.bridge.rewardUntil=Date.now()+(midArc?4300:3200);
+  state.bridge.talk=state.foeIndex<50?"Nice spar. Pick your next rival when it feels right.":"The bridge is clear. Stephen is ready for a friendly final spar.";
+  state.message=state.bridge.talk;
+  bridgeEntityCacheKey="";nearestCache=null;
+  forceStageFourForRemix();
+  let nextScreen="bridge";
+  if(state.foeIndex>0&&state.foeIndex%10===0){
+    const arcIndex=Math.min(4,Math.floor((state.foeIndex-1)/10));
+    state.arcClear={arcIndex,count:state.foeIndex,time:Date.now()};
+    nextScreen="arcClear";
+  }
+  if(state.pendingEvolution){state.pendingEvolution.nextScreen=nextScreen;state.screen="evolve";}
+  else{state.screen=nextScreen;}
+  saveNow();
+  render();
+}
+function renderEvolution(){
+  const evo=state.pendingEvolution||state.lastEvolution||{from:Math.max(1,(state.buddyStage||1)-1),to:state.buddyStage||1,move:"",buddy:state.buddyType};
+  const type=evo.buddy||state.buddyType||"Add";
+  const move=evo.move?moveNames[evo.move]:"New move";
+  app.innerHTML=`<section class="evolutionScreen"><div class="evolutionCard panel"><div class="evoCopy"><span class="kicker">Glow up</span><h1>${esc(buddyStageName(type,evo.to))}</h1><p class="lead">Your buddy changed form and unlocked a new battle look.</p><div class="evoPills"><span class="evoPill">${esc(stageLabel(evo.from))}</span><span class="evoPill gold">${esc(stageLabel(evo.to))}</span><span class="evoPill">${esc(move)}</span></div><div class="buttonRow">${btn("Carry on","evoContinue","gold")}</div></div><div class="evolutionStage">${buddySprite(type,"bigSprite",evo.to)}</div></div></section>`;
+}
+function renderArcClear(){
+  const ac=state.arcClear||{arcIndex:getZone(Math.max(0,state.foeIndex-1)),count:state.foeIndex};
+  const arc=zoneNames[ac.arcIndex]||"Bridge Arc";
+  const complete=state.foeIndex>=50;
+  const oneArcDone=state.playMode==="arc"&&state.foeIndex>=(state.arcGoal||10)&&!complete;
+  const badge=complete?"Stephen unlocked":oneArcDone?"Session goal met":"New bridge colour unlocked";
+  app.innerHTML=`<section class="arcClear"><div class="arcCard panel"><div><span class="arcBadge">${esc(arc)} clear</span><h1>${complete?"Bridge route cleared":oneArcDone?"One arc cleared":"Arc cleared"}</h1><p class="lead">${oneArcDone?"Good stopping point. You can save, report, or carry on if the bridge still feels good.":"Nice work. This is a good breather point. You can save, carry on, or make a progress note for Jay."}</p><div class="arcRewards"><div class="rewardTile">${state.foeIndex} rivals<span>Cleared so far</span></div><div class="rewardTile">${esc(stageName())}<span>Buddy stage</span></div><div class="rewardTile">${esc(badge)}<span>Reward moment</span></div><div class="rewardTile">${(state.rivalCards||[]).length}<span>Rival cards</span></div></div><div class="buttonRow">${complete?btn("To Stephen","meetStephen","gold"):btn("Carry on","carryOn","gold")}${btn("Cards","cards","secondary")}${btn("Report","partialReport","secondary")}${btn("Save","save","ghost")}</div></div><div class="characterStage" style="display:grid;place-items:center">${buddySprite(state.buddyType,"bigSprite",state.buddyStage)}</div></div></section>`;
+}
+function buildProgressReport(){
+  const lines=[];
+  lines.push("Chilton Bridge Battle Progress Note");
+  lines.push("");
+  lines.push("Character name: "+(state.character.name||"Bridge Hero"));
+  lines.push("Date: "+new Date().toLocaleString("en-GB"));
+  lines.push("Time spent: "+timeText(Date.now()-state.startedAt));
+  lines.push("Foes defeated so far: "+state.foeIndex+" / "+(state.playMode==="arc"?(state.arcGoal||10):50));
+  lines.push("Session mode: "+modeLabel());
+  lines.push("Buddy stage: "+stageName());
+  lines.push("");
+  lines.push("Accuracy so far");
+  ops.forEach(o=>{const s=state.stats[o];lines.push(o+": "+s.correct+" / "+s.attempted+" correct, "+percent(s.attempted,s.correct)+" percent");});
+  lines.push("");
+  const strat=percent(state.strategy.total,state.strategy.advantage);
+  lines.push("Strategy so far: "+state.strategy.advantage+" / "+state.strategy.total+" attacks used a type advantage move, "+strat+" percent");
+  lines.push("");
+  lines.push("Warm note");
+  lines.push("I am moving through the bridge, choosing moves, and building confidence with number facts.");
+  return lines.join("\n");
+}
+function renderPartialReport(){
+  const report=state.partialReportText||buildProgressReport();
+  const subject=encodeURIComponent("Chilton Bridge Battle progress note");
+  const body=encodeURIComponent(report);
+  const gmail=`https://mail.google.com/mail/?view=cm&fs=1&to=jay.raine@chiltonbridgeschool.co.uk&su=${subject}&body=${body}`;
+  app.innerHTML=`<section class="screen partialReportWrap"><div class="panel formPanel"><span class="kicker">Progress note</span><h1>Report so far</h1><p class="lead">This can help Jay see progress even before the bridge is finished.</p><div class="report">${esc(report)}</div><div class="buttonRow"><a href="${gmail}" target="_blank" rel="noopener"><button type="button" class="gold">Open Gmail for Jay</button></a>${btn("Back","backFromPartial","secondary")}${btn("To bridge","carryOn","ghost")}</div></div></section>`;
+}
+function renderCards(){
+  const cards=Array.isArray(state.rivalCards)?state.rivalCards:[];
+  const cardHtml=cards.length?`<div class="rivalCardGrid">${cards.map(c=>`<div class="rivalCollectCard"><div class="cardIcon">${typePill(c.type)}</div><h3>${esc(c.name)}</h3><p>${esc(c.arc)}</p><p>${esc(c.quote)}</p></div>`).join("")}</div>`:`<div class="emptyCards">Cards appear here after friendly spars.</div>`;
+  app.innerHTML=`<section class="cardAlbum"><div class="panel formPanel"><div class="cardAlbumTop"><div><span class="kicker">Rival cards</span><h1>Bridge album</h1><p class="lead">A calm collection of rivals met on the bridge.</p></div><div class="buttonRow">${btn("Back","carryOn","gold")}${btn("Save","save","ghost")}</div></div>${cardHtml}</div></section>`;
+}
+function renderReport(){if(!state.reportText){app.innerHTML=`<section class="hero panel"><div class="heroCopy"><span class="kicker">Bridge clear</span><h1>Nice run</h1><p class="lead">Choose initials for Jay's evidence report. This only happens at the end.</p><div class="cardGrid three">${["LW","AP","LS","LC","HK","JTK"].map(i=>`<button type="button" class="secondary" data-initials="${i}">${i}</button>`).join("")}</div></div><div class="animePoster"><canvas id="posterCanvas" class="posterCanvas"></canvas><div id="posterFallback" class="posterFallback hidden"><div class="fallbackHero"></div></div></div></section>`;setTimeout(()=>initPoster(),20);return;}const subject=encodeURIComponent("Chilton Bridge Battle report");const body=encodeURIComponent(state.reportText);const gmail=`https://mail.google.com/mail/?view=cm&fs=1&to=jay.raine@chiltonbridgeschool.co.uk&su=${subject}&body=${body}`;app.innerHTML=`<section class="screen"><div class="panel formPanel"><span class="kicker">Report ready</span><h1>Evidence for Jay</h1><p class="lead">Here is what the bridge run showed.</p>${teacherSummaryHtml()}<div class="report">${esc(state.reportText)}</div><div class="buttonRow"><a href="${gmail}" target="_blank" rel="noopener"><button type="button" class="gold">Open Gmail for Jay</button></a>${btn("Back to bridge", "toBridge", "secondary")}${btn("Start fresh", "new", "ghost")}</div></div></section>`;}
+function buildReport(initials){const lines=[];lines.push("Chilton Bridge Battle Report");lines.push("");lines.push("Student initials: "+initials);lines.push("Character name: "+(state.character.name||"Bridge Hero"));lines.push("Date: "+new Date().toLocaleString("en-GB"));lines.push("Time spent: "+timeText(Date.now()-state.startedAt));lines.push("");lines.push("Whole run accuracy");ops.forEach(o=>{const s=state.stats[o];lines.push(o+": "+s.correct+" / "+s.attempted+" correct, "+percent(s.attempted,s.correct)+" percent");});lines.push("");lines.push("Stephen final assessment");lines.push("Each operation was sampled through Stephen aura phases.");ops.forEach(o=>{const s=state.stephenStats[o];lines.push(o+": "+s.correct+" / "+s.attempted+" correct, "+percent(s.attempted,s.correct)+" percent");});lines.push("");const strat=percent(state.strategy.total,state.strategy.advantage);lines.push("Strategy measure: "+state.strategy.advantage+" / "+state.strategy.total+" attacks used a type advantage move, "+strat+" percent");lines.push("Buddy final stage: "+stageName()+" ("+currentBuddyName()+")");lines.push("Foes defeated: "+state.foeIndex);lines.push("");lines.push("Jay quick view");lines.push("Strongest area: "+bestWholeOperation());lines.push("Next focus: "+developingOperation());lines.push("Stephen answers: "+ops.reduce((n,o)=>n+(state.stephenStats[o].attempted||0),0));lines.push("Rival cards collected: "+(state.rivalCards||[]).length);lines.push("");lines.push("I can statements");ops.forEach(o=>{const s=state.stats[o];const pc=percent(s.attempted,s.correct);if(pc>=80)lines.push("I can recall and use my "+o+" facts accurately.");else if(pc>=50)lines.push("I am becoming more confident with "+o+" and can get most questions right.");else lines.push("I am beginning to work with "+o+" and will keep building confidence.");});if(strat>=70)lines.push("I can use what I know about number to choose a smart move, not just answer the question.");else if(strat>=40)lines.push("I am starting to use the type chart to choose stronger moves.");else lines.push("I am beginning to notice which moves match each type.");state.reportText=lines.join("\n");saveNow();render();}
+function releaseThreeScene(scene,renderer){
+  try{
+    if(scene&&scene.traverse){
+      scene.traverse(obj=>{
+        if(obj.geometry&&obj.geometry.dispose)obj.geometry.dispose();
+        if(obj.material){
+          const mats=Array.isArray(obj.material)?obj.material:[obj.material];
+          mats.forEach(m=>{if(m&&m.dispose)m.dispose();});
+        }
+      });
+    }
+    if(renderer&&renderer.dispose)renderer.dispose();
+  }catch(e){}
+}
+function disposeWorld(){if(threeWorld&&threeWorld.dispose){threeWorld.dispose();threeWorld=null;}}
+function initPoster(){const canvas=document.getElementById("posterCanvas"),fb=document.getElementById("posterFallback");if(!canvas)return;if(!window.THREE){canvas.classList.add("hidden");fb&&fb.classList.remove("hidden");return;}try{const THREE=window.THREE;const scene=new THREE.Scene();const camera=new THREE.PerspectiveCamera(45,canvas.clientWidth/canvas.clientHeight,0.1,100);camera.position.set(0,2.2,7);const lowPower=window.matchMedia&&window.matchMedia("(pointer:coarse)").matches;const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:!lowPower});renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);renderer.setPixelRatio(Math.min(lowPower?1.1:1.35,window.devicePixelRatio||1));scene.add(new THREE.HemisphereLight(0xffffff,0x222244,2.4));const group=new THREE.Group();scene.add(group);group.add(heroModel(0));const a=buddyModel("Add",1);a.position.set(-1.8,-1,0);a.scale.setScalar(0.8);group.add(a);const m=buddyModel("Multiply",1);m.position.set(1.8,-1,0);m.scale.setScalar(0.8);group.add(m);let raf;function loop(t){t/=1000;group.rotation.y=Math.sin(t*0.6)*0.22;group.position.y=Math.sin(t*1.5)*0.08;renderer.render(scene,camera);raf=requestAnimationFrame(loop);}loop(0);threeWorld={dispose(){cancelAnimationFrame(raf);releaseThreeScene(scene,renderer);}};}catch(e){canvas.classList.add("hidden");fb&&fb.classList.remove("hidden");}}
+function initWorld(isBattle){
+  const canvas=document.getElementById("worldCanvas"),fb=document.getElementById("worldFallback");
+  if(!canvas)return;
+  if(!window.THREE){canvas.classList.add("hidden");fb&&fb.classList.remove("hidden");updateFallbackDot();return;}
+  try{
+    const THREE=window.THREE;
+    const scene=new THREE.Scene();
+    scene.fog=new THREE.Fog(0x071025,18,82);
+    const camera=new THREE.PerspectiveCamera(50,Math.max(1,canvas.clientWidth)/Math.max(1,canvas.clientHeight),0.1,220);
+    const lowPower=window.matchMedia&&window.matchMedia("(pointer:coarse)").matches;
+    const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:!lowPower});
+    renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);
+    renderer.setPixelRatio(Math.min(lowPower?1.05:1.25,window.devicePixelRatio||1));
+    scene.add(new THREE.HemisphereLight(0xffffff,0x141733,2.25));
+    const dir=new THREE.DirectionalLight(0xffffff,2.1);dir.position.set(3,7,5);scene.add(dir);
+    if(isBattle){
+      camera.position.set(0,3.2,8);camera.lookAt(0,0.8,0);
+      const floor=new THREE.Mesh(new THREE.CylinderGeometry(4.4,4.9,0.32,40),new THREE.MeshToonMaterial({color:0x17205a}));floor.position.y=-0.28;scene.add(floor);
+      const glass=new THREE.Mesh(new THREE.CylinderGeometry(3.9,4.25,0.06,40),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.08}));glass.position.y=-0.07;scene.add(glass);
+      const rings=new THREE.Mesh(new THREE.TorusGeometry(2.7,0.04,8,72),new THREE.MeshBasicMaterial({color:0xffd166}));rings.rotation.x=Math.PI/2;rings.position.y=-0.05;scene.add(rings);
+      const ring2=new THREE.Mesh(new THREE.TorusGeometry(3.35,0.035,8,72),new THREE.MeshBasicMaterial({color:0x5cf0ff,transparent:true,opacity:0.65}));ring2.rotation.x=Math.PI/2;ring2.position.y=-0.035;scene.add(ring2);
+      for(let i=0;i<10;i++){const ang=i*Math.PI*2/10;const x=Math.cos(ang)*4.25,z=Math.sin(ang)*3.1;const plinth=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.18,0.5,8),new THREE.MeshToonMaterial({color:i%2?0x2c245f:0x1b285d}));plinth.position.set(x,0.0,z);scene.add(plinth);const cry=new THREE.Mesh(new THREE.ConeGeometry(0.12,0.58,5),new THREE.MeshBasicMaterial({color:i%2?0xff6bd6:0x5cf0ff,transparent:true,opacity:0.86}));cry.position.set(x,0.55,z);scene.add(cry);}
+      const archMat=new THREE.MeshToonMaterial({color:0x31276e});[-2.9,2.9].forEach(x=>{const col=new THREE.Mesh(new THREE.BoxGeometry(0.22,2.4,0.22),archMat);col.position.set(x,0.9,-2.55);scene.add(col);});const lintel=new THREE.Mesh(new THREE.BoxGeometry(6.1,0.22,0.22),archMat);lintel.position.set(0,2.05,-2.55);scene.add(lintel);
+      const auraCols={Add:0x45e6ff,Subtract:0xa98bff,Multiply:0xff955c,Divide:0x7dff9d};
+      const foeType=state.battle?state.battle.foeType:"Add";
+      const aura=new THREE.Mesh(new THREE.TorusGeometry(0.92,0.055,8,64),new THREE.MeshBasicMaterial({color:auraCols[foeType]||0xffd166,transparent:true,opacity:.72}));aura.position.set(1.65,1.42,0);aura.rotation.x=Math.PI/2;scene.add(aura);
+      const buddy=buddyModel(state.buddyType,state.buddyStage);buddy.position.set(-1.65,0.25,0);buddy.scale.setScalar(1.1);scene.add(buddy);
+      
+      const foe=state.battle&&state.battle.isStephen?heroModel(1):buddyModel(foeType,1);foe.position.set(1.65,0.25,0);foe.rotation.y=Math.PI;foe.scale.setScalar(state.battle&&state.battle.isStephen?1.05:1.1);scene.add(foe);
+      animateBattle(renderer,scene,camera,buddy,foe);
+      return;
+    }
+    ensureBridgeState();
+    camera.position.set(0,4.85,7.25);camera.lookAt(0,0.7,-1.1);
+    const z=getZone(Math.min(state.foeIndex,49));
+    const zoneCols=[0x2b9cff,0x8e67ff,0xff815c,0x42d88f,0xffd166];
+    const road=new THREE.Mesh(new THREE.BoxGeometry(6.25,0.22,9.3),new THREE.MeshToonMaterial({color:zoneCols[z]}));road.position.set(0,-0.12,-0.55);scene.add(road);
+    const roadGlow=new THREE.Mesh(new THREE.BoxGeometry(5.45,0.235,8.65),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.12}));roadGlow.position.set(0,-0.095,-0.55);scene.add(roadGlow);
+    for(let j=0;j<7;j++){const stripe=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.24,8.4),new THREE.MeshBasicMaterial({color:j%2?0xffd166:0x5cf0ff,transparent:true,opacity:0.24}));stripe.position.set(-2.4+j*.8,-0.06,-0.55);scene.add(stripe);}
+    const edgeMat=new THREE.MeshToonMaterial({color:0x11172f});
+    [-3.12,3.12].forEach(x=>{const rail=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.48,9.4),edgeMat);rail.position.set(x,0.18,-0.55);scene.add(rail);const railGlow=new THREE.Mesh(new THREE.BoxGeometry(0.045,0.05,9.1),new THREE.MeshBasicMaterial({color:0x5cf0ff,transparent:true,opacity:0.72}));railGlow.position.set(x>0?x-.15:x+.15,0.52,-0.55);scene.add(railGlow);});
+    for(let i=0;i<18;i++){const post=new THREE.Mesh(new THREE.CylinderGeometry(0.055,0.07,1.18,8),new THREE.MeshToonMaterial({color:i%2?0x45e6ff:0xffd166}));post.position.set(i%2?-2.88:2.88,0.47,3.75-i*0.49);scene.add(post);const orb=new THREE.Mesh(new THREE.SphereGeometry(0.14,12,8),new THREE.MeshBasicMaterial({color:i%2?0xff61d8:0x45e6ff}));orb.position.set(post.position.x,1.09,post.position.z);scene.add(orb);}
+    for(let i=0;i<28;i++){const star=new THREE.Mesh(new THREE.OctahedronGeometry(i%4?0.075:0.12),new THREE.MeshBasicMaterial({color:i%3?0xffffff:0xffd166,transparent:true,opacity:i%4?0.78:0.95}));star.position.set(Math.sin(i*2.2)*4.7,1.15+((i%7)*0.22),4.1-i*0.31);scene.add(star);}
+    for(let i=0;i<7;i++){const island=new THREE.Mesh(new THREE.DodecahedronGeometry(0.35+r(0,4)*0.02,0),new THREE.MeshToonMaterial({color:i%2?0x2d2a6d:0x1d396d}));island.position.set((i%2?-1:1)*(3.9+r(0,12)/10),1.25+(i%3)*0.46,3.5-i*1.05);island.rotation.set(.4,i,.2);scene.add(island);const crystal=new THREE.Mesh(new THREE.ConeGeometry(0.12,0.48,5),new THREE.MeshBasicMaterial({color:i%2?0xff6bd6:0x5cf0ff,transparent:true,opacity:.82}));crystal.position.set(island.position.x,island.position.y+.43,island.position.z);scene.add(crystal);}
+    const gateMat=new THREE.MeshToonMaterial({color:0x33276f});[-1.3,1.3].forEach(x=>{const tower=new THREE.Mesh(new THREE.BoxGeometry(.24,2.0,.24),gateMat);tower.position.set(x,.85,-4.35);scene.add(tower);});const topGate=new THREE.Mesh(new THREE.BoxGeometry(2.9,.22,.22),gateMat);topGate.position.set(0,1.75,-4.35);scene.add(topGate);const portal=new THREE.Mesh(new THREE.TorusGeometry(.9,.06,8,54),new THREE.MeshBasicMaterial({color:0x5cf0ff,transparent:true,opacity:.72}));portal.position.set(0,.86,-4.32);portal.rotation.x=Math.PI/2;scene.add(portal);
+    const entities=[];
+    bridgeEntities().forEach(e=>{
+      let obj;if(e.kind==="rival")obj=buddyModel(e.type,1);else if(e.kind==="stephen")obj=heroModel(1);else if(e.kind==="npc")obj=npcModel(e.name);else obj=signModel();
+      obj.position.set(e.x,0.12,e.z);obj.userData=e;obj.scale.setScalar(e.kind==="sign"?0.82:e.kind==="npc"?0.72:0.76);
+      const ringColour=e.kind==="rival"?0xff61d8:e.kind==="stephen"?0xffd166:e.kind==="npc"?0x45e6ff:0x7dff9d;
+      const ring=new THREE.Mesh(new THREE.TorusGeometry(e.kind==="sign"?0.42:0.55,0.025,8,34),new THREE.MeshBasicMaterial({color:ringColour,transparent:true,opacity:0.62}));
+      ring.rotation.x=Math.PI/2;ring.position.set(e.x,0.03,e.z);scene.add(ring);
+      scene.add(obj);entities.push({mesh:obj,data:e,ring});
+    });
+    const hero=heroModel(0);hero.position.set(state.bridge.x,0.08,state.bridge.z);hero.scale.setScalar(0.66);scene.add(hero);
+    const bud=buddyModel(state.buddyType||"Add",state.buddyStage);bud.position.set(state.bridge.x+0.55,0.08,state.bridge.z+0.18);bud.scale.setScalar(0.56);scene.add(bud);
+    setupWorldLabels(entities);
+    animateBridge(renderer,scene,camera,hero,bud,entities);
+  }catch(e){canvas.classList.add("hidden");fb&&fb.classList.remove("hidden");updateFallbackDot();}
+}
+function signModel(){const THREE=window.THREE;const g=new THREE.Group();const post=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.85,0.12),mat(0x2a214d));post.position.y=0.38;const board=new THREE.Mesh(new THREE.BoxGeometry(0.86,0.46,0.1),mat(0xffd166));board.position.y=0.92;const glow=new THREE.Mesh(new THREE.TorusGeometry(0.48,0.035,8,28),mat(0xff61d8));glow.position.y=0.92;glow.rotation.x=Math.PI/2;g.add(post,board,glow);return g;}
+function npcModel(name){const THREE=window.THREE;const g=new THREE.Group();const body=new THREE.Mesh(new THREE.CapsuleGeometry(0.32,0.58,4,10),mat(0x45e6ff));body.position.y=0.68;const head=new THREE.Mesh(new THREE.SphereGeometry(0.28,16,10),mat(0xf2c7a5));head.position.y=1.18;const hair=new THREE.Mesh(new THREE.SphereGeometry(0.3,16,8,0,Math.PI*2,0,Math.PI/2),mat(name==="Bean"?0xffd166:0x141733));hair.position.y=1.34;const smile=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.025,0.03),mat(0x071125));smile.position.set(0,1.12,0.26);g.add(body,head,hair,smile);return g;}
+function setupWorldLabels(entities){
+  const layer=document.getElementById("worldLabels");
+  if(!layer)return;
+  layer.innerHTML=entities.map(({data:e})=>`<div class="worldLabel ${esc(e.kind)}" id="label_${esc(e.id)}"><div class="speechBubble" id="speech_${esc(e.id)}">${esc(e.line||"Hello from the bridge.")}</div><div class="markerDot"></div><div class="floatPrompt">${esc(nearHint(e))}</div></div>`).join("");
+}
+function updateWorldLabels(camera,entities){
+  const layer=document.getElementById("worldLabels");
+  if(!layer||!window.THREE)return;
+  const near=nearestEntity();
+  const now=Date.now();
+  const w=layer.clientWidth||1,h=layer.clientHeight||1;
+  entities.forEach(({mesh,data:e})=>{
+    const el=document.getElementById("label_"+e.id);
+    if(!el)return;
+    const p=new window.THREE.Vector3(mesh.position.x,mesh.position.y+1.65,mesh.position.z);
+    p.project(camera);
+    const x=(p.x*.5+.5)*w;
+    const y=(-p.y*.5+.5)*h;
+    const on=p.z>-1&&p.z<1&&x>-80&&x<w+80&&y>-80&&y<h+80;
+    el.style.left=x+"px";el.style.top=y+"px";el.style.display=on?"block":"none";
+    el.classList.toggle("awake",!!near&&near.id===e.id);
+    const speaking=state.bridge&&state.bridge.speechId===e.id&&state.bridge.speechUntil>now;
+    el.classList.toggle("speaking",speaking);
+    const speech=document.getElementById("speech_"+e.id);
+    if(speech&&speaking)speech.textContent=state.bridge.speechLine||e.line||"Hello from the bridge.";
+  });
+  if(state.bridge&&state.bridge.speechUntil&&state.bridge.speechUntil<=now){
+    state.bridge.speechId="";
+    state.bridge.speechLine="";
+    state.bridge.speechUntil=0;
+  }
+}
+function updateFallbackDot(){const dot=document.getElementById("fallbackDot");if(!dot||!state.bridge)return;const x=((state.bridge.x+BRIDGE_X_LIMIT)/(BRIDGE_X_LIMIT*2))*100;const y=((state.bridge.z-BRIDGE_Z_MIN)/(BRIDGE_Z_MAX-BRIDGE_Z_MIN))*100;dot.style.left=`calc(${x}% - 17px)`;dot.style.top=`calc(${y}% - 17px)`;}
+function animateBridge(renderer,scene,camera,hero,bud,entities){
+  let raf;let last=0;let saveClock=0;const maxSpeed=3.05;let overlayClock=0;
+  function loop(ms){
+    const t=ms/1000;const dt=Math.min(0.05,last?((ms-last)/1000):0.016);last=ms;
+    ensureBridgeState();
+    let ix=0,iz=0;
+    if(!state.paused){
+      if(inputKeys.ArrowLeft||inputKeys.KeyA)ix-=1;if(inputKeys.ArrowRight||inputKeys.KeyD)ix+=1;if(inputKeys.ArrowUp||inputKeys.KeyW)iz-=1;if(inputKeys.ArrowDown||inputKeys.KeyS)iz+=1;
+      if(activeTouchMove){ix+=activeTouchMove.x;iz+=activeTouchMove.z;}
+    }
+    if(ix||iz){state.bridge.target=null;const len=Math.hypot(ix,iz)||1;state.bridge.x+=ix/len*maxSpeed*dt;state.bridge.z+=iz/len*maxSpeed*dt;}
+    else if(state.bridge.target){const tx=state.bridge.target.x-state.bridge.x,tz=state.bridge.target.z-state.bridge.z;const dist=Math.hypot(tx,tz);if(dist<0.05)state.bridge.target=null;else{state.bridge.x+=tx/dist*Math.min(dist,maxSpeed*dt);state.bridge.z+=tz/dist*Math.min(dist,maxSpeed*dt);}}
+    state.bridge.x=Math.max(-BRIDGE_X_LIMIT,Math.min(BRIDGE_X_LIMIT,state.bridge.x));state.bridge.z=Math.max(BRIDGE_Z_MIN,Math.min(BRIDGE_Z_MAX,state.bridge.z));
+    hero.position.x+=(state.bridge.x-hero.position.x)*0.22;hero.position.z+=(state.bridge.z-hero.position.z)*0.22;
+    bud.position.x+=(state.bridge.x+0.55-bud.position.x)*0.16;bud.position.z+=(state.bridge.z+0.18-bud.position.z)*0.16;
+    hero.position.y=0.08+Math.sin(t*5)*0.022;bud.position.y=0.08+Math.sin(t*4.5+1)*0.05;
+    const moving=ix||iz||state.bridge.target;hero.rotation.y+=(moving?Math.sin(t*8)*0.035:0-hero.rotation.y)*0.08;
+    entities.forEach((e,i)=>{e.mesh.position.y=0.12+Math.sin(t*2+i)*0.035;e.mesh.rotation.y=Math.sin(t*1.2+i)*0.14;if(e.ring){e.ring.scale.setScalar(1+Math.sin(t*2.6+i)*0.04);}});
+    camera.position.x+=(hero.position.x*0.42-camera.position.x)*0.075;camera.position.z+=(hero.position.z+5.35-camera.position.z)*0.075;camera.lookAt(hero.position.x,0.7,hero.position.z-1.35);
+    overlayClock+=dt;if(overlayClock>0.08){overlayClock=0;updateBridgeOverlay(false);updateWorldLabels(camera,entities);updateFallbackDot();}
+    saveClock+=dt;if(saveClock>1.25){saveClock=0;scheduleSave();}
+    renderer.render(scene,camera);raf=requestAnimationFrame(loop);
+  }
+  loop(0);threeWorld={dispose(){cancelAnimationFrame(raf);releaseThreeScene(scene,renderer);}};
+}
+function animateBattle(renderer,scene,camera,buddy,foe){let raf;const start=performance.now();const b=state.battle||{};const fx=b.fxType||"";function loop(now){const t=now/1000;const age=Math.min(1,(now-start)/820);const lunge=Math.sin(age*Math.PI);buddy.position.set(-1.65,0.25+Math.sin(t*3)*0.06,0);foe.position.set(1.65,0.25+Math.sin(t*2.5+1)*0.05,0);buddy.rotation.z=Math.sin(t*2)*0.05;foe.rotation.z=-Math.sin(t*2)*0.05;if(fx==="hit"||fx==="glow"){buddy.position.x+=lunge*(fx==="glow"?0.72:0.48);foe.position.x+=lunge*0.18;foe.rotation.z+=lunge*.18;}else if(fx==="miss"){buddy.position.x+=Math.sin(age*Math.PI*4)*0.045;}else if(fx==="rival"||fx==="dust"){foe.position.x-=lunge*.42;buddy.position.x-=lunge*.12;buddy.rotation.z-=lunge*.16;}else if(fx==="heal"){foe.position.y+=Math.sin(age*Math.PI)*.18;}renderer.render(scene,camera);raf=requestAnimationFrame(loop);}loop(performance.now());threeWorld={dispose(){cancelAnimationFrame(raf);releaseThreeScene(scene,renderer);}};}
+function mat(c){return new THREE.MeshToonMaterial({color:c});}
+function heroModel(style){
+  const THREE=window.THREE;const g=new THREE.Group();
+  const isStephen=!!style;
+  const skin=mat(isStephen?0xf2c7a5:parseInt(state.character.skin.slice(1),16));
+  const outfit=mat(isStephen?0xffd166:parseInt(state.character.outfit.slice(1),16));
+  const hair=mat(isStephen?0xffffff:parseInt(state.character.hair.slice(1),16));
+  const dark=mat(0x071125);
+  const body=new THREE.Mesh(new THREE.CapsuleGeometry(0.42,0.82,5,12),outfit);body.position.y=0.78;g.add(body);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(0.36,18,12),skin);head.position.y=1.55;g.add(head);
+  const hairStyle=isStephen?"short":state.character.hairStyle;
+  if(hairStyle==="spikes"){
+    const cap=new THREE.Mesh(new THREE.SphereGeometry(0.36,16,8,0,Math.PI*2,0,Math.PI/2),hair);cap.position.y=1.72;g.add(cap);
+    [-0.25,-0.05,0.16,0.34].forEach((x,i)=>{const spike=new THREE.Mesh(new THREE.ConeGeometry(0.11,0.34,4),hair);spike.position.set(x,1.98,0.02);spike.rotation.z=(-0.45+i*0.28);g.add(spike);});
+  }else if(hairStyle==="wave"){
+    const cap=new THREE.Mesh(new THREE.SphereGeometry(0.39,16,8,0,Math.PI*2,0,Math.PI/2),hair);cap.position.y=1.72;cap.scale.set(1.08,0.9,1);g.add(cap);
+    const swoop=new THREE.Mesh(new THREE.SphereGeometry(0.2,14,8),hair);swoop.position.set(-0.28,1.63,0.18);swoop.scale.set(0.9,1.25,0.6);swoop.rotation.z=0.45;g.add(swoop);
+  }else{
+    const cap=new THREE.Mesh(new THREE.SphereGeometry(0.38,16,8,0,Math.PI*2,0,Math.PI/2),hair);cap.position.y=1.7;cap.scale.set(1.02,0.72,1);g.add(cap);
+    const fringe=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.12,0.18),hair);fringe.position.set(0,1.59,0.22);g.add(fringe);
+  }
+  const leftEye=new THREE.Mesh(new THREE.SphereGeometry(0.035,10,8),dark);leftEye.position.set(-0.12,1.57,0.34);g.add(leftEye);
+  const rightEye=leftEye.clone();rightEye.position.x=0.12;g.add(rightEye);
+  const acc=isStephen?"scarf":accessoryClass(state.character.accessory);
+  if(acc==="pin"){
+    const pin=new THREE.Mesh(new THREE.OctahedronGeometry(0.095),mat(0xffd166));pin.position.set(0.23,1.05,0.38);g.add(pin);
+  }else if(acc==="headset"){
+    const band=new THREE.Mesh(new THREE.TorusGeometry(0.38,0.025,8,28,Math.PI),mat(0xff61d8));band.position.set(0,1.68,0);band.rotation.z=Math.PI;g.add(band);
+    const e1=new THREE.Mesh(new THREE.SphereGeometry(0.09,12,8),mat(0xff61d8));e1.position.set(-0.36,1.52,0.05);g.add(e1);const e2=e1.clone();e2.position.x=0.36;g.add(e2);
+  }else if(acc==="cape"){
+    const cape=new THREE.Mesh(new THREE.ConeGeometry(0.55,0.95,4),mat(0xff61d8));cape.position.set(0,0.72,-0.22);cape.rotation.x=Math.PI;cape.scale.set(1,1,0.35);g.add(cape);
+  }else{
+    const scarf=new THREE.Mesh(new THREE.TorusGeometry(0.42,0.04,8,28),mat(0xffd166));scarf.position.y=1.2;scarf.rotation.x=Math.PI/2;g.add(scarf);
+    const tail=new THREE.Mesh(new THREE.BoxGeometry(0.13,0.4,0.05),mat(0xffd166));tail.position.set(0.42,1.03,0.08);tail.rotation.z=-0.45;g.add(tail);
+  }
+  return g;
+}
+function buddyModel(type,stageOverride){
+  const THREE=window.THREE;const d=buddyData[type]||buddyData.Add;const g=new THREE.Group();
+  const st=Math.max(1,Math.min(4,Number(stageOverride)||1));
+  const base=mat(d.colour);const dark=mat(0x071125);const gold=mat(0xffd166);const white=mat(0xffffff);
+  function sphere(r,x,y,z,c,scale){const m=new THREE.Mesh(new THREE.SphereGeometry(r,22,14),c||base);m.position.set(x,y,z);if(scale)m.scale.set(scale[0],scale[1],scale[2]);g.add(m);return m;}
+  function box(w,h,dep,x,y,z,c){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,dep),c||base);m.position.set(x,y,z);g.add(m);return m;}
+  function cone(r,h,verts,x,y,z,c,rotZ,rotX){const m=new THREE.Mesh(new THREE.ConeGeometry(r,h,verts||16),c||base);m.position.set(x,y,z);m.rotation.z=rotZ||0;m.rotation.x=rotX||0;g.add(m);return m;}
+  function eye(x,y,z,scaleY){const e=sphere(0.045,x,y,z,dark,[1,scaleY||1,1]);return e;}
+  if(type==="Add"){
+    sphere(0.43,0,0.62,0,base,[1.25,0.9,0.95]);
+    sphere(0.35,0.06,1.06,0.04,base,[1.08,0.92,1]);
+    cone(0.13,0.42,4,-0.22,1.4,0,base,-0.45,0);
+    cone(0.13,0.42,4,0.28,1.4,0,base,0.42,0);
+    cone(0.18,0.68,4,0.62,0.68,-0.08,gold,-Math.PI/2,0);
+    sphere(0.22,-0.03,0.64,0.28,white,[1.2,0.85,0.35]);
+    eye(-0.09,1.1,0.35,1.1);eye(0.18,1.11,0.35,1.5);
+    sphere(0.055,0.08,0.99,0.39,dark,[1.25,0.75,0.55]);
+    box(0.09,0.34,0.035,0.0,0.68,0.44,dark).rotation.z=0;
+    box(0.34,0.09,0.035,0.0,0.68,0.45,dark).rotation.z=0;
+    sphere(0.075,-0.24,0.98,0.31,mat(0xff758f),[1,0.55,0.3]);sphere(0.075,0.34,0.98,0.31,mat(0xff758f),[1,0.55,0.3]);
+  }else if(type==="Subtract"){
+    cone(0.55,0.82,24,0,0.42,0,mat(0x24144f),Math.PI,0);
+    sphere(0.41,0,0.62,0,base,[1.05,0.9,0.9]);
+    sphere(0.35,0,1.08,0.02,base,[1,0.95,1]);
+    cone(0.12,0.36,3,-0.24,1.38,0,base,-0.42,0);
+    cone(0.12,0.36,3,0.24,1.38,0,base,0.42,0);
+    const e1=eye(-0.13,1.09,0.34,0.35);e1.scale.x=1.7;const e2=eye(0.13,1.09,0.34,0.35);e2.scale.x=1.7;
+    const brow1=box(0.22,0.04,0.035,-0.13,1.18,0.36,dark);brow1.rotation.z=0.28;const brow2=box(0.22,0.04,0.035,0.13,1.18,0.36,dark);brow2.rotation.z=-0.28;
+    const mouth=box(0.36,0.07,0.035,0,0.78,0.43,white);mouth.rotation.z=0;
+    sphere(0.055,0,1.0,0.39,dark,[1,0.7,0.5]);
+    sphere(0.2,0,0.68,0.31,white,[1.1,0.75,0.32]);
+  }else if(type==="Multiply"){
+    sphere(0.43,0,0.64,0,base,[1.0,1.18,0.92]);
+    sphere(0.36,0.08,1.13,0.04,base,[1.05,0.95,1]);
+    cone(0.13,0.43,4,-0.16,1.5,0,gold,-0.28,0);cone(0.13,0.43,4,0.33,1.48,0,gold,0.42,0);
+    const wing1=cone(0.34,0.72,3,-0.58,0.76,0,mat(0xff61d8),1.18,0);const wing2=cone(0.34,0.72,3,0.58,0.76,0,mat(0xff61d8),-1.18,0);
+    eye(-0.08,1.15,0.36,1.1);eye(0.2,1.16,0.36,1.45);
+    sphere(0.055,0.08,1.02,0.4,dark,[1.2,0.75,0.55]);
+    cone(0.06,0.18,3,0.18,0.94,0.43,white,Math.PI,0);
+    sphere(0.21,0,0.68,0.31,white,[1.1,0.8,0.35]);
+    const xb1=box(0.1,0.34,0.04,0,0.68,0.45,dark);xb1.rotation.z=0.78;const xb2=box(0.1,0.34,0.04,0,0.68,0.46,dark);xb2.rotation.z=-0.78;
+  }else{
+    sphere(0.46,0,0.56,0,mat(0x259c78),[1.25,0.62,1]);
+    sphere(0.34,0,0.72,0.04,base,[1.18,0.82,0.95]);
+    sphere(0.27,0.12,1.1,0.04,base,[1,0.9,1]);
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(0.47,0.035,8,38),mat(0x45e6ff));ring.position.y=0.86;ring.rotation.x=Math.PI/2;g.add(ring);
+    const ant1=box(0.035,0.38,0.035,-0.12,1.42,0.02,base);ant1.rotation.z=-0.35;const ant2=box(0.035,0.38,0.035,0.31,1.4,0.02,base);ant2.rotation.z=0.35;
+    sphere(0.075,-0.2,1.62,0.02,mat(0x45e6ff));sphere(0.06,0.4,1.59,0.02,mat(0x45e6ff));
+    eye(0.02,1.12,0.34,1);eye(0.22,1.12,0.34,1);
+    sphere(0.045,0.12,1.0,0.39,dark,[1.15,0.7,0.5]);
+    const dot1=sphere(0.045,0.04,0.72,0.45,dark,[1,0.8,0.4]);const dot2=sphere(0.045,0.24,0.72,0.45,dark,[1,0.8,0.4]);
+    cone(0.14,0.28,3,-0.56,0.58,0,base,-Math.PI/2,0);
+  }
+  const footMat=mat(0x071125);const f1=sphere(0.11,-0.22,0.14,0.16,footMat,[1.25,0.45,0.8]);const f2=sphere(0.11,0.22,0.14,0.16,footMat,[1.25,0.45,0.8]);
+  if(st>=2){const ring=new THREE.Mesh(new THREE.TorusGeometry(0.58,0.025,8,48),mat(0xffd166));ring.position.set(0,1.28,0);ring.rotation.x=Math.PI/2;g.add(ring);}
+  if(st>=3){const gem=new THREE.Mesh(new THREE.OctahedronGeometry(0.12),mat(type==="Multiply"?0xff61d8:type==="Divide"?0x45e6ff:type==="Subtract"?0xffffff:0xffd166));gem.position.set(0,1.55,0);g.add(gem);}
+  if(st>=4){const crown=new THREE.Mesh(new THREE.ConeGeometry(0.22,0.24,5),mat(0xffd166));crown.position.set(0,1.78,0);crown.rotation.z=0.15;g.add(crown);g.scale.multiplyScalar(1.08);}
+  return g;
+}
+function addCone(g,x,y,rot,c){const cone=new THREE.Mesh(new THREE.ConeGeometry(0.14,0.42,4),mat(c));cone.position.set(x,y,0);cone.rotation.z=rot;g.add(cone);}
+const inputKeys={};let activeTouchMove=null;
+function dirVector(name){return name==="up"?{x:0,z:-1}:name==="down"?{x:0,z:1}:name==="left"?{x:-1,z:0}:{x:1,z:0};}
+app.addEventListener("pointerdown",function(e){
+  const d=e.target.closest("button[data-dir]");
+  if(d){e.preventDefault();if(!state.paused)activeTouchMove=dirVector(d.dataset.dir);return;}
+});
+window.addEventListener("pointerup",function(){activeTouchMove=null;});
+window.addEventListener("pointercancel",function(){activeTouchMove=null;});
+app.addEventListener("click",function(e){const t=e.target.closest("button,[data-buddy],[data-answer]");if(!t)return;e.preventDefault();if(t.dataset.dir)return;if(t.dataset.buddy){state.buddyType=t.dataset.buddy;saveNow();render();return;}if(t.dataset.answer){submitAnswer(t.dataset.answer);return;}if(t.dataset.move){chooseMove(t.dataset.move);return;}if(t.dataset.pick){state.character[t.dataset.pick]=t.dataset.value;saveNow();render();return;}if(t.dataset.initials){buildReport(t.dataset.initials);return;}const a=t.dataset.act;if(!a)return;if(a==="continue"){const s=loadSave();if(s){state=s;if(!state.screen)state.screen="bridge";render();}}else if(a==="modeArc"||a==="modeFull"){setPlayMode(a==="modeFull"?"full":"arc");saveNow();render();}else if(a==="new"){setPlayMode("arc");saveNow();render();}else if(a==="surpriseHero"){surpriseHero();saveNow();render();}else if(a==="buddy"){const input=document.getElementById("heroName");state.character.name=(input&&input.value.trim()?input.value.trim():"Bridge Hero").slice(0,18);state.setup="buddy";state.screen="setup";saveNow();render();}else if(a==="character"){state.setup="hero";saveNow();render();}else if(a==="bridge"){if(!state.buddyType){state.message="Pick a buddy that feels good first.";render();return;}state.knownMoves=[state.buddyType];state.clearedFoes=[];state.foeIndex=0;state.buddyStage=1;state.xp=0;state.focus=0;state.lastEvolution=null;state.pendingEvolution=null;state.rivalCards=[];state.lastCard=null;bridgeEntityCacheKey="";nearestCache=null;state.screen="bridge";state.paused=false;ensureBridgeState();state.bridge.x=0;state.bridge.z=1.9;state.bridge.talk=state.playMode==="full"?"Full bridge loaded. Wander around and choose a friendly spar when you are ready.":"One arc loaded. Clear this arc, then take a breather.";state.message=state.bridge.talk;saveNow();render();}else if(a==="startBattle"){startBattle(false);}else if(a==="startStephen"){startBattle(true);}else if(a.startsWith("spar:")){const idx=parseInt(a.split(":")[1],10);startBattle(false,idx);}else if(a.startsWith("talk:")){talkToEntity(a.split(":")[1]);}else if(a==="guide"){const g=document.getElementById("guide");if(g)g.classList.toggle("hidden");}else if(a==="carryOn"){if(state.playMode==="arc"&&state.foeIndex>=(state.arcGoal||10)&&state.foeIndex<50)state.arcGoal=Math.min(50,(state.arcGoal||10)+10);state.screen="bridge";state.arcClear=null;state.partialReportText="";ensureBridgeState();saveNow();render();}else if(a==="evoContinue"){const next=state.pendingEvolution&&state.pendingEvolution.nextScreen?state.pendingEvolution.nextScreen:"bridge";state.pendingEvolution=null;state.screen=next;saveNow();render();}else if(a==="meetStephen"){state.screen="bridge";state.arcClear=null;ensureBridgeState();state.bridge.x=0;state.bridge.z=-3.05;state.bridge.talk="Stephen is just ahead. Final spar when it feels right.";saveNow();render();}else if(a==="cards"){state.screen="cards";saveNow();render();}else if(a==="partialReport"){state.partialReportText=buildProgressReport();state.screen="partialReport";saveNow();render();}else if(a==="backFromPartial"){state.screen=state.arcClear?"arcClear":"bridge";render();}else if(a==="save"){saveNow();state.message="Saved on this device.";if(state.bridge)state.bridge.talk=state.message;const dock=document.getElementById("quickDock");if(dock)updateBridgeOverlay(true);}else if(a==="pause"){if(state.screen==="battle"&&state.battle){state.battle.paused=true;}else{state.paused=true;}saveNow();render();}else if(a==="resumeBattle"){if(state.battle)state.battle.paused=false;state.paused=false;activeTouchMove=null;saveNow();render();}else if(a==="sendProgress"){openProgressEmail();render();}else if(a==="resetGame"){resetWholeGame();}else if(a==="resetBattle"){if(state.battle){const wasStephen=!!state.battle.isStephen;const idx=state.battle.foeIndex;startBattle(wasStephen,idx);if(state.battle){state.battle.message="Reset. Fresh spar loaded.";state.battle.paused=false;saveNow();render();}}}else if(a==="pauseBridge"){state.screen="bridge";state.battle=null;state.paused=false;ensureBridgeState();state.bridge.talk="Paused at the bridge. No progress lost.";state.message=state.bridge.talk;saveNow();render();}else if(a==="glowToggle"){if(state.battle&&glowReady()){state.battle.useGlow=!state.battle.useGlow;saveNow();render();}}else if(a==="buddyNudge"){if(state.battle&&state.battle.phase==="question"&&!state.battle.assistActive){state.battle.assistUsed=true;state.battle.assistActive=true;saveNow();render();}}else if(a==="battleNext"){advanceBattle();}else if(a==="backMove"){state.battle.phase="choose";state.battle.chosenMove="";state.battle.question=null;state.battle.options=[];state.battle.fxType="";state.battle.fxText="";state.battle.fxMove="";state.battle.assistActive=false;state.battle.assistUsed=false;saveNow();render();}else if(a==="submit"){const inp=document.getElementById("answerInput");submitAnswer(inp?inp.value:"");}else if(a==="toBridge"){state.screen="bridge";state.paused=false;render();}});
+app.addEventListener("input",function(e){if(e.target&&e.target.id==="heroName"){state.character.name=e.target.value.slice(0,18);const n=document.getElementById("heroCardName");if(n)n.textContent=heroDisplayName();scheduleSave();}});
+function movementKey(e,down){
+  const target=e.target;
+  if(target&&(target.tagName==="INPUT"||target.tagName==="TEXTAREA"||target.tagName==="SELECT")){if(e.key==="Enter"&&target.id==="answerInput")submitAnswer(target.value);return;}
+  if(down&&e.code==="Escape"&&(state.screen==="bridge"||state.screen==="battle")){if(state.screen==="battle"&&state.battle)state.battle.paused=!state.battle.paused;else state.paused=!state.paused;saveNow();render();e.preventDefault();return;}
+  if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","KeyW","KeyA","KeyS","KeyD"].includes(e.code)){inputKeys[e.code]=down;e.preventDefault();}
+  if(down&&state.screen==="bridge"&&!state.paused&&e.code==="KeyE"){interactNear("chat");e.preventDefault();}
+  if(down&&state.screen==="bridge"&&!state.paused&&(e.code==="Space"||e.code==="Enter")){interactNear("spar");e.preventDefault();}
+}
+window.addEventListener("keydown",function(e){movementKey(e,true);});
+window.addEventListener("keyup",function(e){movementKey(e,false);});
+window.addEventListener("beforeunload",saveNow);
+cleanJayNamesInStorage();
+state=normaliseState(loadSave()||freshState());render();
+})();
+</script>
+</body>
+</html>
