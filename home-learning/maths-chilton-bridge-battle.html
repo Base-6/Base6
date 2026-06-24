@@ -651,6 +651,54 @@ button.secondary{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(25
   .arcRewards{grid-template-columns:1fr 1fr;}
 }
 
+
+/* Optimisation + pause/support pass */
+.pauseDrawer{
+  width:min(520px,92vw);
+  text-align:left;
+}
+.pauseDrawer h2{margin-bottom:8px;}
+.pauseDrawer p{color:var(--soft);margin-bottom:14px;}
+.pauseActions{display:grid;gap:10px;}
+.pauseActions button{width:100%;}
+
+.supportLine{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  margin:8px 0 10px;
+  padding:9px 11px;
+  border-radius:16px;
+  background:rgba(7,12,38,.08);
+  border:1px solid rgba(27,33,82,.16);
+  color:#24304d;
+  font-weight:900;
+  line-height:1.25;
+}
+.supportLine.open{
+  background:rgba(255,209,102,.22);
+  border-color:rgba(255,149,92,.42);
+}
+.supportChip{
+  flex:0 0 auto;
+  border-radius:999px;
+  padding:4px 8px;
+  background:rgba(69,230,255,.18);
+  color:#0a3046;
+  font-size:.8rem;
+  font-weight:1000;
+}
+.nudgeButton{min-height:50px;}
+.compactPanel input#answerInput{
+  font-size:1.35rem;
+  font-weight:900;
+  text-align:center;
+}
+@media(max-width:620px){
+  .supportLine{font-size:.9rem;padding:8px 9px;}
+  .supportChip{font-size:.74rem;}
+}
+
 </style>
 </head>
 <body>
@@ -795,9 +843,29 @@ function teacherSummaryHtml(){
 }
 function answerHint(q){
   if(!q)return "";
+  if(q.tip)return q.tip;
   const a=Number(q.answer)||0;
   const lo=Math.max(0,a-10),hi=a+10;
   return (a%2===0?"Even":"Odd")+" answer, near "+lo+" to "+hi;
+}
+function quickQuestionTip(q){
+  if(!q)return "";
+  if(q.quickTip)return q.quickTip;
+  if(q.type==="Multiply")return "Times-table read";
+  if(q.type==="Divide")return "Use inverse times";
+  if(q.type==="Subtract")return "Count back in chunks";
+  return "Chunk the numbers";
+}
+function supportHtml(b){
+  if(!b||!b.question)return "";
+  const q=b.question;
+  if(b.assistActive){
+    return `<div class="supportLine open"><span class="supportChip">Support</span><span>${esc(answerHint(q))}</span></div>`;
+  }
+  if(q.tough){
+    return `<div class="supportLine"><span class="supportChip">Tip</span><span>${esc(quickQuestionTip(q))}</span></div>`;
+  }
+  return "";
 }
 function visibleOptions(b){
   if(!b||!b.question)return [];
@@ -999,7 +1067,7 @@ function moveBridge(dx,dz){
   state.bridge.target=null;
   state.bridge.x=Math.max(-BRIDGE_X_LIMIT,Math.min(BRIDGE_X_LIMIT,state.bridge.x+dx));
   state.bridge.z=Math.max(BRIDGE_Z_MIN,Math.min(BRIDGE_Z_MAX,state.bridge.z+dz));
-  saveNow();
+  scheduleSave();
   updateBridgeOverlay(true);
 }
 function interactNear(kind){
@@ -1060,8 +1128,13 @@ function rivalPanel(){
   const b=state.battle;
   return `<div class="resultPanel compactResult"><h2>${esc(b.resultTitle||"Rival")}</h2><div class="buttonRow">${btn("Next","battleNext","gold")}</div></div>`;
 }
+function pauseMenuHtml(){
+  const b=state.battle;
+  const cls=b&&b.paused?"drawer pauseDrawer":"drawer pauseDrawer hidden";
+  return `<div id="pauseMenu" class="${cls}"><h2>Paused</h2><p>Reset restarts this spar only. Progress already earned stays safe.</p><div class="pauseActions">${btn("Resume","resumeBattle","gold")}${btn("Reset spar","resetBattle","secondary")}${btn("Back to bridge","pauseBridge","ghost")}</div></div>`;
+}
 function resetBattleRead(b,msg){
-  b.phase="choose";b.chosenMove="";b.question=null;b.options=[];b.resultLines=[];b.resultTitle="";b.pendingFinish=false;b.skipFoeTurn=false;b.fxType="";b.fxText="";b.fxMove="";b.useGlow=false;
+  b.phase="choose";b.chosenMove="";b.question=null;b.options=[];b.resultLines=[];b.resultTitle="";b.pendingFinish=false;b.skipFoeTurn=false;b.fxType="";b.fxText="";b.fxMove="";b.useGlow=false;b.paused=false;b.assistUsed=false;b.assistActive=false;
   b.rivalMood=pickMood(b);b.microEvent=pickEvent(b);
   if(b.isStephen)b.foeType=stephenAuraFor(stephenTarget(b));
   b.message=msg||"Read the aura. Choose when ready.";
@@ -1145,7 +1218,7 @@ function renderBattle(){
   const best=b.isStephen?stephenTarget(b):counters[b.foeType];
   const phaseHtml=b.isStephen?stephenPhaseStrip(b):"";
   const evo=state.lastEvolution&&Date.now()-state.lastEvolution.time<5200?`<div class="evolveFlash">${esc(stageName())}</div>`:"";
-  app.innerHTML=`<section class="battleLayout minimalBattle"><div class="battleTop miniBattleTop"><div class="fighterCard miniFighter"><h2>${esc(currentBuddyName())}</h2><div class="hp"><span style="width:${Math.max(0,(b.buddyHp/b.buddyHpMax)*100)}%"></span></div>${focusHtml()}</div><div class="centerCallout miniPhase">${phaseHtml}</div><div class="fighterCard miniFighter"><h2>${esc(b.foeName)}</h2><div class="hp"><span style="width:${Math.max(0,(b.foeHp/b.foeHpMax)*100)}%"></span></div><div class="tinyAura">${typePill(b.foeType)}</div></div></div><div class="battleStage ${battleStageClass(b)}"><canvas id="worldCanvas" class="sceneCanvas"></canvas><div id="worldFallback" class="fallbackArena hidden">${buddySprite(state.buddyType,"bigSprite",state.buddyStage)}${buddySprite(b.foeType,"bigSprite",1)}</div><div class="auraBackdrop type${esc(b.foeType)}"></div><div class="battleHint">Best: ${esc(best)}</div>${fxText(b)}${evo}<div class="actionDock compactDock"><div class="actionPanel compactPanel">${actionPanelHtml()}</div><div class="sideActions compactSide">${btn("?", "guide", "secondary")}${btn("Pause", "pause", "ghost")}</div></div></div><div id="guide" class="drawer hidden">${guideHtml()}<div class="dock">${btn("Close", "guide", "gold")}</div></div></section>`;
+  app.innerHTML=`<section class="battleLayout minimalBattle"><div class="battleTop miniBattleTop"><div class="fighterCard miniFighter"><h2>${esc(currentBuddyName())}</h2><div class="hp"><span style="width:${Math.max(0,(b.buddyHp/b.buddyHpMax)*100)}%"></span></div>${focusHtml()}</div><div class="centerCallout miniPhase">${phaseHtml}</div><div class="fighterCard miniFighter"><h2>${esc(b.foeName)}</h2><div class="hp"><span style="width:${Math.max(0,(b.foeHp/b.foeHpMax)*100)}%"></span></div><div class="tinyAura">${typePill(b.foeType)}</div></div></div><div class="battleStage ${battleStageClass(b)}"><canvas id="worldCanvas" class="sceneCanvas"></canvas><div id="worldFallback" class="fallbackArena hidden">${buddySprite(state.buddyType,"bigSprite",state.buddyStage)}${buddySprite(b.foeType,"bigSprite",1)}</div><div class="auraBackdrop type${esc(b.foeType)}"></div><div class="battleHint">Best: ${esc(best)}</div>${fxText(b)}${evo}<div class="actionDock compactDock"><div class="actionPanel compactPanel">${actionPanelHtml()}</div><div class="sideActions compactSide">${btn("?", "guide", "secondary")}${btn("Pause", "pause", "ghost")}</div></div></div>${pauseMenuHtml()}<div id="guide" class="drawer hidden">${guideHtml()}<div class="dock">${btn("Close", "guide", "gold")}</div></div></section>`;
   setTimeout(()=>{initWorld(true);maybeAutoAdvanceBattle();},20);
 }
 function movePanel(){
@@ -1154,26 +1227,64 @@ function movePanel(){
   const glow=glowReady();
   return `<div class="miniRead"><span>${typePill(b.foeType)}</span><span>Best ${esc(target)}</span>${glow?"<span>Glow ready</span>":""}</div><div class="moveGrid compactMoves">${state.knownMoves.map(m=>{const r=relation(m,b.foeType);const isBest=m===target;return `<button type="button" class="moveButton ${isBest?"best":""} ${isBest&&glow?"glowSelected":""}" data-move="${m}"><span class="moveName">${esc(moveNames[m])}</span><span class="battleTags"><span class="match ${r}">${isBest?"Strong":relText(r)}</span></span></button>`;}).join("")}</div>`;
 }
-function questionPanel(){const b=state.battle;const q=b.question;if(!q)return "";const typed=state.buddyStage>=3||b.isStephen;const glow=glowReady()?" Glow":"";const nudge=!b.assistUsed?`<button type="button" class="secondary nudgeButton" data-act="buddyNudge">Nudge</button>`:"";const hint=b.assistActive?`<div class="nudgeLine">${esc(answerHint(q))}</div>`:"";if(typed){return `<h2>${esc(moveNames[b.chosenMove]+glow)}</h2><div class="question">${esc(q.prompt)}</div>${hint}<input id="answerInput" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="Number"><div class="buttonRow">${btn("Launch", "submit", "gold")}${nudge}${btn("Back", "backMove", "secondary")}</div>`;}return `<h2>${esc(moveNames[b.chosenMove]+glow)}</h2><div class="question">${esc(q.prompt)}</div>${hint}<div class="answerGrid">${visibleOptions(b).map(o=>`<button type="button" class="secondary" data-answer="${o}">${o}</button>`).join("")}</div><div class="buttonRow">${nudge}${btn("Back", "backMove", "secondary")}</div>`;}
+function questionPanel(){const b=state.battle;const q=b.question;if(!q)return "";const typed=state.buddyStage>=3||b.isStephen;const glow=glowReady()?" Glow":"";const supportButton=!b.assistActive?`<button type="button" class="secondary nudgeButton" data-act="buddyNudge">Support</button>`:"";const hint=supportHtml(b);if(typed){return `<h2>${esc(moveNames[b.chosenMove]+glow)}</h2><div class="question">${esc(q.prompt)}</div>${hint}<input id="answerInput" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="Number"><div class="buttonRow">${btn("Launch", "submit", "gold")}${supportButton}${btn("Back", "backMove", "secondary")}</div>`;}return `<h2>${esc(moveNames[b.chosenMove]+glow)}</h2><div class="question">${esc(q.prompt)}</div>${hint}<div class="answerGrid">${visibleOptions(b).map(o=>`<button type="button" class="secondary" data-answer="${o}">${o}</button>`).join("")}</div><div class="buttonRow">${supportButton}${btn("Back", "backMove", "secondary")}</div>`;}
 function chooseMove(move){
   const b=state.battle;
   b.chosenMove=move;
   b.question=makeQuestion(move,state.buddyStage,b.isStephen);
   b.options=makeOptions(b.question.answer);
-  b.assistActive=Number(b.missStreak||0)>=2&&!b.assistUsed;
+  b.assistUsed=false;
+  b.assistActive=Number(b.missStreak||0)>=2;
   b.phase="question";
   b.fxType="";b.fxText="";
   if(b.isStephen&&move!==stephenTarget(b))b.message=`${moveNames[move]} can still launch. ${stephenTarget(b)} is the glowing sample move.`;
-  else b.message=`${moveNames[move]} is charged. Aim with the number.`;
+  else b.message=b.question.tough?"Tricky one. Use the support chip if useful.":`${moveNames[move]} is charged. Aim with the number.`;
   saveNow();render();
 }
-function makeQuestion(type,stage,isStephen){const s=isStephen?4:stage;let a,b,c,ans,p;if(type==="Add"){if(s===1){a=r(10,60);b=r(5,40);ans=a+b;p=`${a} + ${b}`;}else if(s===2){a=r(35,120);b=r(20,90);ans=a+b;p=`${a} + ${b}`;}else if(s===3){a=r(100,260);b=r(70,190);ans=a+b;p=`${a} + ${b}`;}else{a=r(80,220);b=r(50,160);c=r(10,90);ans=a+b+c;p=`${a} + ${b} + ${c}`;}}
-  if(type==="Subtract"){if(s===1){a=r(30,100);b=r(5,Math.min(55,a-1));ans=a-b;p=`${a} - ${b}`;}else if(s===2){a=r(90,180);b=r(20,90);ans=a-b;p=`${a} - ${b}`;}else if(s===3){a=r(180,420);b=r(70,170);ans=a-b;p=`${a} - ${b}`;}else{b=r(80,220);c=r(10,80);ans=r(25,260);a=b+c+ans;p=`${a} - ${b} - ${c}`;}}
-  if(type==="Multiply"){if(s===1){a=r(2,6);b=r(2,10);ans=a*b;p=`${a} x ${b}`;}else if(s===2){a=r(3,12);b=r(3,12);ans=a*b;p=`${a} x ${b}`;}else if(s===3){a=r(12,24);b=r(3,9);ans=a*b;p=`${a} x ${b}`;}else{a=r(12,18);b=r(6,12);c=r(5,30);ans=a*b+c;p=`${a} x ${b} + ${c}`;}}
-  if(type==="Divide"){if(s===1){b=r(2,10);ans=r(2,10);a=b*ans;p=`${a} ÷ ${b}`;}else if(s===2){b=r(3,12);ans=r(3,12);a=b*ans;p=`${a} ÷ ${b}`;}else if(s===3){b=r(4,12);ans=r(8,22);a=b*ans;p=`${a} ÷ ${b}`;}else{b=r(6,14);ans=r(10,28);c=r(2,20);a=b*ans;ans=ans+c;p=`${a} ÷ ${b} + ${c}`;}}
-  return {type,prompt:p,answer:ans};}
+function makeQuestion(type,stage,isStephen){
+  const s=isStephen?4:stage;
+  let a,b,c,ans,p,quickTip="",tip="",tough=s>=3||isStephen;
+  if(type==="Add"){
+    if(s===1){a=r(10,60);b=r(5,40);ans=a+b;p=`${a} + ${b}`;quickTip="Add tens, then ones";tip=`Split into tens and ones. ${a} plus ${b} is near ${Math.round((a+b)/10)*10}.`;}
+    else if(s===2){a=r(35,120);b=r(20,90);ans=a+b;p=`${a} + ${b}`;quickTip="Bridge to the next ten";tip=`Try ${a} + ${b}: make the next ten first, then add what is left.`;}
+    else if(s===3){a=r(100,260);b=r(70,190);ans=a+b;p=`${a} + ${b}`;quickTip="Add hundreds, tens, ones";tip=`Add the hundreds/tens first, then tidy the ones. Estimate first: about ${Math.round(ans/10)*10}.`;}
+    else{a=r(80,220);b=r(50,160);c=r(10,90);ans=a+b+c;p=`${a} + ${b} + ${c}`;quickTip="Pair the easiest two first";tip=`Add two numbers first, then the last one. A good first chunk is ${a} + ${b} = ${a+b}.`;tough=true;}
+  }
+  if(type==="Subtract"){
+    if(s===1){a=r(30,100);b=r(5,Math.min(55,a-1));ans=a-b;p=`${a} - ${b}`;quickTip="Count back in chunks";tip=`Take off ${b} in friendly chunks. Estimate: the answer is below ${a}.`;}
+    else if(s===2){a=r(90,180);b=r(20,90);ans=a-b;p=`${a} - ${b}`;quickTip="Subtract tens first";tip=`Take off the tens first, then the ones. Check by adding your answer back to ${b}.`;}
+    else if(s===3){a=r(180,420);b=r(70,170);ans=a-b;p=`${a} - ${b}`;quickTip="Count up from the smaller number";tip=`Count up from ${b} to ${a}: jump to the next hundred, then finish the gap.`;}
+    else{b=r(80,220);c=r(10,80);ans=r(25,260);a=b+c+ans;p=`${a} - ${b} - ${c}`;quickTip="Take off both chunks";tip=`You can do ${a} - ${b} first, then - ${c}. Or combine: ${b} + ${c} = ${b+c}, then ${a} - ${b+c}.`;tough=true;}
+  }
+  if(type==="Multiply"){
+    if(s===1){a=r(2,6);b=r(2,10);ans=a*b;p=`${a} x ${b}`;quickTip="Equal groups";tip=`Think ${a} groups of ${b}, or ${b} groups of ${a}.`;}
+    else if(s===2){a=r(3,12);b=r(3,12);ans=a*b;p=`${a} x ${b}`;quickTip="Use a known table fact";tip=`Swap it if easier: ${a} x ${b} is the same as ${b} x ${a}.`;}
+    else if(s===3){a=r(12,24);b=r(3,9);ans=a*b;p=`${a} x ${b}`;quickTip="Break the bigger number";tip=`Break ${a} into ${Math.floor(a/10)*10} + ${a%10}. Multiply each part by ${b}, then add them.`;}
+    else{a=r(12,18);b=r(6,12);c=r(5,30);ans=a*b+c;p=`${a} x ${b} + ${c}`;quickTip="Multiply first, then add";tip=`Do the times part first: ${a} x ${b} = ${a*b}. Then add ${c}.`;tough=true;}
+  }
+  if(type==="Divide"){
+    if(s===1){b=r(2,10);ans=r(2,10);a=b*ans;p=`${a} ÷ ${b}`;quickTip="Use times table backwards";tip=`Ask: ${b} times what equals ${a}?`;}
+    else if(s===2){b=r(3,12);ans=r(3,12);a=b*ans;p=`${a} ÷ ${b}`;quickTip="Find the missing factor";tip=`Use the matching times table: ${b} x ? = ${a}.`;}
+    else if(s===3){b=r(4,12);ans=r(8,22);a=b*ans;p=`${a} ÷ ${b}`;quickTip="Use inverse multiplication";tip=`Think backwards: ${b} x ? = ${a}. Start with a close table fact, then adjust.`;}
+    else{b=r(6,14);ans=r(10,28);c=r(2,20);a=b*ans;ans=ans+c;p=`${a} ÷ ${b} + ${c}`;quickTip="Divide first, then add";tip=`Do the divide part first: ${a} ÷ ${b} = ${a/b}. Then add ${c}.`;tough=true;}
+  }
+  return {type,prompt:p,answer:ans,quickTip,tip,tough};
+}
 function r(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
-function makeOptions(ans){const set=new Set([ans]);const deltas=[-10,-5,-2,-1,1,2,5,10,12,-12];while(set.size<4){const d=deltas[r(0,deltas.length-1)];const v=Math.max(0,ans+d);set.add(v);}return Array.from(set).sort(()=>Math.random()-0.5);}
+function makeOptions(ans){
+  const set=new Set([ans]);
+  const step=ans>180?10:ans>80?5:1;
+  const deltas=[-10,-5,-2,-1,1,2,5,10,12,-12,step,-step,step*2,-step*2];
+  let guard=0;
+  while(set.size<4&&guard<80){
+    guard++;
+    const d=deltas[r(0,deltas.length-1)];
+    const v=Math.max(0,ans+d);
+    if(v!==ans)set.add(v);
+  }
+  while(set.size<4)set.add(Math.max(0,ans+r(-15,15)));
+  return Array.from(set).sort(()=>Math.random()-0.5);
+}
 function submitAnswer(value){
   const b=state.battle;if(!b||b.phase!=="question")return;
   const val=parseInt(value,10);
@@ -1338,8 +1449,22 @@ function renderCards(){
 }
 function renderReport(){if(!state.reportText){app.innerHTML=`<section class="hero panel"><div class="heroCopy"><span class="kicker">Bridge clear</span><h1>Nice run</h1><p class="lead">Choose initials for Jay's evidence report. This only happens at the end.</p><div class="cardGrid three">${["LW","AP","LS","LC","HK","JTK"].map(i=>`<button type="button" class="secondary" data-initials="${i}">${i}</button>`).join("")}</div></div><div class="animePoster"><canvas id="posterCanvas" class="posterCanvas"></canvas><div id="posterFallback" class="posterFallback hidden"><div class="fallbackHero"></div></div></div></section>`;setTimeout(()=>initPoster(),20);return;}const subject=encodeURIComponent("Chilton Bridge Battle report");const body=encodeURIComponent(state.reportText);const gmail=`https://mail.google.com/mail/?view=cm&fs=1&to=jay.raine@chiltonbridgeschool.co.uk&su=${subject}&body=${body}`;app.innerHTML=`<section class="screen"><div class="panel formPanel"><span class="kicker">Report ready</span><h1>Evidence for Jay</h1><p class="lead">Here is what the bridge run showed.</p>${teacherSummaryHtml()}<div class="report">${esc(state.reportText)}</div><div class="buttonRow"><a href="${gmail}" target="_blank" rel="noopener"><button type="button" class="gold">Open Gmail for Jay</button></a>${btn("Back to bridge", "toBridge", "secondary")}${btn("Start fresh", "new", "ghost")}</div></div></section>`;}
 function buildReport(initials){const lines=[];lines.push("Chilton Bridge Battle Report");lines.push("");lines.push("Student initials: "+initials);lines.push("Character name: "+(state.character.name||"Bridge Hero"));lines.push("Date: "+new Date().toLocaleString("en-GB"));lines.push("Time spent: "+timeText(Date.now()-state.startedAt));lines.push("");lines.push("Whole run accuracy");ops.forEach(o=>{const s=state.stats[o];lines.push(o+": "+s.correct+" / "+s.attempted+" correct, "+percent(s.attempted,s.correct)+" percent");});lines.push("");lines.push("Stephen final assessment");lines.push("Each operation was sampled through Stephen aura phases.");ops.forEach(o=>{const s=state.stephenStats[o];lines.push(o+": "+s.correct+" / "+s.attempted+" correct, "+percent(s.attempted,s.correct)+" percent");});lines.push("");const strat=percent(state.strategy.total,state.strategy.advantage);lines.push("Strategy measure: "+state.strategy.advantage+" / "+state.strategy.total+" attacks used a type advantage move, "+strat+" percent");lines.push("Buddy final stage: "+stageName()+" ("+currentBuddyName()+")");lines.push("Foes defeated: "+state.foeIndex);lines.push("");lines.push("Jay quick view");lines.push("Strongest area: "+bestWholeOperation());lines.push("Next focus: "+developingOperation());lines.push("Stephen answers: "+ops.reduce((n,o)=>n+(state.stephenStats[o].attempted||0),0));lines.push("Rival cards collected: "+(state.rivalCards||[]).length);lines.push("");lines.push("I can statements");ops.forEach(o=>{const s=state.stats[o];const pc=percent(s.attempted,s.correct);if(pc>=80)lines.push("I can recall and use my "+o+" facts accurately.");else if(pc>=50)lines.push("I am becoming more confident with "+o+" and can get most questions right.");else lines.push("I am beginning to work with "+o+" and will keep building confidence.");});if(strat>=70)lines.push("I can use what I know about number to choose a smart move, not just answer the question.");else if(strat>=40)lines.push("I am starting to use the type chart to choose stronger moves.");else lines.push("I am beginning to notice which moves match each type.");state.reportText=lines.join("\n");saveNow();render();}
+function releaseThreeScene(scene,renderer){
+  try{
+    if(scene&&scene.traverse){
+      scene.traverse(obj=>{
+        if(obj.geometry&&obj.geometry.dispose)obj.geometry.dispose();
+        if(obj.material){
+          const mats=Array.isArray(obj.material)?obj.material:[obj.material];
+          mats.forEach(m=>{if(m&&m.dispose)m.dispose();});
+        }
+      });
+    }
+    if(renderer&&renderer.dispose)renderer.dispose();
+  }catch(e){}
+}
 function disposeWorld(){if(threeWorld&&threeWorld.dispose){threeWorld.dispose();threeWorld=null;}}
-function initPoster(){const canvas=document.getElementById("posterCanvas"),fb=document.getElementById("posterFallback");if(!canvas)return;if(!window.THREE){canvas.classList.add("hidden");fb&&fb.classList.remove("hidden");return;}try{const THREE=window.THREE;const scene=new THREE.Scene();const camera=new THREE.PerspectiveCamera(45,canvas.clientWidth/canvas.clientHeight,0.1,100);camera.position.set(0,2.2,7);const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));scene.add(new THREE.HemisphereLight(0xffffff,0x222244,2.4));const group=new THREE.Group();scene.add(group);group.add(heroModel(0));const a=buddyModel("Add",1);a.position.set(-1.8,-1,0);a.scale.setScalar(0.8);group.add(a);const m=buddyModel("Multiply",1);m.position.set(1.8,-1,0);m.scale.setScalar(0.8);group.add(m);let raf;function loop(t){t/=1000;group.rotation.y=Math.sin(t*0.6)*0.22;group.position.y=Math.sin(t*1.5)*0.08;renderer.render(scene,camera);raf=requestAnimationFrame(loop);}loop(0);threeWorld={dispose(){cancelAnimationFrame(raf);renderer.dispose();}};}catch(e){canvas.classList.add("hidden");fb&&fb.classList.remove("hidden");}}
+function initPoster(){const canvas=document.getElementById("posterCanvas"),fb=document.getElementById("posterFallback");if(!canvas)return;if(!window.THREE){canvas.classList.add("hidden");fb&&fb.classList.remove("hidden");return;}try{const THREE=window.THREE;const scene=new THREE.Scene();const camera=new THREE.PerspectiveCamera(45,canvas.clientWidth/canvas.clientHeight,0.1,100);camera.position.set(0,2.2,7);const lowPower=window.matchMedia&&window.matchMedia("(pointer:coarse)").matches;const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:!lowPower});renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);renderer.setPixelRatio(Math.min(lowPower?1.1:1.35,window.devicePixelRatio||1));scene.add(new THREE.HemisphereLight(0xffffff,0x222244,2.4));const group=new THREE.Group();scene.add(group);group.add(heroModel(0));const a=buddyModel("Add",1);a.position.set(-1.8,-1,0);a.scale.setScalar(0.8);group.add(a);const m=buddyModel("Multiply",1);m.position.set(1.8,-1,0);m.scale.setScalar(0.8);group.add(m);let raf;function loop(t){t/=1000;group.rotation.y=Math.sin(t*0.6)*0.22;group.position.y=Math.sin(t*1.5)*0.08;renderer.render(scene,camera);raf=requestAnimationFrame(loop);}loop(0);threeWorld={dispose(){cancelAnimationFrame(raf);releaseThreeScene(scene,renderer);}};}catch(e){canvas.classList.add("hidden");fb&&fb.classList.remove("hidden");}}
 function initWorld(isBattle){
   const canvas=document.getElementById("worldCanvas"),fb=document.getElementById("worldFallback");
   if(!canvas)return;
@@ -1349,9 +1474,10 @@ function initWorld(isBattle){
     const scene=new THREE.Scene();
     scene.fog=new THREE.Fog(0x071025,18,82);
     const camera=new THREE.PerspectiveCamera(50,Math.max(1,canvas.clientWidth)/Math.max(1,canvas.clientHeight),0.1,220);
-    const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+    const lowPower=window.matchMedia&&window.matchMedia("(pointer:coarse)").matches;
+    const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:!lowPower});
     renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);
-    renderer.setPixelRatio(Math.min(1.35,window.devicePixelRatio||1));
+    renderer.setPixelRatio(Math.min(lowPower?1.05:1.25,window.devicePixelRatio||1));
     scene.add(new THREE.HemisphereLight(0xffffff,0x141733,2.25));
     const dir=new THREE.DirectionalLight(0xffffff,2.1);dir.position.set(3,7,5);scene.add(dir);
     if(isBattle){
@@ -1455,9 +1581,9 @@ function animateBridge(renderer,scene,camera,hero,bud,entities){
     saveClock+=dt;if(saveClock>1.25){saveClock=0;scheduleSave();}
     renderer.render(scene,camera);raf=requestAnimationFrame(loop);
   }
-  loop(0);threeWorld={dispose(){cancelAnimationFrame(raf);renderer.dispose();}};
+  loop(0);threeWorld={dispose(){cancelAnimationFrame(raf);releaseThreeScene(scene,renderer);}};
 }
-function animateBattle(renderer,scene,camera,buddy,foe){let raf;const start=performance.now();const b=state.battle||{};const fx=b.fxType||"";function loop(now){const t=now/1000;const age=Math.min(1,(now-start)/820);const lunge=Math.sin(age*Math.PI);buddy.position.set(-1.65,0.25+Math.sin(t*3)*0.06,0);foe.position.set(1.65,0.25+Math.sin(t*2.5+1)*0.05,0);buddy.rotation.z=Math.sin(t*2)*0.05;foe.rotation.z=-Math.sin(t*2)*0.05;if(fx==="hit"||fx==="glow"){buddy.position.x+=lunge*(fx==="glow"?0.72:0.48);foe.position.x+=lunge*0.18;foe.rotation.z+=lunge*.18;}else if(fx==="miss"){buddy.position.x+=Math.sin(age*Math.PI*4)*0.045;}else if(fx==="rival"||fx==="dust"){foe.position.x-=lunge*.42;buddy.position.x-=lunge*.12;buddy.rotation.z-=lunge*.16;}else if(fx==="heal"){foe.position.y+=Math.sin(age*Math.PI)*.18;}renderer.render(scene,camera);raf=requestAnimationFrame(loop);}loop(performance.now());threeWorld={dispose(){cancelAnimationFrame(raf);renderer.dispose();}};}
+function animateBattle(renderer,scene,camera,buddy,foe){let raf;const start=performance.now();const b=state.battle||{};const fx=b.fxType||"";function loop(now){const t=now/1000;const age=Math.min(1,(now-start)/820);const lunge=Math.sin(age*Math.PI);buddy.position.set(-1.65,0.25+Math.sin(t*3)*0.06,0);foe.position.set(1.65,0.25+Math.sin(t*2.5+1)*0.05,0);buddy.rotation.z=Math.sin(t*2)*0.05;foe.rotation.z=-Math.sin(t*2)*0.05;if(fx==="hit"||fx==="glow"){buddy.position.x+=lunge*(fx==="glow"?0.72:0.48);foe.position.x+=lunge*0.18;foe.rotation.z+=lunge*.18;}else if(fx==="miss"){buddy.position.x+=Math.sin(age*Math.PI*4)*0.045;}else if(fx==="rival"||fx==="dust"){foe.position.x-=lunge*.42;buddy.position.x-=lunge*.12;buddy.rotation.z-=lunge*.16;}else if(fx==="heal"){foe.position.y+=Math.sin(age*Math.PI)*.18;}renderer.render(scene,camera);raf=requestAnimationFrame(loop);}loop(performance.now());threeWorld={dispose(){cancelAnimationFrame(raf);releaseThreeScene(scene,renderer);}};}
 function mat(c){return new THREE.MeshToonMaterial({color:c});}
 function heroModel(style){
   const THREE=window.THREE;const g=new THREE.Group();
@@ -1563,7 +1689,7 @@ app.addEventListener("pointerdown",function(e){
 });
 window.addEventListener("pointerup",function(){activeTouchMove=null;});
 window.addEventListener("pointercancel",function(){activeTouchMove=null;});
-app.addEventListener("click",function(e){const t=e.target.closest("button,[data-buddy],[data-answer]");if(!t)return;e.preventDefault();if(t.dataset.dir)return;if(t.dataset.buddy){state.buddyType=t.dataset.buddy;saveNow();render();return;}if(t.dataset.answer){submitAnswer(t.dataset.answer);return;}if(t.dataset.move){chooseMove(t.dataset.move);return;}if(t.dataset.pick){state.character[t.dataset.pick]=t.dataset.value;saveNow();render();return;}if(t.dataset.initials){buildReport(t.dataset.initials);return;}const a=t.dataset.act;if(!a)return;if(a==="continue"){const s=loadSave();if(s){state=s;if(!state.screen)state.screen="bridge";render();}}else if(a==="modeArc"||a==="modeFull"){setPlayMode(a==="modeFull"?"full":"arc");saveNow();render();}else if(a==="new"){setPlayMode("arc");saveNow();render();}else if(a==="surpriseHero"){surpriseHero();saveNow();render();}else if(a==="buddy"){const input=document.getElementById("heroName");state.character.name=(input&&input.value.trim()?input.value.trim():"Bridge Hero").slice(0,18);state.setup="buddy";state.screen="setup";saveNow();render();}else if(a==="character"){state.setup="hero";saveNow();render();}else if(a==="bridge"){if(!state.buddyType){state.message="Pick a buddy that feels good first.";render();return;}state.knownMoves=[state.buddyType];state.clearedFoes=[];state.foeIndex=0;state.buddyStage=1;state.xp=0;state.focus=0;state.lastEvolution=null;state.pendingEvolution=null;state.rivalCards=[];state.lastCard=null;bridgeEntityCacheKey="";nearestCache=null;state.screen="bridge";ensureBridgeState();state.bridge.x=0;state.bridge.z=1.9;state.bridge.talk=state.playMode==="full"?"Full bridge loaded. Wander around and choose a friendly spar when you are ready.":"One arc loaded. Clear this arc, then take a breather.";state.message=state.bridge.talk;saveNow();render();}else if(a==="startBattle"){startBattle(false);}else if(a==="startStephen"){startBattle(true);}else if(a.startsWith("spar:")){const idx=parseInt(a.split(":")[1],10);startBattle(false,idx);}else if(a.startsWith("talk:")){talkToEntity(a.split(":")[1]);}else if(a==="guide"){const g=document.getElementById("guide");if(g)g.classList.toggle("hidden");}else if(a==="carryOn"){if(state.playMode==="arc"&&state.foeIndex>=(state.arcGoal||10)&&state.foeIndex<50)state.arcGoal=Math.min(50,(state.arcGoal||10)+10);state.screen="bridge";state.arcClear=null;state.partialReportText="";ensureBridgeState();saveNow();render();}else if(a==="evoContinue"){const next=state.pendingEvolution&&state.pendingEvolution.nextScreen?state.pendingEvolution.nextScreen:"bridge";state.pendingEvolution=null;state.screen=next;saveNow();render();}else if(a==="meetStephen"){state.screen="bridge";state.arcClear=null;ensureBridgeState();state.bridge.x=0;state.bridge.z=-3.05;state.bridge.talk="Stephen is just ahead. Final spar when it feels right.";saveNow();render();}else if(a==="cards"){state.screen="cards";saveNow();render();}else if(a==="partialReport"){state.partialReportText=buildProgressReport();state.screen="partialReport";saveNow();render();}else if(a==="backFromPartial"){state.screen=state.arcClear?"arcClear":"bridge";render();}else if(a==="save"){saveNow();state.message="Saved on this device.";if(state.bridge)state.bridge.talk=state.message;const dock=document.getElementById("quickDock");if(dock)updateBridgeOverlay(true);}else if(a==="pause"){state.screen="bridge";state.battle=null;ensureBridgeState();state.bridge.talk="Paused at the bridge. No progress lost.";state.message=state.bridge.talk;saveNow();render();}else if(a==="glowToggle"){if(state.battle&&glowReady()){state.battle.useGlow=!state.battle.useGlow;saveNow();render();}}else if(a==="buddyNudge"){if(state.battle&&state.battle.phase==="question"&&!state.battle.assistUsed){state.battle.assistUsed=true;state.battle.assistActive=true;saveNow();render();}}else if(a==="battleNext"){advanceBattle();}else if(a==="backMove"){state.battle.phase="choose";state.battle.chosenMove="";state.battle.question=null;state.battle.options=[];state.battle.fxType="";state.battle.fxText="";state.battle.fxMove="";state.battle.assistActive=false;saveNow();render();}else if(a==="submit"){const inp=document.getElementById("answerInput");submitAnswer(inp?inp.value:"");}else if(a==="toBridge"){state.screen="bridge";render();}});
+app.addEventListener("click",function(e){const t=e.target.closest("button,[data-buddy],[data-answer]");if(!t)return;e.preventDefault();if(t.dataset.dir)return;if(t.dataset.buddy){state.buddyType=t.dataset.buddy;saveNow();render();return;}if(t.dataset.answer){submitAnswer(t.dataset.answer);return;}if(t.dataset.move){chooseMove(t.dataset.move);return;}if(t.dataset.pick){state.character[t.dataset.pick]=t.dataset.value;saveNow();render();return;}if(t.dataset.initials){buildReport(t.dataset.initials);return;}const a=t.dataset.act;if(!a)return;if(a==="continue"){const s=loadSave();if(s){state=s;if(!state.screen)state.screen="bridge";render();}}else if(a==="modeArc"||a==="modeFull"){setPlayMode(a==="modeFull"?"full":"arc");saveNow();render();}else if(a==="new"){setPlayMode("arc");saveNow();render();}else if(a==="surpriseHero"){surpriseHero();saveNow();render();}else if(a==="buddy"){const input=document.getElementById("heroName");state.character.name=(input&&input.value.trim()?input.value.trim():"Bridge Hero").slice(0,18);state.setup="buddy";state.screen="setup";saveNow();render();}else if(a==="character"){state.setup="hero";saveNow();render();}else if(a==="bridge"){if(!state.buddyType){state.message="Pick a buddy that feels good first.";render();return;}state.knownMoves=[state.buddyType];state.clearedFoes=[];state.foeIndex=0;state.buddyStage=1;state.xp=0;state.focus=0;state.lastEvolution=null;state.pendingEvolution=null;state.rivalCards=[];state.lastCard=null;bridgeEntityCacheKey="";nearestCache=null;state.screen="bridge";ensureBridgeState();state.bridge.x=0;state.bridge.z=1.9;state.bridge.talk=state.playMode==="full"?"Full bridge loaded. Wander around and choose a friendly spar when you are ready.":"One arc loaded. Clear this arc, then take a breather.";state.message=state.bridge.talk;saveNow();render();}else if(a==="startBattle"){startBattle(false);}else if(a==="startStephen"){startBattle(true);}else if(a.startsWith("spar:")){const idx=parseInt(a.split(":")[1],10);startBattle(false,idx);}else if(a.startsWith("talk:")){talkToEntity(a.split(":")[1]);}else if(a==="guide"){const g=document.getElementById("guide");if(g)g.classList.toggle("hidden");}else if(a==="carryOn"){if(state.playMode==="arc"&&state.foeIndex>=(state.arcGoal||10)&&state.foeIndex<50)state.arcGoal=Math.min(50,(state.arcGoal||10)+10);state.screen="bridge";state.arcClear=null;state.partialReportText="";ensureBridgeState();saveNow();render();}else if(a==="evoContinue"){const next=state.pendingEvolution&&state.pendingEvolution.nextScreen?state.pendingEvolution.nextScreen:"bridge";state.pendingEvolution=null;state.screen=next;saveNow();render();}else if(a==="meetStephen"){state.screen="bridge";state.arcClear=null;ensureBridgeState();state.bridge.x=0;state.bridge.z=-3.05;state.bridge.talk="Stephen is just ahead. Final spar when it feels right.";saveNow();render();}else if(a==="cards"){state.screen="cards";saveNow();render();}else if(a==="partialReport"){state.partialReportText=buildProgressReport();state.screen="partialReport";saveNow();render();}else if(a==="backFromPartial"){state.screen=state.arcClear?"arcClear":"bridge";render();}else if(a==="save"){saveNow();state.message="Saved on this device.";if(state.bridge)state.bridge.talk=state.message;const dock=document.getElementById("quickDock");if(dock)updateBridgeOverlay(true);}else if(a==="pause"){if(state.battle){state.battle.paused=true;saveNow();render();}}else if(a==="resumeBattle"){if(state.battle){state.battle.paused=false;saveNow();render();}}else if(a==="resetBattle"){if(state.battle){const wasStephen=!!state.battle.isStephen;const idx=state.battle.foeIndex;startBattle(wasStephen,idx);if(state.battle){state.battle.message="Reset. Fresh spar loaded.";state.battle.paused=false;saveNow();render();}}}else if(a==="pauseBridge"){state.screen="bridge";state.battle=null;ensureBridgeState();state.bridge.talk="Paused at the bridge. No progress lost.";state.message=state.bridge.talk;saveNow();render();}else if(a==="glowToggle"){if(state.battle&&glowReady()){state.battle.useGlow=!state.battle.useGlow;saveNow();render();}}else if(a==="buddyNudge"){if(state.battle&&state.battle.phase==="question"&&!state.battle.assistActive){state.battle.assistUsed=true;state.battle.assistActive=true;saveNow();render();}}else if(a==="battleNext"){advanceBattle();}else if(a==="backMove"){state.battle.phase="choose";state.battle.chosenMove="";state.battle.question=null;state.battle.options=[];state.battle.fxType="";state.battle.fxText="";state.battle.fxMove="";state.battle.assistActive=false;state.battle.assistUsed=false;saveNow();render();}else if(a==="submit"){const inp=document.getElementById("answerInput");submitAnswer(inp?inp.value:"");}else if(a==="toBridge"){state.screen="bridge";render();}});
 app.addEventListener("input",function(e){if(e.target&&e.target.id==="heroName"){state.character.name=e.target.value.slice(0,18);const n=document.getElementById("heroCardName");if(n)n.textContent=heroDisplayName();scheduleSave();}});
 function movementKey(e,down){
   const target=e.target;
