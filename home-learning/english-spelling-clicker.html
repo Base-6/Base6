@@ -369,7 +369,7 @@
         <div class="panel-title" style="margin-top:15px; font-size:14px; color:#9b87a8;">LOGS</div>
         <div class="stat-line">
             &#129504; BRAIN CELLS FLEXED: <span id="stat-words" style="font-weight:600;">0</span><br>
-            &#129488; QUIZ IN: <span id="stat-quiz-countdown" style="font-weight:600; color:#ff4757;">5</span> words<br>
+            &#129488; QUIZ IN: <span id="stat-quiz-countdown" style="font-weight:600; color:#ff4757;">20</span> clicks<br>
             &#128176; BOOST: <span id="stat-bonus" style="font-weight:600; color:#2ed573;">100%</span>
         </div>
 
@@ -436,6 +436,7 @@
             pickaxeLevel: 1,
             shaftLevel: 1,
             totalWordsSpelled: 0,
+            clicksSinceQuiz: 0,
             currentWordData: null,
             currentWordProgress: 0
         };
@@ -518,6 +519,7 @@
                 } catch(e) {}
             }
             // Ensure data structures are clean
+            if (typeof game.clicksSinceQuiz !== 'number') game.clicksSinceQuiz = 0;
             if (!game.currentWordData || !game.currentWordData.word) generateNewWord();
             else renderWordBoard();
             updateInterfaceData();
@@ -548,12 +550,19 @@
             }
         }
 
+        function getQuizClickTarget() {
+            // Auto-clickers speed the game up, so each one also gives more mining clicks before the next quiz.
+            // This keeps the learning checks spaced out instead of popping up constantly once bots are running.
+            return 20 + (game.minerLevel * 10);
+        }
+
         function mineNextLetter(clientX, clientY) {
             if (isQuizActive) return;
 
             let wordStr = game.currentWordData.word;
             if (game.currentWordProgress < wordStr.length) {
                 game.currentWordProgress++;
+                game.clicksSinceQuiz++;
                 renderWordBoard();
 
                 // 1. Core Visual Impact: Universal CSS Screen Shake
@@ -615,7 +624,7 @@
             mouthOpen = 1; eyeWide = 1.4; tongueOut = 1;
             if (Math.random() < 0.4) startEmote('wiggle', 0.5);
 
-            if (game.totalWordsSpelled % 5 === 0) {
+            if (game.clicksSinceQuiz >= getQuizClickTarget()) {
                 triggerAcademicQuiz();
             } else {
                 generateNewWord();
@@ -626,6 +635,7 @@
 
         function triggerAcademicQuiz() {
             isQuizActive = true;
+            game.clicksSinceQuiz = 0;
             // Test the exact word they just finished mining: see it, then produce it from memory
             const item = game.currentWordData;
             quizTargetWord = item.word.toUpperCase();
@@ -789,12 +799,14 @@
         function updateInterfaceData() {
             document.getElementById('gold-display').innerText = Math.floor(game.gold).toLocaleString();
             document.getElementById('crystal-display').innerText = game.crystals.toLocaleString();
+            const quizTargetClicks = getQuizClickTarget();
+            const clicksUntilQuiz = Math.max(1, quizTargetClicks - game.clicksSinceQuiz);
             document.getElementById('stat-words').innerText = game.totalWordsSpelled;
-            document.getElementById('stat-quiz-countdown').innerText = 5 - (game.totalWordsSpelled % 5);
+            document.getElementById('stat-quiz-countdown').innerText = clicksUntilQuiz;
             document.getElementById('stat-bonus').innerText = `+${game.crystals * 30}%`;
 
             const minerCost = Math.floor(15 * Math.pow(1.5, game.minerLevel));
-            document.getElementById('desc-miner').innerText = `speeds: ${game.minerLevel} clicks/sec`;
+            document.getElementById('desc-miner').innerText = `speeds: ${game.minerLevel} clicks/sec · quiz gap +${game.minerLevel * 10}`;
             document.getElementById('cost-miner').innerText = `Cost: ${minerCost} Funds`;
             document.getElementById('upg-miner').disabled = (game.gold < minerCost || isQuizActive);
 
