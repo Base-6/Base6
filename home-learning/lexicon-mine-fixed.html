@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexicon Mine 3D: Fail-Safe Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #f3e9f9;
+            font-family: 'Fredoka', sans-serif;
+            color: #4a375a;
+        }
+
+        /* Fixed Viewport prevents layout collapse */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 2;
+            background-color: #f3e9f9;
+        }
+
+        #canvas-container canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* 2D Backup Character Style */
+        #geo-pal-2d {
+            display: none; /* Active only if 3D crashes */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 130px;
+            cursor: pointer;
+            filter: drop-shadow(0 12px 24px rgba(147, 112, 219, 0.3));
+            transition: transform 0.05s ease;
+            z-index: 5;
+        }
+        #geo-pal-2d:active {
+            transform: translate(-50%, -50%) scale(0.7, 1.4);
+        }
+
+        /* Soft UI Overlays */
+        .ui-panel {
+            position: absolute;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #c3b1e1;
+            border-radius: 24px;
+            box-shadow: 0 8px 24px rgba(147, 112, 219, 0.15), 4px 4px 0px #c3b1e1;
+            padding: 20px;
+        }
+
+        /* Header Badges */
+        .hud-badge {
+            position: absolute;
+            z-index: 20;
+            top: 16px;
+            background: #fff;
+            border: 3px solid #c3b1e1;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 4px 4px 0px #c3b1e1;
+        }
+        #funds-badge { left: 16px; border-color: #ff4757; box-shadow: 4px 4px 0px #ff4757;}
+        #cells-badge { right: 16px; border-color: #2ed573; box-shadow: 4px 4px 0px #2ed573;}
+
+        .badge-val { font-weight: 600; color: #6c5ce7; }
+        #funds-badge .badge-val { color: #ff4757; }
+        #cells-badge .badge-val { color: #2ed573; }
+
+        /* Center Word Display */
+        #word-container {
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            min-width: 400px;
+            max-width: 500px;
+            border-color: #ffa502;
+            box-shadow: 4px 4px 0px #ffa502;
+        }
+        #tier-indicator {
+            font-size: 12px;
+            color: #9b87a8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        #word-display {
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: 8px;
+            color: #5d4470;
+            margin: 10px 0;
+            text-transform: uppercase;
+        }
+        #definition-display {
+            font-size: 13px;
+            color: #7d6b88;
+            line-height: 1.4;
+            background: #faf5ff;
+            padding: 12px;
+            border-radius: 16px;
+            margin-top: 8px;
+        }
+
+        /* Sidebar Configurations */
+        #shop-panel {
+            top: 100px;
+            left: 16px;
+            width: 310px;
+            bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            overflow-y: auto;
+        }
+        #action-panel {
+            top: 100px;
+            right: 16px;
+            width: 280px;
+            bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            color: #6c5ce7;
+            margin-bottom: 5px;
+        }
+        .upgrade-btn {
+            background: #fff;
+            border: 3px solid #e2d9f3;
+            border-radius: 20px;
+            color: #4a375a;
+            padding: 14px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 14px;
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: 0 4px 0px #e2d9f3;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .upgrade-btn:hover:not(:disabled) { border-color: #6c5ce7; box-shadow: 0 4px 0px #6c5ce7; }
+        .upgrade-btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0px 0px transparent; }
+        .upgrade-btn:disabled { background: #f5f5f5; border-color: #e0e0e0; color: #b5b5b5; box-shadow: 0 4px 0px #e0e0e0; cursor: not-allowed; }
+        .upgrade-btn .subtext { font-size: 11px; color: #9b87a8; }
+        .upgrade-cost { font-weight: 600; color: #ff4757; font-size: 13px; margin-top: 2px;}
+
+        .action-btn {
+            background: #6c5ce7;
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            padding: 14px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 0px #5143c7;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .action-btn:hover:not(:disabled) { background: #7866ff; }
+        .action-btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0px 0px transparent; }
+
+        #prestige-btn { background: #ff4757; box-shadow: 0 4px 0px #d63031; }
+        #prestige-btn:hover:not(:disabled) { background: #ff6b81; }
+        #prestige-btn:disabled { background: #f5ccd0; box-shadow: 0 4px 0px #e8b6bc; color: #bc9398; cursor: not-allowed;}
+        #reset-btn { background: #a5b1c2; box-shadow: 0 4px 0px #778ca3; font-size: 11px; margin-top: auto; padding: 10px;}
+
+        .stat-line {
+            font-size: 12px;
+            line-height: 1.6;
+            background: #faf5ff;
+            padding: 10px 14px;
+            border-radius: 16px;
+        }
+
+        /* Pop-Up Quiz Overlay */
+        #quiz-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(42, 30, 54, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        #quiz-box {
+            width: 460px;
+            max-width: 90%;
+            text-align: center;
+            background: #fff;
+            border-color: #ff4757;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.15), 6px 6px 0px #ff4757;
+        }
+        #quiz-input {
+            width: 100%;
+            background: #fbf9ff;
+            border: 3px solid #c3b1e1;
+            border-radius: 18px;
+            padding: 14px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            text-transform: uppercase;
+            outline: none;
+        }
+
+        #quiz-subtitle { font-size: 12px; color: #9b87a8; margin-bottom: 10px; font-weight: 600; }
+        #quiz-letters { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 14px 0; }
+        .q-box {
+            width: 32px; height: 40px;
+            border: 3px solid #d9cdf0; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 600; color: #5d4470; background: #fbf9ff;
+        }
+        .q-box.filled { border-color: #6c5ce7; }
+        .q-box.given { border-color: #2ed573; color: #2ed573; background: #eafaf0; }
+        .q-row { display: flex; gap: 10px; margin-top: 12px; }
+        .q-row .action-btn { flex: 1; font-size: 15px; }
+        #quiz-hint-btn { background: #ffa502; box-shadow: 0 4px 0px #e08e00; }
+        #quiz-hint-btn:hover:not(:disabled) { background: #ffb52e; }
+        #quiz-hint-btn:disabled { background: #efe2c8; box-shadow: 0 4px 0px #e0d0ad; color: #b6a684; cursor: not-allowed; }
+        #quiz-skip {
+            background: none; border: none; color: #9b87a8;
+            font-family: 'Fredoka', sans-serif; font-size: 12px; font-weight: 600;
+            cursor: pointer; margin-top: 14px; text-decoration: underline;
+        }
+        #quiz-skip:hover { color: #6c5ce7; }
+
+        #click-prompt {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: 600;
+            color: #9b87a8;
+            z-index: 5;
+            pointer-events: none;
+            animation: bounce 2s infinite;
+            background: rgba(255,255,255,0.8);
+            padding: 8px 20px;
+            border-radius: 30px;
+            border: 2px solid #c3b1e1;
+        }
+
+        /* Pop FX Slang Text */
+        .pop-text {
+            position: absolute;
+            z-index: 99;
+            pointer-events: none;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 24px;
+            text-shadow: 2px 2px 0px #fff, -2px -2px 0px #fff, 2px -2px 0px #fff, -2px 2px 0px #fff;
+            animation: floatUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Screen Shake Animation Applied globally to body */
+        .shake-impact {
+            animation: impactShake 0.15s ease-in-out;
+        }
+
+        @keyframes impactShake {
+            0% { transform: translate(2px, 1px) rotate(0deg); }
+            20% { transform: translate(-2px, -2px) rotate(-1deg); }
+            40% { transform: translate(-1px, 1px) rotate(1deg); }
+            60% { transform: translate(1px, -1px) rotate(0deg); }
+            80% { transform: translate(-2px, 2px) rotate(1deg); }
+            100% { transform: translate(0px, 0px) rotate(0deg); }
+        }
+
+        @keyframes floatUp {
+            0% { transform: translate(-50%, -50%) scale(0.5) rotate(-15deg); opacity: 1; }
+            50% { transform: translate(-50%, -100%) scale(1.3) rotate(10deg); opacity: 1; }
+            100% { transform: translate(-50%, -150%) scale(1) rotate(0deg); opacity: 0; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, -6px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container">
+        <div id="geo-pal-2d">&#128142;</div>
+    </div>
+
+    <div id="funds-badge" class="hud-badge">&#128086; FLEX FUNDS: <span id="gold-display" class="badge-val">0</span></div>
+    <div id="cells-badge" class="hud-badge">&#11088; BRAIN CELLS: <span id="crystal-display" class="badge-val">0</span></div>
+
+    <div id="word-container" class="ui-panel">
+        <div id="tier-indicator">VIBE CHECK: Spell The Thing!</div>
+        <div id="word-display">_ _ _</div>
+        <div id="definition-display">System Booting...</div>
+    </div>
+
+    <div id="shop-panel" class="ui-panel">
+        <div class="panel-title">&#128717; THE GRINDSET</div>
+
+        <button class="upgrade-btn" id="upg-miner" onclick="buyUpgrade('miner')">
+            <strong>&#129302; CLUTTER-BOT</strong>
+            <span class="subtext" id="desc-miner">clicks for me (boring)</span>
+            <span class="upgrade-cost" id="cost-miner">Cost: 15 Gold</span>
+        </button>
+
+        <button class="upgrade-btn" id="upg-pick" onclick="buyUpgrade('pickaxe')">
+            <strong>&#128296; SHINY STICK 2.0</strong>
+            <span class="subtext" id="desc-pick">digs harder, duh.</span>
+            <span class="upgrade-cost" id="cost-pick">Cost: 50 Gold</span>
+        </button>
+
+        <button class="upgrade-btn" id="upg-shaft" onclick="buyUpgrade('shaft')">
+            <strong>&#128218; NEW LORE SHAFT</strong>
+            <span class="subtext" id="desc-shaft">Tier 3 words. Gross.</span>
+            <span class="upgrade-cost" id="cost-shaft">Cost: 250 Gold</span>
+        </button>
+    </div>
+
+    <div id="action-panel" class="ui-panel">
+        <div class="panel-title">&#127891; ACADEMIC VIBES</div>
+        <button class="action-btn" onclick="sendReport()">TELL JAY I'M GOOD.</button>
+        <button class="action-btn" id="prestige-btn" onclick="triggerPrestige()">FLEX MY MAX CLOUT.<br><span id="prestige-reward" style="font-size:10px; font-weight:400; opacity:0.9;">(Needs 5k Funds)</span></button>
+
+        <div class="panel-title" style="margin-top:15px; font-size:14px; color:#9b87a8;">LOGS</div>
+        <div class="stat-line">
+            &#129504; BRAIN CELLS FLEXED: <span id="stat-words" style="font-weight:600;">0</span><br>
+            &#129488; QUIZ IN: <span id="stat-quiz-countdown" style="font-weight:600; color:#ff4757;">5</span> words<br>
+            &#128176; BOOST: <span id="stat-bonus" style="font-weight:600; color:#2ed573;">100%</span>
+        </div>
+
+        <button class="action-btn" id="reset-btn" onclick="hardReset()">DELETE MY SOUL. (Reset)</button>
+    </div>
+
+    <div id="quiz-overlay">
+        <div id="quiz-box" class="ui-panel">
+            <div class="quiz-header">&#129504; POP VIBE CHECK! &#129504;</div>
+            <div id="quiz-subtitle">Spell it from the clue. Hints are right there if you want them, no stress.</div>
+            <div id="quiz-definition">Definition clue...</div>
+            <div id="quiz-letters"></div>
+            <input type="text" id="quiz-input" placeholder="Type it here..." autocomplete="off" autocapitalize="characters" spellcheck="false">
+            <div class="q-row">
+                <button class="action-btn" id="quiz-hint-btn" onclick="useHint()">&#128161; HINT</button>
+                <button class="action-btn" onclick="submitQuizAnswer()">SUBMIT</button>
+            </div>
+            <div id="quiz-feedback" style="font-size:13px; font-weight:600; min-height:20px; margin-top:10px;"></div>
+            <button id="quiz-skip" onclick="skipQuiz()">skip this one</button>
+        </div>
+    </div>
+
+    <div id="click-prompt">SMACK THE GEO-PAL! &#10024;</div>
+
+    <script>
+        const WORD_TIERS = {
+            1: [
+                { word: "ORE", def: "A boring rock that actually contains shiny metal valuables inside." },
+                { word: "GEM", def: "A super sparkly stone that costs way too much flex funds." },
+                { word: "ROCK", def: "Solid earth materials. Basically Geo-Pal's extended family." },
+                { word: "MINE", def: "Digging big holes in the ground looking for sparkly stuff." },
+                { word: "GOLD", def: "Shiny yellow metal. Extremely high clout points." }
+            ],
+            2: [
+                { word: "ATOM", def: "The tiny invisible things that build literally everything in existence." },
+                { word: "POEM", def: "Rhythmic words put together to express deep feelings or whatever." },
+                { word: "DATA", def: "A bunch of facts and numbers that teachers love looking at." },
+                { word: "CELL", def: "The microscopic building blocks running inside your body right now." },
+                { word: "ACID", def: "Sour chemical stuff with a pH lower than 7. Do not drink." }
+            ],
+            3: [
+                { word: "PHOTOSYNTHESIS", def: "Plants absorbing sunlight to make food because they can't go to Greggs." },
+                { word: "HYPOTHESIS", def: "A fancy scientific guess before you actually do the experiment to prove it." },
+                { word: "METAPHOR", def: "Saying something IS something else to be poetic, without using 'like' or 'as'." },
+                { word: "EQUATION", def: "A math statement showing that two complicated sides are totally equal." },
+                { word: "EVOLUTION", def: "Organisms slowly upgrading their traits over millions of years to survive." }
+            ]
+        };
+
+        const TIER_NAMES = {
+            1: "Shaft Depth: surface layer (easy mode)",
+            2: "Shaft Depth: mid layers (KS3 Brainwork)",
+            3: "Shaft Depth: terminal core (Mega Brain Only)"
+        };
+
+        const TWOD_EMOJIS = { 1: "\uD83D\uDC8E", 2: "\uD83D\uDD2E", 3: "\uD83D\uDC51" };
+        const ROCK_TIER_COLORS = { 1: 0xff4757, 2: 0x2ed573, 3: 0x1e90ff };
+
+        // --- GAME CORE STATE ---
+        let game = {
+            gold: 0,
+            crystals: 0,
+            minerLevel: 0,
+            pickaxeLevel: 1,
+            shaftLevel: 1,
+            totalWordsSpelled: 0,
+            currentWordData: null,
+            currentWordProgress: 0
+        };
+
+        let isQuizActive = false;
+        let quizTargetWord = "";
+        let quizRevealed = 1;
+        let quizWrong = 0;
+        let is3DActive = false;
+
+        // Three.js Context
+        let scene, camera, renderer, mainRock;
+        let geoPal, faceGroup, leftEye, rightEye, mouth, tongueMesh;
+        let sproutMesh, crownGroup, auraMesh, auraBase = 0.1;
+        let particles = [];
+        let miniStars = [];
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        // Geo-Pal face / bounce state
+        let hop = 0;
+        let eyeWide = 1;
+        let mouthOpen = 0;
+        let tongueOut = 0;
+        let blinkState = { blinking: false, start: 0, next: 2, wink: false };
+
+        // Animation + evolution state
+        let emote = { type: null, start: 0, dur: 0 };
+        let nextEmote = 5;
+        let geoScale = 1;
+        let geoSizeTarget = 1;
+
+        // Shared confetti assets (created lazily so the 2D fallback still works if THREE is missing)
+        let confettiGeoms = null;
+        let confettiMats = null;
+
+        function initGame() {
+            // STEP 1: Process and load data mechanics instantly to secure logic visibility
+            loadProgress();
+
+            // Set up fallback listeners instantly
+            document.getElementById('geo-pal-2d').addEventListener('mousedown', function(e) {
+                if (isQuizActive) return;
+                mineNextLetter(e.clientX, e.clientY);
+            });
+
+            // STEP 2: Boot 3D environment gracefully with fallback handling
+            try {
+                if (typeof THREE !== 'undefined') {
+                    setup3DEnvironment();
+                } else {
+                    throw new Error("Three.js CDN Blocked or Missing.");
+                }
+            } catch (err) {
+                console.warn("WebGL initialization skipped. Running on pure HTML/2D Engine.", err);
+                activate2DBackupMode();
+            }
+
+            // STEP 3: Intervals
+            setInterval(processAutoMiners, 1000);
+            setInterval(saveProgress, 5000);
+
+            window.addEventListener('resize', onWindowResize);
+            document.getElementById('canvas-container').addEventListener('mousedown', handleRockClick);
+            document.getElementById('quiz-input').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') submitQuizAnswer();
+            });
+            document.getElementById('quiz-input').addEventListener('input', renderQuizLetters);
+        }
+
+        function loadProgress() {
+            const rawData = localStorage.getItem('lexicon_cute_v1');
+            if (rawData) {
+                try {
+                    const parsed = JSON.parse(rawData);
+                    if (parsed && typeof parsed === 'object') game = { ...game, ...parsed };
+                } catch(e) {}
+            }
+            // Ensure data structures are clean
+            if (!game.currentWordData || !game.currentWordData.word) generateNewWord();
+            else renderWordBoard();
+            updateInterfaceData();
+        }
+
+        function generateNewWord() {
+            let activePool = [];
+            for (let i = 1; i <= game.shaftLevel; i++) {
+                activePool = activePool.concat(WORD_TIERS[i]);
+            }
+            game.currentWordData = activePool[Math.floor(Math.random() * activePool.length)];
+            game.currentWordProgress = 0;
+            renderWordBoard();
+        }
+
+        function renderWordBoard() {
+            let outputText = "";
+            let wordStr = game.currentWordData.word;
+            for (let i = 0; i < wordStr.length; i++) {
+                outputText += (i < game.currentWordProgress) ? `${wordStr[i]} ` : "_ ";
+            }
+            document.getElementById('word-display').innerText = outputText.trim();
+            document.getElementById('tier-indicator').innerText = TIER_NAMES[game.shaftLevel];
+            document.getElementById('definition-display').innerText = `CLUE: ${game.currentWordData.def}`;
+
+            if (!is3DActive) {
+                document.getElementById('geo-pal-2d').innerText = TWOD_EMOJIS[game.shaftLevel] || "\uD83D\uDC8E";
+            }
+        }
+
+        function mineNextLetter(clientX, clientY) {
+            if (isQuizActive) return;
+
+            let wordStr = game.currentWordData.word;
+            if (game.currentWordProgress < wordStr.length) {
+                game.currentWordProgress++;
+                renderWordBoard();
+
+                // 1. Core Visual Impact: Universal CSS Screen Shake
+                document.body.classList.remove('shake-impact');
+                void document.body.offsetWidth;
+                document.body.classList.add('shake-impact');
+                setTimeout(() => document.body.classList.remove('shake-impact'), 150);
+
+                // 2. Process 3D click reactions if active
+                if (is3DActive && mainRock) {
+                    mainRock.scale.set(1.32, 0.72, 1.32); // squishy boing
+                    mainRock.material.emissive.setHex(0xffffff);
+                    mainRock.material.emissiveIntensity = 0.5;
+                    hop += 0.22;      // a little jump
+                    eyeWide = 1.6;    // eyes go wide
+                    mouthOpen = 1;     // mouth pops open
+                    spawnConfetti(12);
+                }
+
+                // 3. Floating Screen Popups
+                if (!clientX || !clientY) {
+                    clientX = window.innerWidth / 2;
+                    clientY = window.innerHeight / 2;
+                }
+                spawnFloatingText(clientX, clientY);
+
+                if (game.currentWordProgress >= wordStr.length) {
+                    processWordCompletion();
+                }
+            }
+        }
+
+        function spawnFloatingText(x, y) {
+            const words = ["SLAY \uD83D\uDC85", "VALID \u2728", "+20 CLOUT", "PERIODT.", "GLOW UP", "BIG BRAIN", "CRUSHED IT \uD83D\uDD25"];
+            const colors = ["#ff4757", "#2ed573", "#1e90ff", "#ffa502", "#9b5de5"];
+
+            const div = document.createElement('div');
+            div.className = 'pop-text';
+            div.style.left = `${x}px`;
+            div.style.top = `${y}px`;
+            div.style.color = colors[Math.floor(Math.random() * colors.length)];
+            div.innerText = words[Math.floor(Math.random() * words.length)];
+
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 600);
+        }
+
+        function processWordCompletion() {
+            const baseReward = game.currentWordData.word.length * game.shaftLevel * 15;
+            const netGoldPayout = Math.floor(baseReward * (1 + (game.pickaxeLevel - 1) * 0.6) * (1 + (game.crystals * 0.3)));
+
+            game.gold += netGoldPayout;
+            game.totalWordsSpelled++;
+
+            if (is3DActive) spawnConfetti(40);
+
+            // happy little celebration on every word
+            mouthOpen = 1; eyeWide = 1.4; tongueOut = 1;
+            if (Math.random() < 0.4) startEmote('wiggle', 0.5);
+
+            if (game.totalWordsSpelled % 5 === 0) {
+                triggerAcademicQuiz();
+            } else {
+                generateNewWord();
+            }
+            updateInterfaceData();
+            saveProgress();
+        }
+
+        function triggerAcademicQuiz() {
+            isQuizActive = true;
+            // Test the exact word they just finished mining: see it, then produce it from memory
+            const item = game.currentWordData;
+            quizTargetWord = item.word.toUpperCase();
+            quizRevealed = 1; // first letter given as a friendly leg-up
+            quizWrong = 0;
+
+            document.getElementById('quiz-definition').innerText = `CLUE: ${item.def}`;
+            const inp = document.getElementById('quiz-input');
+            inp.value = "";
+            const fb = document.getElementById('quiz-feedback');
+            fb.innerText = "";
+            fb.style.color = "#9b87a8";
+            document.getElementById('quiz-hint-btn').disabled = false;
+            renderQuizLetters();
+            document.getElementById('quiz-overlay').style.display = "flex";
+            setTimeout(() => inp.focus(), 50);
+        }
+
+        function renderQuizLetters() {
+            const wrap = document.getElementById('quiz-letters');
+            const typed = document.getElementById('quiz-input').value.toUpperCase();
+            let html = "";
+            for (let i = 0; i < quizTargetWord.length; i++) {
+                if (i < quizRevealed) {
+                    html += `<div class="q-box given">${quizTargetWord[i]}</div>`;
+                } else {
+                    const ch = typed[i] || "";
+                    html += `<div class="q-box ${ch ? 'filled' : ''}">${ch}</div>`;
+                }
+            }
+            wrap.innerHTML = html;
+        }
+
+        function useHint() {
+            const fb = document.getElementById('quiz-feedback');
+            if (quizRevealed < quizTargetWord.length) {
+                quizRevealed++;
+                renderQuizLetters();
+                if (quizRevealed >= quizTargetWord.length) {
+                    fb.innerText = "There it is, the whole word. Pop it in to bank it. \uD83D\uDCAA";
+                    fb.style.color = "#6c5ce7";
+                    document.getElementById('quiz-hint-btn').disabled = true;
+                } else {
+                    fb.innerText = "Another letter unlocked. You've got this. \u2728";
+                    fb.style.color = "#e08e00";
+                }
+            }
+            document.getElementById('quiz-input').focus();
+        }
+
+        function commonPrefixLen(a, b) {
+            let n = 0;
+            while (n < a.length && n < b.length && a[n] === b[n]) n++;
+            return n;
+        }
+
+        function submitQuizAnswer() {
+            const inp = document.getElementById('quiz-input');
+            const fb = document.getElementById('quiz-feedback');
+            const guess = inp.value.trim().toUpperCase();
+            if (!guess) { inp.focus(); return; }
+
+            if (guess === quizTargetWord) {
+                const hintsUsed = quizRevealed - 1; // first letter was free
+                const factor = Math.max(0.3, 1 - hintsUsed * 0.15 - quizWrong * 0.1);
+                const reward = Math.floor(game.shaftLevel * 200 * (1 + (game.crystals * 0.3)) * factor);
+                game.gold += reward;
+
+                fb.innerText = `SLAY. Spot on. +${reward.toLocaleString()} funds \uD83D\uDC85`;
+                fb.style.color = "#2ed573";
+                document.getElementById('quiz-hint-btn').disabled = true;
+
+                setTimeout(() => {
+                    document.getElementById('quiz-overlay').style.display = "none";
+                    isQuizActive = false;
+                    generateNewWord();
+                    updateInterfaceData();
+                    saveProgress();
+                }, 1300);
+            } else {
+                quizWrong++;
+                const match = commonPrefixLen(guess, quizTargetWord);
+                if (quizWrong >= 3 && quizRevealed < quizTargetWord.length) {
+                    quizRevealed = quizTargetWord.length;
+                    renderQuizLetters();
+                    document.getElementById('quiz-hint-btn').disabled = true;
+                    fb.innerText = "No worries at all. Here is the whole word, just copy it in. \uD83E\uDEF6";
+                    fb.style.color = "#6c5ce7";
+                } else if (match > 0) {
+                    fb.innerText = `So close. The first ${match} letter${match > 1 ? 's are' : ' is'} bang on. Grab a hint? \uD83D\uDCA1`;
+                    fb.style.color = "#e08e00";
+                } else {
+                    fb.innerText = "Not quite. Peek at the clue, or grab a hint, no rush. \uD83D\uDCA1";
+                    fb.style.color = "#ff6b81";
+                }
+                inp.focus();
+            }
+        }
+
+        function skipQuiz() {
+            document.getElementById('quiz-overlay').style.display = "none";
+            isQuizActive = false;
+            generateNewWord();
+            updateInterfaceData();
+            saveProgress();
+        }
+
+        // --- SHOP & REWARDS MANAGEMENT ---
+        function buyUpgrade(type) {
+            if (isQuizActive) return;
+            if (type === 'miner') {
+                const cost = Math.floor(15 * Math.pow(1.5, game.minerLevel));
+                if (game.gold >= cost) { game.gold -= cost; game.minerLevel++; }
+            } else if (type === 'pickaxe') {
+                const cost = Math.floor(50 * Math.pow(1.7, game.pickaxeLevel - 1));
+                if (game.gold >= cost) { game.gold -= cost; game.pickaxeLevel++; }
+            } else if (type === 'shaft') {
+                if (game.shaftLevel >= 3) return;
+                const cost = game.shaftLevel === 1 ? 250 : 1500;
+                if (game.gold >= cost) {
+                    game.gold -= cost;
+                    game.shaftLevel++;
+                    if (is3DActive) rebuildMainRockGeometry();
+                    celebrateEvolve();
+                    generateNewWord();
+                }
+            }
+            updateInterfaceData();
+            saveProgress();
+        }
+
+        function processAutoMiners() {
+            if (!isQuizActive && game.minerLevel > 0) {
+                for (let i = 0; i < game.minerLevel; i++) mineNextLetter(null, null);
+            }
+        }
+
+        function triggerPrestige() {
+            if (isQuizActive || game.gold < 5000) return;
+            game.crystals += Math.floor(Math.sqrt(game.gold / 5000));
+            game.gold = 0; game.minerLevel = 0; game.pickaxeLevel = 1; game.shaftLevel = 1;
+
+            if (is3DActive) {
+                rebuildMainRockGeometry();
+                generatePrestigeStarOrbits();
+            }
+            celebrateEvolve();
+            generateNewWord();
+            updateInterfaceData();
+            saveProgress();
+        }
+
+        function updateInterfaceData() {
+            document.getElementById('gold-display').innerText = Math.floor(game.gold).toLocaleString();
+            document.getElementById('crystal-display').innerText = game.crystals.toLocaleString();
+            document.getElementById('stat-words').innerText = game.totalWordsSpelled;
+            document.getElementById('stat-quiz-countdown').innerText = 5 - (game.totalWordsSpelled % 5);
+            document.getElementById('stat-bonus').innerText = `+${game.crystals * 30}%`;
+
+            const minerCost = Math.floor(15 * Math.pow(1.5, game.minerLevel));
+            document.getElementById('desc-miner').innerText = `speeds: ${game.minerLevel} clicks/sec`;
+            document.getElementById('cost-miner').innerText = `Cost: ${minerCost} Funds`;
+            document.getElementById('upg-miner').disabled = (game.gold < minerCost || isQuizActive);
+
+            const pickCost = Math.floor(50 * Math.pow(1.7, game.pickaxeLevel - 1));
+            document.getElementById('desc-pick').innerText = `multiplier: ${(1 + (game.pickaxeLevel - 1) * 0.6).toFixed(1)}x`;
+            document.getElementById('cost-pick').innerText = `Cost: ${pickCost} Funds`;
+            document.getElementById('upg-pick').disabled = (game.gold < pickCost || isQuizActive);
+
+            const shaftCost = game.shaftLevel === 1 ? 250 : 1500;
+            document.getElementById('desc-shaft').innerText = game.shaftLevel === 1 ? "Unlock Tier 2 words." : game.shaftLevel === 2 ? "Unlock Tier 3 words." : "Deepest lore mastered.";
+            if (game.shaftLevel >= 3) {
+                document.getElementById('cost-shaft').innerText = `MAX OUT`;
+                document.getElementById('upg-shaft').disabled = true;
+            } else {
+                document.getElementById('cost-shaft').innerText = `Cost: ${shaftCost} Funds`;
+                document.getElementById('upg-shaft').disabled = (game.gold < shaftCost || isQuizActive);
+            }
+
+            document.getElementById('prestige-btn').disabled = (game.gold < 5000 || isQuizActive);
+            document.getElementById('prestige-reward').innerText = game.gold >= 5000 ? `READY! Gain +${Math.floor(Math.sqrt(game.gold / 5000))} Brain Cells` : `(Needs 5k Funds)`;
+        }
+
+        // --- BACKUP 2D GRAPHICS LOGIC ---
+        function activate2DBackupMode() {
+            is3DActive = false;
+            const fallbackChar = document.getElementById('geo-pal-2d');
+            if (fallbackChar) {
+                fallbackChar.style.display = "block";
+                fallbackChar.innerText = TWOD_EMOJIS[game.shaftLevel] || "\uD83D\uDC8E";
+            }
+        }
+
+        // --- GRAPHICS: THREE.JS INTERFACE ENGINE ---
+        function setup3DEnvironment() {
+            const container = document.getElementById('canvas-container');
+            const w = container.clientWidth || window.innerWidth;
+            const h = container.clientHeight || window.innerHeight;
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf3e9f9);
+
+            camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 1000);
+            camera.position.set(0, 0, 5.2);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(w, h);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            const softAmbient = new THREE.AmbientLight(0xffffff, 0.9);
+            scene.add(softAmbient);
+
+            const mainDirectional = new THREE.DirectionalLight(0xffffff, 0.6);
+            mainDirectional.position.set(2, 4, 3);
+            scene.add(mainDirectional);
+
+            // Build shared confetti assets once (reused for every burst)
+            confettiGeoms = [
+                new THREE.BoxGeometry(0.08, 0.08, 0.08),
+                new THREE.TetrahedronGeometry(0.07, 0)
+            ];
+            confettiMats = [0xff4757, 0x2ed573, 0x1e90ff, 0xffa502, 0x9b5de5]
+                .map(c => new THREE.MeshBasicMaterial({ color: c }));
+
+            is3DActive = true;
+            rebuildMainRockGeometry();
+            generatePrestigeStarOrbits();
+            animateThreeJSRuntime();
+        }
+
+        const TIER_SIZE = { 1: 1.0, 2: 1.12, 3: 1.26 };
+
+        function rebuildMainRockGeometry() {
+            if (!is3DActive) return;
+            if (geoPal) { scene.remove(geoPal); disposeGroup(geoPal); }
+
+            geoPal = new THREE.Group();
+            geoSizeTarget = TIER_SIZE[game.shaftLevel] || 1.0;
+
+            // body grows more crystalline as it evolves
+            let geometry;
+            if (game.shaftLevel === 1) geometry = new THREE.DodecahedronGeometry(1.3, 0);
+            else if (game.shaftLevel === 2) geometry = new THREE.DodecahedronGeometry(1.3, 1);
+            else geometry = new THREE.IcosahedronGeometry(1.32, 1);
+
+            const material = new THREE.MeshPhongMaterial({
+                color: ROCK_TIER_COLORS[game.shaftLevel] || 0xff4757,
+                shininess: 90,
+                specular: 0xffffff,
+                flatShading: true
+            });
+            mainRock = new THREE.Mesh(geometry, material);
+            geoPal.add(mainRock);
+
+            buildFace();
+            geoPal.add(faceGroup);
+
+            buildEvolutionExtras();
+
+            scene.add(geoPal);
+        }
+
+        function buildEvolutionExtras() {
+            sproutMesh = null; crownGroup = null; auraMesh = null;
+
+            // Tier 2: a little sprout gem pops up on top
+            if (game.shaftLevel === 2) {
+                sproutMesh = new THREE.Mesh(
+                    new THREE.OctahedronGeometry(0.2, 0),
+                    new THREE.MeshPhongMaterial({ color: 0xffe66d, shininess: 90, flatShading: true })
+                );
+                sproutMesh.position.set(0, 1.55, 0);
+                geoPal.add(sproutMesh);
+            }
+
+            // Tier 3: a full crown of golden spikes
+            if (game.shaftLevel === 3) {
+                crownGroup = new THREE.Group();
+                const spikes = 8;
+                const crownMat = new THREE.MeshPhongMaterial({ color: 0xffd700, shininess: 100, flatShading: true });
+                for (let i = 0; i < spikes; i++) {
+                    const spike = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.34, 4), crownMat);
+                    const a = (i / spikes) * Math.PI * 2;
+                    spike.position.set(Math.cos(a) * 0.5, 0, Math.sin(a) * 0.5);
+                    crownGroup.add(spike);
+                }
+                crownGroup.position.set(0, 1.35, 0);
+                geoPal.add(crownGroup);
+            }
+
+            // Aura: glows brighter with tier and with prestige crystals
+            if (game.shaftLevel >= 2 || game.crystals > 0) {
+                auraBase = Math.min(0.3, 0.08 + (game.shaftLevel - 1) * 0.05 + game.crystals * 0.02);
+                auraMesh = new THREE.Mesh(
+                    new THREE.SphereGeometry(1.75, 20, 20),
+                    new THREE.MeshBasicMaterial({
+                        color: ROCK_TIER_COLORS[game.shaftLevel] || 0xff4757,
+                        transparent: true,
+                        opacity: auraBase,
+                        blending: THREE.AdditiveBlending,
+                        depthWrite: false
+                    })
+                );
+                geoPal.add(auraMesh);
+            }
+        }
+
+        function startEmote(type, dur) {
+            emote.type = type;
+            emote.start = performance.now() * 0.001;
+            emote.dur = dur;
+        }
+
+        function celebrateEvolve() {
+            startEmote('evolve', 0.9);
+            hop += 0.35;
+            mouthOpen = 1;
+            eyeWide = 1.7;
+            if (is3DActive && mainRock) {
+                mainRock.material.emissive.setHex(0xffffff);
+                mainRock.material.emissiveIntensity = 0.9;
+                spawnConfetti(60);
+            }
+        }
+
+        function buildFace() {
+            faceGroup = new THREE.Group();
+            faceGroup.position.z = 1.0; // sits on Geo-Pal's front so it always faces the player
+
+            const white = () => new THREE.MeshBasicMaterial({ color: 0xffffff, depthTest: false });
+            const dark = () => new THREE.MeshBasicMaterial({ color: 0x2a2030, depthTest: false });
+
+            function makeEye(x) {
+                const eye = new THREE.Group();
+                const ball = new THREE.Mesh(new THREE.SphereGeometry(0.26, 18, 18), white());
+                ball.renderOrder = 10;
+                const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 16), dark());
+                pupil.position.set(0, -0.02, 0.16);
+                pupil.renderOrder = 11;
+                const shine = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), white());
+                shine.position.set(-0.07, 0.08, 0.22);
+                shine.renderOrder = 12;
+                eye.add(ball, pupil, shine);
+                eye.position.set(x, 0.28, 0.2);
+                return eye;
+            }
+
+            leftEye = makeEye(-0.42);
+            rightEye = makeEye(0.42);
+
+            const cheekMat = new THREE.MeshBasicMaterial({ color: 0xff9ec2, transparent: true, opacity: 0.85, depthTest: false });
+            function makeCheek(x) {
+                const c = new THREE.Mesh(new THREE.CircleGeometry(0.16, 20), cheekMat);
+                c.position.set(x, -0.12, 0.25);
+                c.renderOrder = 9;
+                return c;
+            }
+
+            mouth = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 12), dark());
+            mouth.position.set(0, -0.2, 0.25);
+            mouth.renderOrder = 11;
+
+            tongueMesh = new THREE.Mesh(
+                new THREE.SphereGeometry(0.1, 14, 10),
+                new THREE.MeshBasicMaterial({ color: 0xff6b81, depthTest: false })
+            );
+            tongueMesh.position.set(0, -0.3, 0.27);
+            tongueMesh.renderOrder = 11;
+            tongueMesh.visible = false;
+
+            faceGroup.add(leftEye, rightEye, makeCheek(-0.62), makeCheek(0.62), mouth, tongueMesh);
+        }
+
+        function disposeGroup(obj) {
+            obj.traverse(function (child) {
+                if (child.geometry) child.geometry.dispose();
+                if (child.material) {
+                    if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+                    else child.material.dispose();
+                }
+            });
+        }
+
+        function generatePrestigeStarOrbits() {
+            if (!is3DActive) return;
+            miniStars.forEach(s => scene.remove(s));
+            miniStars = [];
+
+            const visibleStars = Math.min(game.crystals, 12);
+            for (let i = 0; i < visibleStars; i++) {
+                const mesh = new THREE.Mesh(
+                    new THREE.OctahedronGeometry(0.14, 0),
+                    new THREE.MeshPhongMaterial({ color: 0xff4757, shininess: 80 })
+                );
+                mesh.userData = {
+                    angle: (i / visibleStars) * Math.PI * 2,
+                    speed: 0.008 + (i * 0.002),
+                    radius: 2.2 + (Math.random() * 0.2),
+                    bobFactor: Math.random() * 5
+                };
+                scene.add(mesh);
+                miniStars.push(mesh);
+            }
+        }
+
+        function handleRockClick(event) {
+            if (!is3DActive || isQuizActive) return;
+
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            if (geoPal && raycaster.intersectObject(geoPal, true).length > 0) {
+                mineNextLetter(event.clientX, event.clientY);
+            }
+        }
+
+        function spawnConfetti(count) {
+            if (!is3DActive || !confettiGeoms || !confettiMats) return;
+
+            for (let i = 0; i < count; i++) {
+                const geom = confettiGeoms[Math.floor(Math.random() * confettiGeoms.length)];
+                const mat = confettiMats[Math.floor(Math.random() * confettiMats.length)];
+                const p = new THREE.Mesh(geom, mat);
+                p.position.copy(geoPal.position);
+                p.userData = {
+                    velocity: new THREE.Vector3((Math.random() - 0.5) * 0.16, (Math.random() - 0.2) * 0.18, (Math.random() - 0.5) * 0.16),
+                    rotationSpeed: new THREE.Vector3(Math.random() * 0.15, Math.random() * 0.15, Math.random() * 0.15),
+                    lifespan: 35 + Math.random() * 20
+                };
+                scene.add(p);
+                particles.push(p);
+            }
+        }
+
+        function animateThreeJSRuntime() {
+            requestAnimationFrame(animateThreeJSRuntime);
+            if (!is3DActive) return;
+
+            const t = performance.now() * 0.001;
+
+            // --- personality emotes (spin / wiggle / evolve) ---
+            let extraSpin = 0, extraZ = 0, popScale = 1;
+            if (emote.type) {
+                const ep = (t - emote.start) / emote.dur;
+                if (ep >= 1) {
+                    emote.type = null;
+                } else {
+                    const ease = 1 - Math.pow(1 - ep, 3);
+                    if (emote.type === 'spin') {
+                        extraSpin = Math.PI * 2 * ease;
+                    } else if (emote.type === 'wiggle') {
+                        extraZ = Math.sin(ep * Math.PI * 6) * 0.25 * (1 - ep);
+                    } else if (emote.type === 'evolve') {
+                        extraSpin = Math.PI * 4 * ease;
+                        popScale = 1 + Math.sin(ep * Math.PI) * 0.4;
+                    }
+                }
+            } else if (!isQuizActive && t > nextEmote) {
+                // idle: do a little something now and then so it feels alive
+                startEmote(Math.random() < 0.5 ? 'spin' : 'wiggle', 0.6);
+                nextEmote = t + 6 + Math.random() * 7;
+            }
+
+            if (geoPal) {
+                // springy hop, gentle bob, breathing, and smooth growth as it evolves
+                hop += (0 - hop) * 0.12;
+                geoPal.position.y = Math.sin(t * 2) * 0.08 + hop;
+                geoPal.rotation.z = Math.sin(t * 1.1) * 0.04 + extraZ;
+
+                geoScale += (geoSizeTarget - geoScale) * 0.12;
+                const breathe = 1 + Math.sin(t * 1.6) * 0.025;
+                geoPal.scale.setScalar(geoScale * breathe * popScale);
+            }
+
+            if (mainRock) {
+                const swaySpeed = isQuizActive ? 3.5 : 1.3;
+                const swayAmount = isQuizActive ? 0.45 : 0.22;
+                mainRock.rotation.y = Math.sin(t * swaySpeed) * swayAmount + extraSpin;
+                mainRock.rotation.x = Math.sin(t * 0.9) * 0.05;
+                mainRock.scale.x += (1.0 - mainRock.scale.x) * 0.18;
+                mainRock.scale.y += (1.0 - mainRock.scale.y) * 0.18;
+                mainRock.scale.z += (1.0 - mainRock.scale.z) * 0.18;
+                if (mainRock.material.emissiveIntensity > 0) mainRock.material.emissiveIntensity -= 0.05;
+            }
+
+            // evolving accessories: sprout, crown, aura
+            if (sproutMesh) {
+                sproutMesh.rotation.y += 0.03;
+                sproutMesh.position.y = 1.55 + Math.sin(t * 3) * 0.06;
+            }
+            if (crownGroup) {
+                crownGroup.rotation.y += 0.012;
+                crownGroup.position.y = 1.35 + Math.sin(t * 2.4) * 0.05;
+            }
+            if (auraMesh) {
+                auraMesh.material.opacity = auraBase + Math.sin(t * 2) * (auraBase * 0.5);
+                auraMesh.rotation.y -= 0.004;
+            }
+
+            // ambient sparkle once fully evolved
+            if (game.shaftLevel === 3 && !isQuizActive && Math.random() < 0.05) {
+                spawnConfetti(1);
+            }
+
+            // Geo-Pal face: wide-eye recovery, blinking, the occasional cheeky wink, mouth and tongue
+            if (leftEye && rightEye && mouth) {
+                eyeWide += (1 - eyeWide) * 0.16;
+
+                let bl = 1, blR = 1;
+                if (!blinkState.blinking && t > blinkState.next) {
+                    blinkState.blinking = true;
+                    blinkState.start = t;
+                    blinkState.wink = Math.random() < 0.35;
+                }
+                if (blinkState.blinking) {
+                    const p = (t - blinkState.start) / 0.16;
+                    if (p >= 1) {
+                        blinkState.blinking = false;
+                        blinkState.next = t + 2.2 + Math.random() * 3.5;
+                    } else {
+                        const closed = Math.sin(p * Math.PI); // 0 -> 1 -> 0
+                        bl = 1 - closed * 0.92;
+                        if (!blinkState.wink) blR = bl;
+                    }
+                }
+                leftEye.scale.set(eyeWide, eyeWide * bl, eyeWide);
+                rightEye.scale.set(eyeWide, eyeWide * blR, eyeWide);
+
+                mouthOpen += (0 - mouthOpen) * 0.09;
+                mouth.scale.set(0.55 + mouthOpen * 0.6, 0.4 + mouthOpen * 1.1, 1);
+
+                if (tongueMesh) {
+                    tongueOut += (0 - tongueOut) * 0.08;
+                    tongueMesh.scale.set(0.6 + tongueOut * 0.5, tongueOut, 1);
+                    tongueMesh.visible = tongueOut > 0.05;
+                }
+            }
+
+            miniStars.forEach(mesh => {
+                mesh.userData.angle += mesh.userData.speed;
+                mesh.position.x = Math.cos(mesh.userData.angle) * mesh.userData.radius;
+                mesh.position.z = Math.sin(mesh.userData.angle) * mesh.userData.radius;
+                mesh.position.y = Math.sin(Date.now() * 0.002 + mesh.userData.bobFactor) * 0.25;
+            });
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.position.add(p.userData.velocity);
+                p.userData.velocity.y -= 0.004;
+                p.userData.lifespan--;
+                if (p.userData.lifespan <= 0) { scene.remove(p); particles.splice(i, 1); }
+            }
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            if (!is3DActive) return;
+            const container = document.getElementById('canvas-container');
+            const w = container.clientWidth || window.innerWidth;
+            const h = container.clientHeight || window.innerHeight;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        }
+
+        function sendReport() {
+            const recipient = "jay.raine@chiltonbridgeschool.co.uk";
+            const subject = "Lexicon Mine Learning Vibes";
+            const textBody = `Hey Jay,\n\nI crushed it in Lexicon Mine.\n\n` +
+                             `Vocabulary Mined: ${game.totalWordsSpelled} words\n` +
+                             `Shaft Level: Tier ${game.shaftLevel}/3\n` +
+                             `Brain Cells: ${game.crystals}\n\n` +
+                             `Name: [TYPE YOUR NAME HERE]`;
+            const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${recipient}` +
+                        `&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(textBody)}`;
+            window.open(url, '_blank');
+        }
+
+        function saveProgress() { if (!isQuizActive) localStorage.setItem('lexicon_cute_v1', JSON.stringify(game)); }
+        function hardReset() { if (confirm("Completely reset statistics?")) { localStorage.removeItem('lexicon_cute_v1'); location.reload(); } }
+
+        window.onload = initGame;
+    </script>
+</body>
+</html>
