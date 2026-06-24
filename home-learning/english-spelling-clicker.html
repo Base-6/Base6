@@ -345,13 +345,13 @@
         <button class="upgrade-btn" id="upg-miner" onclick="buyUpgrade('miner')">
             <strong>&#129302; CLUTTER-BOT</strong>
             <span class="subtext" id="desc-miner">clicks for me (boring)</span>
-            <span class="upgrade-cost" id="cost-miner">Cost: 15 Gold</span>
+            <span class="upgrade-cost" id="cost-miner">Cost: 20 Gold</span>
         </button>
 
         <button class="upgrade-btn" id="upg-pick" onclick="buyUpgrade('pickaxe')">
             <strong>&#128296; SHINY STICK 2.0</strong>
             <span class="subtext" id="desc-pick">digs harder, duh.</span>
-            <span class="upgrade-cost" id="cost-pick">Cost: 50 Gold</span>
+            <span class="upgrade-cost" id="cost-pick">Cost: 60 Gold</span>
         </button>
 
         <button class="upgrade-btn" id="upg-shaft" onclick="buyUpgrade('shaft')">
@@ -612,8 +612,8 @@
         }
 
         function processWordCompletion() {
-            const baseReward = game.currentWordData.word.length * game.shaftLevel * 15;
-            const netGoldPayout = Math.floor(baseReward * (1 + (game.pickaxeLevel - 1) * 0.6) * (1 + (game.crystals * 0.3)));
+            const baseReward = game.currentWordData.word.length * game.shaftLevel * 6;
+            const netGoldPayout = Math.floor(baseReward * (1 + (game.pickaxeLevel - 1) * 0.5) * (1 + (game.crystals * 0.3)));
 
             game.gold += netGoldPayout;
             game.totalWordsSpelled++;
@@ -701,7 +701,7 @@
             if (guess === quizTargetWord) {
                 const hintsUsed = quizRevealed - 1; // first letter was free
                 const factor = Math.max(0.3, 1 - hintsUsed * 0.15 - quizWrong * 0.1);
-                const reward = Math.floor(game.shaftLevel * 200 * (1 + (game.crystals * 0.3)) * factor);
+                const reward = Math.floor(game.shaftLevel * 90 * (1 + (game.crystals * 0.3)) * factor);
                 game.gold += reward;
 
                 fb.innerText = `SLAY. Spot on. +${reward.toLocaleString()} funds \uD83D\uDC85`;
@@ -747,14 +747,14 @@
         function buyUpgrade(type) {
             if (isQuizActive) return;
             if (type === 'miner') {
-                const cost = Math.floor(15 * Math.pow(1.5, game.minerLevel));
+                const cost = Math.floor(20 * Math.pow(1.75, game.minerLevel));
                 if (game.gold >= cost) {
                     game.gold -= cost; game.minerLevel++;
                     if (is3DActive) syncHelpers();
                     hop += 0.2; startEmote('wiggle', 0.4);
                 }
             } else if (type === 'pickaxe') {
-                const cost = Math.floor(50 * Math.pow(1.7, game.pickaxeLevel - 1));
+                const cost = Math.floor(60 * Math.pow(1.8, game.pickaxeLevel - 1));
                 if (game.gold >= cost) {
                     game.gold -= cost; game.pickaxeLevel++;
                     if (is3DActive) syncHelpers();
@@ -805,13 +805,13 @@
             document.getElementById('stat-quiz-countdown').innerText = clicksUntilQuiz;
             document.getElementById('stat-bonus').innerText = `+${game.crystals * 30}%`;
 
-            const minerCost = Math.floor(15 * Math.pow(1.5, game.minerLevel));
+            const minerCost = Math.floor(20 * Math.pow(1.75, game.minerLevel));
             document.getElementById('desc-miner').innerText = `speeds: ${game.minerLevel} clicks/sec · quiz gap +${game.minerLevel * 10}`;
             document.getElementById('cost-miner').innerText = `Cost: ${minerCost} Funds`;
             document.getElementById('upg-miner').disabled = (game.gold < minerCost || isQuizActive);
 
-            const pickCost = Math.floor(50 * Math.pow(1.7, game.pickaxeLevel - 1));
-            document.getElementById('desc-pick').innerText = `multiplier: ${(1 + (game.pickaxeLevel - 1) * 0.6).toFixed(1)}x`;
+            const pickCost = Math.floor(60 * Math.pow(1.8, game.pickaxeLevel - 1));
+            document.getElementById('desc-pick').innerText = `multiplier: ${(1 + (game.pickaxeLevel - 1) * 0.5).toFixed(1)}x`;
             document.getElementById('cost-pick').innerText = `Cost: ${pickCost} Funds`;
             document.getElementById('upg-pick').disabled = (game.gold < pickCost || isQuizActive);
 
