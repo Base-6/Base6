@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Alright? | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --rose: #c25b7c;
+    --tint: #f7eef1;
+    --line: #ece4df;
+    --text: #2b2b2b;
+    --muted: #7a726e;
+    --teal: #3f7d88;
+    --teal-tint: #eef4f5;
+  }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: var(--text); min-height: 100vh; }
+
+  .site-header { position: relative; background-color: var(--rose); padding: 2.2rem 1.5rem 2.75rem; text-align: center; }
+  .site-header h1 { font-size: 2.1rem; font-weight: 700; color: #fff; line-height: 1.15; }
+  .site-header p { font-size: 1rem; color: #fbe7ee; margin-top: 0.4rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 30px; }
+
+  .main { max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  .back-link { display: inline-block; margin-bottom: 1.75rem; font-size: 0.9rem; font-weight: 700; color: var(--rose); text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+
+  .card { background: #fff; border: 1.5px solid var(--line); border-radius: 14px; padding: 1.6rem 1.5rem; margin-bottom: 1.5rem; }
+  .card h2 { font-size: 1.2rem; color: var(--text); margin-bottom: 0.5rem; line-height: 1.3; }
+  .card p { font-size: 1rem; line-height: 1.65; color: var(--text); margin-bottom: 0.6rem; }
+  .card p:last-child { margin-bottom: 0; }
+  .soft { font-size: 0.92rem; color: var(--muted); }
+
+  /* weather picker */
+  .weather-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)); gap: 0.55rem; margin: 0.7rem 0 1rem; }
+  .weather-btn { background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 0.8rem 0.4rem; font-family: inherit; font-size: 0.78rem; font-weight: 700; color: var(--muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease; }
+  .weather-btn .em { font-size: 1.6rem; }
+  .weather-btn.active { border-color: var(--rose); background: var(--tint); color: var(--rose); }
+  .weather-caption { background: var(--tint); border-radius: 10px; padding: 0.85rem 1rem; font-size: 0.98rem; color: var(--text); line-height: 1.55; }
+
+  /* sliders */
+  .slider-block { margin-bottom: 1.4rem; }
+  .slider-block:last-child { margin-bottom: 0; }
+  .slider-top { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; margin-bottom: 0.45rem; }
+  .slider-name { font-size: 1rem; font-weight: 700; color: var(--text); }
+  .slider-val { font-size: 0.85rem; color: var(--muted); }
+  input[type="range"] { width: 100%; height: 8px; -webkit-appearance: none; appearance: none; background: #efe6e1; border-radius: 20px; outline: none; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--rose); border: 3px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.15); cursor: pointer; }
+  input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--rose); border: 3px solid #fff; cursor: pointer; }
+  .slider-caption { font-size: 0.92rem; color: var(--muted); margin-top: 0.45rem; line-height: 1.5; }
+
+  /* text inputs */
+  .field { margin-bottom: 1.1rem; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.45rem; }
+  textarea, input[type="text"] { width: 100%; font-family: inherit; font-size: 1rem; color: var(--text); background: #fffdfb; border: 1.5px solid var(--line); border-radius: 10px; padding: 0.7rem 0.8rem; resize: vertical; }
+  textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--rose); }
+  textarea { min-height: 62px; }
+
+  /* silly question */
+  .silly-q { background: var(--tint); border-radius: 10px; padding: 0.95rem 1rem; font-size: 1.02rem; font-weight: 700; color: var(--text); margin-bottom: 0.8rem; line-height: 1.45; }
+
+  .btn { font-family: inherit; font-weight: 700; font-size: 0.95rem; border: 1.5px solid var(--rose); border-radius: 10px; padding: 0.7rem 1.2rem; cursor: pointer; background: #fff; color: var(--rose); transition: background 0.15s ease, color 0.15s ease; }
+  .btn:hover { background: var(--tint); }
+  .btn-fill { background: var(--rose); color: #fff; }
+  .btn-fill:hover { background: #ad4d6c; }
+
+  /* top up checklist */
+  .topup-list { list-style: none; display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-top: 0.6rem; }
+  .topup-item { display: flex; align-items: center; gap: 0.7rem; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 0.65rem 0.85rem; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
+  .topup-item.checked { border-color: var(--rose); background: var(--tint); }
+  .topup-item input { width: 19px; height: 19px; accent-color: var(--rose); cursor: pointer; flex-shrink: 0; }
+  .topup-item span { font-size: 0.98rem; color: var(--text); }
+
+  /* breathing */
+  .breathe-wrap { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 0.4rem 0; }
+  .breathe-circle { width: 110px; height: 110px; border-radius: 50%; background: var(--tint); border: 2px solid var(--rose); display: flex; align-items: center; justify-content: center; color: var(--rose); font-weight: 700; font-size: 0.95rem; text-align: center; padding: 0.5rem; }
+  .breathe-circle.go { animation: breathe 11s ease-in-out 1; }
+  @keyframes breathe {
+    0% { transform: scale(0.75); }
+    36% { transform: scale(1.12); }
+    55% { transform: scale(1.12); }
+    100% { transform: scale(0.75); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .breathe-circle.go { animation: none; }
+  }
+
+  /* safeguarding */
+  .care { background: var(--teal-tint); border: 1.5px solid #cfe3e7; border-radius: 14px; padding: 1.5rem 1.5rem; margin-bottom: 1.5rem; }
+  .care h2 { color: var(--teal); font-size: 1.15rem; margin-bottom: 0.5rem; }
+  .care p { font-size: 1rem; line-height: 1.65; color: #34474a; margin-bottom: 0.55rem; }
+  .care p:last-child { margin-bottom: 0; }
+
+  /* send */
+  .send-card { text-align: center; }
+  .send-card .btn { font-size: 1.02rem; padding: 0.8rem 1.6rem; }
+  .send-note { font-size: 0.88rem; color: var(--muted); margin-top: 0.8rem; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #999; border-top: 1px solid var(--line); margin-top: 1rem; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>Alright?</h1>
+  <p>The question everyone asks and nobody answers properly. Let's fix that.</p>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <a class="back-link" href="day2.html">Back to Day 2</a>
+
+  <div class="card">
+    <h2>Hello you</h2>
+    <p>When someone says "alright?" the only allowed answer is usually "yeah, fine." Today you get to answer it for real, in private, with nobody rushing you.</p>
+    <p class="soft">This takes about twenty minutes if you do every bit, but you do not have to. Do as much or as little as you fancy, in any order, and skip anything that is not for you. There are no wrong answers here.</p>
+  </div>
+
+  <div class="card">
+    <h2>What is your inner weather?</h2>
+    <p class="soft">Tap the one that feels closest. You can change your mind.</p>
+    <div class="weather-grid" id="weatherGrid"></div>
+    <div class="weather-caption" id="weatherCaption">Pick a forecast above and I will tell you what it means.</div>
+  </div>
+
+  <div class="card">
+    <h2>Slide to be honest</h2>
+    <div class="slider-block" data-key="battery">
+      <div class="slider-top"><span class="slider-name">Battery</span><span class="slider-val">5 / 10</span></div>
+      <input type="range" min="0" max="10" value="5" aria-label="Battery level">
+      <div class="slider-caption"></div>
+    </div>
+    <div class="slider-block" data-key="fog">
+      <div class="slider-top"><span class="slider-name">Brain fog</span><span class="slider-val">5 / 10</span></div>
+      <input type="range" min="0" max="10" value="5" aria-label="Brain fog level">
+      <div class="slider-caption"></div>
+    </div>
+    <div class="slider-block" data-key="mood">
+      <div class="slider-top"><span class="slider-name">Mood</span><span class="slider-val">5 / 10</span></div>
+      <input type="range" min="0" max="10" value="5" aria-label="Mood level">
+      <div class="slider-caption"></div>
+    </div>
+    <div class="slider-block" data-key="snack">
+      <div class="slider-top"><span class="slider-name">Snack levels</span><span class="slider-val">5 / 10</span></div>
+      <input type="range" min="0" max="10" value="5" aria-label="Snack level">
+      <div class="slider-caption"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>One good, one rubbish</h2>
+    <p class="soft">Both can be true on the same day. That is completely normal.</p>
+    <div class="field">
+      <label for="goodThing">One good thing about today, even a tiny one</label>
+      <textarea id="goodThing" placeholder="It can be very small. A good snack counts."></textarea>
+    </div>
+    <div class="field">
+      <label for="badThing">One thing that has been rubbish</label>
+      <textarea id="badThing" placeholder="No need to fix it. Just naming it is plenty."></textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>The random silly question</h2>
+    <p class="soft">Press the button for a daft question. Answer it however you like.</p>
+    <div class="silly-q" id="sillyQ">Press the button and let chaos decide.</div>
+    <button class="btn" id="sillyBtn" type="button">Give me a question</button>
+    <div class="field" style="margin-top:0.9rem;">
+      <textarea id="sillyAns" placeholder="Your wonderfully silly answer goes here."></textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Tiny kind things</h2>
+    <p class="soft">Pick any that sound nice, or none. These are gentle ideas, not jobs to do.</p>
+    <ul class="topup-list" id="topupList"></ul>
+  </div>
+
+  <div class="card">
+    <h2>Three big breaths</h2>
+    <p class="soft">Only if you want to. Press start and follow the circle three times.</p>
+    <div class="breathe-wrap">
+      <div class="breathe-circle" id="breatheCircle">Ready when you are</div>
+      <button class="btn" id="breatheBtn" type="button">Start a breath</button>
+    </div>
+  </div>
+
+  <div class="care">
+    <h2>If something feels too big</h2>
+    <p>Sometimes how you are is bigger than a check in page, and that is okay. If something is worrying you, or feels too heavy to carry on your own, please tell a grown up you trust.</p>
+    <p>That could be Jay, someone at home, or another adult at school. You never have to keep a worry to yourself, and a good grown up will always want to help. Nothing you tell them has to be a secret.</p>
+  </div>
+
+  <div class="card send-card">
+    <h2>Want to share how you got on?</h2>
+    <p>You can send your answers to Jay, but only if you want to. It is completely fine to keep today just for you.</p>
+    <div class="field" style="text-align:left; margin-top:0.9rem;">
+      <label for="nameField">Your name or initials, if you want to add it</label>
+      <input type="text" id="nameField" placeholder="Optional">
+    </div>
+    <button class="btn btn-fill" id="sendBtn" type="button" style="margin-top:0.3rem;">Send to Jay</button>
+    <p class="send-note">This opens an email with your answers already written in. You can read it before you send.</p>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+(function () {
+  var STORE = 'b6_checkin_alright_';
+  var save = function (k, v) { try { localStorage.setItem(STORE + k, v); } catch (e) {} };
+  var load = function (k) { try { return localStorage.getItem(STORE + k); } catch (e) { return null; } };
+
+  /* weather */
+  var weathers = [
+    { id: 'sunny', em: '\u2600\uFE0F', name: 'Sunny', cap: 'Feeling good and riding high today. Long may it last.' },
+    { id: 'bright', em: '\uD83C\uDF24\uFE0F', name: 'Bright', cap: 'Mostly alright, with the odd grey bit drifting through. Fair enough.' },
+    { id: 'cloudy', em: '\u2601\uFE0F', name: 'Cloudy', cap: 'A bit meh. Not bad, not brilliant, just sort of cloudy. That is allowed.' },
+    { id: 'rainy', em: '\uD83C\uDF27\uFE0F', name: 'Rainy', cap: 'A rougher day. Heavy going. Be kind to yourself with it.' },
+    { id: 'stormy', em: '\u26C8\uFE0F', name: 'Stormy', cap: 'Big feelings happening, thunder and everything. Big feelings are okay.' },
+    { id: 'foggy', em: '\uD83C\uDF2B\uFE0F', name: 'Foggy', cap: 'Cannot quite see how you feel. A bit blank or numb. Also completely fine.' },
+    { id: 'chaos', em: '\uD83C\uDF2A\uFE0F', name: 'Chaos', cap: 'Everything at once. A full weather event in human form. We have all been there.' }
+  ];
+  var grid = document.getElementById('weatherGrid');
+  var cap = document.getElementById('weatherCaption');
+  weathers.forEach(function (w) {
+    var b = document.createElement('button');
+    b.className = 'weather-btn';
+    b.type = 'button';
+    b.dataset.id = w.id;
+    b.innerHTML = '<span class="em">' + w.em + '</span>' + w.name;
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.weather-btn').forEach(function (x) { x.classList.remove('active'); });
+      b.classList.add('active');
+      cap.textContent = w.cap;
+      save('weather', w.id);
+    });
+    grid.appendChild(b);
+  });
+  var savedW = load('weather');
+  if (savedW) {
+    var match = weathers.filter(function (w) { return w.id === savedW; })[0];
+    if (match) {
+      var btn = grid.querySelector('[data-id="' + savedW + '"]');
+      if (btn) { btn.classList.add('active'); cap.textContent = match.cap; }
+    }
+  }
+
+  /* sliders */
+  var captions = {
+    battery: ['Running on fumes. Phone at one percent.', 'Low power mode. Functioning, just about.', 'A decent charge. Could do a thing or two.', 'Fully charged, and slightly suspicious about it.'],
+    fog: ['Crystal clear. Sharp as anything today.', 'A few clouds, but mostly thinking straight.', 'Quite foggy. Where did that word go.', 'Total pea soup. Brain has left a note saying back later.'],
+    mood: ['Pretty low today. Sending you a quiet nod.', 'Wobbly, up and down. That happens.', 'Alright actually, all things considered.', 'Brilliant. Somebody bottle this feeling.'],
+    snack: ['Empty. This is a snack emergency.', 'Peckish. A biscuit would not hurt.', 'Comfortably fed and living well.', 'Absolutely stuffed. No notes.']
+  };
+  var names = { battery: 'Battery', fog: 'Brain fog', mood: 'Mood', snack: 'Snack levels' };
+  function band(v) { if (v <= 2) return 0; if (v <= 5) return 1; if (v <= 8) return 2; return 3; }
+  document.querySelectorAll('.slider-block').forEach(function (block) {
+    var key = block.dataset.key;
+    var input = block.querySelector('input');
+    var valEl = block.querySelector('.slider-val');
+    var capEl = block.querySelector('.slider-caption');
+    var stored = load('slider_' + key);
+    if (stored !== null && stored !== '') { input.value = stored; }
+    function update() {
+      var v = parseInt(input.value, 10);
+      valEl.textContent = v + ' / 10';
+      capEl.textContent = captions[key][band(v)];
+      save('slider_' + key, String(v));
+    }
+    input.addEventListener('input', update);
+    update();
+  });
+
+  /* text fields */
+  ['goodThing', 'badThing', 'sillyAns', 'nameField'].forEach(function (id) {
+    var el = document.getElementById(id);
+    var s = load(id);
+    if (s) { el.value = s; }
+    el.addEventListener('input', function () { save(id, el.value); });
+  });
+
+  /* silly question */
+  var questions = [
+    'If your mood today was a sandwich, what would be in it?',
+    'What animal best matches your energy right now?',
+    'If today had a theme song, what would it be?',
+    'You are in charge of the weather now. What do you order?',
+    'If you could nap anywhere right now, where would it be?',
+    'Pick a superpower for getting through today. Go.',
+    'What would your pet say about you today? Make it up.',
+    'If your brain was a web browser, how many tabs are open?',
+    'What one snack would fix almost everything right now?',
+    'If today was a film, what kind of film is it?',
+    'What is something you are quietly quite good at?',
+    'If you had a theme tune playing as you walk in, what is it?'
+  ];
+  var qBox = document.getElementById('sillyQ');
+  var qStored = load('sillyQ');
+  if (qStored) { qBox.textContent = qStored; }
+  document.getElementById('sillyBtn').addEventListener('click', function () {
+    var q = questions[Math.floor(Math.random() * questions.length)];
+    qBox.textContent = q;
+    save('sillyQ', q);
+  });
+
+  /* top up */
+  var topups = [
+    'Drink some water',
+    'Look out of a window for a minute',
+    'Have a stretch or a wiggle',
+    'Spend a minute with a pet',
+    'Listen to one song you love',
+    'Message someone you like',
+    'Step into some shade or cool air',
+    'Do nothing on purpose for two minutes',
+    'Have a snack, you heard the levels'
+  ];
+  var list = document.getElementById('topupList');
+  var savedTop = (load('topups') || '').split('|');
+  topups.forEach(function (t) {
+    var li = document.createElement('li');
+    li.className = 'topup-item';
+    var checked = savedTop.indexOf(t) !== -1;
+    if (checked) { li.classList.add('checked'); }
+    li.innerHTML = '<input type="checkbox" ' + (checked ? 'checked' : '') + ' aria-label="' + t + '"><span>' + t + '</span>';
+    var cb = li.querySelector('input');
+    function sync() {
+      li.classList.toggle('checked', cb.checked);
+      var picked = [];
+      list.querySelectorAll('.topup-item').forEach(function (item, idx) {
+        if (item.querySelector('input').checked) { picked.push(topups[idx]); }
+      });
+      save('topups', picked.join('|'));
+    }
+    li.addEventListener('click', function (e) {
+      if (e.target !== cb) { cb.checked = !cb.checked; }
+      sync();
+    });
+    cb.addEventListener('change', sync);
+    list.appendChild(li);
+  });
+
+  /* breathing */
+  var circle = document.getElementById('breatheCircle');
+  var bBtn = document.getElementById('breatheBtn');
+  var breathing = false;
+  bBtn.addEventListener('click', function () {
+    if (breathing) { return; }
+    breathing = true;
+    bBtn.textContent = 'Breathing...';
+    var steps = [
+      { t: 'Breathe in', d: 4000 },
+      { t: 'Hold', d: 2000 },
+      { t: 'Breathe out', d: 5000 }
+    ];
+    var round = 0;
+    function runRound() {
+      circle.classList.remove('go');
+      void circle.offsetWidth;
+      circle.classList.add('go');
+      var i = 0;
+      function step() {
+        if (i < steps.length) {
+          circle.textContent = steps[i].t;
+          var d = steps[i].d;
+          i++;
+          setTimeout(step, d);
+        } else {
+          round++;
+          if (round < 3) { runRound(); }
+          else {
+            circle.classList.remove('go');
+            circle.textContent = 'Nicely done';
+            bBtn.textContent = 'Go again';
+            breathing = false;
+          }
+        }
+      }
+      step();
+    }
+    runRound();
+  });
+
+  /* send to Jay */
+  document.getElementById('sendBtn').addEventListener('click', function () {
+    var v = function (id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; };
+    var wId = load('weather');
+    var wName = '(not chosen)';
+    if (wId) { var m = weathers.filter(function (w) { return w.id === wId; })[0]; if (m) { wName = m.name; } }
+    var levels = ['battery', 'fog', 'mood', 'snack'].map(function (k) {
+      return names[k] + ': ' + (load('slider_' + k) || '5') + ' / 10';
+    });
+    var picked = (load('topups') || '').split('|').filter(function (x) { return x; });
+    var lines = [];
+    lines.push('Hi Jay,');
+    lines.push('');
+    lines.push('Here is how I am doing today.');
+    lines.push('');
+    lines.push('Inner weather: ' + wName);
+    lines.push(levels.join('\n'));
+    lines.push('');
+    lines.push('One good thing: ' + (v('goodThing') || '(left blank)'));
+    lines.push('One rubbish thing: ' + (v('badThing') || '(left blank)'));
+    lines.push('');
+    lines.push('Silly question: ' + (load('sillyQ') || '(none)'));
+    lines.push('My answer: ' + (v('sillyAns') || '(left blank)'));
+    lines.push('');
+    lines.push('Tiny kind things I might try: ' + (picked.length ? picked.join(', ') : '(none chosen)'));
+    if (v('nameField')) { lines.push(''); lines.push('From ' + v('nameField')); }
+    var subject = 'My check in - Base 6 Home Learning';
+    var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=jay.raine@chiltonbridgeschool.co.uk'
+      + '&su=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(lines.join('\n'));
+    window.open(url, '_blank');
+  });
+})();
+</script>
+
+</body>
+</html>
