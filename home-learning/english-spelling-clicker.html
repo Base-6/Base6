@@ -450,6 +450,9 @@
         let scene, camera, renderer, mainRock;
         let geoPal, faceGroup, leftEye, rightEye, mouth, tongueMesh;
         let sproutMesh, crownGroup, auraMesh, auraBase = 0.1;
+        let pickaxePivot, pickaxeMesh, botsGroup;
+        let bots = [];
+        let pickSwingKick = 0;
         let particles = [];
         let miniStars = [];
         const raycaster = new THREE.Raycaster();
@@ -564,9 +567,10 @@
                     mainRock.scale.set(1.32, 0.72, 1.32); // squishy boing
                     mainRock.material.emissive.setHex(0xffffff);
                     mainRock.material.emissiveIntensity = 0.5;
-                    hop += 0.22;      // a little jump
-                    eyeWide = 1.6;    // eyes go wide
-                    mouthOpen = 1;     // mouth pops open
+                    hop += 0.22;          // a little jump
+                    eyeWide = 1.6;        // eyes go wide
+                    mouthOpen = 1;         // mouth pops open
+                    pickSwingKick = -0.9;  // pickaxe pal takes a swing
                     spawnConfetti(12);
                 }
 
@@ -734,10 +738,18 @@
             if (isQuizActive) return;
             if (type === 'miner') {
                 const cost = Math.floor(15 * Math.pow(1.5, game.minerLevel));
-                if (game.gold >= cost) { game.gold -= cost; game.minerLevel++; }
+                if (game.gold >= cost) {
+                    game.gold -= cost; game.minerLevel++;
+                    if (is3DActive) syncHelpers();
+                    hop += 0.2; startEmote('wiggle', 0.4);
+                }
             } else if (type === 'pickaxe') {
                 const cost = Math.floor(50 * Math.pow(1.7, game.pickaxeLevel - 1));
-                if (game.gold >= cost) { game.gold -= cost; game.pickaxeLevel++; }
+                if (game.gold >= cost) {
+                    game.gold -= cost; game.pickaxeLevel++;
+                    if (is3DActive) syncHelpers();
+                    pickSwingKick = -0.9; hop += 0.2;
+                }
             } else if (type === 'shaft') {
                 if (game.shaftLevel >= 3) return;
                 const cost = game.shaftLevel === 1 ? 250 : 1500;
@@ -927,6 +939,116 @@
                     })
                 );
                 geoPal.add(auraMesh);
+            }
+
+            buildHelpers();
+        }
+
+        function pickHeadColor(lvl) {
+            if (lvl >= 6) return 0x7fe7ff; // diamond
+            if (lvl >= 4) return 0xffd700; // gold
+            if (lvl >= 2) return 0xd0d4d8; // silver
+            return 0xb0772d;               // copper, level 1
+        }
+
+        function buildHelpers() {
+            // a living, googly-eyed pickaxe that floats beside Geo-Pal
+            pickaxePivot = new THREE.Group();
+            pickaxePivot.position.set(1.5, 0.15, 0.35);
+            pickaxeMesh = new THREE.Group();
+
+            const handle = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.04, 0.04, 0.66, 8),
+                new THREE.MeshPhongMaterial({ color: 0x8a5a2b, shininess: 30 })
+            );
+            handle.position.y = -0.33;
+            pickaxeMesh.add(handle);
+
+            const head = new THREE.Mesh(
+                new THREE.BoxGeometry(0.46, 0.12, 0.12),
+                new THREE.MeshPhongMaterial({ color: 0xb0772d, shininess: 90, flatShading: true })
+            );
+            head.name = 'pickHead';
+            pickaxeMesh.add(head);
+
+            const pW = () => new THREE.MeshBasicMaterial({ color: 0xffffff, depthTest: false });
+            const pD = () => new THREE.MeshBasicMaterial({ color: 0x2a2030, depthTest: false });
+            [-0.1, 0.1].forEach(x => {
+                const w = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 10), pW());
+                w.position.set(x, 0.02, 0.09); w.renderOrder = 12;
+                const p = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 8), pD());
+                p.position.set(x, 0.0, 0.13); p.renderOrder = 13;
+                pickaxeMesh.add(w, p);
+            });
+
+            pickaxePivot.add(pickaxeMesh);
+            geoPal.add(pickaxePivot);
+
+            // container for the orbiting auto-miner bots
+            botsGroup = new THREE.Group();
+            geoPal.add(botsGroup);
+            bots = [];
+
+            syncHelpers();
+        }
+
+        function makeBot(i) {
+            const palette = [0xff9ec2, 0x9be7c4, 0xa7c7ff, 0xffd98a, 0xd2b3ff, 0x9fe0e6, 0xffb3a7, 0xc7f0a0];
+            const bot = new THREE.Group();
+
+            const body = new THREE.Mesh(
+                new THREE.BoxGeometry(0.32, 0.32, 0.32),
+                new THREE.MeshPhongMaterial({ color: palette[i % palette.length], shininess: 70, flatShading: true })
+            );
+            bot.add(body);
+
+            [-0.07, 0.07].forEach(x => {
+                const w = new THREE.Mesh(new THREE.SphereGeometry(0.06, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+                w.position.set(x, 0.03, 0.17);
+                const p = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 8), new THREE.MeshBasicMaterial({ color: 0x2a2030 }));
+                p.position.set(x, 0.02, 0.21);
+                bot.add(w, p);
+            });
+
+            const stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.18, 6), new THREE.MeshPhongMaterial({ color: 0x6b5a79 }));
+            stalk.position.y = 0.24;
+            const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.05, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffe66d }));
+            bulb.position.y = 0.34;
+            bot.add(stalk, bulb);
+
+            const pick = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.05, 0.05), new THREE.MeshPhongMaterial({ color: 0xd0d4d8, flatShading: true }));
+            pick.position.set(0, -0.12, 0.18);
+            pick.rotation.z = 0.6;
+            bot.add(pick);
+
+            bot.userData = {
+                angle: (i / 8) * Math.PI * 2,
+                radius: 2.0 + (i % 3) * 0.18,
+                speed: (0.012 + (i % 4) * 0.004) * (i % 2 === 0 ? 1 : -1),
+                yOff: -0.5 + ((i * 0.37) % 1.4),
+                phase: i * 1.7,
+                bornAt: performance.now() * 0.001
+            };
+            botsGroup.add(bot);
+            return bot;
+        }
+
+        function syncHelpers() {
+            if (!is3DActive) return;
+
+            // pickaxe grows and changes metal as it levels
+            if (pickaxeMesh) {
+                const lvl = game.pickaxeLevel;
+                pickaxeMesh.scale.setScalar(Math.min(1.6, 1 + (lvl - 1) * 0.06));
+                const head = pickaxeMesh.getObjectByName('pickHead');
+                if (head) head.material.color.setHex(pickHeadColor(lvl));
+            }
+
+            // one helper bot per auto-miner, capped so it never gets silly
+            if (botsGroup) {
+                const want = Math.min(game.minerLevel, 8);
+                while (bots.length > want) { const b = bots.pop(); botsGroup.remove(b); disposeGroup(b); }
+                while (bots.length < want) { bots.push(makeBot(bots.length)); }
             }
         }
 
@@ -1126,6 +1248,26 @@
             // ambient sparkle once fully evolved
             if (game.shaftLevel === 3 && !isQuizActive && Math.random() < 0.05) {
                 spawnConfetti(1);
+            }
+
+            // floating pickaxe pal swings as it works
+            if (pickaxePivot) {
+                pickSwingKick += (0 - pickSwingKick) * 0.12;
+                pickaxePivot.rotation.z = -0.35 + Math.sin(t * 2.6) * 0.22 + pickSwingKick;
+                pickaxePivot.position.y = 0.15 + Math.sin(t * 2) * 0.05;
+            }
+
+            // auto-miner helper bots orbit, bob, nod and pop in when hired
+            for (let i = 0; i < bots.length; i++) {
+                const b = bots[i];
+                const u = b.userData;
+                u.angle += u.speed;
+                b.position.set(Math.cos(u.angle) * u.radius, u.yOff + Math.sin(t * 3 + u.phase) * 0.12, Math.sin(u.angle) * u.radius);
+                b.rotation.z = Math.sin(t * 4 + u.phase) * 0.18;
+                b.rotation.x = Math.sin(t * 7 + u.phase) * 0.14;
+                const age = (t - u.bornAt) / 0.4;
+                const ps = age < 1 ? 1 - Math.pow(1 - age, 3) : 1;
+                b.scale.setScalar(ps);
             }
 
             // Geo-Pal face: wide-eye recovery, blinking, the occasional cheeky wink, mouth and tongue
