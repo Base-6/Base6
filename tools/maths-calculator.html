@@ -399,7 +399,7 @@
 </header>
 
 <div class="banner">
-  <p>Work through maths one step at a time — you figure it out, it guides you.</p>
+  <p>Work through maths in tiny steps — you figure out each little bit, then it guides you on.</p>
 </div>
 
 <main class="main">
@@ -409,7 +409,7 @@
     <div class="input-row">
       <textarea
         id="problem-input"
-        placeholder="e.g.  48 ÷ 6   or   what is 15% of 80   or   area of a rectangle 9cm by 4cm"
+        placeholder="e.g. 48 ÷ 6, what is 15% of 80, area of a rectangle 9cm by 4cm"
         rows="2"
       ></textarea>
       <button class="go-btn" id="go-btn" onclick="startProblem()">Let's go</button>
@@ -430,12 +430,14 @@
 /* ── State ── */
 let state = {
   problem: '',
-  conversationHistory: [],  // [{role, content}] sent to API
   stepIndex: 0,
-  completedSteps: [],       // {stepNum, label, working, explanation, studentAttempt}
+  completedSteps: [],
   finalAnswer: '',
   tip: '',
-  done: false
+  done: false,
+  plan: [],
+  planIndex: 0,
+  awaitingExpected: null
 };
 
 /* ── Examples ── */
@@ -468,58 +470,6 @@ document.getElementById('problem-input').addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); startProblem(); }
 });
 
-/* ── System prompt ── */
-const SYSTEM = `You are a patient, friendly maths tutor helping secondary school students aged 11–16. Many students have ADHD, dyslexia, or autism. You guide students through maths problems one small step at a time — you never give away the answer, you help them find it.
-
-VERY IMPORTANT RULES:
-- Break every problem into SHORT steps (no more than 2–3 lines of working each).
-- Never combine multiple operations into one step.
-- Keep steps small enough for a student with ADHD to hold in working memory.
-- Never use italics. Never use bullet points in explanations. Write in plain, warm English.
-- Do not add praise filler like "great job" or "well done".
-
-You communicate by responding with a JSON object ONLY. No markdown fences, no preamble, no text outside the JSON.
-
-FLOW:
-
-When the student sends a problem, respond with:
-{
-  "type": "step",
-  "stepNumber": 1,
-  "label": "short step label (3–5 words)",
-  "working": "show the maths clearly",
-  "explanation": "one or two plain sentences explaining what to do and why",
-  "question": "a short question asking the student what they think the answer to the NEXT step will be — keep it concrete and specific",
-  "isLast": false
-}
-
-When the student replies with their attempt at a step, evaluate it and respond with:
-{
-  "type": "step",
-  "stepNumber": <next number>,
-  "label": "short step label",
-  "working": "show the maths for this step",
-  "explanation": "one or two plain sentences",
-  "question": "question for the NEXT step (or omit if isLast is true)",
-  "feedback": "brief, warm, honest response to their attempt — say if they were right, close, or off track, and why — one sentence max",
-  "isLast": false
-}
-
-When the final step is reached, set "isLast": true and add:
-{
-  "type": "step",
-  "stepNumber": <n>,
-  "label": "label",
-  "working": "final working",
-  "explanation": "explanation",
-  "feedback": "response to their attempt if applicable",
-  "isLast": true,
-  "finalAnswer": "the complete final answer as a short string",
-  "tip": "one memorable tip or related maths fact — one sentence, optional"
-}
-
-Keep steps SHORT. A 4-step problem is better than a 2-step one. Never skip working.`;
-
 /* ── Start ── */
 async function startProblem() {
   const input = document.getElementById('problem-input').value.trim();
@@ -527,20 +477,25 @@ async function startProblem() {
 
   state = {
     problem: input,
-    conversationHistory: [],
     stepIndex: 0,
     completedSteps: [],
     finalAnswer: '',
     tip: '',
-    done: false
+    done: false,
+    plan: buildPlan(input),
+    planIndex: 0,
+    awaitingExpected: null
   };
 
   lockInput(true);
   document.getElementById('thread').innerHTML = '';
+
+  if (!state.plan || state.plan.length === 0) {
+    appendError('I can work through the examples and common maths questions like area, perimeter, percentage, mean, rounding, fractions and simple calculations. Try one of the chips first.');
+    return;
+  }
+
   setLoading(true);
-
-  state.conversationHistory.push({ role: 'user', content: input });
-
   await fetchNextStep(null);
 }
 
@@ -551,18 +506,12 @@ async function submitAttempt() {
   const attempt = inputEl.value.trim();
   if (!attempt) return;
 
-  // Disable prompt while waiting
   inputEl.disabled = true;
   document.getElementById('submit-btn').disabled = true;
 
-  // Record the attempt against the last step
   const lastStep = state.completedSteps[state.completedSteps.length - 1];
   if (lastStep) lastStep.studentAttempt = attempt;
 
-  // Add to conversation
-  state.conversationHistory.push({ role: 'user', content: attempt });
-
-  // Remove the prompt card
   const promptCard = document.getElementById('prompt-card');
   if (promptCard) promptCard.remove();
 
@@ -570,35 +519,349 @@ async function submitAttempt() {
   await fetchNextStep(attempt);
 }
 
-/* ── API call ── */
+/* ── Local step engine: works on GitHub Pages with no API key ── */
 async function fetchNextStep(studentAttempt) {
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: SYSTEM,
-        messages: state.conversationHistory
-      })
-    });
+    await wait(250);
 
-    const data = await response.json();
-    const raw = (data.content || []).map(b => b.text || '').join('');
-    const clean = raw.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
+    const feedback = studentAttempt ? makeFeedback(studentAttempt, state.awaitingExpected) : null;
+    const step = state.plan[state.planIndex];
 
-    // Add assistant reply to history
-    state.conversationHistory.push({ role: 'assistant', content: raw });
+    if (!step) {
+      setLoading(false);
+      renderFinish();
+      return;
+    }
+
+    state.planIndex += 1;
+    state.awaitingExpected = step.expected || null;
+
+    const shownStep = { ...step };
+    if (feedback) shownStep.feedback = feedback;
 
     setLoading(false);
-    handleStepResponse(parsed, studentAttempt);
-
-  } catch(err) {
+    handleStepResponse(shownStep, studentAttempt);
+  } catch (err) {
     setLoading(false);
-    appendError();
+    appendError('Something went wrong in the calculator. Try another example chip.');
   }
+}
+
+function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+/* ── Problem planner ── */
+function buildPlan(input) {
+  const original = input.trim();
+  let s = normaliseSymbols(original.toLowerCase());
+
+  // Percentage: What is 20% of 150?
+  let m = s.match(/(?:what\s+is\s+)?(-?\d+(?:\.\d+)?)\s*%\s*of\s*(-?\d+(?:\.\d+)?)/i);
+  if (m) {
+    const pct = Number(m[1]);
+    const amount = Number(m[2]);
+    const onePercent = amount / 100;
+    const answer = onePercent * pct;
+    return [
+      step(1, 'Find one percent', `100% is ${fmt(amount)}. So 1% is ${fmt(amount)} ÷ 100.`, 'Start with the smallest useful chunk: one percent.', `What is ${fmt(amount)} ÷ 100?`, onePercent),
+      step(2, 'Scale it up', `1% = ${fmt(onePercent)}. We need ${fmt(pct)}%.`, 'Now use the one-percent amount and make that many percent.', `What is ${fmt(onePercent)} × ${fmt(pct)}?`, answer),
+      finalStep(3, 'Final answer', `${fmt(pct)}% of ${fmt(amount)} = ${fmt(answer)}`, 'That gives the percentage amount.', `${fmt(answer)}`, 'For percentages, find 1% first if the full calculation feels too big.')
+    ];
+  }
+
+  // Area of a rectangle 7cm by 5cm
+  m = s.match(/area.*rectangle.*?(\d+(?:\.\d+)?)\s*cm?.*?(?:by|x|×|\*)\s*(\d+(?:\.\d+)?)\s*cm?/i);
+  if (m) {
+    const a = Number(m[1]);
+    const b = Number(m[2]);
+    const answer = a * b;
+    return [
+      step(1, 'Choose the rule', `Rectangle area uses the two side lengths: ${fmt(a)}cm and ${fmt(b)}cm.`, 'Area is the space inside the rectangle.', 'For area, do we add or multiply the side lengths?', ['multiply', 'times', 'x', '×', '*']),
+      step(2, 'Write the calculation', `Area = ${fmt(a)} × ${fmt(b)}`, 'Now we just need to work out the multiplication.', `What is ${fmt(a)} × ${fmt(b)}?`, answer),
+      finalStep(3, 'Final answer', `${fmt(a)} × ${fmt(b)} = ${fmt(answer)}cm²`, 'Area is measured in square units because it counts the squares inside.', `${fmt(answer)}cm²`, 'Area is inside, perimeter is around the outside.')
+    ];
+  }
+
+  // Perimeter of a square with sides of 9cm
+  m = s.match(/perimeter.*square.*?(?:side|sides).*?(\d+(?:\.\d+)?)\s*cm?/i);
+  if (m) {
+    const side = Number(m[1]);
+    const pair = side + side;
+    const answer = side * 4;
+    return [
+      step(1, 'Count the sides', `A square has equal sides. Each side is ${fmt(side)}cm.`, 'Perimeter means the distance around the outside.', 'How many sides does a square have?', 4),
+      step(2, 'Set it up', `We need ${fmt(side)} + ${fmt(side)} + ${fmt(side)} + ${fmt(side)}.`, 'That is the same as four lots of the side length.', `What is ${fmt(side)} + ${fmt(side)}?`, pair),
+      step(3, 'Add two pairs', `${fmt(side)} + ${fmt(side)} + ${fmt(side)} + ${fmt(side)} = ${fmt(pair)} + ${fmt(pair)}`, 'We have made two equal pairs, which is easier to add.', `What is ${fmt(pair)} + ${fmt(pair)}?`, answer),
+      finalStep(4, 'Final answer', `Perimeter = ${fmt(answer)}cm`, 'That is the total distance around the square.', `${fmt(answer)}cm`, 'For a square perimeter, add the same side four times.')
+    ];
+  }
+
+  // Mean of 4, 7, 9, 10, 10
+  m = s.match(/mean\s+of\s+([\d\s,.-]+)/i);
+  if (m) {
+    const nums = (m[1].match(/-?\d+(?:\.\d+)?/g) || []).map(Number);
+    if (nums.length > 0) {
+      const total = nums.reduce((a, b) => a + b, 0);
+      const mean = total / nums.length;
+      const plan = [];
+      plan.push(step(1, 'Count the numbers', `The numbers are ${nums.map(fmt).join(', ')}.`, 'For the mean, we need the total and how many numbers there are.', 'How many numbers are in the list?', nums.length));
+      let running = nums[0];
+      if (nums.length === 1) {
+        plan.push(finalStep(2, 'Final answer', `There is only one number, so the mean is ${fmt(mean)}.`, 'No sharing is needed when there is one value.', fmt(mean), 'Mean means total divided by how many values there are.'));
+        return plan;
+      }
+      for (let i = 1; i < nums.length; i++) {
+        const before = running;
+        running += nums[i];
+        plan.push(step(plan.length + 1, 'Build the total', `Running total so far: ${fmt(before)}. Next number: ${fmt(nums[i])}.`, 'Add one number at a time so the total feels manageable.', `What is ${fmt(before)} + ${fmt(nums[i])}?`, running));
+      }
+      plan.push(step(plan.length + 1, 'Share the total', `Total = ${fmt(total)}. Number of values = ${nums.length}.`, 'The mean is the total shared equally between the values.', `What is ${fmt(total)} ÷ ${nums.length}?`, mean));
+      plan.push(finalStep(plan.length + 1, 'Final answer', `Mean = ${fmt(total)} ÷ ${nums.length} = ${fmt(mean)}`, 'That is the equal-share average.', `${fmt(mean)}`, 'Mean means add them all, then divide by how many there are.'));
+      return plan;
+    }
+  }
+
+  // Round 3.847 to 1 decimal place
+  m = s.match(/round\s+(-?\d+(?:\.\d+)?)\s+to\s+(\d+)\s+decimal\s+place/i);
+  if (m) {
+    const n = Number(m[1]);
+    const places = Number(m[2]);
+    const rounded = Number(n.toFixed(places));
+    const parts = String(Math.abs(n)).split('.');
+    const decimals = parts[1] || '';
+    const keepDigit = decimals[places - 1] || '0';
+    const nextDigit = decimals[places] || '0';
+    const roundUp = Number(nextDigit) >= 5;
+    return [
+      step(1, 'Find the place', `${fmt(n)} to ${places} decimal place${places === 1 ? '' : 's'}.`, 'First find the digit we are keeping.', `Which digit is in decimal place ${places}?`, keepDigit),
+      step(2, 'Check next digit', `We are keeping ${keepDigit}. Now look one digit to the right.`, 'That next digit decides whether the kept digit changes.', 'What is the next digit?', nextDigit),
+      step(3, 'Decide direction', `The next digit is ${nextDigit}.`, 'If it is 5 or more, round up. If it is 4 or less, keep it the same.', 'Do we round up? Type yes or no.', roundUp ? ['yes', 'y'] : ['no', 'n']),
+      finalStep(4, 'Final answer', `${fmt(n)} rounded to ${places} decimal place${places === 1 ? '' : 's'} = ${fmt(rounded)}`, roundUp ? 'The next digit was 5 or more, so the kept digit goes up.' : 'The next digit was 4 or less, so the kept digit stays the same.', `${fmt(rounded)}`, 'Rounding only needs one checking digit: the digit just to the right.')
+    ];
+  }
+
+  // Convert 0.6 to a fraction
+  m = s.match(/convert\s+(0?\.\d+)\s+to\s+a\s+fraction/i);
+  if (m) {
+    const decText = m[1];
+    const dec = Number(decText);
+    const places = decText.split('.')[1].length;
+    const rawDen = Math.pow(10, places);
+    const rawNum = Math.round(dec * rawDen);
+    const frac = simplify(rawNum, rawDen);
+    const common = gcd(rawNum, rawDen);
+    return [
+      step(1, 'Use place value', `${decText} has ${places} digit${places === 1 ? '' : 's'} after the decimal point.`, 'That tells us whether to use tenths, hundredths or thousandths.', `What fraction is ${decText} before simplifying?`, `${rawNum}/${rawDen}`),
+      step(2, 'Find common factor', `${rawNum}/${rawDen} can be simplified if top and bottom share a factor.`, 'Use the biggest shared factor to make the fraction smaller in one move.', `What number divides both ${rawNum} and ${rawDen}?`, common),
+      step(3, 'Simplify the top', `Divide the numerator by ${common}.`, 'The numerator is the top number.', `What is ${rawNum} ÷ ${common}?`, frac.num),
+      step(4, 'Simplify the bottom', `Divide the denominator by ${common}.`, 'The denominator is the bottom number.', `What is ${rawDen} ÷ ${common}?`, frac.den),
+      finalStep(5, 'Final answer', `${rawNum}/${rawDen} = ${frac.num}/${frac.den}`, 'The fraction is now in simplest form.', `${frac.num}/${frac.den}`, 'To simplify, divide the top and bottom by the same number.')
+    ];
+  }
+
+  // Fraction addition, including ¾ + ½
+  s = replaceUnicodeFractions(s);
+  m = s.match(/(\d+)\s*\/\s*(\d+)\s*\+\s*(\d+)\s*\/\s*(\d+)/);
+  if (m) {
+    const n1 = Number(m[1]), d1 = Number(m[2]), n2 = Number(m[3]), d2 = Number(m[4]);
+    if (d1 !== 0 && d2 !== 0) {
+      const common = lcm(d1, d2);
+      const a = n1 * (common / d1);
+      const b = n2 * (common / d2);
+      const sum = a + b;
+      const simp = simplify(sum, common);
+      const mixed = toMixedString(simp.num, simp.den);
+      return [
+        step(1, 'Match the bottoms', `The denominators are ${d1} and ${d2}.`, 'Before adding fractions, the bottom numbers need to match.', 'What common denominator can both fractions use?', common),
+        step(2, 'Convert first fraction', `${n1}/${d1} needs denominator ${common}.`, 'Change the numerator by the same scale as the denominator.', `What does ${n1}/${d1} become with denominator ${common}?`, `${a}/${common}`),
+        step(3, 'Convert second fraction', `${n2}/${d2} needs denominator ${common}.`, 'Now do the same for the second fraction.', `What does ${n2}/${d2} become with denominator ${common}?`, `${b}/${common}`),
+        step(4, 'Add the tops', `${a}/${common} + ${b}/${common}`, 'When denominators match, add the top numbers only.', `What is ${a} + ${b}?`, sum),
+        step(5, 'Make the fraction', `The numerator is ${sum}. The denominator stays ${common}.`, 'This gives the unsimplified answer.', `What fraction have we made?`, `${sum}/${common}`),
+        step(6, 'Simplify if needed', `${sum}/${common}`, 'Check whether the answer can be simplified or written as a mixed number.', 'What is the simplest useful form?', [`${simp.num}/${simp.den}`, mixed, String(simp.num / simp.den)]),
+        finalStep(7, 'Final answer', `${sum}/${common} = ${simp.num}/${simp.den}${mixed !== `${simp.num}/${simp.den}` ? ` = ${mixed}` : ''}`, 'This is the fraction in its simplest useful form.', mixed, 'For adding fractions, match the denominators first.')
+      ];
+    }
+  }
+
+  // Powers: 5² + 3²
+  m = s.match(/(\d+(?:\.\d+)?)\s*(?:\^\s*2|²)\s*\+\s*(\d+(?:\.\d+)?)\s*(?:\^\s*2|²)/);
+  if (m) {
+    const a = Number(m[1]), b = Number(m[2]);
+    const a2 = a * a, b2 = b * b, answer = a2 + b2;
+    return [
+      step(1, 'Square first number', `${fmt(a)}² means ${fmt(a)} × ${fmt(a)}.`, 'Squaring means multiply the number by itself.', `What is ${fmt(a)} × ${fmt(a)}?`, a2),
+      step(2, 'Square second number', `${fmt(b)}² means ${fmt(b)} × ${fmt(b)}.`, 'Do the second square separately.', `What is ${fmt(b)} × ${fmt(b)}?`, b2),
+      step(3, 'Add the squares', `${fmt(a)}² + ${fmt(b)}² = ${fmt(a2)} + ${fmt(b2)}`, 'Now add the two square numbers.', `What is ${fmt(a2)} + ${fmt(b2)}?`, answer),
+      finalStep(4, 'Final answer', `${fmt(a2)} + ${fmt(b2)} = ${fmt(answer)}`, 'That completes the calculation.', `${fmt(answer)}`, 'Squaring is not doubling. It means multiply the number by itself.')
+    ];
+  }
+
+  // Simple arithmetic: 36 ÷ 4, 17 × 8, 8 + 3, 12 - 5
+  m = s.match(/(-?\d+(?:\.\d+)?)\s*([+\-×x*÷/])\s*(-?\d+(?:\.\d+)?)/);
+  if (m) {
+    const a = Number(m[1]);
+    const op = m[2];
+    const b = Number(m[3]);
+    if ((op === '÷' || op === '/') && b === 0) return null;
+    const symbol = op.replace('x', '×').replace('*', '×').replace('/', '÷');
+    const answer = calculate(a, op, b);
+
+    if (symbol === '×' && Number.isInteger(a) && Number.isInteger(b) && Math.abs(a) >= 10 && Math.abs(a) < 100 && Math.abs(b) < 20) {
+      const tens = Math.trunc(a / 10) * 10;
+      const ones = a - tens;
+      const part1 = tens * b;
+      const part2 = ones * b;
+      return [
+        step(1, 'Split the number', `${fmt(a)} = ${fmt(tens)} + ${fmt(ones)}`, 'Split the bigger number into friendlier chunks.', `What is ${fmt(tens)} × ${fmt(b)}?`, part1),
+        step(2, 'Multiply next part', `${fmt(tens)} × ${fmt(b)} = ${fmt(part1)}`, 'Now multiply the smaller leftover part.', `What is ${fmt(ones)} × ${fmt(b)}?`, part2),
+        step(3, 'Add the parts', `${fmt(a)} × ${fmt(b)} = ${fmt(part1)} + ${fmt(part2)}`, 'The final step is putting the two parts back together.', `What is ${fmt(part1)} + ${fmt(part2)}?`, answer),
+        finalStep(4, 'Final answer', `${fmt(a)} × ${fmt(b)} = ${fmt(answer)}`, 'That completes the multiplication.', `${fmt(answer)}`, 'Splitting a number can make multiplication easier to hold in your head.')
+      ];
+    }
+
+    if (symbol === '÷' && Number.isInteger(a) && Number.isInteger(b) && Number.isInteger(answer)) {
+      return [
+        step(1, 'Read the division', `${fmt(a)} ÷ ${fmt(b)}`, 'Division means splitting into equal groups or finding how many are in each group.', `What number are we dividing by?`, b),
+        step(2, 'Turn it around', `${fmt(a)} ÷ ${fmt(b)} means ${fmt(b)} × ? = ${fmt(a)}.`, 'Division and multiplication are linked.', `What number times ${fmt(b)} makes ${fmt(a)}?`, answer),
+        finalStep(3, 'Final answer', `${fmt(a)} ÷ ${fmt(b)} = ${fmt(answer)}`, 'That number is the answer to the division.', `${fmt(answer)}`, 'Division asks how many equal groups or how much in each group.')
+      ];
+    }
+
+    if ((symbol === '+' || symbol === '-') && Number.isInteger(a) && Number.isInteger(b) && Math.abs(b) >= 10) {
+      const tens = Math.trunc(Math.abs(b) / 10) * 10 * Math.sign(b);
+      const ones = b - tens;
+      const first = symbol === '+' ? a + tens : a - tens;
+      const final = symbol === '+' ? first + ones : first - ones;
+      return [
+        step(1, 'Use the tens', `${fmt(a)} ${symbol} ${fmt(Math.abs(tens))}`, 'Move by the tens first.', `What do you get after the tens step?`, first),
+        step(2, 'Use the ones', `Now use the remaining ${fmt(Math.abs(ones))}.`, 'This finishes the calculation in a smaller jump.', `What is the final answer?`, final),
+        finalStep(3, 'Final answer', `${fmt(a)} ${symbol} ${fmt(b)} = ${fmt(answer)}`, 'That completes the calculation.', `${fmt(answer)}`, 'For adding or subtracting, split the number into tens and ones.')
+      ];
+    }
+
+    return [
+      step(1, 'Name the operation', `${fmt(a)} ${symbol} ${fmt(b)}`, 'Look at the symbol first so your brain knows what job to do.', `What operation is this: add, subtract, multiply or divide?`, operationName(symbol)),
+      step(2, 'Work it out', `${fmt(a)} ${symbol} ${fmt(b)}`, 'Now do the calculation carefully.', `What is ${fmt(a)} ${symbol} ${fmt(b)}?`, answer),
+      finalStep(3, 'Final answer', `${fmt(a)} ${symbol} ${fmt(b)} = ${fmt(answer)}`, 'That completes the calculation.', `${fmt(answer)}`, 'A quick estimate can help you spot answers that look too big or too small.')
+    ];
+  }
+
+  return null;
+}
+
+function operationName(symbol) {
+  if (symbol === '+') return ['add', 'addition', 'plus'];
+  if (symbol === '-') return ['subtract', 'subtraction', 'take away', 'minus'];
+  if (symbol === '×') return ['multiply', 'multiplication', 'times', 'x'];
+  if (symbol === '÷') return ['divide', 'division', 'share'];
+  return '';
+}
+
+function step(stepNumber, label, working, explanation, question, expected) {
+  return { type: 'step', stepNumber, label, working, explanation, question, expected, isLast: false };
+}
+
+function finalStep(stepNumber, label, working, explanation, finalAnswer, tip) {
+  return { type: 'step', stepNumber, label, working, explanation, isLast: true, finalAnswer, tip };
+}
+
+function calculate(a, op, b) {
+  if (op === '+' ) return a + b;
+  if (op === '-' ) return a - b;
+  if (op === '×' || op === 'x' || op === '*') return a * b;
+  if (op === '÷' || op === '/') return a / b;
+  return NaN;
+}
+
+/* ── Feedback ── */
+function makeFeedback(attempt, expected) {
+  if (!expected) return '';
+  const correct = isCorrectAttempt(attempt, expected);
+  const answerText = Array.isArray(expected) ? expected[0] : expected;
+  if (correct) return 'That works for this small step.';
+  return `Not quite — the small step was ${answerText}. Use that for the next bit.`;
+}
+
+function isCorrectAttempt(attempt, expected) {
+  const options = Array.isArray(expected) ? expected : [expected];
+  return options.some(opt => compareAttempt(attempt, opt));
+}
+
+function compareAttempt(attempt, expected) {
+  const aText = cleanAnswerText(attempt);
+  const eText = cleanAnswerText(String(expected));
+
+  if (aText === eText) return true;
+  if (compactMathText(aText) === compactMathText(eText)) return true;
+
+  const aNum = parseAnswerNumber(aText);
+  const eNum = parseAnswerNumber(eText);
+  if (Number.isFinite(aNum) && Number.isFinite(eNum)) {
+    return Math.abs(aNum - eNum) < 0.0001;
+  }
+
+  const aExpr = safeArithmeticValue(aText);
+  const eExpr = safeArithmeticValue(eText);
+  if (Number.isFinite(aExpr) && Number.isFinite(eExpr)) {
+    return Math.abs(aExpr - eExpr) < 0.0001;
+  }
+
+  return false;
+}
+
+function compactMathText(text) {
+  return String(text)
+    .toLowerCase()
+    .replace(/×|\*/g, 'x')
+    .replace(/÷/g, '/')
+    .replace(/\s+/g, '')
+    .trim();
+}
+
+function safeArithmeticValue(text) {
+  let expr = String(text)
+    .toLowerCase()
+    .replace(/×|x/g, '*')
+    .replace(/÷/g, '/')
+    .replace(/[^0-9+\-*/(). ]/g, '')
+    .trim();
+
+  if (!expr || !/[+\-*/]/.test(expr)) return NaN;
+  if (!/^[0-9+\-*/().\s]+$/.test(expr)) return NaN;
+
+  try {
+    const value = Function(`"use strict"; return (${expr});`)();
+    return Number.isFinite(value) ? value : NaN;
+  } catch (e) {
+    return NaN;
+  }
+}
+
+function cleanAnswerText(text) {
+  return String(text)
+    .toLowerCase()
+    .replace(/cm²|cm2|square\s*cm|cm|£|%/g, '')
+    .replace(/answer\s*is/g, '')
+    .replace(/=/g, '')
+    .replace(/,/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function parseAnswerNumber(text) {
+  const mixed = text.match(/^(-?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
+  if (mixed) {
+    const whole = Number(mixed[1]), num = Number(mixed[2]), den = Number(mixed[3]);
+    if (den !== 0) return whole + (whole < 0 ? -num / den : num / den);
+  }
+
+  const frac = text.match(/^(-?\d+)\s*\/\s*(-?\d+)$/);
+  if (frac) {
+    const num = Number(frac[1]), den = Number(frac[2]);
+    if (den !== 0) return num / den;
+  }
+
+  const n = Number(text);
+  return Number.isFinite(n) ? n : NaN;
 }
 
 /* ── Render a step ── */
@@ -615,7 +878,6 @@ function handleStepResponse(step, studentAttempt) {
   };
   state.completedSteps.push(record);
 
-  // Render the step card
   const thread = document.getElementById('thread');
   const card = document.createElement('div');
   card.className = 'step-card' + (step.isLast ? ' complete-bg' : '');
@@ -649,7 +911,6 @@ function handleStepResponse(step, studentAttempt) {
     renderPrompt(step.question);
   }
 
-  // Scroll latest into view
   card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
@@ -675,7 +936,6 @@ function renderPrompt(question) {
 
   thread.appendChild(card);
 
-  // Focus and enter key
   setTimeout(() => {
     const inp = document.getElementById('attempt-input');
     if (inp) {
@@ -730,7 +990,7 @@ function buildGmailUrl() {
 
 /* ── Reset ── */
 function resetAll() {
-  state = { problem: '', conversationHistory: [], stepIndex: 0, completedSteps: [], finalAnswer: '', tip: '', done: false };
+  state = { problem: '', stepIndex: 0, completedSteps: [], finalAnswer: '', tip: '', done: false, plan: [], planIndex: 0, awaitingExpected: null };
   document.getElementById('thread').innerHTML = '';
   lockInput(false);
   document.getElementById('problem-input').value = '';
@@ -749,11 +1009,11 @@ function lockInput(on) {
   document.querySelectorAll('.chip').forEach(c => c.disabled = on);
 }
 
-function appendError() {
+function appendError(message) {
   const thread = document.getElementById('thread');
   const el = document.createElement('div');
   el.className = 'error-box';
-  el.textContent = 'Something went wrong — check your connection and try again.';
+  el.textContent = message || 'Something went wrong — try again.';
   thread.appendChild(el);
   lockInput(false);
 }
@@ -764,6 +1024,64 @@ function esc(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+function normaliseSymbols(text) {
+  return text
+    .replace(/−/g, '-')
+    .replace(/×/g, '×')
+    .replace(/÷/g, '÷')
+    .replace(/²/g, '²')
+    .trim();
+}
+
+function replaceUnicodeFractions(text) {
+  return text
+    .replace(/¼/g, '1/4')
+    .replace(/½/g, '1/2')
+    .replace(/¾/g, '3/4')
+    .replace(/⅓/g, '1/3')
+    .replace(/⅔/g, '2/3')
+    .replace(/⅛/g, '1/8')
+    .replace(/⅜/g, '3/8')
+    .replace(/⅝/g, '5/8')
+    .replace(/⅞/g, '7/8');
+}
+
+function fmt(n) {
+  if (typeof n === 'string') return n;
+  if (!Number.isFinite(n)) return String(n);
+  if (Math.abs(n - Math.round(n)) < 0.0000001) return String(Math.round(n));
+  return String(Number(n.toFixed(4))).replace(/\.0+$/, '');
+}
+
+function gcd(a, b) {
+  a = Math.abs(a); b = Math.abs(b);
+  while (b) [a, b] = [b, a % b];
+  return a || 1;
+}
+
+function lcm(a, b) { return Math.abs(a * b) / gcd(a, b); }
+
+function simplify(num, den) {
+  const g = gcd(num, den);
+  return { num: num / g, den: den / g };
+}
+
+function toMixedString(num, den) {
+  if (Math.abs(num) < den) return `${num}/${den}`;
+  const whole = Math.trunc(num / den);
+  const rem = Math.abs(num % den);
+  if (rem === 0) return String(whole);
+  return `${whole} ${rem}/${den}`;
+}
+
+function decimalToFraction(decimal) {
+  const str = String(decimal);
+  const places = str.includes('.') ? str.split('.')[1].length : 0;
+  const den = Math.pow(10, places);
+  const num = Math.round(decimal * den);
+  return simplify(num, den);
 }
 </script>
 </body>
