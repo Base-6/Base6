@@ -735,6 +735,66 @@ button.secondary{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(25
   outline-offset:4px;
 }
 
+
+
+/* Emoji + bridge section update pass */
+.speechBubble{
+  max-width:min(230px,68vw);
+  padding:9px 12px;
+  text-align:center;
+  font-weight:1000;
+}
+.reactionEmoji{display:block;font-size:2.15rem;line-height:1;filter:drop-shadow(0 4px 10px rgba(0,0,0,.34));animation:emojiPop .42s cubic-bezier(.2,1.6,.35,1) both;}
+.speechTiny{display:block;margin-top:4px;font-size:.82rem;line-height:1.12;color:rgba(248,251,255,.88);font-weight:900;}
+.worldLabel.sign .speechTiny{color:#fff5c9;}
+.worldLabel.npc .markerDot{background:radial-gradient(circle at 35% 30%,#fff,#45e6ff 42%,#5d79ff);}
+.worldLabel.buddy .markerDot{background:radial-gradient(circle at 35% 30%,#fff,#7dff9d 42%,#ffd166);}
+.buddyTalkBubble{position:absolute;z-index:49;left:50%;bottom:82px;transform:translateX(-50%);width:max-content;max-width:min(360px,calc(100vw - 28px));padding:10px 13px;border-radius:22px;background:rgba(9,14,38,.82);border:1px solid rgba(125,255,157,.48);box-shadow:0 18px 54px rgba(0,0,0,.42),0 0 24px rgba(125,255,157,.16);backdrop-filter:blur(14px);text-align:center;font-weight:1000;pointer-events:none;}
+.buddyTalkBubble.quiet{display:none;}
+.buddyTalkBubble .reactionEmoji{font-size:2.35rem;}
+.buddyTalkBubble .speechTiny{font-size:.9rem;color:#e9fff0;}
+.quickText p{display:block;margin:2px 0 0;color:var(--soft);font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.worldToast{letter-spacing:.02em;}
+@keyframes emojiPop{0%{opacity:0;transform:translateY(8px) scale(.45) rotate(-8deg)}65%{opacity:1;transform:translateY(-3px) scale(1.22) rotate(3deg)}100%{opacity:1;transform:translateY(0) scale(1) rotate(0)}}
+
+/* More obvious bridge sections */
+.bridgeFallbackMap{background:radial-gradient(circle at 50% 12%,rgba(92,240,255,.24),transparent 26%),linear-gradient(180deg,#14204d,#070914);}
+.fallbackTrack{background:repeating-linear-gradient(180deg,rgba(255,255,255,.18) 0 8px,transparent 8px 76px),linear-gradient(90deg,#23194d,#5639dd,#38d8ff,#ffd166);border-style:solid;}
+.fallbackTrack:before,.fallbackTrack:after{content:"";position:absolute;top:-36px;bottom:-36px;width:26px;border-radius:999px;background:linear-gradient(180deg,#ffd166,#45e6ff);box-shadow:0 0 22px rgba(69,230,255,.4);}
+.fallbackTrack:before{left:10%;}.fallbackTrack:after{right:10%;}
+
+/* Anime battle splash */
+.battleStage.splashing .actionDock{opacity:.18;pointer-events:none;filter:blur(1px);}
+.battleSplashIntro{position:absolute;z-index:90;inset:0;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 50% 50%,rgba(255,210,94,.20),transparent 28%),linear-gradient(115deg,rgba(3,8,24,.82),rgba(18,21,70,.62));pointer-events:auto;animation:splashFade 1.05s ease-out both;}
+.battleSplashIntro:before{content:"";position:absolute;inset:-20%;background:repeating-linear-gradient(112deg,transparent 0 20px,rgba(255,255,255,.18) 20px 24px,transparent 24px 48px);transform:translateX(-18%);animation:speedLines .72s ease-out both;}
+.splashSlash{position:absolute;inset:auto -20% 46%;height:86px;background:linear-gradient(90deg,transparent,#5cf0ff,#ffd25e,#ff6bd6,transparent);transform:rotate(-10deg);filter:blur(.2px);animation:slashHit .78s cubic-bezier(.2,1.1,.28,1) both;}
+.splashCard{position:relative;z-index:2;text-align:center;padding:16px 24px;border-radius:30px;background:rgba(7,12,38,.76);border:1px solid rgba(255,255,255,.22);box-shadow:0 22px 70px rgba(0,0,0,.52),0 0 42px rgba(255,210,94,.24);transform:skew(-7deg);}
+.splashCard h1{margin:0;font-size:clamp(2.2rem,8vw,6rem);letter-spacing:.02em;text-transform:uppercase;color:#fff;text-shadow:0 10px 28px rgba(0,0,0,.7),0 0 24px rgba(255,210,94,.48);}
+.splashCard p{margin:5px 0 0;color:#fff5c9;font-weight:1000;font-size:clamp(1rem,2.5vw,1.5rem);}
+@keyframes splashFade{0%{opacity:0}10%,72%{opacity:1}100%{opacity:0;visibility:hidden}}
+@keyframes speedLines{0%{transform:translateX(-24%) skewX(-12deg);opacity:0}30%{opacity:1}100%{transform:translateX(18%) skewX(-12deg);opacity:0}}
+@keyframes slashHit{0%{transform:translateX(-45%) rotate(-10deg) scaleX(.2);opacity:0}26%{opacity:1}100%{transform:translateX(35%) rotate(-10deg) scaleX(1.15);opacity:0}}
+
+/* High-energy evolution screen */
+.evolutionScreen{background:radial-gradient(circle at 50% 42%,rgba(255,210,94,.36),transparent 24%),radial-gradient(circle at 20% 18%,rgba(92,240,255,.24),transparent 26%),radial-gradient(circle at 82% 24%,rgba(255,107,214,.24),transparent 26%),linear-gradient(180deg,#171b59,#070914 72%) !important;}
+.evolutionScreen:before{content:"";position:absolute;inset:-20%;background:conic-gradient(from 0deg,rgba(255,210,94,.0),rgba(255,210,94,.24),rgba(92,240,255,.18),rgba(255,107,214,.20),rgba(255,210,94,.0));animation:evoSpin 1.25s linear infinite;opacity:.8;}
+.evoBoom{position:absolute;z-index:0;left:50%;top:50%;width:min(92vw,720px);aspect-ratio:1;transform:translate(-50%,-50%);background:repeating-conic-gradient(from 8deg,rgba(255,210,94,.52) 0 8deg,transparent 8deg 17deg);clip-path:circle(50%);filter:blur(.2px);animation:evoBurst .92s cubic-bezier(.2,1.35,.3,1) both;}
+.evolutionCard{overflow:hidden;}
+.evolutionCard:before{content:"EVOLVE!";position:absolute;z-index:0;right:-20px;top:18px;font-size:clamp(3rem,11vw,8rem);font-weight:1000;letter-spacing:.02em;color:rgba(255,255,255,.08);transform:rotate(8deg);}
+.evolutionStage:after{content:"";position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.36),transparent 58%);animation:evoPulse .62s ease-in-out infinite alternate;}
+.evolutionStage .buddySprite{position:relative;z-index:2;animation:evoBuddyPop .95s cubic-bezier(.2,1.45,.25,1) both;}
+.evoCopy{position:relative;z-index:2;}
+.evoCopy h1{animation:evoTitle .65s cubic-bezier(.2,1.35,.3,1) both;}
+.evoShout{display:inline-flex;margin-bottom:10px;border-radius:999px;padding:7px 12px;background:linear-gradient(135deg,#ffd25e,#ff6bd6);color:#071225;font-weight:1000;box-shadow:0 0 24px rgba(255,210,94,.36);animation:emojiPop .45s cubic-bezier(.2,1.6,.35,1) both;}
+@keyframes evoSpin{to{transform:rotate(360deg)}}
+@keyframes evoBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.12) rotate(0)}58%{opacity:.9;transform:translate(-50%,-50%) scale(1.02) rotate(12deg)}100%{opacity:.18;transform:translate(-50%,-50%) scale(1.18) rotate(18deg)}}
+@keyframes evoPulse{from{transform:scale(.86);opacity:.62}to{transform:scale(1.04);opacity:.92}}
+@keyframes evoBuddyPop{0%{transform:scale(.35) rotate(-12deg);filter:brightness(2.2)}55%{transform:scale(1.24) rotate(4deg);filter:brightness(1.7)}100%{transform:scale(1) rotate(0);filter:brightness(1)}}
+@keyframes evoTitle{0%{opacity:0;transform:translateX(-28px) skew(-12deg) scale(.9)}100%{opacity:1;transform:translateX(0) skew(0) scale(1)}}
+@media(pointer:coarse){.buddyTalkBubble{bottom:224px}}
+@media(max-width:620px){.buddyTalkBubble{bottom:194px}.splashCard{padding:12px 16px}.reactionEmoji{font-size:1.8rem}.speechTiny{display:none}}
+@media(prefers-reduced-motion:reduce){.reactionEmoji,.battleSplashIntro,.battleSplashIntro:before,.splashSlash,.evolutionScreen:before,.evoBoom,.evolutionStage:after,.evolutionStage .buddySprite,.evoCopy h1,.evoShout{animation:none!important}}
+
 </style>
 </head>
 <body>
@@ -1001,9 +1061,67 @@ function bridgeRivals(){
   const spots=[[-1.55,-1.05],[1.5,-1.65],[-1.35,-2.45],[1.35,-3.15],[0,-3.85]];
   return open.map((idx,n)=>{const f=foeAt(idx);return {kind:"rival",id:"rival"+idx,index:idx,name:f.name,type:f.type,zone:f.zone,area:f.area,x:spots[n][0],z:spots[n][1],line:rivalLine(f,n)};});
 }
+
+function bridgeMathJokes(){
+  return [
+    "Why was 6 nervous? 7, 8, 9. 😬",
+    "Parallel lines have so much in common. Shame they never meet. 🛤️",
+    "The minus sign left. It needed space. ➖",
+    "A circle walked onto the bridge. No point. ⭕",
+    "I told a maths joke about zero. Nothing happened. 0️⃣",
+    "Why did the fraction sit quietly? It was divided. 🍕",
+    "The angle was acute. It knew. 📐",
+    "Times tables are just groups doing teamwork. ✖️"
+  ];
+}
+function entityEmoji(e){
+  if(!e)return "✨";
+  if(e.kind==="sign")return "😂";
+  if(e.kind==="rival")return ["😤","🤺","⚡","😎","💥"][Math.abs((e.index||0)+(e.name||"").length)%5];
+  if(e.kind==="stephen")return "⭐";
+  if(e.kind==="buddy")return buddyEmoji();
+  return {Moss:"🪨",Bean:"🫘",Flo:"🌀"}[e.name]||"😄";
+}
+function shortReaction(e){
+  if(!e)return "";
+  if(e.kind==="sign")return e.line||randomChoice(bridgeMathJokes());
+  if(e.kind==="rival")return `${e.type} aura. Spar?`;
+  if(e.kind==="stephen")return "Final aura ready.";
+  return e.line||"Nice bridge energy.";
+}
+function speechMarkup(emoji,line){return `<span class="reactionEmoji">${esc(emoji||"✨")}</span><span class="speechTiny">${esc(line||"")}</span>`;}
+function buddyEmoji(){return {Add:"🐶✨",Subtract:"🐱🌙",Multiply:"🐉🔥",Divide:"🐢🫧"}[state.buddyType]||"🌟";}
+function buddyChatLine(){
+  const name=currentBuddyName();
+  const lines=[
+    `${name}: snack-powered and emotionally aerodynamic.`,
+    `${name}: I believe in you. Also, in crisps.`,
+    `${name}: bridge maths? Main character training.`,
+    `${name}: if confused, sparkle first, think second.`,
+    `${name}: I have no thumbs, yet huge confidence.`
+  ];
+  return randomChoice(lines);
+}
+function talkToBuddy(){
+  ensureBridgeState();
+  state.bridge.buddySpeechEmoji=buddyEmoji();
+  state.bridge.buddySpeechLine=buddyChatLine();
+  state.bridge.buddySpeechUntil=Date.now()+3600;
+  state.message=state.bridge.buddySpeechLine;
+  saveNow();
+  updateBridgeOverlay(true);
+}
+function updateBuddySpeech(){
+  const el=document.getElementById("buddyTalkBubble");
+  if(!el||!state.bridge)return;
+  const live=state.bridge.buddySpeechUntil&&Date.now()<state.bridge.buddySpeechUntil;
+  el.classList.toggle("quiet",!live);
+  if(live)el.innerHTML=speechMarkup(state.bridge.buddySpeechEmoji||buddyEmoji(),state.bridge.buddySpeechLine||buddyChatLine());
+  else{state.bridge.buddySpeechUntil=0;}
+}
+
 function bridgeEntities(){
   ensureBridgeState();
-  const z=getZone(Math.min(state.foeIndex,49));
   const area=currentAreaIndex();
   const theme=currentAreaTheme();
   const key=area+"_"+state.foeIndex+"_"+state.buddyStage+"_"+(state.clearedFoes||[]).join(".");
@@ -1011,33 +1129,22 @@ function bridgeEntities(){
   const nextType=state.foeIndex<50?foeAt(state.foeIndex).type:"Add";
   const counter=counters[nextType]||"Subtract";
   const areaClears=Math.floor(state.foeIndex/AREA_SIZE);
-  const buddy=buddyData[state.buddyType]?.name||"Your buddy";
-  const mossLines=[
-    `Moss says: ${nextType} aura ahead. ${counter} is the clean read.`,
-    `Moss says: ${theme.label} energy. Defeat every rival here to travel onward.`,
-    `Moss says: Glow meter likes correct answers. Tiny anime science.`
-  ];
-  const beanLines=[
-    "Bean says: WASD or arrows to wander. Space spars nearby.",
-    "Bean says: Clear the area, then the next place opens. Very tidy adventure logic.",
-    "Bean says: If the screen feels busy, just watch the glow ring."
-  ];
-  const floLines=[
-    `Flo says: ${buddy} is ${stageName()}. Clean glow up.`,
-    `Flo says: ${buddy} has ${state.knownMoves.length} move${state.knownMoves.length===1?"":"s"}. Main character behaviour.`,
-    `Flo says: Strong is lovely. Steady still helps. Soft is not a disaster.`
-  ];
+  const buddy=buddyData[state.buddyType]?.name||"Buddy";
+  const jokes=bridgeMathJokes();
+  const mossLines=["🪨",`${counter} beats ${nextType}.`,"Bridge section clear = next place."];
+  const beanLines=["🫘", "Space = spar.", "Area clear = travel."];
+  const floLines=["🌀", `${buddy}: ${stageName()}.`, `${state.knownMoves.length} move${state.knownMoves.length===1?"":"s"}.`];
   const base=[
-    {kind:"sign",id:"sign1",name:"Snack sign",x:-2.25,z:1.0,line:"Sign says: Aura crystals are not snacks. Mean, but fair."},
-    {kind:"sign",id:"sign2",name:"Jay note",x:2.25,z:-0.25,line:"Jay note: Strong hits sparkle. Steady hits still count."},
+    {kind:"sign",id:"sign1",name:"Maths joke",x:-2.25,z:1.0,line:jokes[(areaClears*2)%jokes.length]},
+    {kind:"sign",id:"sign2",name:"Bridge joke",x:2.25,z:-0.25,line:jokes[(areaClears*2+1)%jokes.length]},
     {kind:"npc",id:"npc1",name:"Moss",x:-1.95,z:-0.55,line:mossLines[areaClears%mossLines.length]},
     {kind:"npc",id:"npc2",name:"Bean",x:2.05,z:1.35,line:beanLines[areaClears%beanLines.length]},
     {kind:"npc",id:"npc3",name:"Flo",x:0.2,z:-0.05,line:floLines[areaClears%floLines.length]}
   ];
-  if(state.foeIndex>=50)base.push({kind:"stephen",id:"stephen",name:"Stephen",x:0,z:-3.65,line:"Stephen says: Four calm aura phases. We will gather a clean sample for Jay."});
+  if(state.foeIndex>=50)base.push({kind:"stephen",id:"stephen",name:"Stephen",x:0,z:-3.65,line:"Four auras. Clean sample."});
   else base.push(...bridgeRivals());
   bridgeEntityCacheKey=key;
-  bridgeEntityCache=base.map(e=>({...e,arc:theme.name,area}));
+  bridgeEntityCache=base.map(e=>({...e,emoji:entityEmoji(e),arc:theme.name,area}));
   return bridgeEntityCache;
 }
 function nearestEntity(force){
@@ -1053,61 +1160,58 @@ function nearestEntity(force){
 }
 function rivalLine(f,n){
   const lines=[
-    `${f.name} says: I can spar, or I can stand here looking dramatic. Both are valid.`,
-    `${f.name} says: I warmed up by counting bridge planks. Wild Friday energy.`,
-    `${f.name} says: Pick me for a clean little spar. Low drama, high sparkle.`,
-    `${f.name} says: My aura is ${f.type}. Do with that information what you will.`
+    `${f.type} aura. Dramatic stance.`,
+    `I counted planks. I'm ready.`,
+    `Friendly spar? Low drama.`,
+    `${f.type} glow. Pick wisely.`
   ];
   return lines[n%lines.length];
 }
 function renderBridge(){
   ensureBridgeState();
   const theme=currentAreaTheme();
-  app.innerHTML=`<section class="exploreScreen area${currentAreaIndex()}" id="exploreScreen" aria-label="Free roam bridge" style="background:${esc(theme.bg)}"><div class="exploreCanvasWrap"><canvas id="worldCanvas" class="sceneCanvas"></canvas><div id="worldFallback" class="bridgeFallbackMap hidden" style="background:${esc(theme.bg)}"><div class="fallbackTrack"><div id="fallbackDot" class="fallbackDot"></div></div></div></div><div id="worldLabels" class="worldLabels" aria-hidden="true"></div><div id="worldToast" class="worldToast">E Chat  Space Spar</div><div class="gameHud"><div class="gameLogo"><h1>${esc(theme.name)}</h1><p id="arcLabel">${esc(theme.label)} · ${esc(areaProgressText())}</p></div><div class="gameStats" id="bridgeProgress"><span class="chip checkpointChip">${esc(theme.label)}</span><span class="chip">${esc(areaProgressText())}</span><span class="chip">Route ${esc(journeyProgressText())}</span><span class="chip">${esc(stageName())}</span></div><div class="gameMenu">${btn("Guide","guide","secondary")}${(state.rivalCards&&state.rivalCards.length)?btn("Cards","cards","secondary"):""}${state.foeIndex>0?btn("Report","partialReport","secondary"):""}${btn("Save","save","ghost")}${btn("Pause","pause","ghost")}</div></div><div id="quickDock" class="quickDock quiet"></div><div class="touchPad" aria-label="Move"><button class="up" data-dir="up" aria-label="Move up">▲</button><button class="left" data-dir="left" aria-label="Move left">◀</button><button class="right" data-dir="right" aria-label="Move right">▶</button><button class="down" data-dir="down" aria-label="Move down">▼</button></div>${pauseMenuHtml()}<div id="guide" class="drawer hidden">${guideHtml()}<div class="dock">${btn("Close","guide","gold")}</div></div></section>`;
+  app.innerHTML=`<section class="exploreScreen area${currentAreaIndex()}" id="exploreScreen" aria-label="Free roam bridge" style="background:${esc(theme.bg)}"><div class="exploreCanvasWrap"><canvas id="worldCanvas" class="sceneCanvas"></canvas><div id="worldFallback" class="bridgeFallbackMap hidden" style="background:${esc(theme.bg)}"><div class="fallbackTrack"><div id="fallbackDot" class="fallbackDot"></div></div></div></div><div id="worldLabels" class="worldLabels" aria-hidden="true"></div><div id="buddyTalkBubble" class="buddyTalkBubble quiet" aria-live="polite"></div><div id="worldToast" class="worldToast">E Chat  Space Spar</div><div class="gameHud"><div class="gameLogo"><h1>${esc(theme.name)}</h1><p id="arcLabel">${esc(theme.label)} · ${esc(areaProgressText())}</p></div><div class="gameStats" id="bridgeProgress"><span class="chip checkpointChip">${esc(theme.label)}</span><span class="chip">${esc(areaProgressText())}</span><span class="chip">Route ${esc(journeyProgressText())}</span><span class="chip">${esc(stageName())}</span></div><div class="gameMenu">${btn("Guide","guide","secondary")}${btn("Buddy","buddyChat","secondary")}${(state.rivalCards&&state.rivalCards.length)?btn("Cards","cards","secondary"):""}${state.foeIndex>0?btn("Report","partialReport","secondary"):""}${btn("Save","save","ghost")}${btn("Pause","pause","ghost")}</div></div><div id="quickDock" class="quickDock quiet"></div><div class="touchPad" aria-label="Move"><button class="up" data-dir="up" aria-label="Move up">▲</button><button class="left" data-dir="left" aria-label="Move left">◀</button><button class="right" data-dir="right" aria-label="Move right">▶</button><button class="down" data-dir="down" aria-label="Move down">▼</button></div>${pauseMenuHtml()}<div id="guide" class="drawer hidden">${guideHtml()}<div class="dock">${btn("Close","guide","gold")}</div></div></section>`;
   setTimeout(()=>{initWorld(false);updateBridgeOverlay(true);},20);
 }
 function nearActions(e){
-  if(e.kind==="rival")return `<button type="button" class="secondary" data-act="talk:${e.id}">Chat</button><button type="button" class="gold" data-act="spar:${e.index}">Spar</button>`;
-  if(e.kind==="stephen")return `<button type="button" class="secondary" data-act="talk:${e.id}">Chat</button><button type="button" class="gold" data-act="startStephen">Final spar</button>`;
-  return `<button type="button" class="gold" data-act="talk:${e.id}">Read</button>`;
+  if(e.kind==="rival")return `<button type="button" class="secondary" data-act="talk:${e.id}">React</button><button type="button" class="gold" data-act="spar:${e.index}">Spar</button>`;
+  if(e.kind==="stephen")return `<button type="button" class="secondary" data-act="talk:${e.id}">React</button><button type="button" class="gold" data-act="startStephen">Final</button>`;
+  if(e.kind==="sign")return `<button type="button" class="gold" data-act="talk:${e.id}">Joke</button>`;
+  return `<button type="button" class="gold" data-act="talk:${e.id}">React</button>`;
 }
 function nearHint(e){
-  if(!e)return "Move close";
-  if(e.kind==="rival")return "E Chat  Space Spar";
-  if(e.kind==="stephen")return "E Chat  Space Final";
-  return "E Read";
+  if(!e)return "E Buddy";
+  if(e.kind==="rival")return "E 😄  Space ⚡";
+  if(e.kind==="stephen")return "E ⭐  Space Final";
+  if(e.kind==="sign")return "E 😂";
+  return "E 😄";
 }
 function nearDetail(e){
   if(e.kind==="rival")return `${e.type} aura`;
-  if(e.kind==="stephen")return "Final spar";
-  if(e.kind==="sign")return "Read";
-  return "Chat";
+  if(e.kind==="stephen")return "Final aura";
+  if(e.kind==="sign")return "Maths joke";
+  return "Emoji reaction";
 }
-function nearIcon(e){
-  if(e.kind==="rival")return "✦";
-  if(e.kind==="stephen")return "★";
-  if(e.kind==="sign")return "?";
-  return "hi";
-}
+function nearIcon(e){return entityEmoji(e);}
 function guideHtml(){return `<h2>Type guide</h2><div class="guideGrid combo">${ops.map(foe=>`<div class="guideCard comboCard"><div>${typePill(foe)}</div><div><h3>${foe}</h3><p>${counters[foe]}</p></div></div>`).join("")}</div>`;}
 function updateBridgeOverlay(force){
   ensureBridgeState();
   const near=nearestEntity(force);
   const nearId=near?near.id:"";
-  if(!force&&state.bridge.lastNear===nearId){return;}
+  if(!force&&state.bridge.lastNear===nearId){updateBuddySpeech();return;}
   state.bridge.lastNear=nearId;
   const dock=document.getElementById("quickDock");
   if(dock){
     if(near){
       dock.classList.remove("quiet");
-      dock.innerHTML=`<div class="quickCopy"><div class="quickIcon">${esc(nearIcon(near))}</div><div class="quickText"><h2>${esc(near.name)}</h2></div></div><div class="quickButtons">${nearActions(near)}</div>`;
+      dock.innerHTML=`<div class="quickCopy"><div class="quickIcon">${esc(nearIcon(near))}</div><div class="quickText"><h2>${esc(near.name)}</h2><p>${esc(nearDetail(near))}</p></div></div><div class="quickButtons">${nearActions(near)}</div>`;
     }else{
       dock.classList.add("quiet");
       dock.innerHTML="";
     }
   }
   const toast=document.getElementById("worldToast");
-  if(toast){const reward=state.bridge.rewardUntil&&Date.now()<state.bridge.rewardUntil;toast.textContent=reward?state.bridge.rewardText:(near?nearHint(near):"");}
+  if(toast){const reward=state.bridge.rewardUntil&&Date.now()<state.bridge.rewardUntil;toast.textContent=reward?state.bridge.rewardText:(near?nearHint(near):"E Buddy");}updateBuddySpeech();
   const pct=Math.round((state.foeIndex/50)*100);
   const progress=document.getElementById("bridgeProgress");
   if(progress)progress.innerHTML=`<span class="chip checkpointChip">${esc(currentAreaTheme().label)}</span><span class="chip">${esc(areaProgressText())}</span><span class="chip">Route ${state.foeIndex}/50</span><span class="chip">${esc(stageName())}</span>`;
@@ -1119,8 +1223,9 @@ function talkToEntity(id){
   const e=bridgeEntities().find(x=>x.id===id);
   if(!e)return;
   state.bridge.speechId=e.id;
-  state.bridge.speechLine=e.line||"Hello from the bridge.";
-  state.bridge.speechUntil=Date.now()+4200;
+  state.bridge.speechEmoji=entityEmoji(e);
+  state.bridge.speechLine=shortReaction(e);
+  state.bridge.speechUntil=Date.now()+3200;
   state.message=state.bridge.speechLine;
   saveNow();
   updateBridgeOverlay(true);
@@ -1137,7 +1242,7 @@ function moveBridge(dx,dz){
 function interactNear(kind){
   if(state.paused)return;
   const n=nearestEntity();
-  if(!n)return;
+  if(!n){if(kind==="chat")talkToBuddy();return;}
   if(kind==="chat")talkToEntity(n.id);
   if(kind==="spar"&&n.kind==="rival")startBattle(false,n.index);
   if(kind==="spar"&&n.kind==="stephen")startBattle(true);
@@ -1271,7 +1376,7 @@ function startBattle(isStephen,foeIndex){
   const foe=isStephen?{name:"Stephen",type:"Multiply",zone:5,index:50}:foeAt(Math.max(0,Math.min(49,typeof foeIndex==="number"?foeIndex:state.foeIndex)));
   const hpCurve=[70,88,106,126,148];
   const maxHp=isStephen?480:(hpCurve[foe.zone]||120);
-  const battle={isStephen,foeIndex:foe.index==null?foeIndex:foe.index,foeName:foe.name,foeType:foe.type,foeZone:foe.zone||0,foeHpMax:maxHp,foeHp:maxHp,buddyHpMax:120+(state.buddyStage*24),buddyHp:120+(state.buddyStage*24),phase:"choose",chosenMove:"",question:null,options:[],message:isStephen?"Stephen reads the bridge aura with you. Four calm phases, clean evidence for Jay.":"Friendly spar loaded. Read the aura, then choose your move.",stephenTurn:0,checkpointHp:maxHp,rivalMood:"Chill",microEvent:"None",resultLines:[],resultTitle:"",fxType:"",fxText:"",useGlow:false,missStreak:0,assistUsed:false,assistActive:false,fxMove:"",buddyPerks:{addHeal:false,divideShield:false}};
+  const battle={isStephen,foeIndex:foe.index==null?foeIndex:foe.index,foeName:foe.name,foeType:foe.type,foeZone:foe.zone||0,foeHpMax:maxHp,foeHp:maxHp,buddyHpMax:120+(state.buddyStage*24),buddyHp:120+(state.buddyStage*24),phase:"choose",chosenMove:"",question:null,options:[],message:isStephen?"Stephen reads the bridge aura with you. Four calm phases, clean evidence for Jay.":"Friendly spar loaded. Read the aura, then choose your move.",stephenTurn:0,checkpointHp:maxHp,rivalMood:"Chill",microEvent:"None",resultLines:[],resultTitle:"",fxType:"",fxText:"",useGlow:false,missStreak:0,assistUsed:false,assistActive:false,fxMove:"",splashUntil:Date.now()+1050,buddyPerks:{addHeal:false,divideShield:false}};
   if(isStephen){
     battle.stephenOps=["Add","Subtract","Multiply","Divide"];
     battle.stephenPhase=0;
@@ -1313,8 +1418,10 @@ function renderBattle(){
   const best=b.isStephen?stephenTarget(b):counters[b.foeType];
   const phaseHtml=b.isStephen?stephenPhaseStrip(b):"";
   const evo=state.lastEvolution&&Date.now()-state.lastEvolution.time<5200?`<div class="evolveFlash">${esc(stageName())}</div>`:"";
-  app.innerHTML=`<section class="battleLayout minimalBattle"><div class="battleTop miniBattleTop"><div class="fighterCard miniFighter"><h2>${esc(currentBuddyName())}</h2><div class="hp"><span style="width:${Math.max(0,(b.buddyHp/b.buddyHpMax)*100)}%"></span></div>${focusHtml()}</div><div class="centerCallout miniPhase">${phaseHtml}</div><div class="fighterCard miniFighter"><h2>${esc(b.foeName)}</h2><div class="hp"><span style="width:${Math.max(0,(b.foeHp/b.foeHpMax)*100)}%"></span></div><div class="tinyAura">${typePill(b.foeType)}</div></div></div><div class="battleStage ${battleStageClass(b)}" style="box-shadow:0 26px 90px rgba(0,0,0,0.42),0 0 40px rgba(255,255,255,.04);"><canvas id="worldCanvas" class="sceneCanvas"></canvas><div id="worldFallback" class="fallbackArena hidden">${buddySprite(state.buddyType,"bigSprite",state.buddyStage)}${buddySprite(b.foeType,"bigSprite",1)}</div><div class="auraBackdrop type${esc(b.foeType)}"></div><div class="battleHint">Best: ${esc(best)}</div>${fxText(b)}${evo}<div class="actionDock compactDock"><div class="actionPanel compactPanel">${actionPanelHtml()}</div><div class="sideActions compactSide">${btn("?", "guide", "secondary")}${btn("Pause", "pause", "ghost")}</div></div></div>${pauseMenuHtml()}<div id="guide" class="drawer hidden">${guideHtml()}<div class="dock">${btn("Close", "guide", "gold")}</div></div></section>`;
-  setTimeout(()=>{initWorld(true);maybeAutoAdvanceBattle();},20);
+  const splashActive=!!(b.splashUntil&&Date.now()<b.splashUntil);
+  const splash=splashActive?`<div class="battleSplashIntro"><div class="splashSlash"></div><div class="splashCard"><h1>Battle!</h1><p>${esc(currentBuddyName())} vs ${esc(b.foeName)}</p></div></div>`:"";
+  app.innerHTML=`<section class="battleLayout minimalBattle"><div class="battleTop miniBattleTop"><div class="fighterCard miniFighter"><h2>${esc(currentBuddyName())}</h2><div class="hp"><span style="width:${Math.max(0,(b.buddyHp/b.buddyHpMax)*100)}%"></span></div>${focusHtml()}</div><div class="centerCallout miniPhase">${phaseHtml}</div><div class="fighterCard miniFighter"><h2>${esc(b.foeName)}</h2><div class="hp"><span style="width:${Math.max(0,(b.foeHp/b.foeHpMax)*100)}%"></span></div><div class="tinyAura">${typePill(b.foeType)}</div></div></div><div class="battleStage ${battleStageClass(b)} ${splashActive?"splashing":""}" style="box-shadow:0 26px 90px rgba(0,0,0,0.42),0 0 40px rgba(255,255,255,.04);"><canvas id="worldCanvas" class="sceneCanvas"></canvas><div id="worldFallback" class="fallbackArena hidden">${buddySprite(state.buddyType,"bigSprite",state.buddyStage)}${buddySprite(b.foeType,"bigSprite",1)}</div><div class="auraBackdrop type${esc(b.foeType)}"></div><div class="battleHint">Best: ${esc(best)}</div>${fxText(b)}${evo}${splash}<div class="actionDock compactDock"><div class="actionPanel compactPanel">${actionPanelHtml()}</div><div class="sideActions compactSide">${btn("?", "guide", "secondary")}${btn("Pause", "pause", "ghost")}</div></div></div>${pauseMenuHtml()}<div id="guide" class="drawer hidden">${guideHtml()}<div class="dock">${btn("Close", "guide", "gold")}</div></div></section>`;
+  setTimeout(()=>{initWorld(true);maybeAutoAdvanceBattle();if(splashActive){setTimeout(()=>{if(state.screen==="battle"&&state.battle===b&&b.splashUntil){b.splashUntil=0;saveNow();render();}},Math.max(120,b.splashUntil-Date.now()));}},20);
 }
 function movePanel(){
   const b=state.battle;
@@ -1499,7 +1606,7 @@ function renderEvolution(){
   const evo=state.pendingEvolution||state.lastEvolution||{from:Math.max(1,(state.buddyStage||1)-1),to:state.buddyStage||1,move:"",buddy:state.buddyType};
   const type=evo.buddy||state.buddyType||"Add";
   const move=evo.move?moveNames[evo.move]:"New move";
-  app.innerHTML=`<section class="evolutionScreen"><div class="evolutionCard panel"><div class="evoCopy"><span class="kicker">Glow up</span><h1>${esc(buddyStageName(type,evo.to))}</h1><p class="lead">Your buddy changed form and unlocked a new battle look.</p><div class="evoPills"><span class="evoPill">${esc(stageLabel(evo.from))}</span><span class="evoPill gold">${esc(stageLabel(evo.to))}</span><span class="evoPill">${esc(move)}</span></div><div class="buttonRow">${btn("Carry on","evoContinue","gold")}</div></div><div class="evolutionStage">${buddySprite(type,"bigSprite",evo.to)}</div></div></section>`;
+  app.innerHTML=`<section class="evolutionScreen"><div class="evoBoom"></div><div class="evolutionCard panel"><div class="evoCopy"><span class="evoShout">⚡ EVOLVE ⚡</span><h1>${esc(buddyStageName(type,evo.to))}</h1><p class="lead">New form. Bigger glow. Less boring.</p><div class="evoPills"><span class="evoPill">${esc(stageLabel(evo.from))}</span><span class="evoPill gold">${esc(stageLabel(evo.to))}</span><span class="evoPill">${esc(move)}</span></div><div class="buttonRow">${btn("Carry on","evoContinue","gold")}</div></div><div class="evolutionStage">${buddySprite(type,"bigSprite",evo.to)}</div></div></section>`;
 }
 function renderArcClear(){
   const ac=state.arcClear||{areaIndex:getArea(Math.max(0,state.foeIndex-1)),count:state.foeIndex};
@@ -1599,9 +1706,17 @@ function initWorld(isBattle){
     camera.position.set(0,4.85,7.25);camera.lookAt(0,0.7,-1.1);
     const z=getZone(Math.min(state.foeIndex,49));
     const theme=currentAreaTheme();
-    const road=new THREE.Mesh(new THREE.BoxGeometry(6.25,0.22,9.3),new THREE.MeshToonMaterial({color:theme.road}));road.position.set(0,-0.12,-0.55);scene.add(road);
-    const roadGlow=new THREE.Mesh(new THREE.BoxGeometry(5.45,0.235,8.65),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.12}));roadGlow.position.set(0,-0.095,-0.55);scene.add(roadGlow);
-    for(let j=0;j<7;j++){const stripe=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.24,8.4),new THREE.MeshBasicMaterial({color:j%2?0xffd166:0x5cf0ff,transparent:true,opacity:0.24}));stripe.position.set(-2.4+j*.8,-0.06,-0.55);scene.add(stripe);}
+    const road=new THREE.Mesh(new THREE.BoxGeometry(6.25,0.18,9.3),new THREE.MeshToonMaterial({color:theme.edge}));road.position.set(0,-0.18,-0.55);scene.add(road);
+    const sectionMat=new THREE.MeshToonMaterial({color:theme.road});
+    for(let sct=0;sct<5;sct++){
+      const zPos=3.05-sct*1.8;
+      const deck=new THREE.Mesh(new THREE.BoxGeometry(5.75,0.24,1.46),sectionMat);deck.position.set(0,-0.06,zPos);scene.add(deck);
+      const seam=new THREE.Mesh(new THREE.BoxGeometry(5.95,0.255,0.08),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.22}));seam.position.set(0,0.075,zPos-0.78);scene.add(seam);
+      const arch=new THREE.Mesh(new THREE.TorusGeometry(1.45,0.035,8,38,Math.PI),new THREE.MeshBasicMaterial({color:sct%2?theme.accent:theme.accent2,transparent:true,opacity:.45}));arch.position.set(0,-0.18,zPos-0.15);arch.rotation.set(Math.PI/2,0,0);arch.scale.x=1.9;scene.add(arch);
+    }
+    const roadGlow=new THREE.Mesh(new THREE.BoxGeometry(5.45,0.255,8.65),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.08}));roadGlow.position.set(0,-0.025,-0.55);scene.add(roadGlow);
+    for(let j=0;j<7;j++){const stripe=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.27,8.4),new THREE.MeshBasicMaterial({color:j%2?0xffd166:0x5cf0ff,transparent:true,opacity:0.22}));stripe.position.set(-2.4+j*.8,0.01,-0.55);scene.add(stripe);}
+    [-2.6,2.6].forEach(x=>{for(let i=0;i<5;i++){const tower=new THREE.Mesh(new THREE.BoxGeometry(.16,1.35,.18),new THREE.MeshToonMaterial({color:theme.edge}));tower.position.set(x,.72,3.05-i*1.8);scene.add(tower);const cable=new THREE.Mesh(new THREE.BoxGeometry(.035,.035,1.72),new THREE.MeshBasicMaterial({color:theme.accent,transparent:true,opacity:.62}));cable.position.set(x*.96,1.22,2.15-i*1.8);cable.rotation.z=x>0?-.18:.18;scene.add(cable);}});
     const edgeMat=new THREE.MeshToonMaterial({color:theme.edge});
     [-3.12,3.12].forEach(x=>{const rail=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.48,9.4),edgeMat);rail.position.set(x,0.18,-0.55);scene.add(rail);const railGlow=new THREE.Mesh(new THREE.BoxGeometry(0.045,0.05,9.1),new THREE.MeshBasicMaterial({color:theme.accent,transparent:true,opacity:0.72}));railGlow.position.set(x>0?x-.15:x+.15,0.52,-0.55);scene.add(railGlow);});
     for(let i=0;i<18;i++){const post=new THREE.Mesh(new THREE.CylinderGeometry(0.055,0.07,1.18,8),new THREE.MeshToonMaterial({color:i%2?theme.accent:theme.accent2}));post.position.set(i%2?-2.88:2.88,0.47,3.75-i*0.49);scene.add(post);const orb=new THREE.Mesh(new THREE.SphereGeometry(0.14,12,8),new THREE.MeshBasicMaterial({color:i%2?theme.accent2:theme.accent}));orb.position.set(post.position.x,1.09,post.position.z);scene.add(orb);}
@@ -1628,7 +1743,7 @@ function npcModel(name){const THREE=window.THREE;const g=new THREE.Group();const
 function setupWorldLabels(entities){
   const layer=document.getElementById("worldLabels");
   if(!layer)return;
-  layer.innerHTML=entities.map(({data:e})=>`<div class="worldLabel ${esc(e.kind)}" id="label_${esc(e.id)}"><div class="speechBubble" id="speech_${esc(e.id)}">${esc(e.line||"Hello from the bridge.")}</div><div class="markerDot"></div><div class="floatPrompt">${esc(nearHint(e))}</div></div>`).join("");
+  layer.innerHTML=entities.map(({data:e})=>`<div class="worldLabel ${esc(e.kind)}" id="label_${esc(e.id)}"><div class="speechBubble" id="speech_${esc(e.id)}">${speechMarkup(entityEmoji(e),shortReaction(e))}</div><div class="markerDot"></div><div class="floatPrompt">${esc(nearHint(e))}</div></div>`).join("");
 }
 function updateWorldLabels(camera,entities){
   const layer=document.getElementById("worldLabels");
@@ -1649,13 +1764,15 @@ function updateWorldLabels(camera,entities){
     const speaking=state.bridge&&state.bridge.speechId===e.id&&state.bridge.speechUntil>now;
     el.classList.toggle("speaking",speaking);
     const speech=document.getElementById("speech_"+e.id);
-    if(speech&&speaking)speech.textContent=state.bridge.speechLine||e.line||"Hello from the bridge.";
+    if(speech&&speaking)speech.innerHTML=speechMarkup(state.bridge.speechEmoji||entityEmoji(e),state.bridge.speechLine||shortReaction(e));
   });
   if(state.bridge&&state.bridge.speechUntil&&state.bridge.speechUntil<=now){
     state.bridge.speechId="";
     state.bridge.speechLine="";
+    state.bridge.speechEmoji="";
     state.bridge.speechUntil=0;
   }
+  updateBuddySpeech();
 }
 function updateFallbackDot(){const dot=document.getElementById("fallbackDot");if(!dot||!state.bridge)return;const x=((state.bridge.x+BRIDGE_X_LIMIT)/(BRIDGE_X_LIMIT*2))*100;const y=((state.bridge.z-BRIDGE_Z_MIN)/(BRIDGE_Z_MAX-BRIDGE_Z_MIN))*100;dot.style.left=`calc(${x}% - 17px)`;dot.style.top=`calc(${y}% - 17px)`;}
 function animateBridge(renderer,scene,camera,hero,bud,entities){
@@ -1789,7 +1906,7 @@ app.addEventListener("pointerdown",function(e){
 });
 window.addEventListener("pointerup",function(){activeTouchMove=null;});
 window.addEventListener("pointercancel",function(){activeTouchMove=null;});
-app.addEventListener("click",function(e){const t=e.target.closest("button,[data-buddy],[data-answer]");if(!t)return;e.preventDefault();if(t.dataset.dir)return;if(t.dataset.buddy){state.buddyType=t.dataset.buddy;saveNow();render();return;}if(t.dataset.answer){submitAnswer(t.dataset.answer);return;}if(t.dataset.move){chooseMove(t.dataset.move);return;}if(t.dataset.pick){state.character[t.dataset.pick]=t.dataset.value;saveNow();render();return;}if(t.dataset.initials){buildReport(t.dataset.initials);return;}const a=t.dataset.act;if(!a)return;if(a==="continue"){const s=loadSave();if(s){state=s;if(!state.screen)state.screen="bridge";render();}}else if(a==="modeArc"||a==="modeFull"){setPlayMode(a==="modeFull"?"full":"arc");saveNow();render();}else if(a==="new"){setPlayMode("arc");saveNow();render();}else if(a==="surpriseHero"){surpriseHero();saveNow();render();}else if(a==="buddy"){const input=document.getElementById("heroName");state.character.name=(input&&input.value.trim()?input.value.trim():"Bridge Hero").slice(0,18);state.setup="buddy";state.screen="setup";saveNow();render();}else if(a==="character"){state.setup="hero";saveNow();render();}else if(a==="bridge"){if(!state.buddyType){state.message="Pick a buddy that feels good first.";render();return;}state.knownMoves=[state.buddyType];state.clearedFoes=[];state.foeIndex=0;state.buddyStage=1;state.xp=0;state.focus=0;state.lastEvolution=null;state.pendingEvolution=null;state.rivalCards=[];state.lastCard=null;bridgeEntityCacheKey="";nearestCache=null;state.screen="bridge";state.paused=false;ensureBridgeState();state.bridge.x=0;state.bridge.z=1.9;state.bridge.talk=state.playMode==="full"?"Full route loaded. Clear each area to travel onward.":"One area loaded. Defeat every rival here, then take a breather.";state.message=state.bridge.talk;saveNow();render();}else if(a==="startBattle"){startBattle(false);}else if(a==="startStephen"){startBattle(true);}else if(a.startsWith("spar:")){const idx=parseInt(a.split(":")[1],10);startBattle(false,idx);}else if(a.startsWith("talk:")){talkToEntity(a.split(":")[1]);}else if(a==="guide"){const g=document.getElementById("guide");if(g)g.classList.toggle("hidden");}else if(a==="carryOn"){if(state.playMode==="arc"&&state.foeIndex>=(state.arcGoal||AREA_SIZE)&&state.foeIndex<50)state.arcGoal=Math.min(50,(state.arcGoal||AREA_SIZE)+AREA_SIZE);state.screen="bridge";state.arcClear=null;state.partialReportText="";ensureBridgeState();state.bridge.x=0;state.bridge.z=1.9;state.bridge.target=null;state.bridge.talk=state.foeIndex<50?"Arrived at "+checkpointName()+". Clear every rival here to travel onward.":"Route clear. Stephen is ready.";state.message=state.bridge.talk;bridgeEntityCacheKey="";nearestCache=null;saveNow();render();}else if(a==="evoContinue"){const next=state.pendingEvolution&&state.pendingEvolution.nextScreen?state.pendingEvolution.nextScreen:"bridge";state.pendingEvolution=null;state.screen=next;saveNow();render();}else if(a==="meetStephen"){state.screen="bridge";state.arcClear=null;ensureBridgeState();state.bridge.x=0;state.bridge.z=-3.05;state.bridge.talk="Stephen is just ahead. Final spar when it feels right.";saveNow();render();}else if(a==="cards"){state.screen="cards";saveNow();render();}else if(a==="partialReport"){state.partialReportText=buildProgressReport();state.screen="partialReport";saveNow();render();}else if(a==="backFromPartial"){state.screen=state.arcClear?"arcClear":"bridge";render();}else if(a==="save"){saveNow();state.message="Saved on this device.";if(state.bridge)state.bridge.talk=state.message;const dock=document.getElementById("quickDock");if(dock)updateBridgeOverlay(true);}else if(a==="pause"){if(state.screen==="battle"&&state.battle){state.battle.paused=true;}else{state.paused=true;}saveNow();render();}else if(a==="resumeBattle"){if(state.battle)state.battle.paused=false;state.paused=false;activeTouchMove=null;saveNow();render();}else if(a==="sendProgress"){openProgressEmail();render();}else if(a==="resetGame"){resetWholeGame();}else if(a==="resetBattle"){if(state.battle){const wasStephen=!!state.battle.isStephen;const idx=state.battle.foeIndex;startBattle(wasStephen,idx);if(state.battle){state.battle.message="Reset. Fresh spar loaded.";state.battle.paused=false;saveNow();render();}}}else if(a==="pauseBridge"){state.screen="bridge";state.battle=null;state.paused=false;ensureBridgeState();state.bridge.talk="Paused at the bridge. No progress lost.";state.message=state.bridge.talk;saveNow();render();}else if(a==="glowToggle"){if(state.battle&&glowReady()){state.battle.useGlow=!state.battle.useGlow;saveNow();render();}}else if(a==="buddyNudge"){if(state.battle&&state.battle.phase==="question"&&!state.battle.assistActive){state.battle.assistUsed=true;state.battle.assistActive=true;saveNow();render();}}else if(a==="battleNext"){advanceBattle();}else if(a==="backMove"){state.battle.phase="choose";state.battle.chosenMove="";state.battle.question=null;state.battle.options=[];state.battle.fxType="";state.battle.fxText="";state.battle.fxMove="";state.battle.assistActive=false;state.battle.assistUsed=false;saveNow();render();}else if(a==="submit"){const inp=document.getElementById("answerInput");submitAnswer(inp?inp.value:"");}else if(a==="toBridge"){state.screen="bridge";state.paused=false;render();}});
+app.addEventListener("click",function(e){const t=e.target.closest("button,[data-buddy],[data-answer]");if(!t)return;e.preventDefault();if(t.dataset.dir)return;if(t.dataset.buddy){state.buddyType=t.dataset.buddy;saveNow();render();return;}if(t.dataset.answer){submitAnswer(t.dataset.answer);return;}if(t.dataset.move){chooseMove(t.dataset.move);return;}if(t.dataset.pick){state.character[t.dataset.pick]=t.dataset.value;saveNow();render();return;}if(t.dataset.initials){buildReport(t.dataset.initials);return;}const a=t.dataset.act;if(!a)return;if(a==="continue"){const s=loadSave();if(s){state=s;if(!state.screen)state.screen="bridge";render();}}else if(a==="modeArc"||a==="modeFull"){setPlayMode(a==="modeFull"?"full":"arc");saveNow();render();}else if(a==="new"){setPlayMode("arc");saveNow();render();}else if(a==="surpriseHero"){surpriseHero();saveNow();render();}else if(a==="buddy"){const input=document.getElementById("heroName");state.character.name=(input&&input.value.trim()?input.value.trim():"Bridge Hero").slice(0,18);state.setup="buddy";state.screen="setup";saveNow();render();}else if(a==="character"){state.setup="hero";saveNow();render();}else if(a==="bridge"){if(!state.buddyType){state.message="Pick a buddy that feels good first.";render();return;}state.knownMoves=[state.buddyType];state.clearedFoes=[];state.foeIndex=0;state.buddyStage=1;state.xp=0;state.focus=0;state.lastEvolution=null;state.pendingEvolution=null;state.rivalCards=[];state.lastCard=null;bridgeEntityCacheKey="";nearestCache=null;state.screen="bridge";state.paused=false;ensureBridgeState();state.bridge.x=0;state.bridge.z=1.9;state.bridge.talk=state.playMode==="full"?"Full route loaded. Clear each bridge section.":"One section loaded. Clear the rivals, then travel.";state.message=state.bridge.talk;saveNow();render();}else if(a==="startBattle"){startBattle(false);}else if(a==="startStephen"){startBattle(true);}else if(a.startsWith("spar:")){const idx=parseInt(a.split(":")[1],10);startBattle(false,idx);}else if(a.startsWith("talk:")){talkToEntity(a.split(":")[1]);}else if(a==="guide"){const g=document.getElementById("guide");if(g)g.classList.toggle("hidden");}else if(a==="buddyChat"){talkToBuddy();}else if(a==="carryOn"){if(state.playMode==="arc"&&state.foeIndex>=(state.arcGoal||AREA_SIZE)&&state.foeIndex<50)state.arcGoal=Math.min(50,(state.arcGoal||AREA_SIZE)+AREA_SIZE);state.screen="bridge";state.arcClear=null;state.partialReportText="";ensureBridgeState();state.bridge.x=0;state.bridge.z=1.9;state.bridge.target=null;state.bridge.talk=state.foeIndex<50?"Arrived: "+checkpointName()+". New bridge section unlocked.":"Route clear. Stephen is ready.";state.message=state.bridge.talk;bridgeEntityCacheKey="";nearestCache=null;saveNow();render();}else if(a==="evoContinue"){const next=state.pendingEvolution&&state.pendingEvolution.nextScreen?state.pendingEvolution.nextScreen:"bridge";state.pendingEvolution=null;state.screen=next;saveNow();render();}else if(a==="meetStephen"){state.screen="bridge";state.arcClear=null;ensureBridgeState();state.bridge.x=0;state.bridge.z=-3.05;state.bridge.talk="Stephen is just ahead. Final spar when it feels right.";saveNow();render();}else if(a==="cards"){state.screen="cards";saveNow();render();}else if(a==="partialReport"){state.partialReportText=buildProgressReport();state.screen="partialReport";saveNow();render();}else if(a==="backFromPartial"){state.screen=state.arcClear?"arcClear":"bridge";render();}else if(a==="save"){saveNow();state.message="Saved on this device.";if(state.bridge)state.bridge.talk=state.message;const dock=document.getElementById("quickDock");if(dock)updateBridgeOverlay(true);}else if(a==="pause"){if(state.screen==="battle"&&state.battle){state.battle.paused=true;}else{state.paused=true;}saveNow();render();}else if(a==="resumeBattle"){if(state.battle)state.battle.paused=false;state.paused=false;activeTouchMove=null;saveNow();render();}else if(a==="sendProgress"){openProgressEmail();render();}else if(a==="resetGame"){resetWholeGame();}else if(a==="resetBattle"){if(state.battle){const wasStephen=!!state.battle.isStephen;const idx=state.battle.foeIndex;startBattle(wasStephen,idx);if(state.battle){state.battle.message="Reset. Fresh spar loaded.";state.battle.paused=false;saveNow();render();}}}else if(a==="pauseBridge"){state.screen="bridge";state.battle=null;state.paused=false;ensureBridgeState();state.bridge.talk="Paused at the bridge. No progress lost.";state.message=state.bridge.talk;saveNow();render();}else if(a==="glowToggle"){if(state.battle&&glowReady()){state.battle.useGlow=!state.battle.useGlow;saveNow();render();}}else if(a==="buddyNudge"){if(state.battle&&state.battle.phase==="question"&&!state.battle.assistActive){state.battle.assistUsed=true;state.battle.assistActive=true;saveNow();render();}}else if(a==="battleNext"){advanceBattle();}else if(a==="backMove"){state.battle.phase="choose";state.battle.chosenMove="";state.battle.question=null;state.battle.options=[];state.battle.fxType="";state.battle.fxText="";state.battle.fxMove="";state.battle.assistActive=false;state.battle.assistUsed=false;saveNow();render();}else if(a==="submit"){const inp=document.getElementById("answerInput");submitAnswer(inp?inp.value:"");}else if(a==="toBridge"){state.screen="bridge";state.paused=false;render();}});
 app.addEventListener("input",function(e){if(e.target&&e.target.id==="heroName"){state.character.name=e.target.value.slice(0,18);const n=document.getElementById("heroCardName");if(n)n.textContent=heroDisplayName();scheduleSave();}});
 function movementKey(e,down){
   const target=e.target;
