@@ -1002,16 +1002,19 @@ const buddyData={
 const zoneNames=["Spark Arc","Moon Arc","Star Arc","Orbit Arc","Remix Arc"];
 const zoneTypes=["Add","Subtract","Multiply","Divide","Mixed"];
 const AREA_SIZE=5;
+const ZONE_SIZE=5;
+const TOTAL_FOES=ZONE_SIZE*zoneNames.length;
+const ACTIVE_AREA_ORDER=[0,2,4,6,8];
 const areaThemes=[
-  {name:"Spark Gate",short:"Gate",label:"Area 1",focus:"Add",road:0x2b9cff,edge:0x102044,accent:0x5cf0ff,accent2:0xffd166,bg:"radial-gradient(circle at 18% 12%,rgba(69,230,255,.24),transparent 28%),radial-gradient(circle at 86% 18%,rgba(255,209,102,.16),transparent 26%),linear-gradient(180deg,#101f4d,#070914)"},
+  {name:"Spark Gate",short:"Gate",label:"Zone 1",focus:"Add",road:0x2b9cff,edge:0x102044,accent:0x5cf0ff,accent2:0xffd166,bg:"radial-gradient(circle at 18% 12%,rgba(69,230,255,.24),transparent 28%),radial-gradient(circle at 86% 18%,rgba(255,209,102,.16),transparent 26%),linear-gradient(180deg,#101f4d,#070914)"},
   {name:"Cloud Market",short:"Market",label:"Area 2",focus:"Add",road:0x58d8ff,edge:0x17395e,accent:0xffffff,accent2:0x7dff9d,bg:"radial-gradient(circle at 16% 18%,rgba(255,255,255,.24),transparent 24%),radial-gradient(circle at 78% 14%,rgba(125,255,157,.18),transparent 26%),linear-gradient(180deg,#173a66,#07131f)"},
-  {name:"Moon Alley",short:"Alley",label:"Area 3",focus:"Subtract",road:0x8e67ff,edge:0x21144e,accent:0xa98bff,accent2:0xff61d8,bg:"radial-gradient(circle at 80% 12%,rgba(169,139,255,.28),transparent 26%),radial-gradient(circle at 20% 70%,rgba(255,97,216,.16),transparent 27%),linear-gradient(180deg,#21194c,#080914)"},
+  {name:"Moon Alley",short:"Alley",label:"Zone 2",focus:"Subtract",road:0x8e67ff,edge:0x21144e,accent:0xa98bff,accent2:0xff61d8,bg:"radial-gradient(circle at 80% 12%,rgba(169,139,255,.28),transparent 26%),radial-gradient(circle at 20% 70%,rgba(255,97,216,.16),transparent 27%),linear-gradient(180deg,#21194c,#080914)"},
   {name:"Quiet Library",short:"Library",label:"Area 4",focus:"Subtract",road:0x6f5ac9,edge:0x171f42,accent:0xffd166,accent2:0xa98bff,bg:"radial-gradient(circle at 22% 22%,rgba(255,209,102,.20),transparent 24%),radial-gradient(circle at 82% 78%,rgba(169,139,255,.18),transparent 28%),linear-gradient(180deg,#1d2350,#090b19)"},
-  {name:"Comet Courts",short:"Courts",label:"Area 5",focus:"Multiply",road:0xff815c,edge:0x4b1d16,accent:0xff955c,accent2:0xffd166,bg:"radial-gradient(circle at 74% 24%,rgba(255,149,92,.28),transparent 27%),radial-gradient(circle at 18% 72%,rgba(255,209,102,.18),transparent 28%),linear-gradient(180deg,#4a1d2e,#090914)"},
+  {name:"Comet Courts",short:"Courts",label:"Zone 3",focus:"Multiply",road:0xff815c,edge:0x4b1d16,accent:0xff955c,accent2:0xffd166,bg:"radial-gradient(circle at 74% 24%,rgba(255,149,92,.28),transparent 27%),radial-gradient(circle at 18% 72%,rgba(255,209,102,.18),transparent 28%),linear-gradient(180deg,#4a1d2e,#090914)"},
   {name:"Star Arcade",short:"Arcade",label:"Area 6",focus:"Multiply",road:0xff61d8,edge:0x321343,accent:0xffd166,accent2:0x45e6ff,bg:"radial-gradient(circle at 18% 12%,rgba(255,97,216,.30),transparent 27%),radial-gradient(circle at 84% 20%,rgba(69,230,255,.18),transparent 26%),linear-gradient(180deg,#33174d,#090914)"},
-  {name:"Orbit Gardens",short:"Gardens",label:"Area 7",focus:"Divide",road:0x42d88f,edge:0x0e3a2b,accent:0x7dff9d,accent2:0x45e6ff,bg:"radial-gradient(circle at 16% 16%,rgba(125,255,157,.24),transparent 26%),radial-gradient(circle at 78% 70%,rgba(69,230,255,.18),transparent 29%),linear-gradient(180deg,#123b35,#061310)"},
+  {name:"Orbit Gardens",short:"Gardens",label:"Zone 4",focus:"Divide",road:0x42d88f,edge:0x0e3a2b,accent:0x7dff9d,accent2:0x45e6ff,bg:"radial-gradient(circle at 16% 16%,rgba(125,255,157,.24),transparent 26%),radial-gradient(circle at 78% 70%,rgba(69,230,255,.18),transparent 29%),linear-gradient(180deg,#123b35,#061310)"},
   {name:"Bubble Docks",short:"Docks",label:"Area 8",focus:"Divide",road:0x2cc6b8,edge:0x0d3342,accent:0x45e6ff,accent2:0x7dff9d,bg:"radial-gradient(circle at 72% 14%,rgba(69,230,255,.26),transparent 27%),radial-gradient(circle at 20% 72%,rgba(125,255,157,.16),transparent 30%),linear-gradient(180deg,#0f3a50,#07121a)"},
-  {name:"Remix Rooftops",short:"Rooftops",label:"Area 9",focus:"Mixed",road:0xffd166,edge:0x352808,accent:0xff61d8,accent2:0x45e6ff,bg:"radial-gradient(circle at 18% 14%,rgba(255,209,102,.26),transparent 26%),radial-gradient(circle at 86% 18%,rgba(255,97,216,.20),transparent 26%),linear-gradient(180deg,#3b2b47,#090914)"},
+  {name:"Remix Rooftops",short:"Rooftops",label:"Zone 5",focus:"Mixed",road:0xffd166,edge:0x352808,accent:0xff61d8,accent2:0x45e6ff,bg:"radial-gradient(circle at 18% 14%,rgba(255,209,102,.26),transparent 26%),radial-gradient(circle at 86% 18%,rgba(255,97,216,.20),transparent 26%),linear-gradient(180deg,#3b2b47,#090914)"},
   {name:"Final Lookout",short:"Lookout",label:"Area 10",focus:"Mixed",road:0xffffff,edge:0x22253f,accent:0xffd166,accent2:0x5cf0ff,bg:"radial-gradient(circle at 50% 18%,rgba(255,255,255,.24),transparent 24%),radial-gradient(circle at 18% 72%,rgba(255,209,102,.18),transparent 30%),linear-gradient(180deg,#24305e,#070914)"}
 ];
 const foeNames=["Nova","Kiro","Mika","Rin","Ari","Zen","Tao","Niko","Sora","Kai"];
@@ -1067,8 +1070,8 @@ function normaliseState(s){
   s.strategy={...f.strategy,...(s.strategy||{})};
   s.bridge={x:0,z:1.9,target:null,talk:"Use WASD, arrow keys, or the pad. Wander first, spar when it feels good.",...(s.bridge||{})};
   if(!Array.isArray(s.knownMoves))s.knownMoves=s.buddyType?[s.buddyType]:[];
-  if(!Array.isArray(s.clearedFoes))s.clearedFoes=Array.from({length:Math.max(0,Math.min(50,Number(s.foeIndex)||0))},(_,i)=>i);
-  s.clearedFoes=[...new Set(s.clearedFoes.map(n=>parseInt(n,10)).filter(n=>Number.isFinite(n)&&n>=0&&n<50))];
+  if(!Array.isArray(s.clearedFoes))s.clearedFoes=Array.from({length:Math.max(0,Math.min(TOTAL_FOES,Number(s.foeIndex)||0))},(_,i)=>i);
+  s.clearedFoes=[...new Set(s.clearedFoes.map(n=>parseInt(n,10)).filter(n=>Number.isFinite(n)&&n>=0&&n<TOTAL_FOES))];
   s.foeIndex=s.clearedFoes.length;
   if(!s.setup)s.setup=s.setupStep==="buddy"?"buddy":"hero";
   if(!s.startedAt)s.startedAt=Date.now();
@@ -1076,7 +1079,7 @@ function normaliseState(s){
   s.arcClear=s.arcClear||null;
   if(s.playMode==="stephen"){s.playMode="arc";s.clearedFoes=[];s.foeIndex=0;if(s.bridge){s.bridge.x=0;s.bridge.z=1.9;s.bridge.talk="Bridge route ready. Start with the first area.";}}
   s.playMode=["arc","full"].includes(s.playMode)?s.playMode:"arc";
-  s.arcGoal=Math.max(AREA_SIZE,Math.min(50,Number(s.arcGoal)||AREA_SIZE));
+  s.arcGoal=Math.max(AREA_SIZE,Math.min(TOTAL_FOES,Number(s.arcGoal)||AREA_SIZE));
   s.partialReportText=s.partialReportText||"";
   s.lastEvolution=s.lastEvolution||null;
   s.pendingEvolution=s.pendingEvolution||null;
@@ -1097,19 +1100,23 @@ function stageName(){return ["","Stage 1","Stage 2","Stage 3","Stage 4"][state.b
 function stageLabel(stage){return ["","Stage 1","Stage 2","Stage 3","Stage 4"][Math.max(1,Math.min(4,Number(stage)||1))]||"Stage 1";}
 function buddyStageName(type,stage){const base=buddyData[type]?.name||"Buddy";const s=Math.max(1,Math.min(4,Number(stage)||1));if(s===1)return base;if(s===2)return base+" Spark";if(s===3)return base+" Nova";return base+" Ultra";}
 function currentBuddyName(){return buddyStageName(state.buddyType,state.buddyStage);}
-function getZone(i){return Math.min(4,Math.floor(i/10));}
-function getArea(i){return Math.min(areaThemes.length-1,Math.floor(Math.max(0,Math.min(49,Number(i)||0))/AREA_SIZE));}
-function currentAreaIndex(){return state.foeIndex>=50?areaThemes.length-1:getArea(state.foeIndex);}
+function routeComplete(){return state.foeIndex>=TOTAL_FOES;}
+function clampFoeNumber(i){return Math.max(0,Math.min(TOTAL_FOES-1,Number(i)||0));}
+function getZone(i){return Math.min(zoneNames.length-1,Math.floor(clampFoeNumber(i)/ZONE_SIZE));}
+function activeAreaIndexForZone(zone){return ACTIVE_AREA_ORDER[Math.max(0,Math.min(ACTIVE_AREA_ORDER.length-1,Number(zone)||0))]||0;}
+function getArea(i){return activeAreaIndexForZone(getZone(i));}
+function currentProgressZone(){return routeComplete()?zoneNames.length-1:getZone(state.foeIndex);}
+function currentAreaIndex(){return routeComplete()?areaThemes.length-1:activeAreaIndexForZone(currentProgressZone());}
 function areaTheme(i){return areaThemes[Math.max(0,Math.min(areaThemes.length-1,Number(i)||0))]||areaThemes[0];}
 function currentAreaTheme(){return areaTheme(currentAreaIndex());}
-function areaClearedCount(){if(state.foeIndex>=50)return AREA_SIZE;return Math.max(0,Math.min(AREA_SIZE,state.foeIndex%AREA_SIZE));}
-function areaProgressText(){return state.foeIndex>=50?"Route clear":areaClearedCount()+"/"+AREA_SIZE+" in area";}
-function nextAreaName(){const next=Math.min(areaThemes.length-1,currentAreaIndex()+1);return areaTheme(next).name;}
-function foeAt(i){const z=getZone(i);const a=getArea(i);const type=z<4?ops[z]:ops[i%4];return {name:foeNames[i%10]+" " + areaTheme(a).short,type,zone:z,area:a};}
-function checkpointName(){if(state.foeIndex>=50)return "Stephen Lookout";return currentAreaTheme().name;}
-function modeLabel(){return state.playMode==="full"?"Full route":"One area";}
-function journeyProgressText(){if(state.playMode==="arc")return Math.min(state.foeIndex,state.arcGoal||AREA_SIZE)+"/"+(state.arcGoal||AREA_SIZE);return state.foeIndex+"/50";}
-function setPlayMode(mode){localStorage.removeItem(CBB_KEY);state=freshState();state.playMode=mode==="full"?"full":"arc";state.arcGoal=state.playMode==="arc"?AREA_SIZE:50;state.screen="setup";state.setup="hero";state.message=state.playMode==="full"?"Full route selected.":"Game started.";}
+function areaClearedCount(){if(routeComplete())return AREA_SIZE;return Math.max(0,Math.min(AREA_SIZE,state.foeIndex%AREA_SIZE));}
+function areaProgressText(){return routeComplete()?"Route clear":areaClearedCount()+"/"+AREA_SIZE+" in zone";}
+function nextAreaName(){const next=Math.min(zoneNames.length-1,currentProgressZone()+1);return areaTheme(activeAreaIndexForZone(next)).name;}
+function foeAt(i){const idx=clampFoeNumber(i);const z=getZone(idx);const a=getArea(idx);const type=z<4?ops[z]:ops[idx%4];return {name:foeNames[idx%10]+" " + areaTheme(a).short,type,zone:z,area:a,index:idx};}
+function checkpointName(){if(routeComplete())return "Stephen Lookout";return currentAreaTheme().name;}
+function modeLabel(){return state.playMode==="full"?"Full route":"Fast route";}
+function journeyProgressText(){if(state.playMode==="arc")return Math.min(state.foeIndex,state.arcGoal||AREA_SIZE)+"/"+(state.arcGoal||AREA_SIZE);return state.foeIndex+"/"+TOTAL_FOES;}
+function setPlayMode(mode){localStorage.removeItem(CBB_KEY);state=freshState();state.playMode=mode==="full"?"full":"arc";state.arcGoal=state.playMode==="arc"?AREA_SIZE:TOTAL_FOES;state.screen="setup";state.setup="hero";state.message=state.playMode==="full"?"Full route selected.":"Game started.";}
 function randomChoice(arr){return arr[Math.floor(Math.random()*arr.length)];}
 function surpriseHero(){const names=["Noodle Nova","Bridge Bean","Captain Snack","Pixel Kai","Turbo Pip","Glow Moth","Orbit Jinx","Snack Wizard"];state.character.name=randomChoice(names);state.character.skin=randomChoice(["#f2c7a5","#d99a73","#9b6347","#6a3f2f"]);state.character.hairStyle=randomChoice(["spikes","wave","short"]);state.character.hair=randomChoice(["#1e1e2a","#6b3f28","#f5d66b","#6a8dff"]);state.character.outfit=randomChoice(["#45e6ff","#ff61d8","#7dff9d","#ffd166"]);state.character.accessory=randomChoice(["Aura scarf","Star pin","Headset","Cape"]);state.message="New hero look ready.";}
 function rivalQuote(type){return {Add:"Too much sparkle, still friendly.",Subtract:"Looks grumpy, actually kind.",Multiply:"Tiny drama. Big pose.",Divide:"Snack shell energy."}[type]||"Bridge rival met.";}
@@ -1165,28 +1172,16 @@ function visibleOptions(b){
 }
 function percent(a,c){return a?Math.round((c/a)*100):0;}
 function timeText(ms){const m=Math.max(1,Math.round(ms/60000));return m+" minute"+(m===1?"":"s");}
-function nextStageForXp(xp){if(xp>=4100)return 4;if(xp>=2400)return 3;if(xp>=560)return 2;return 1;}
-function forceStageFourForRemix(){
-  if(state.foeIndex<40||state.buddyStage>=4)return;
-  state.xp=Math.max(state.xp,4100);
-  while(state.buddyStage<4){
-    const from=state.buddyStage;
-    state.buddyStage++;
-    const add=pickMoveToLearn();
-    if(add&&!state.knownMoves.includes(add))state.knownMoves.push(add);
-    const evo={from,to:state.buddyStage,move:add||"",time:Date.now(),buddy:state.buddyType};
-    state.lastEvolution=evo;
-    state.pendingEvolution=evo;
-  }
+function nextStageForXp(xp){if(xp>=900)return 4;if(xp>=420)return 3;if(xp>=140)return 2;return 1;}
+function stageForRouteProgress(count){
+  const n=Math.max(0,Number(count)||0);
+  if(n>=TOTAL_FOES)return 4;
+  if(n>=ZONE_SIZE*3)return 3;
+  if(n>=ZONE_SIZE)return 2;
+  return 1;
 }
-function pickMoveToLearn(){
-  for(let i=state.foeIndex;i<50;i++){const need=counters[foeAt(i).type];if(!state.knownMoves.includes(need))return need;}
-  return ops.find(o=>!state.knownMoves.includes(o));
-}
-function gainXp(amount){
-  const beforeStage=state.buddyStage;
-  state.xp+=amount;
-  const target=nextStageForXp(state.xp);
+function evolveToTargetStage(target){
+  target=Math.max(1,Math.min(4,Number(target)||1));
   while(state.buddyStage<target){
     const from=state.buddyStage;
     state.buddyStage++;
@@ -1197,6 +1192,23 @@ function gainXp(amount){
     state.pendingEvolution=evo;
     state.message=`${buddyStageName(state.buddyType,state.buddyStage)} glows up.`;
   }
+}
+function syncBuddyEvolutionToRoute(){
+  const target=Math.max(nextStageForXp(state.xp),stageForRouteProgress(state.foeIndex));
+  evolveToTargetStage(target);
+}
+function forceStageFourForRemix(){
+  if(state.foeIndex<TOTAL_FOES||state.buddyStage>=4)return;
+  state.xp=Math.max(state.xp,900);
+  evolveToTargetStage(4);
+}
+function pickMoveToLearn(){
+  for(let i=state.foeIndex;i<TOTAL_FOES;i++){const need=counters[foeAt(i).type];if(!state.knownMoves.includes(need))return need;}
+  return ops.find(o=>!state.knownMoves.includes(o));
+}
+function gainXp(amount){
+  state.xp+=amount;
+  syncBuddyEvolutionToRoute();
 }
 function render(){disposeWorld();if(state.screen==="start")renderStart();else if(state.screen==="setup")renderSetup();else if(state.screen==="bridge")renderBridge();else if(state.screen==="battle")renderBattle();else if(state.screen==="arcClear")renderArcClear();else if(state.screen==="evolve")renderEvolution();else if(state.screen==="partialReport")renderPartialReport();else if(state.screen==="cards")renderCards();else if(state.screen==="report")renderReport();}
 function renderStart(){const saved=loadSave();app.innerHTML=`<section class="hero panel"><div class="heroCopy"><span class="kicker">Anime maths adventure</span><h1>Chilton Bridge Battle</h1><p class="lead">Build a hero, choose one buddy, and cross the route one clear area at a time.</p><div class="buttonRow">${saved?btn("Continue", "continue", "gold"):""}${btn("Play Game", "modeArc", saved?"secondary":"gold")}</div></div><div class="animePoster"><canvas id="posterCanvas" class="posterCanvas"></canvas><div id="posterFallback" class="posterFallback hidden"><div class="fallbackHero"></div></div></div></section>`;setTimeout(()=>initPoster(),20);}
@@ -1216,17 +1228,17 @@ function ensureBridgeState(){
   state.bridge.x=Math.max(-BRIDGE_X_LIMIT,Math.min(BRIDGE_X_LIMIT,Number(state.bridge.x)||0));
   state.bridge.z=Math.max(BRIDGE_Z_MIN,Math.min(BRIDGE_Z_MAX,Number(state.bridge.z)||1.9));
   if(!state.bridge.talk)state.bridge.talk="Move around. Step close to someone to chat or spar.";
-  if(!Array.isArray(state.clearedFoes))state.clearedFoes=Array.from({length:Math.max(0,Math.min(50,Number(state.foeIndex)||0))},(_,i)=>i);
-  state.clearedFoes=[...new Set(state.clearedFoes.map(n=>parseInt(n,10)).filter(n=>Number.isFinite(n)&&n>=0&&n<50))];
+  if(!Array.isArray(state.clearedFoes))state.clearedFoes=Array.from({length:Math.max(0,Math.min(TOTAL_FOES,Number(state.foeIndex)||0))},(_,i)=>i);
+  state.clearedFoes=[...new Set(state.clearedFoes.map(n=>parseInt(n,10)).filter(n=>Number.isFinite(n)&&n>=0&&n<TOTAL_FOES))];
   state.foeIndex=state.clearedFoes.length;
 }
 function bridgeRivals(){
   ensureBridgeState();
-  if(state.foeIndex>=50)return [];
+  if(routeComplete())return [];
   const open=[];
-  const area=currentAreaIndex();
-  const start=area*AREA_SIZE;
-  const end=Math.min(50,start+AREA_SIZE);
+  const zone=currentProgressZone();
+  const start=zone*AREA_SIZE;
+  const end=Math.min(TOTAL_FOES,start+AREA_SIZE);
   for(let i=start;i<end;i++)if(!state.clearedFoes.includes(i))open.push(i);
   const spots=[[-1.55,-1.05],[1.5,-1.65],[-1.35,-2.45],[1.35,-3.15],[0,-3.85]];
   return open.map((idx,n)=>{const f=foeAt(idx);return {kind:"rival",id:"rival"+idx,index:idx,name:f.name,type:f.type,zone:f.zone,area:f.area,x:spots[n][0],z:spots[n][1],line:rivalLine(f,n)};});
@@ -1297,12 +1309,12 @@ function bridgeEntities(){
   const theme=currentAreaTheme();
   const key=area+"_"+state.foeIndex+"_"+state.buddyStage+"_"+(state.clearedFoes||[]).join(".");
   if(bridgeEntityCacheKey===key&&bridgeEntityCache.length)return bridgeEntityCache;
-  const nextType=state.foeIndex<50?foeAt(state.foeIndex).type:"Add";
+  const nextType=!routeComplete()?foeAt(state.foeIndex).type:"Add";
   const counter=counters[nextType]||"Subtract";
   const areaClears=Math.floor(state.foeIndex/AREA_SIZE);
   const buddy=buddyData[state.buddyType]?.name||"Buddy";
   const jokes=bridgeMathJokes();
-  const mossLines=["🪨",`${counter} beats ${nextType}.`,"Bridge section clear = next place."];
+  const mossLines=["🪨",`${counter} beats ${nextType}.`,"5 rivals = next zone."];
   const beanLines=["🫘", "Space = spar.", "Area clear = travel."];
   const floLines=["🌀", `${buddy}: ${stageName()}.`, `${state.knownMoves.length} move${state.knownMoves.length===1?"":"s"}.`];
   const base=[
@@ -1312,7 +1324,7 @@ function bridgeEntities(){
     {kind:"npc",id:"npc2",name:"Bean",x:2.05,z:1.35,line:beanLines[areaClears%beanLines.length]},
     {kind:"npc",id:"npc3",name:"Flo",x:0.2,z:-0.05,line:floLines[areaClears%floLines.length]}
   ];
-  if(state.foeIndex>=50)base.push({kind:"stephen",id:"stephen",name:"Stephen",x:0,z:-3.65,line:"Four auras. Clean sample."});
+  if(routeComplete())base.push({kind:"stephen",id:"stephen",name:"Stephen",x:0,z:-3.65,line:"Four auras. Clean sample."});
   else base.push(...bridgeRivals());
   bridgeEntityCacheKey=key;
   bridgeEntityCache=base.map(e=>({...e,emoji:entityEmoji(e),arc:theme.name,area}));
@@ -1383,7 +1395,7 @@ function updateBridgeOverlay(force){
   }
   const toast=document.getElementById("worldToast");
   if(toast){const reward=state.bridge.rewardUntil&&Date.now()<state.bridge.rewardUntil;toast.textContent=reward?state.bridge.rewardText:"";}updateBuddySpeech();
-  const pct=Math.round((state.foeIndex/50)*100);
+  const pct=Math.round((state.foeIndex/TOTAL_FOES)*100);
   const progress=document.getElementById("bridgeProgress");
   if(progress)progress.innerHTML=`<span class="chip checkpointChip">${esc(currentAreaTheme().label)}</span><span class="chip">${esc(areaProgressText())}</span><span class="chip">${esc(stageName())}</span>`;
   const arc=document.getElementById("arcLabel");
@@ -1544,7 +1556,7 @@ function maybeAutoAdvanceBattle(){
 function glowReady(){return (Number(state.focus)||0)>=3;}
 function startBattle(isStephen,foeIndex){
   if(isStephen){ops.forEach(o=>{if(!state.knownMoves.includes(o))state.knownMoves.push(o);});state.buddyStage=Math.max(4,state.buddyStage||1);}
-  const foe=isStephen?{name:"Stephen",type:"Multiply",zone:5,index:50}:foeAt(Math.max(0,Math.min(49,typeof foeIndex==="number"?foeIndex:state.foeIndex)));
+  const foe=isStephen?{name:"Stephen",type:"Multiply",zone:zoneNames.length,index:TOTAL_FOES}:foeAt(Math.max(0,Math.min(TOTAL_FOES-1,typeof foeIndex==="number"?foeIndex:state.foeIndex)));
   const hpCurve=[70,88,106,126,148];
   const maxHp=isStephen?480:(hpCurve[foe.zone]||120);
   const battle={isStephen,foeIndex:foe.index==null?foeIndex:foe.index,foeName:foe.name,foeType:foe.type,foeZone:foe.zone||0,foeHpMax:maxHp,foeHp:maxHp,buddyHpMax:120+(state.buddyStage*24),buddyHp:120+(state.buddyStage*24),phase:"choose",chosenMove:"",question:null,options:[],message:isStephen?"Stephen reads the bridge aura with you. Four calm phases, clean evidence for Jay.":"Friendly spar loaded. Read the aura, then choose your move.",stephenTurn:0,checkpointHp:maxHp,rivalMood:"Chill",microEvent:"None",resultLines:[],resultTitle:"",fxType:"",fxText:"",useGlow:false,missStreak:0,assistUsed:false,assistActive:false,fxMove:"",splashUntil:Date.now()+1050,buddyPerks:{addHeal:false,divideShield:false}};
@@ -1749,22 +1761,24 @@ function finishBattle(){
   if(b.isStephen){state.battle=null;state.screen="report";state.message="Bridge cleared.";saveNow();render();return;}
   ensureBridgeState();
   const idx=Number.isFinite(parseInt(b.foeIndex,10))?parseInt(b.foeIndex,10):state.foeIndex;
-  if(idx>=0&&idx<50)addRivalCard(foeAt(idx));
-  if(idx>=0&&idx<50&&!state.clearedFoes.includes(idx))state.clearedFoes.push(idx);
+  if(idx>=0&&idx<TOTAL_FOES)addRivalCard(foeAt(idx));
+  if(idx>=0&&idx<TOTAL_FOES&&!state.clearedFoes.includes(idx))state.clearedFoes.push(idx);
   state.clearedFoes.sort((a,b)=>a-b);
   state.foeIndex=state.clearedFoes.length;
   state.battle=null;
   state.bridge.target=null;
   const areaComplete=state.foeIndex>0&&state.foeIndex%AREA_SIZE===0;
-  state.bridge.rewardText=state.foeIndex>=50?"Route clear. Stephen is ready.":areaComplete?"Area clear. Next area unlocked.":"Clean spar. Clear this area to travel onward.";
+  state.bridge.rewardText=routeComplete()?"Route clear. Stephen is ready.":areaComplete?"Zone clear. Next zone unlocked.":"Clean spar. Clear 5 rivals to travel onward.";
   state.bridge.rewardUntil=Date.now()+(areaComplete?4300:3200);
-  state.bridge.talk=state.foeIndex<50?(areaComplete?"Area clear. Travel to the next place when ready.":"Nice spar. Defeat every rival in this area to move on."):"The route is clear. Stephen is ready for a friendly final spar.";
+  state.bridge.talk=!routeComplete()?(areaComplete?"Zone clear. Travel to the next place when ready.":"Nice spar. Defeat 5 rivals in this zone to move on."):"The route is clear. Stephen is ready for a friendly final spar.";
   state.message=state.bridge.talk;
   bridgeEntityCacheKey="";nearestCache=null;
+  syncBuddyEvolutionToRoute();
   forceStageFourForRemix();
   let nextScreen="bridge";
   if(state.foeIndex>0&&state.foeIndex%AREA_SIZE===0){
-    const areaIndex=Math.min(areaThemes.length-1,Math.floor((state.foeIndex-1)/AREA_SIZE));
+    const zoneIndex=Math.min(zoneNames.length-1,Math.floor((state.foeIndex-1)/AREA_SIZE));
+    const areaIndex=activeAreaIndexForZone(zoneIndex);
     state.arcClear={arcIndex:areaIndex,areaIndex,count:state.foeIndex,time:Date.now()};
     nextScreen="arcClear";
   }
@@ -1782,12 +1796,12 @@ function renderEvolution(){
 function renderArcClear(){
   const ac=state.arcClear||{areaIndex:getArea(Math.max(0,state.foeIndex-1)),count:state.foeIndex};
   const clearedArea=areaTheme(ac.areaIndex==null?ac.arcIndex:ac.areaIndex);
-  const complete=state.foeIndex>=50;
+  const complete=routeComplete();
   const oneAreaDone=state.playMode==="arc"&&state.foeIndex>=(state.arcGoal||AREA_SIZE)&&!complete;
   const next=complete?"Stephen Lookout":nextAreaName();
-  const badge=complete?"Stephen unlocked":oneAreaDone?"Area goal met":"New area unlocked";
+  const badge=complete?"Stephen unlocked":oneAreaDone?"Zone goal met":"New zone unlocked";
   const action=complete?btn("To Stephen","meetStephen","gold"):btn("Travel to "+next,"carryOn","gold");
-  app.innerHTML=`<section class="arcClear" style="background:${esc(clearedArea.bg)}"><div class="arcCard panel"><div><span class="arcBadge">${esc(clearedArea.name)} clear</span><h1>${complete?"Route cleared":oneAreaDone?"Area cleared":"Area cleared"}</h1><p class="lead">${complete?"Every area is clear. Stephen is waiting at the lookout.":"Nice work. The next area has opened and will look different."}</p><div class="arcRewards"><div class="rewardTile">${state.foeIndex} rivals<span>Cleared so far</span></div><div class="rewardTile">${esc(stageName())}<span>Buddy stage</span></div><div class="rewardTile">${esc(badge)}<span>Reward moment</span></div><div class="rewardTile">${(state.rivalCards||[]).length}<span>Rival cards</span></div></div><div class="buttonRow">${action}${btn("Cards","cards","secondary")}${btn("Report","partialReport","secondary")}${btn("Save","save","ghost")}</div></div><div class="characterStage" style="display:grid;place-items:center">${buddySprite(state.buddyType,"bigSprite",state.buddyStage)}</div></div></section>`;
+  app.innerHTML=`<section class="arcClear" style="background:${esc(clearedArea.bg)}"><div class="arcCard panel"><div><span class="arcBadge">${esc(clearedArea.name)} clear</span><h1>${complete?"Route cleared":oneAreaDone?"Zone cleared":"Zone cleared"}</h1><p class="lead">${complete?"Every area is clear. Stephen is waiting at the lookout.":"Nice work. The next zone has opened and will look different."}</p><div class="arcRewards"><div class="rewardTile">${state.foeIndex} rivals<span>Cleared so far</span></div><div class="rewardTile">${esc(stageName())}<span>Buddy stage</span></div><div class="rewardTile">${esc(badge)}<span>Reward moment</span></div><div class="rewardTile">${(state.rivalCards||[]).length}<span>Rival cards</span></div></div><div class="buttonRow">${action}${btn("Cards","cards","secondary")}${btn("Report","partialReport","secondary")}${btn("Save","save","ghost")}</div></div><div class="characterStage" style="display:grid;place-items:center">${buddySprite(state.buddyType,"bigSprite",state.buddyStage)}</div></div></section>`;
 }
 function buildProgressReport(){
   const lines=[];
@@ -1796,7 +1810,7 @@ function buildProgressReport(){
   lines.push("Character name: "+(state.character.name||"Bridge Hero"));
   lines.push("Date: "+new Date().toLocaleString("en-GB"));
   lines.push("Time spent: "+timeText(Date.now()-state.startedAt));
-  lines.push("Foes defeated so far: "+state.foeIndex+" / "+(state.playMode==="arc"?(state.arcGoal||AREA_SIZE):50));
+  lines.push("Foes defeated so far: "+state.foeIndex+" / "+(state.playMode==="arc"?(state.arcGoal||AREA_SIZE):TOTAL_FOES));
   lines.push("Current area: "+checkpointName()+" ("+areaProgressText()+")");
   lines.push("Session mode: "+modeLabel());
   lines.push("Buddy stage: "+stageName());
@@ -2096,7 +2110,7 @@ app.addEventListener("pointerdown",function(e){
 });
 window.addEventListener("pointerup",function(){activeTouchMove=null;});
 window.addEventListener("pointercancel",function(){activeTouchMove=null;});
-app.addEventListener("click",function(e){const t=e.target.closest("button,[data-buddy],[data-answer]");if(!t)return;e.preventDefault();if(t.dataset.dir)return;if(t.dataset.buddy){state.buddyType=t.dataset.buddy;saveNow();render();return;}if(t.dataset.answer){submitAnswer(t.dataset.answer);return;}if(t.dataset.move){chooseMove(t.dataset.move);return;}if(t.dataset.pick){state.character[t.dataset.pick]=t.dataset.value;saveNow();render();return;}if(t.dataset.initials){buildReport(t.dataset.initials);return;}const a=t.dataset.act;if(!a)return;if(a==="continue"){const s=loadSave();if(s){state=s;if(!state.screen)state.screen="bridge";render();}}else if(a==="modeArc"||a==="modeFull"){setPlayMode(a==="modeFull"?"full":"arc");saveNow();render();}else if(a==="new"){setPlayMode("arc");saveNow();render();}else if(a==="surpriseHero"){surpriseHero();saveNow();render();}else if(a==="buddy"){const input=document.getElementById("heroName");state.character.name=(input&&input.value.trim()?input.value.trim():"Bridge Hero").slice(0,18);state.setup="buddy";state.screen="setup";saveNow();render();}else if(a==="character"){state.setup="hero";saveNow();render();}else if(a==="bridge"){if(!state.buddyType){state.message="Pick a buddy that feels good first.";render();return;}state.knownMoves=[state.buddyType];state.clearedFoes=[];state.foeIndex=0;state.buddyStage=1;state.xp=0;state.focus=0;state.lastEvolution=null;state.pendingEvolution=null;state.rivalCards=[];state.lastCard=null;bridgeEntityCacheKey="";nearestCache=null;state.screen="bridge";state.paused=false;ensureBridgeState();state.bridge.x=0;state.bridge.z=1.9;state.bridge.talk=state.playMode==="full"?"Full route loaded. Clear each bridge section.":"One section loaded. Clear the rivals, then travel.";state.message=state.bridge.talk;saveNow();render();}else if(a==="startBattle"){startBattle(false);}else if(a==="startStephen"){startBattle(true);}else if(a.startsWith("spar:")){const idx=parseInt(a.split(":")[1],10);startBattle(false,idx);}else if(a.startsWith("talk:")){talkToEntity(a.split(":")[1]);}else if(a==="guide"){const g=document.getElementById("guide");if(g)g.classList.toggle("hidden");}else if(a==="buddyChat"){talkToBuddy();}else if(a==="carryOn"){if(state.playMode==="arc"&&state.foeIndex>=(state.arcGoal||AREA_SIZE)&&state.foeIndex<50)state.arcGoal=Math.min(50,(state.arcGoal||AREA_SIZE)+AREA_SIZE);state.screen="bridge";state.arcClear=null;state.partialReportText="";ensureBridgeState();state.bridge.x=0;state.bridge.z=1.9;state.bridge.target=null;state.bridge.talk=state.foeIndex<50?"Arrived: "+checkpointName()+". New bridge section unlocked.":"Route clear. Stephen is ready.";state.message=state.bridge.talk;bridgeEntityCacheKey="";nearestCache=null;saveNow();render();}else if(a==="evoContinue"){const next=state.pendingEvolution&&state.pendingEvolution.nextScreen?state.pendingEvolution.nextScreen:"bridge";state.pendingEvolution=null;state.screen=next;saveNow();render();}else if(a==="meetStephen"){state.screen="bridge";state.arcClear=null;ensureBridgeState();state.bridge.x=0;state.bridge.z=-3.05;state.bridge.talk="Stephen is just ahead. Final spar when it feels right.";saveNow();render();}else if(a==="cards"){state.screen="cards";saveNow();render();}else if(a==="partialReport"){state.partialReportText=buildProgressReport();state.screen="partialReport";saveNow();render();}else if(a==="backFromPartial"){state.screen=state.arcClear?"arcClear":"bridge";render();}else if(a==="save"){saveNow();state.message="Saved on this device.";if(state.bridge)state.bridge.talk=state.message;const dock=document.getElementById("quickDock");if(dock)updateBridgeOverlay(true);}else if(a==="pause"){if(state.screen==="battle"&&state.battle){state.battle.paused=true;}else{state.paused=true;}saveNow();render();}else if(a==="resumeBattle"){if(state.battle)state.battle.paused=false;state.paused=false;activeTouchMove=null;saveNow();render();}else if(a==="sendProgress"){openProgressEmail();render();}else if(a==="resetGame"){resetWholeGame();}else if(a==="resetBattle"){if(state.battle){const wasStephen=!!state.battle.isStephen;const idx=state.battle.foeIndex;startBattle(wasStephen,idx);if(state.battle){state.battle.message="Reset. Fresh spar loaded.";state.battle.paused=false;saveNow();render();}}}else if(a==="pauseBridge"){state.screen="bridge";state.battle=null;state.paused=false;ensureBridgeState();state.bridge.talk="Paused at the bridge. No progress lost.";state.message=state.bridge.talk;saveNow();render();}else if(a==="glowToggle"){if(state.battle&&glowReady()){state.battle.useGlow=!state.battle.useGlow;saveNow();render();}}else if(a==="buddyNudge"){if(state.battle&&state.battle.phase==="question"&&!state.battle.assistActive){state.battle.assistUsed=true;state.battle.assistActive=true;saveNow();render();}}else if(a==="battleNext"){advanceBattle();}else if(a==="backMove"){state.battle.phase="choose";state.battle.chosenMove="";state.battle.question=null;state.battle.options=[];state.battle.fxType="";state.battle.fxText="";state.battle.fxMove="";state.battle.assistActive=false;state.battle.assistUsed=false;saveNow();render();}else if(a==="submit"){const inp=document.getElementById("answerInput");submitAnswer(inp?inp.value:"");}else if(a==="toBridge"){state.screen="bridge";state.paused=false;render();}});
+app.addEventListener("click",function(e){const t=e.target.closest("button,[data-buddy],[data-answer]");if(!t)return;e.preventDefault();if(t.dataset.dir)return;if(t.dataset.buddy){state.buddyType=t.dataset.buddy;saveNow();render();return;}if(t.dataset.answer){submitAnswer(t.dataset.answer);return;}if(t.dataset.move){chooseMove(t.dataset.move);return;}if(t.dataset.pick){state.character[t.dataset.pick]=t.dataset.value;saveNow();render();return;}if(t.dataset.initials){buildReport(t.dataset.initials);return;}const a=t.dataset.act;if(!a)return;if(a==="continue"){const s=loadSave();if(s){state=s;if(!state.screen)state.screen="bridge";render();}}else if(a==="modeArc"||a==="modeFull"){setPlayMode(a==="modeFull"?"full":"arc");saveNow();render();}else if(a==="new"){setPlayMode("arc");saveNow();render();}else if(a==="surpriseHero"){surpriseHero();saveNow();render();}else if(a==="buddy"){const input=document.getElementById("heroName");state.character.name=(input&&input.value.trim()?input.value.trim():"Bridge Hero").slice(0,18);state.setup="buddy";state.screen="setup";saveNow();render();}else if(a==="character"){state.setup="hero";saveNow();render();}else if(a==="bridge"){if(!state.buddyType){state.message="Pick a buddy that feels good first.";render();return;}state.knownMoves=[state.buddyType];state.clearedFoes=[];state.foeIndex=0;state.buddyStage=1;state.xp=0;state.focus=0;state.lastEvolution=null;state.pendingEvolution=null;state.rivalCards=[];state.lastCard=null;bridgeEntityCacheKey="";nearestCache=null;state.screen="bridge";state.paused=false;ensureBridgeState();state.bridge.x=0;state.bridge.z=1.9;state.bridge.talk=state.playMode==="full"?"Fast route loaded. Clear 5 rivals per zone.":"Zone loaded. Clear 5 rivals, then travel.";state.message=state.bridge.talk;saveNow();render();}else if(a==="startBattle"){startBattle(false);}else if(a==="startStephen"){startBattle(true);}else if(a.startsWith("spar:")){const idx=parseInt(a.split(":")[1],10);startBattle(false,idx);}else if(a.startsWith("talk:")){talkToEntity(a.split(":")[1]);}else if(a==="guide"){const g=document.getElementById("guide");if(g)g.classList.toggle("hidden");}else if(a==="buddyChat"){talkToBuddy();}else if(a==="carryOn"){if(state.playMode==="arc"&&state.foeIndex>=(state.arcGoal||AREA_SIZE)&&!routeComplete())state.arcGoal=Math.min(TOTAL_FOES,(state.arcGoal||AREA_SIZE)+AREA_SIZE);state.screen="bridge";state.arcClear=null;state.partialReportText="";ensureBridgeState();state.bridge.x=0;state.bridge.z=1.9;state.bridge.target=null;state.bridge.talk=!routeComplete()?"Arrived: "+checkpointName()+". New bridge section unlocked.":"Route clear. Stephen is ready.";state.message=state.bridge.talk;bridgeEntityCacheKey="";nearestCache=null;saveNow();render();}else if(a==="evoContinue"){const next=state.pendingEvolution&&state.pendingEvolution.nextScreen?state.pendingEvolution.nextScreen:"bridge";state.pendingEvolution=null;state.screen=next;saveNow();render();}else if(a==="meetStephen"){state.screen="bridge";state.arcClear=null;ensureBridgeState();state.bridge.x=0;state.bridge.z=-3.05;state.bridge.talk="Stephen is just ahead. Final spar when it feels right.";saveNow();render();}else if(a==="cards"){state.screen="cards";saveNow();render();}else if(a==="partialReport"){state.partialReportText=buildProgressReport();state.screen="partialReport";saveNow();render();}else if(a==="backFromPartial"){state.screen=state.arcClear?"arcClear":"bridge";render();}else if(a==="save"){saveNow();state.message="Saved on this device.";if(state.bridge)state.bridge.talk=state.message;const dock=document.getElementById("quickDock");if(dock)updateBridgeOverlay(true);}else if(a==="pause"){if(state.screen==="battle"&&state.battle){state.battle.paused=true;}else{state.paused=true;}saveNow();render();}else if(a==="resumeBattle"){if(state.battle)state.battle.paused=false;state.paused=false;activeTouchMove=null;saveNow();render();}else if(a==="sendProgress"){openProgressEmail();render();}else if(a==="resetGame"){resetWholeGame();}else if(a==="resetBattle"){if(state.battle){const wasStephen=!!state.battle.isStephen;const idx=state.battle.foeIndex;startBattle(wasStephen,idx);if(state.battle){state.battle.message="Reset. Fresh spar loaded.";state.battle.paused=false;saveNow();render();}}}else if(a==="pauseBridge"){state.screen="bridge";state.battle=null;state.paused=false;ensureBridgeState();state.bridge.talk="Paused at the bridge. No progress lost.";state.message=state.bridge.talk;saveNow();render();}else if(a==="glowToggle"){if(state.battle&&glowReady()){state.battle.useGlow=!state.battle.useGlow;saveNow();render();}}else if(a==="buddyNudge"){if(state.battle&&state.battle.phase==="question"&&!state.battle.assistActive){state.battle.assistUsed=true;state.battle.assistActive=true;saveNow();render();}}else if(a==="battleNext"){advanceBattle();}else if(a==="backMove"){state.battle.phase="choose";state.battle.chosenMove="";state.battle.question=null;state.battle.options=[];state.battle.fxType="";state.battle.fxText="";state.battle.fxMove="";state.battle.assistActive=false;state.battle.assistUsed=false;saveNow();render();}else if(a==="submit"){const inp=document.getElementById("answerInput");submitAnswer(inp?inp.value:"");}else if(a==="toBridge"){state.screen="bridge";state.paused=false;render();}});
 app.addEventListener("input",function(e){if(e.target&&e.target.id==="heroName"){state.character.name=e.target.value.slice(0,18);const n=document.getElementById("heroCardName");if(n)n.textContent=heroDisplayName();scheduleSave();}});
 function movementKey(e,down){
   const target=e.target;
