@@ -795,6 +795,176 @@ button.secondary{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(25
 @media(max-width:620px){.buddyTalkBubble{bottom:194px}.splashCard{padding:12px 16px}.reactionEmoji{font-size:1.8rem}.speechTiny{display:none}}
 @media(prefers-reduced-motion:reduce){.reactionEmoji,.battleSplashIntro,.battleSplashIntro:before,.splashSlash,.evolutionScreen:before,.evoBoom,.evolutionStage:after,.evolutionStage .buddySprite,.evoCopy h1,.evoShout{animation:none!important}}
 
+
+
+/* Jay polish: stable reactions, cleaner UI, kawaii characters, distinct rivals */
+.reactionEmoji{
+  animation:none !important;
+  transform:translateZ(0);
+  opacity:1;
+  will-change:auto;
+}
+.speechBubble,
+.buddyTalkBubble{
+  contain:content;
+  min-width:72px;
+}
+.worldLabel{
+  transition:opacity .18s ease, transform .18s ease;
+}
+.worldLabel.speaking .speechBubble,
+.buddyTalkBubble:not(.quiet){
+  animation:softBubbleIn .16s ease-out both;
+}
+@keyframes softBubbleIn{from{opacity:.72;transform:translateY(4px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* Make buddy sprites softer, sillier and more kawaii */
+.buddySprite{
+  background:radial-gradient(circle at 50% 34%,rgba(255,255,255,.34),transparent 36%),linear-gradient(180deg,rgba(255,246,252,.16),rgba(92,240,255,.07));
+}
+.creature{
+  animation:bobCreature 3.8s ease-in-out infinite;
+}
+.creature .eye{
+  width:14px;
+  height:18px;
+  box-shadow:inset 0 5px rgba(255,255,255,.58),0 0 0 2px rgba(255,255,255,.13),0 4px 0 rgba(0,0,0,.06);
+}
+.creature .cheek{
+  width:17px;
+  height:12px;
+  background:rgba(255,138,176,.82);
+  filter:drop-shadow(0 0 8px rgba(255,138,176,.34));
+}
+.creature .mouth{
+  border-bottom-width:5px;
+}
+.buddyCard .buddySprite:after,
+.buddySpotlight .buddySprite:after{
+  content:"✦";
+  position:absolute;
+  right:18px;
+  top:18px;
+  color:#ffd166;
+  font-size:1.45rem;
+  text-shadow:0 0 16px rgba(255,209,102,.55);
+}
+
+/* Enemy buddies are clearly not the player's unique buddy */
+.enemySprite{
+  position:relative;
+  filter:drop-shadow(0 18px 18px rgba(255,97,216,.22));
+}
+.enemySprite:before{
+  content:"RIVAL";
+  position:absolute;
+  left:50%;
+  top:8px;
+  transform:translateX(-50%);
+  z-index:20;
+  padding:4px 8px;
+  border-radius:999px;
+  background:rgba(35,14,55,.92);
+  border:1px solid rgba(255,97,216,.72);
+  color:#ffd6f6;
+  font-size:.58rem;
+  letter-spacing:.08em;
+  font-weight:1000;
+  box-shadow:0 8px 24px rgba(0,0,0,.32),0 0 14px rgba(255,97,216,.18);
+}
+.enemySprite:after{
+  content:"😈";
+  position:absolute;
+  right:20px;
+  top:34px;
+  z-index:20;
+  font-size:1.55rem;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.4));
+}
+.enemySprite .creature .head,
+.enemySprite .creature .body,
+.enemySprite .creature .shell,
+.enemySprite .creature .cloak{
+  filter:saturate(.82) brightness(.86) hue-rotate(18deg);
+}
+.enemySprite .creature .cheek{
+  background:rgba(255,97,216,.9);
+}
+.enemySprite .creature .eye{
+  background:#fff2a8;
+  box-shadow:inset 0 4px rgba(255,255,255,.74),0 0 0 2px rgba(35,14,55,.65),0 0 10px rgba(255,209,102,.3);
+}
+
+/* Less overwhelming bridge HUD */
+.gameHud{
+  align-items:center;
+  gap:8px;
+}
+.gameLogo,
+.gameStats,
+.gameMenu{
+  background:rgba(5,8,24,.50);
+  box-shadow:0 12px 34px rgba(0,0,0,.26);
+}
+.gameLogo{min-width:118px;}
+.gameStats{
+  max-width:min(420px,46vw);
+  justify-content:center;
+}
+.gameStats .chip{
+  font-size:.76rem;
+  padding:6px 8px;
+}
+.gameMenu{
+  border-radius:18px;
+  padding:6px;
+}
+.gameMenu button{
+  min-height:36px;
+  border-radius:13px;
+  padding:7px 9px;
+}
+.gameMenu button[data-act="guide"],
+.gameMenu button[data-act="save"]{
+  display:none;
+}
+.worldToast{
+  display:none !important;
+}
+.quickDock{
+  max-width:min(390px,calc(100vw - 28px));
+  min-width:0;
+  padding:7px 9px;
+}
+.quickText p{
+  display:none !important;
+}
+.quickButtons button{
+  min-width:48px;
+  min-height:36px;
+  border-radius:13px;
+  padding:7px 10px;
+}
+.floatPrompt{
+  font-size:.76rem;
+  padding:5px 8px;
+}
+.battleHint{
+  opacity:.78;
+  font-size:.78rem;
+  padding:5px 8px;
+}
+.compactMoves .match{
+  font-size:.7rem;
+}
+@media(max-width:720px){
+  .gameHud{grid-template-columns:1fr auto;align-items:start;}
+  .gameStats{grid-column:1/-1;max-width:none;justify-content:flex-start;}
+  .gameStats .chip:nth-child(n+3){display:none;}
+  .gameMenu button{font-size:.8rem;}
+  .quickDock{bottom:142px;}
+}
+
 </style>
 </head>
 <body>
@@ -939,7 +1109,7 @@ function foeAt(i){const z=getZone(i);const a=getArea(i);const type=z<4?ops[z]:op
 function checkpointName(){if(state.foeIndex>=50)return "Stephen Lookout";return currentAreaTheme().name;}
 function modeLabel(){return state.playMode==="full"?"Full route":"One area";}
 function journeyProgressText(){if(state.playMode==="arc")return Math.min(state.foeIndex,state.arcGoal||AREA_SIZE)+"/"+(state.arcGoal||AREA_SIZE);return state.foeIndex+"/50";}
-function setPlayMode(mode){localStorage.removeItem(CBB_KEY);state=freshState();state.playMode=mode==="full"?"full":"arc";state.arcGoal=state.playMode==="arc"?AREA_SIZE:50;state.screen="setup";state.setup="hero";state.message=state.playMode==="full"?"Full route selected.":"One area selected.";}
+function setPlayMode(mode){localStorage.removeItem(CBB_KEY);state=freshState();state.playMode=mode==="full"?"full":"arc";state.arcGoal=state.playMode==="arc"?AREA_SIZE:50;state.screen="setup";state.setup="hero";state.message=state.playMode==="full"?"Full route selected.":"Game started.";}
 function randomChoice(arr){return arr[Math.floor(Math.random()*arr.length)];}
 function surpriseHero(){const names=["Noodle Nova","Bridge Bean","Captain Snack","Pixel Kai","Turbo Pip","Glow Moth","Orbit Jinx","Snack Wizard"];state.character.name=randomChoice(names);state.character.skin=randomChoice(["#f2c7a5","#d99a73","#9b6347","#6a3f2f"]);state.character.hairStyle=randomChoice(["spikes","wave","short"]);state.character.hair=randomChoice(["#1e1e2a","#6b3f28","#f5d66b","#6a8dff"]);state.character.outfit=randomChoice(["#45e6ff","#ff61d8","#7dff9d","#ffd166"]);state.character.accessory=randomChoice(["Aura scarf","Star pin","Headset","Cape"]);state.message="New hero look ready.";}
 function rivalQuote(type){return {Add:"Too much sparkle, still friendly.",Subtract:"Looks grumpy, actually kind.",Multiply:"Tiny drama. Big pose.",Divide:"Snack shell energy."}[type]||"Bridge rival met.";}
@@ -1029,7 +1199,7 @@ function gainXp(amount){
   }
 }
 function render(){disposeWorld();if(state.screen==="start")renderStart();else if(state.screen==="setup")renderSetup();else if(state.screen==="bridge")renderBridge();else if(state.screen==="battle")renderBattle();else if(state.screen==="arcClear")renderArcClear();else if(state.screen==="evolve")renderEvolution();else if(state.screen==="partialReport")renderPartialReport();else if(state.screen==="cards")renderCards();else if(state.screen==="report")renderReport();}
-function renderStart(){const saved=loadSave();app.innerHTML=`<section class="hero panel"><div class="heroCopy"><span class="kicker">Anime maths adventure</span><h1>Chilton Bridge Battle</h1><p class="lead">Build a hero, choose one buddy, and cross the route one clear area at a time.</p><div class="buttonRow">${saved?btn("Continue", "continue", "gold"):""}${btn("Play one area", "modeArc", saved?"secondary":"gold")}${btn("Full bridge", "modeFull", "secondary")}</div></div><div class="animePoster"><canvas id="posterCanvas" class="posterCanvas"></canvas><div id="posterFallback" class="posterFallback hidden"><div class="fallbackHero"></div></div></div></section>`;setTimeout(()=>initPoster(),20);}
+function renderStart(){const saved=loadSave();app.innerHTML=`<section class="hero panel"><div class="heroCopy"><span class="kicker">Anime maths adventure</span><h1>Chilton Bridge Battle</h1><p class="lead">Build a hero, choose one buddy, and cross the route one clear area at a time.</p><div class="buttonRow">${saved?btn("Continue", "continue", "gold"):""}${btn("Play Game", "modeArc", saved?"secondary":"gold")}</div></div><div class="animePoster"><canvas id="posterCanvas" class="posterCanvas"></canvas><div id="posterFallback" class="posterFallback hidden"><div class="fallbackHero"></div></div></div></section>`;setTimeout(()=>initPoster(),20);}
 function renderSetup(){app.innerHTML=`<section class="screen setupWrap"><div class="builderPreview panel"><div><span class="kicker">Hero setup</span><h1>${state.setup==="buddy"?"Choose your buddy":"Create your hero"}</h1><p class="lead">A quick anime hero card. No real name needed.</p></div>${state.setup==="buddy"?buddyPreview():characterPreview()}<div class="buttonRow">${state.setup==="buddy"?btn("Back", "character", "secondary"):""}${state.setup==="hero"?btn("Surprise me", "surpriseHero", "secondary"):""}</div></div><div class="formPanel panel">${state.setup==="buddy"?buddyForm():characterForm()}</div></section>`;}
 function accessoryClass(v){const x=(v||"").toLowerCase();if(x.includes("star"))return "pin";if(x.includes("head"))return "headset";if(x.includes("cape"))return "cape";return "scarf";}
 function accessoryLabel(v){const x=accessoryClass(v);return x==="pin"?"Star pin":x==="headset"?"Headset":x==="cape"?"Cape":"Aura scarf";}
@@ -1090,6 +1260,7 @@ function shortReaction(e){
   return e.line||"Nice bridge energy.";
 }
 function speechMarkup(emoji,line){return `<span class="reactionEmoji">${esc(emoji||"✨")}</span><span class="speechTiny">${esc(line||"")}</span>`;}
+function setSpeechHtml(el,emoji,line){if(!el)return;const key=(emoji||"✨")+"|"+(line||"");if(el.dataset.speechKey!==key){el.dataset.speechKey=key;el.innerHTML=speechMarkup(emoji,line);}}
 function buddyEmoji(){return {Add:"🐶✨",Subtract:"🐱🌙",Multiply:"🐉🔥",Divide:"🐢🫧"}[state.buddyType]||"🌟";}
 function buddyChatLine(){
   const name=currentBuddyName();
@@ -1116,8 +1287,8 @@ function updateBuddySpeech(){
   if(!el||!state.bridge)return;
   const live=state.bridge.buddySpeechUntil&&Date.now()<state.bridge.buddySpeechUntil;
   el.classList.toggle("quiet",!live);
-  if(live)el.innerHTML=speechMarkup(state.bridge.buddySpeechEmoji||buddyEmoji(),state.bridge.buddySpeechLine||buddyChatLine());
-  else{state.bridge.buddySpeechUntil=0;}
+  if(live)setSpeechHtml(el,state.bridge.buddySpeechEmoji||buddyEmoji(),state.bridge.buddySpeechLine||buddyChatLine());
+  else{state.bridge.buddySpeechUntil=0;el.dataset.speechKey="";}
 }
 
 function bridgeEntities(){
@@ -1170,14 +1341,14 @@ function rivalLine(f,n){
 function renderBridge(){
   ensureBridgeState();
   const theme=currentAreaTheme();
-  app.innerHTML=`<section class="exploreScreen area${currentAreaIndex()}" id="exploreScreen" aria-label="Free roam bridge" style="background:${esc(theme.bg)}"><div class="exploreCanvasWrap"><canvas id="worldCanvas" class="sceneCanvas"></canvas><div id="worldFallback" class="bridgeFallbackMap hidden" style="background:${esc(theme.bg)}"><div class="fallbackTrack"><div id="fallbackDot" class="fallbackDot"></div></div></div></div><div id="worldLabels" class="worldLabels" aria-hidden="true"></div><div id="buddyTalkBubble" class="buddyTalkBubble quiet" aria-live="polite"></div><div id="worldToast" class="worldToast">E Chat  Space Spar</div><div class="gameHud"><div class="gameLogo"><h1>${esc(theme.name)}</h1><p id="arcLabel">${esc(theme.label)} · ${esc(areaProgressText())}</p></div><div class="gameStats" id="bridgeProgress"><span class="chip checkpointChip">${esc(theme.label)}</span><span class="chip">${esc(areaProgressText())}</span><span class="chip">Route ${esc(journeyProgressText())}</span><span class="chip">${esc(stageName())}</span></div><div class="gameMenu">${btn("Guide","guide","secondary")}${btn("Buddy","buddyChat","secondary")}${(state.rivalCards&&state.rivalCards.length)?btn("Cards","cards","secondary"):""}${state.foeIndex>0?btn("Report","partialReport","secondary"):""}${btn("Save","save","ghost")}${btn("Pause","pause","ghost")}</div></div><div id="quickDock" class="quickDock quiet"></div><div class="touchPad" aria-label="Move"><button class="up" data-dir="up" aria-label="Move up">▲</button><button class="left" data-dir="left" aria-label="Move left">◀</button><button class="right" data-dir="right" aria-label="Move right">▶</button><button class="down" data-dir="down" aria-label="Move down">▼</button></div>${pauseMenuHtml()}<div id="guide" class="drawer hidden">${guideHtml()}<div class="dock">${btn("Close","guide","gold")}</div></div></section>`;
+  app.innerHTML=`<section class="exploreScreen area${currentAreaIndex()}" id="exploreScreen" aria-label="Free roam bridge" style="background:${esc(theme.bg)}"><div class="exploreCanvasWrap"><canvas id="worldCanvas" class="sceneCanvas"></canvas><div id="worldFallback" class="bridgeFallbackMap hidden" style="background:${esc(theme.bg)}"><div class="fallbackTrack"><div id="fallbackDot" class="fallbackDot"></div></div></div></div><div id="worldLabels" class="worldLabels" aria-hidden="true"></div><div id="buddyTalkBubble" class="buddyTalkBubble quiet" aria-live="polite"></div><div id="worldToast" class="worldToast"></div><div class="gameHud"><div class="gameLogo"><h1>${esc(theme.name)}</h1><p id="arcLabel">${esc(theme.label)} · ${esc(areaProgressText())}</p></div><div class="gameStats" id="bridgeProgress"><span class="chip checkpointChip">${esc(theme.label)}</span><span class="chip">${esc(areaProgressText())}</span><span class="chip">${esc(stageName())}</span></div><div class="gameMenu">${btn("Buddy","buddyChat","secondary")}${(state.rivalCards&&state.rivalCards.length)?btn("Cards","cards","secondary"):""}${state.foeIndex>0?btn("Report","partialReport","secondary"):""}${btn("Pause","pause","ghost")}</div></div><div id="quickDock" class="quickDock quiet"></div><div class="touchPad" aria-label="Move"><button class="up" data-dir="up" aria-label="Move up">▲</button><button class="left" data-dir="left" aria-label="Move left">◀</button><button class="right" data-dir="right" aria-label="Move right">▶</button><button class="down" data-dir="down" aria-label="Move down">▼</button></div>${pauseMenuHtml()}<div id="guide" class="drawer hidden">${guideHtml()}<div class="dock">${btn("Close","guide","gold")}</div></div></section>`;
   setTimeout(()=>{initWorld(false);updateBridgeOverlay(true);},20);
 }
 function nearActions(e){
-  if(e.kind==="rival")return `<button type="button" class="secondary" data-act="talk:${e.id}">React</button><button type="button" class="gold" data-act="spar:${e.index}">Spar</button>`;
-  if(e.kind==="stephen")return `<button type="button" class="secondary" data-act="talk:${e.id}">React</button><button type="button" class="gold" data-act="startStephen">Final</button>`;
-  if(e.kind==="sign")return `<button type="button" class="gold" data-act="talk:${e.id}">Joke</button>`;
-  return `<button type="button" class="gold" data-act="talk:${e.id}">React</button>`;
+  if(e.kind==="rival")return `<button type="button" class="secondary" aria-label="React" data-act="talk:${e.id}">😄</button><button type="button" class="gold" aria-label="Spar" data-act="spar:${e.index}">⚡</button>`;
+  if(e.kind==="stephen")return `<button type="button" class="secondary" aria-label="React" data-act="talk:${e.id}">⭐</button><button type="button" class="gold" aria-label="Final spar" data-act="startStephen">Final</button>`;
+  if(e.kind==="sign")return `<button type="button" class="gold" aria-label="Maths joke" data-act="talk:${e.id}">😂</button>`;
+  return `<button type="button" class="gold" aria-label="React" data-act="talk:${e.id}">😄</button>`;
 }
 function nearHint(e){
   if(!e)return "E Buddy";
@@ -1211,10 +1382,10 @@ function updateBridgeOverlay(force){
     }
   }
   const toast=document.getElementById("worldToast");
-  if(toast){const reward=state.bridge.rewardUntil&&Date.now()<state.bridge.rewardUntil;toast.textContent=reward?state.bridge.rewardText:(near?nearHint(near):"E Buddy");}updateBuddySpeech();
+  if(toast){const reward=state.bridge.rewardUntil&&Date.now()<state.bridge.rewardUntil;toast.textContent=reward?state.bridge.rewardText:"";}updateBuddySpeech();
   const pct=Math.round((state.foeIndex/50)*100);
   const progress=document.getElementById("bridgeProgress");
-  if(progress)progress.innerHTML=`<span class="chip checkpointChip">${esc(currentAreaTheme().label)}</span><span class="chip">${esc(areaProgressText())}</span><span class="chip">Route ${state.foeIndex}/50</span><span class="chip">${esc(stageName())}</span>`;
+  if(progress)progress.innerHTML=`<span class="chip checkpointChip">${esc(currentAreaTheme().label)}</span><span class="chip">${esc(areaProgressText())}</span><span class="chip">${esc(stageName())}</span>`;
   const arc=document.getElementById("arcLabel");
   if(arc)arc.textContent=currentAreaTheme().label+" · "+areaProgressText();const logo=document.querySelector(".gameLogo h1");if(logo)logo.textContent=currentAreaTheme().name;
 }
@@ -1420,7 +1591,7 @@ function renderBattle(){
   const evo=state.lastEvolution&&Date.now()-state.lastEvolution.time<5200?`<div class="evolveFlash">${esc(stageName())}</div>`:"";
   const splashActive=!!(b.splashUntil&&Date.now()<b.splashUntil);
   const splash=splashActive?`<div class="battleSplashIntro"><div class="splashSlash"></div><div class="splashCard"><h1>Battle!</h1><p>${esc(currentBuddyName())} vs ${esc(b.foeName)}</p></div></div>`:"";
-  app.innerHTML=`<section class="battleLayout minimalBattle"><div class="battleTop miniBattleTop"><div class="fighterCard miniFighter"><h2>${esc(currentBuddyName())}</h2><div class="hp"><span style="width:${Math.max(0,(b.buddyHp/b.buddyHpMax)*100)}%"></span></div>${focusHtml()}</div><div class="centerCallout miniPhase">${phaseHtml}</div><div class="fighterCard miniFighter"><h2>${esc(b.foeName)}</h2><div class="hp"><span style="width:${Math.max(0,(b.foeHp/b.foeHpMax)*100)}%"></span></div><div class="tinyAura">${typePill(b.foeType)}</div></div></div><div class="battleStage ${battleStageClass(b)} ${splashActive?"splashing":""}" style="box-shadow:0 26px 90px rgba(0,0,0,0.42),0 0 40px rgba(255,255,255,.04);"><canvas id="worldCanvas" class="sceneCanvas"></canvas><div id="worldFallback" class="fallbackArena hidden">${buddySprite(state.buddyType,"bigSprite",state.buddyStage)}${buddySprite(b.foeType,"bigSprite",1)}</div><div class="auraBackdrop type${esc(b.foeType)}"></div><div class="battleHint">Best: ${esc(best)}</div>${fxText(b)}${evo}${splash}<div class="actionDock compactDock"><div class="actionPanel compactPanel">${actionPanelHtml()}</div><div class="sideActions compactSide">${btn("?", "guide", "secondary")}${btn("Pause", "pause", "ghost")}</div></div></div>${pauseMenuHtml()}<div id="guide" class="drawer hidden">${guideHtml()}<div class="dock">${btn("Close", "guide", "gold")}</div></div></section>`;
+  app.innerHTML=`<section class="battleLayout minimalBattle"><div class="battleTop miniBattleTop"><div class="fighterCard miniFighter"><h2>${esc(currentBuddyName())}</h2><div class="hp"><span style="width:${Math.max(0,(b.buddyHp/b.buddyHpMax)*100)}%"></span></div>${focusHtml()}</div><div class="centerCallout miniPhase">${phaseHtml}</div><div class="fighterCard miniFighter"><h2>${esc(b.foeName)}</h2><div class="hp"><span style="width:${Math.max(0,(b.foeHp/b.foeHpMax)*100)}%"></span></div><div class="tinyAura">${typePill(b.foeType)}</div></div></div><div class="battleStage ${battleStageClass(b)} ${splashActive?"splashing":""}" style="box-shadow:0 26px 90px rgba(0,0,0,0.42),0 0 40px rgba(255,255,255,.04);"><canvas id="worldCanvas" class="sceneCanvas"></canvas><div id="worldFallback" class="fallbackArena hidden">${buddySprite(state.buddyType,"bigSprite",state.buddyStage)}${buddySprite(b.foeType,"bigSprite enemySprite",1)}</div><div class="auraBackdrop type${esc(b.foeType)}"></div><div class="battleHint">Best: ${esc(best)}</div>${fxText(b)}${evo}${splash}<div class="actionDock compactDock"><div class="actionPanel compactPanel">${actionPanelHtml()}</div><div class="sideActions compactSide">${btn("?", "guide", "secondary")}${btn("Pause", "pause", "ghost")}</div></div></div>${pauseMenuHtml()}<div id="guide" class="drawer hidden">${guideHtml()}<div class="dock">${btn("Close", "guide", "gold")}</div></div></section>`;
   setTimeout(()=>{initWorld(true);maybeAutoAdvanceBattle();if(splashActive){setTimeout(()=>{if(state.screen==="battle"&&state.battle===b&&b.splashUntil){b.splashUntil=0;saveNow();render();}},Math.max(120,b.splashUntil-Date.now()));}},20);
 }
 function movePanel(){
@@ -1698,7 +1869,7 @@ function initWorld(isBattle){
       const aura=new THREE.Mesh(new THREE.TorusGeometry(0.92,0.055,8,64),new THREE.MeshBasicMaterial({color:auraCols[foeType]||0xffd166,transparent:true,opacity:.72}));aura.position.set(1.65,1.42,0);aura.rotation.x=Math.PI/2;scene.add(aura);
       const buddy=buddyModel(state.buddyType,state.buddyStage);buddy.position.set(-1.65,0.25,0);buddy.scale.setScalar(1.1);scene.add(buddy);
       
-      const foe=state.battle&&state.battle.isStephen?heroModel(1):buddyModel(foeType,1);foe.position.set(1.65,0.25,0);foe.rotation.y=Math.PI;foe.scale.setScalar(state.battle&&state.battle.isStephen?1.05:1.1);scene.add(foe);
+      const foe=state.battle&&state.battle.isStephen?heroModel(1):rivalBuddyModel(foeType,state.battle?state.battle.foeIndex:0);foe.position.set(1.65,0.25,0);foe.rotation.y=Math.PI;foe.scale.setScalar(state.battle&&state.battle.isStephen?1.05:1.1);scene.add(foe);
       animateBattle(renderer,scene,camera,buddy,foe);
       return;
     }
@@ -1725,7 +1896,7 @@ function initWorld(isBattle){
     const gateMat=new THREE.MeshToonMaterial({color:0x33276f});[-1.3,1.3].forEach(x=>{const tower=new THREE.Mesh(new THREE.BoxGeometry(.24,2.0,.24),gateMat);tower.position.set(x,.85,-4.35);scene.add(tower);});const topGate=new THREE.Mesh(new THREE.BoxGeometry(2.9,.22,.22),gateMat);topGate.position.set(0,1.75,-4.35);scene.add(topGate);const portal=new THREE.Mesh(new THREE.TorusGeometry(.9,.06,8,54),new THREE.MeshBasicMaterial({color:theme.accent,transparent:true,opacity:.72}));portal.position.set(0,.86,-4.32);portal.rotation.x=Math.PI/2;scene.add(portal);
     const entities=[];
     bridgeEntities().forEach(e=>{
-      let obj;if(e.kind==="rival")obj=buddyModel(e.type,1);else if(e.kind==="stephen")obj=heroModel(1);else if(e.kind==="npc")obj=npcModel(e.name);else obj=signModel();
+      let obj;if(e.kind==="rival")obj=rivalBuddyModel(e.type,e.index);else if(e.kind==="stephen")obj=heroModel(1);else if(e.kind==="npc")obj=npcModel(e.name);else obj=signModel();
       obj.position.set(e.x,0.12,e.z);obj.userData=e;obj.scale.setScalar(e.kind==="sign"?0.82:e.kind==="npc"?0.72:0.76);
       const ringColour=e.kind==="rival"?0xff61d8:e.kind==="stephen"?0xffd166:e.kind==="npc"?0x45e6ff:0x7dff9d;
       const ring=new THREE.Mesh(new THREE.TorusGeometry(e.kind==="sign"?0.42:0.55,0.025,8,34),new THREE.MeshBasicMaterial({color:ringColour,transparent:true,opacity:0.62}));
@@ -1739,7 +1910,7 @@ function initWorld(isBattle){
   }catch(e){canvas.classList.add("hidden");fb&&fb.classList.remove("hidden");updateFallbackDot();}
 }
 function signModel(){const THREE=window.THREE;const g=new THREE.Group();const post=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.85,0.12),mat(0x2a214d));post.position.y=0.38;const board=new THREE.Mesh(new THREE.BoxGeometry(0.86,0.46,0.1),mat(0xffd166));board.position.y=0.92;const glow=new THREE.Mesh(new THREE.TorusGeometry(0.48,0.035,8,28),mat(0xff61d8));glow.position.y=0.92;glow.rotation.x=Math.PI/2;g.add(post,board,glow);return g;}
-function npcModel(name){const THREE=window.THREE;const g=new THREE.Group();const body=new THREE.Mesh(new THREE.CapsuleGeometry(0.32,0.58,4,10),mat(0x45e6ff));body.position.y=0.68;const head=new THREE.Mesh(new THREE.SphereGeometry(0.28,16,10),mat(0xf2c7a5));head.position.y=1.18;const hair=new THREE.Mesh(new THREE.SphereGeometry(0.3,16,8,0,Math.PI*2,0,Math.PI/2),mat(name==="Bean"?0xffd166:0x141733));hair.position.y=1.34;const smile=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.025,0.03),mat(0x071125));smile.position.set(0,1.12,0.26);g.add(body,head,hair,smile);return g;}
+function npcModel(name){const THREE=window.THREE;const g=new THREE.Group();const outfit=name==="Bean"?0xffd166:name==="Flo"?0xa98bff:0x45e6ff;const body=new THREE.Mesh(new THREE.CapsuleGeometry(0.34,0.55,5,12),mat(outfit));body.position.y=0.66;body.scale.set(1.08,.92,1.08);const head=new THREE.Mesh(new THREE.SphereGeometry(0.31,18,12),mat(0xf2c7a5));head.position.y=1.17;head.scale.set(1.08,.96,1.02);const hairCol=name==="Bean"?0x7a4a25:name==="Flo"?0x5cf0ff:0x141733;const hair=new THREE.Mesh(new THREE.SphereGeometry(0.32,16,8,0,Math.PI*2,0,Math.PI/2),mat(hairCol));hair.position.y=1.34;const dark=mat(0x071125);[-.11,.11].forEach(x=>{const eye=new THREE.Mesh(new THREE.SphereGeometry(0.043,10,8),dark);eye.position.set(x,1.19,.29);g.add(eye);const shine=new THREE.Mesh(new THREE.SphereGeometry(0.012,8,6),mat(0xffffff));shine.position.set(x-.014,1.205,.323);g.add(shine);});[-.21,.21].forEach(x=>{const cheek=new THREE.Mesh(new THREE.SphereGeometry(0.045,10,8),mat(0xff8ab0));cheek.position.set(x,1.12,.28);cheek.scale.set(1.25,.45,.35);g.add(cheek);});const smile=new THREE.Mesh(new THREE.TorusGeometry(0.07,0.011,8,18,Math.PI),dark);smile.position.set(0,1.08,.31);smile.rotation.x=Math.PI;const hat=new THREE.Mesh(new THREE.TorusGeometry(0.34,0.035,8,24),mat(name==="Moss"?0x7dff9d:name==="Bean"?0xff61d8:0xffd166));hat.position.y=1.34;hat.rotation.x=Math.PI/2;g.add(body,head,hair,smile,hat);return g;}
 function setupWorldLabels(entities){
   const layer=document.getElementById("worldLabels");
   if(!layer)return;
@@ -1764,7 +1935,7 @@ function updateWorldLabels(camera,entities){
     const speaking=state.bridge&&state.bridge.speechId===e.id&&state.bridge.speechUntil>now;
     el.classList.toggle("speaking",speaking);
     const speech=document.getElementById("speech_"+e.id);
-    if(speech&&speaking)speech.innerHTML=speechMarkup(state.bridge.speechEmoji||entityEmoji(e),state.bridge.speechLine||shortReaction(e));
+    if(speech&&speaking)setSpeechHtml(speech,state.bridge.speechEmoji||entityEmoji(e),state.bridge.speechLine||shortReaction(e));
   });
   if(state.bridge&&state.bridge.speechUntil&&state.bridge.speechUntil<=now){
     state.bridge.speechId="";
@@ -1822,8 +1993,11 @@ function heroModel(style){
     const cap=new THREE.Mesh(new THREE.SphereGeometry(0.38,16,8,0,Math.PI*2,0,Math.PI/2),hair);cap.position.y=1.7;cap.scale.set(1.02,0.72,1);g.add(cap);
     const fringe=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.12,0.18),hair);fringe.position.set(0,1.59,0.22);g.add(fringe);
   }
-  const leftEye=new THREE.Mesh(new THREE.SphereGeometry(0.035,10,8),dark);leftEye.position.set(-0.12,1.57,0.34);g.add(leftEye);
+  const leftEye=new THREE.Mesh(new THREE.SphereGeometry(0.046,12,8),dark);leftEye.position.set(-0.12,1.58,0.34);g.add(leftEye);
   const rightEye=leftEye.clone();rightEye.position.x=0.12;g.add(rightEye);
+  const eyeSpark=new THREE.Mesh(new THREE.SphereGeometry(0.014,8,6),mat(0xffffff));eyeSpark.position.set(-0.135,1.595,0.375);g.add(eyeSpark);const eyeSpark2=eyeSpark.clone();eyeSpark2.position.x=0.105;g.add(eyeSpark2);
+  const cheekMat=mat(0xff8ab0);const cheekL=new THREE.Mesh(new THREE.SphereGeometry(0.055,12,8),cheekMat);cheekL.position.set(-0.23,1.49,0.335);cheekL.scale.set(1.25,.5,.34);g.add(cheekL);const cheekR=cheekL.clone();cheekR.position.x=0.23;g.add(cheekR);
+  const smile=new THREE.Mesh(new THREE.TorusGeometry(0.075,0.012,8,18,Math.PI),dark);smile.position.set(0,1.45,0.36);smile.rotation.x=Math.PI;g.add(smile);
   const acc=isStephen?"scarf":accessoryClass(state.character.accessory);
   if(acc==="pin"){
     const pin=new THREE.Mesh(new THREE.OctahedronGeometry(0.095),mat(0xffd166));pin.position.set(0.23,1.05,0.38);g.add(pin);
@@ -1845,7 +2019,7 @@ function buddyModel(type,stageOverride){
   function sphere(r,x,y,z,c,scale){const m=new THREE.Mesh(new THREE.SphereGeometry(r,22,14),c||base);m.position.set(x,y,z);if(scale)m.scale.set(scale[0],scale[1],scale[2]);g.add(m);return m;}
   function box(w,h,dep,x,y,z,c){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,dep),c||base);m.position.set(x,y,z);g.add(m);return m;}
   function cone(r,h,verts,x,y,z,c,rotZ,rotX){const m=new THREE.Mesh(new THREE.ConeGeometry(r,h,verts||16),c||base);m.position.set(x,y,z);m.rotation.z=rotZ||0;m.rotation.x=rotX||0;g.add(m);return m;}
-  function eye(x,y,z,scaleY){const e=sphere(0.045,x,y,z,dark,[1,scaleY||1,1]);return e;}
+  function eye(x,y,z,scaleY){const e=sphere(0.058,x,y,z,dark,[1,scaleY||1,1]);sphere(0.016,x-0.018,y+0.025,z+0.038,white,[1,1,1]);return e;}
   if(type==="Add"){
     sphere(0.43,0,0.62,0,base,[1.25,0.9,0.95]);
     sphere(0.35,0.06,1.06,0.04,base,[1.08,0.92,1]);
@@ -1895,6 +2069,22 @@ function buddyModel(type,stageOverride){
   if(st>=2){const ring=new THREE.Mesh(new THREE.TorusGeometry(0.58,0.025,8,48),mat(0xffd166));ring.position.set(0,1.28,0);ring.rotation.x=Math.PI/2;g.add(ring);}
   if(st>=3){const gem=new THREE.Mesh(new THREE.OctahedronGeometry(0.12),mat(type==="Multiply"?0xff61d8:type==="Divide"?0x45e6ff:type==="Subtract"?0xffffff:0xffd166));gem.position.set(0,1.55,0);g.add(gem);}
   if(st>=4){const crown=new THREE.Mesh(new THREE.ConeGeometry(0.22,0.24,5),mat(0xffd166));crown.position.set(0,1.78,0);crown.rotation.z=0.15;g.add(crown);g.scale.multiplyScalar(1.08);}
+  return g;
+}
+function rivalBuddyModel(type,index){
+  const THREE=window.THREE;
+  const g=buddyModel(type,1);
+  const dark=mat(0x21142f), hot=mat(0xff61d8), gold=mat(0xffd166), white=mat(0xffffff);
+  const mask=new THREE.Mesh(new THREE.BoxGeometry(0.62,0.16,0.055),dark);
+  mask.position.set(0,1.1,0.435);
+  mask.rotation.z=((Number(index)||0)%2?-0.08:0.08);
+  g.add(mask);
+  [-0.16,0.16].forEach(x=>{const eye=new THREE.Mesh(new THREE.SphereGeometry(0.045,10,8),gold);eye.position.set(x,1.11,0.48);g.add(eye);const shine=new THREE.Mesh(new THREE.SphereGeometry(0.012,8,6),white);shine.position.set(x-0.012,1.13,0.515);g.add(shine);});
+  [-0.18,0,0.18].forEach((x,i)=>{const spike=new THREE.Mesh(new THREE.ConeGeometry(0.08,0.24,4),hot);spike.position.set(x,1.64+i*.025,0.02);spike.rotation.z=(x*1.8);g.add(spike);});
+  const collar=new THREE.Mesh(new THREE.TorusGeometry(0.42,0.028,8,28),hot);collar.position.set(0,0.98,0);collar.rotation.x=Math.PI/2;g.add(collar);
+  const badge=new THREE.Mesh(new THREE.OctahedronGeometry(0.09),gold);badge.position.set(0.34,0.82,0.34);g.add(badge);
+  g.traverse(o=>{if(o.isMesh&&o.material&&o.material.color){o.material=o.material.clone();o.material.color.offsetHSL(.04,-.08,-.08);}});
+  g.userData.isRivalBuddy=true;
   return g;
 }
 function addCone(g,x,y,rot,c){const cone=new THREE.Mesh(new THREE.ConeGeometry(0.14,0.42,4),mat(c));cone.position.set(x,y,0);cone.rotation.z=rot;g.add(cone);}
