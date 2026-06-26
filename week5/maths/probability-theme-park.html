@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Jay's Dodgy Funfair · Probability Theme Park · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream:#fef8f4;
+    --teal:#007291;
+    --teal-dark:#005a72;
+    --orange:#ef7724;
+    --orange-dark:#c05a10;
+    --pink:#c2185b;
+    --purple:#7b5ea7;
+    --green:#2e8b57;
+    --yellow:#ffc857;
+    --ink:#1a1a1a;
+    --soft-border:#e0d8d0;
+    --card:#ffffff;
+  }
+  body { font-family: 'Atkinson Hyperlegible', Arial, sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+  button, input, textarea { font-family: inherit; }
+
+  /* Week 5 inspired curved banner */
+  .site-header { position: relative; background: linear-gradient(135deg, #007291 0%, #7b5ea7 55%, #c2185b 100%); padding: 2.4rem 2rem 3.4rem; text-align: center; overflow: hidden; }
+  .site-header::before { content:""; position:absolute; top:-70px; left:-50px; width:190px; height:190px; border-radius:50%; background:rgba(255,255,255,0.12); }
+  .site-header::after { content:""; position:absolute; right:-60px; bottom:4px; width:220px; height:220px; border-radius:50%; background:rgba(239,119,36,0.22); }
+  .header-back { position:absolute; top:1rem; left:1.25rem; z-index:5; color:#fff; text-decoration:none; font-size:0.92rem; font-weight:700; opacity:0.9; }
+  .header-back:hover { opacity:1; text-decoration:underline; }
+  .header-inner { position:relative; z-index:2; max-width:850px; margin:0 auto; }
+  .week-label { color:#ffe8c2; font-size:0.78rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.35rem; }
+  h1 { color:#fff; font-size:clamp(2rem, 5vw, 3.15rem); line-height:1.05; letter-spacing:0.01em; }
+  .header-sub { color:#fef8f4; font-size:1.08rem; line-height:1.55; margin:0.7rem auto 0; max-width:720px; }
+  .header-wave { position:absolute; left:0; bottom:-1px; width:100%; height:42px; z-index:1; }
+  .fair-lights { display:flex; gap:0.45rem; justify-content:center; margin-top:1.1rem; flex-wrap:wrap; }
+  .light { width:14px; height:14px; border-radius:50%; background:#fff3c4; border:2px solid rgba(255,255,255,0.75); box-shadow:0 0 10px rgba(255,220,100,0.9); }
+  .light:nth-child(2n) { background:#ffd1e4; }
+  .light:nth-child(3n) { background:#c9f4ff; }
+
+  .main { width:min(1100px, calc(100% - 2rem)); margin:0 auto; padding:2rem 0 4rem; }
+  .top-strip { display:flex; gap:1rem; align-items:stretch; justify-content:space-between; flex-wrap:wrap; margin-bottom:1rem; }
+  .intro-card, .student-card { background:#fff; border:2px solid var(--orange); border-radius:18px; padding:1.1rem 1.25rem; box-shadow:0 4px 16px rgba(239,119,36,0.12); }
+  .intro-card { flex:1 1 520px; }
+  .student-card { flex:0 1 420px; border-color:var(--teal); box-shadow:0 4px 16px rgba(0,114,145,0.12); }
+  .eyebrow { font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--orange); margin-bottom:0.4rem; }
+  .intro-card h2, .student-card h2 { font-size:1.22rem; color:var(--ink); margin-bottom:0.35rem; }
+  p { line-height:1.6; }
+  .muted { color:#555; }
+  .initial-row { display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:0.65rem; }
+  .initial-btn { border:2px solid var(--teal); background:#fff; color:var(--teal); border-radius:999px; padding:0.45rem 0.8rem; font-weight:700; cursor:pointer; min-height:42px; }
+  .initial-btn:hover, .initial-btn.selected { background:var(--teal); color:#fff; }
+
+  .section-label { color:var(--teal); font-size:0.78rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin:1.4rem 0 0.75rem; }
+
+  /* Funfair map */
+  .map-card { background:#fffaf6; border:2px solid #fcd8bc; border-radius:20px; padding:1rem; margin-bottom:1.2rem; overflow:hidden; position:relative; }
+  .map-card::before { content:""; position:absolute; inset:0; background: radial-gradient(circle at 8% 18%, rgba(255,200,87,0.16), transparent 20%), radial-gradient(circle at 86% 14%, rgba(194,24,91,0.12), transparent 23%), radial-gradient(circle at 78% 82%, rgba(0,114,145,0.11), transparent 25%); pointer-events:none; }
+  .fair-map { position:relative; z-index:1; display:grid; grid-template-columns: repeat(7, minmax(86px, 1fr)); gap:0.65rem; align-items:stretch; }
+  .map-stall { position:relative; border:2px solid #e0d8d0; background:#fff; border-radius:16px; padding:0.75rem 0.6rem; text-align:center; min-height:104px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.25rem; transform:rotate(var(--tilt, 0deg)); transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease; }
+  .map-stall.available { border-color:var(--teal); cursor:pointer; }
+  .map-stall.available:hover { transform: translateY(-3px) rotate(var(--tilt, 0deg)); box-shadow:0 10px 20px rgba(0,114,145,0.15); }
+  .map-stall.current { border-color:var(--orange); box-shadow:0 0 0 4px rgba(239,119,36,0.16); }
+  .map-stall.done { border-color:var(--green); background:#f2fff7; }
+  .map-stall.locked { opacity:0.52; filter:grayscale(0.2); }
+  .map-icon { font-size:1.75rem; line-height:1; }
+  .map-name { font-weight:700; color:#1a1a1a; font-size:0.86rem; line-height:1.2; }
+  .map-status { font-size:0.7rem; color:#666; font-weight:700; border-radius:999px; padding:1px 8px; background:#f4eee8; margin-top:0.15rem; }
+  .map-stall.done .map-status { background:#dcf5e5; color:#1c6d3d; }
+  .map-stall.current .map-status { background:#fff3e8; color:#c05a10; }
+  .map-stall.available .map-status { background:#e6f5f8; color:#007291; }
+
+  .stage { display:none; background:#fff; border:2px solid var(--soft-border); border-radius:22px; padding:1.3rem; box-shadow:0 8px 26px rgba(0,0,0,0.07); }
+  .stage.active { display:block; }
+  .stage-top { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1rem; }
+  .stage-title-wrap { display:flex; align-items:center; gap:0.75rem; }
+  .stage-icon { width:58px; height:58px; border:2px solid var(--orange); background:#fff3e8; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.8rem; flex-shrink:0; }
+  .stage h2 { font-size:1.45rem; color:var(--teal-dark); line-height:1.2; }
+  .subtitle { color:#555; font-size:0.98rem; margin-top:0.25rem; }
+  .tag-row { display:flex; gap:0.4rem; flex-wrap:wrap; }
+  .tag { border:1.5px solid #e0d8d0; background:#fffaf6; color:#555; padding:0.2rem 0.55rem; border-radius:999px; font-size:0.76rem; font-weight:700; }
+
+  .teach-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:0.8rem; margin:1rem 0; }
+  .teach-card { border:2px solid #fcd8bc; background:#fffaf6; border-radius:16px; padding:1rem; }
+  .teach-card strong { color:var(--orange-dark); }
+  .teach-card .big { font-size:1.6rem; display:block; margin-bottom:0.25rem; }
+
+  .button-row { display:flex; gap:0.6rem; flex-wrap:wrap; align-items:center; margin-top:1rem; }
+  .btn { border:none; background:var(--orange); color:#fff; border-radius:12px; padding:0.75rem 1rem; font-size:0.95rem; font-weight:700; cursor:pointer; min-height:46px; box-shadow:0 3px 0 rgba(0,0,0,0.12); }
+  .btn:hover { background:var(--orange-dark); transform:translateY(-1px); }
+  .btn.secondary { background:var(--teal); }
+  .btn.secondary:hover { background:var(--teal-dark); }
+  .btn.ghost { background:#fff; color:var(--teal); border:2px solid var(--teal); box-shadow:none; }
+  .btn.ghost:hover { background:#e6f5f8; }
+  .btn:disabled { background:#cfc7bf; color:#777; cursor:not-allowed; transform:none; box-shadow:none; }
+  .message { display:none; margin-top:0.75rem; border:1.5px solid #f6c893; background:#fff7eb; color:#7a4a00; border-radius:12px; padding:0.7rem 0.85rem; font-weight:700; }
+  .message.show { display:block; }
+
+  .game-layout { display:grid; grid-template-columns:minmax(0, 1fr) 180px; gap:1rem; align-items:start; }
+  .game-card { border:2px solid #fcd8bc; background:#fffaf6; border-radius:18px; padding:1rem; }
+  .outcome-card { background:#fff; border:2px dashed var(--purple); border-radius:16px; padding:0.9rem; margin:0.75rem 0; display:flex; align-items:center; gap:0.7rem; cursor:grab; max-width:520px; }
+  .outcome-card:active { cursor:grabbing; }
+  .outcome-icon { width:48px; height:48px; border-radius:50%; background:#efe9f6; display:flex; align-items:center; justify-content:center; font-size:1.45rem; flex-shrink:0; }
+  .outcome-text strong { display:block; font-size:1.02rem; color:#3e2c65; }
+  .outcome-text span { color:#555; font-size:0.9rem; }
+
+  .scale-wrap { margin:1rem 0; }
+  .scale-label { font-size:0.85rem; font-weight:700; color:#555; margin-bottom:0.45rem; }
+  .prob-scale { display:grid; grid-template-columns:repeat(5, 1fr); border:2px solid #d9c9bc; border-radius:16px; overflow:hidden; background:#fff; }
+  .scale-slot { position:relative; min-height:92px; border-right:1px solid #eadfd4; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.2rem; padding:0.55rem 0.35rem; text-align:center; cursor:pointer; transition:background .15s ease, transform .15s ease; }
+  .scale-slot:last-child { border-right:none; }
+  .scale-slot:hover, .scale-slot.drag-over { background:#fff3e8; }
+  .scale-slot.selected { background:#e6f5f8; box-shadow:inset 0 0 0 3px var(--teal); }
+  .scale-word { font-weight:700; color:#1a1a1a; font-size:0.92rem; }
+  .scale-percent { color:#666; font-size:0.78rem; }
+  .scale-tick { width:80%; height:8px; border-radius:999px; background:#f3e4d8; overflow:hidden; margin-top:0.25rem; }
+  .scale-fill { height:100%; background:linear-gradient(90deg, #c2185b, #ef7724, #ffc857, #2e8b57); width:var(--fill); border-radius:999px; }
+
+  .strength-side { border:2px solid #e0d8d0; background:#fff; border-radius:18px; padding:0.8rem; text-align:center; min-height:350px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; position:relative; overflow:hidden; }
+  .strength-side::before { content:"CHANCE-O-METER"; position:absolute; top:0.7rem; left:50%; transform:translateX(-50%); color:#7b5ea7; font-size:0.68rem; font-weight:700; letter-spacing:0.1em; width:100%; }
+  .tower { width:42px; height:235px; border:3px solid #7b5ea7; border-radius:22px; background:linear-gradient(to top, #fbe7ee, #fff3e8, #eef8e9); position:relative; margin-bottom:0.7rem; }
+  .puck { position:absolute; left:50%; bottom:var(--puck, 0%); transform:translate(-50%, 50%); width:28px; height:28px; border-radius:50%; background:#ef7724; border:3px solid #fff; box-shadow:0 3px 8px rgba(0,0,0,0.2); transition:bottom .35s ease; }
+  .tower-mark { position:absolute; left:51px; font-size:0.62rem; color:#555; font-weight:700; transform:translateY(50%); white-space:nowrap; }
+  .m0 { bottom:0%; } .m25 { bottom:25%; } .m50 { bottom:50%; } .m75 { bottom:75%; } .m100 { bottom:100%; }
+  .strength-caption { color:#555; font-size:0.8rem; line-height:1.35; }
+
+  .trial-panel { display:none; border:2px solid #e0d8d0; border-radius:18px; padding:1rem; margin-top:1rem; background:#fff; }
+  .trial-panel.show { display:block; }
+  .trial-buttons { display:flex; gap:0.55rem; flex-wrap:wrap; margin:0.75rem 0; }
+  .result-box { display:none; border-radius:14px; background:#f0fafc; border:2px solid #b8dfe8; padding:0.8rem; margin-top:0.75rem; }
+  .result-box.show { display:block; }
+  .result-line { font-weight:700; color:#005a72; }
+  .tally-list { margin-top:0.65rem; display:flex; flex-direction:column; gap:0.4rem; }
+  .tally-row { display:grid; grid-template-columns:145px minmax(100px, 1fr) 52px; gap:0.45rem; align-items:center; }
+  .bar-track { height:16px; background:#eee5dd; border-radius:999px; overflow:hidden; }
+  .bar-fill { height:100%; background:linear-gradient(90deg, #007291, #ef7724); width:0%; border-radius:999px; transition:width .35s ease; }
+  .actual-prob { display:none; margin-top:0.65rem; padding:0.6rem 0.7rem; background:#fff3e8; border:1.5px solid #fcd8bc; border-radius:12px; color:#7a4a00; font-weight:700; }
+  .actual-prob.show { display:block; }
+  .stamp-earned { display:none; margin-top:0.8rem; background:#eef8e9; border:2px solid #bfe3c7; color:#1c6d3d; border-radius:14px; padding:0.75rem; font-weight:700; }
+  .stamp-earned.show { display:block; }
+  .bonus-box { border:1.5px dashed #e0d8d0; border-radius:14px; padding:0.75rem; margin-top:0.8rem; background:#fff; }
+  .bonus-box summary { cursor:pointer; font-weight:700; color:#7b5ea7; }
+
+  .free-choice-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:0.85rem; margin-top:1rem; }
+  .choice-card { border:2px solid var(--teal); border-radius:18px; padding:1rem; background:#fff; cursor:pointer; min-height:140px; text-align:left; transition: transform .15s ease, box-shadow .15s ease; }
+  .choice-card:hover { transform:translateY(-3px) rotate(-0.35deg); box-shadow:0 10px 22px rgba(0,114,145,0.14); }
+  .choice-card.done { border-color:var(--green); background:#f2fff7; cursor:default; }
+  .choice-icon { font-size:2rem; display:block; margin-bottom:0.45rem; }
+  .choice-card h3 { color:#1a1a1a; font-size:1.05rem; margin-bottom:0.25rem; }
+  .choice-card p { color:#555; font-size:0.88rem; }
+
+  .reflection-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem; }
+  .reflect-box { border:2px solid #e0d8d0; border-radius:16px; padding:0.9rem; background:#fff; }
+  .reflect-box label { font-weight:700; color:#005a72; display:block; margin-bottom:0.45rem; }
+  textarea { width:100%; min-height:96px; resize:vertical; border:1.5px solid #d8d0c8; border-radius:10px; padding:0.7rem; font-size:0.95rem; line-height:1.45; outline:none; }
+  textarea:focus { border-color:var(--orange); box-shadow:0 0 0 3px rgba(239,119,36,0.16); }
+  .starter-row { display:flex; gap:0.4rem; flex-wrap:wrap; margin:0.45rem 0 0.7rem; }
+  .starter-chip { border:1.5px solid var(--purple); color:var(--purple); background:#fff; border-radius:999px; padding:0.28rem 0.55rem; font-size:0.78rem; font-weight:700; cursor:pointer; }
+  .starter-chip:hover { background:#efe9f6; }
+
+  .report-card { border:2px solid var(--teal); background:#f7fcfd; border-radius:18px; padding:1rem; margin-top:1rem; }
+  .report-table { width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:14px; margin-top:0.75rem; border:1.5px solid #b8dfe8; background:#fff; }
+  .report-table th, .report-table td { text-align:left; padding:0.65rem; border-bottom:1px solid #e0eef2; vertical-align:top; font-size:0.9rem; }
+  .report-table th { background:#e6f5f8; color:#005a72; font-weight:700; }
+  .report-table tr:last-child td { border-bottom:none; }
+  .evidence-line { margin-top:0.85rem; background:#fff3e8; border:1.5px solid #fcd8bc; color:#7a4a00; border-radius:12px; padding:0.75rem; font-weight:700; }
+
+  .confetti { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:9999; }
+  .confetti span { position:absolute; top:-20px; font-size:1.4rem; animation:fall 1.2s linear forwards; }
+  @keyframes fall { to { transform:translateY(110vh) rotate(360deg); opacity:0.1; } }
+
+  .footer-note { text-align:center; color:#777; font-size:0.8rem; margin-top:2rem; }
+  a:focus-visible, button:focus-visible, textarea:focus-visible { outline:3px solid var(--orange); outline-offset:3px; }
+
+  @media (max-width: 900px) {
+    .fair-map { grid-template-columns: repeat(3, 1fr); }
+    .game-layout { grid-template-columns:1fr; }
+    .strength-side { display:none; }
+    .reflection-grid { grid-template-columns:1fr; }
+  }
+  @media (max-width: 560px) {
+    .main { width:min(100% - 1rem, 1100px); }
+    .site-header { padding-left:1rem; padding-right:1rem; }
+    .fair-map { grid-template-columns: repeat(2, 1fr); }
+    .prob-scale { grid-template-columns:1fr; }
+    .scale-slot { min-height:68px; border-right:none; border-bottom:1px solid #eadfd4; }
+    .scale-slot:last-child { border-bottom:none; }
+    .tally-row { grid-template-columns:1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Back</a>
+  <div class="header-inner">
+    <p class="week-label">Base 6 · Probability Language</p>
+    <h1>Jay's Dodgy Funfair</h1>
+    <p class="header-sub">The prizes are suspicious. The maths is useful. Predict the chance, run the test, then see what actually happens.</p>
+    <div class="fair-lights" aria-hidden="true">
+      <span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span>
+    </div>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+  <div class="top-strip">
+    <section class="intro-card">
+      <p class="eyebrow">Mission</p>
+      <h2>Visit the stalls and test chance.</h2>
+      <p class="muted">Use the probability scale to predict how likely an outcome is. Then run trials and compare your prediction with the actual result.</p>
+    </section>
+    <section class="student-card">
+      <p class="eyebrow">Student</p>
+      <h2>Choose initials</h2>
+      <p class="muted">This can auto-fill from the Week 5 avatar if it is already set.</p>
+      <div class="initial-row" id="initialRow" aria-label="Choose initials"></div>
+    </section>
+  </div>
+
+  <p class="section-label">Dodgy Funfair map</p>
+  <section class="map-card">
+    <div class="fair-map" id="fairMap" aria-label="Progress map"></div>
+  </section>
+
+  <section class="stage active" id="stage-teach">
+    <div class="stage-top">
+      <div class="stage-title-wrap">
+        <div class="stage-icon">🎪</div>
+        <div>
+          <h2>Before the dodgy gates open...</h2>
+          <p class="subtitle">Tiny bit of teaching. Then the suspicious prizes can begin.</p>
+        </div>
+      </div>
+      <div class="tag-row"><span class="tag">probability words</span><span class="tag">prediction</span><span class="tag">trials</span></div>
+    </div>
+
+    <div class="teach-grid">
+      <div class="teach-card"><span class="big">🎯</span><strong>Prediction</strong><p class="muted">What you think might happen before you test it.</p></div>
+      <div class="teach-card"><span class="big">📊</span><strong>Result</strong><p class="muted">What actually happened. Chance does not always behave politely.</p></div>
+      <div class="teach-card"><span class="big">🔁</span><strong>Trials</strong><p class="muted">More trials usually give better evidence than one random go.</p></div>
+      <div class="teach-card"><span class="big">💬</span><strong>Probability words</strong><p class="muted">Impossible, unlikely, even chance, likely and certain.</p></div>
+    </div>
+
+    <div class="scale-wrap">
+      <div class="scale-label">The chance strength tester</div>
+      <div class="prob-scale" aria-label="Probability scale example">
+        <div class="scale-slot"><span class="scale-word">Impossible</span><span class="scale-percent">0%</span><span class="scale-tick"><span class="scale-fill" style="--fill:0%"></span></span></div>
+        <div class="scale-slot"><span class="scale-word">Unlikely</span><span class="scale-percent">about 25%</span><span class="scale-tick"><span class="scale-fill" style="--fill:25%"></span></span></div>
+        <div class="scale-slot"><span class="scale-word">Even chance</span><span class="scale-percent">50%</span><span class="scale-tick"><span class="scale-fill" style="--fill:50%"></span></span></div>
+        <div class="scale-slot"><span class="scale-word">Likely</span><span class="scale-percent">about 75%</span><span class="scale-tick"><span class="scale-fill" style="--fill:75%"></span></span></div>
+        <div class="scale-slot"><span class="scale-word">Certain</span><span class="scale-percent">100%</span><span class="scale-tick"><span class="scale-fill" style="--fill:100%"></span></span></div>
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button class="btn secondary" onclick="startGuided()">Enter the funfair</button>
+    </div>
+    <div class="message" id="teachMsg"></div>
+  </section>
+
+  <section class="stage" id="stage-game">
+    <div id="gameHost"></div>
+  </section>
+
+  <section class="stage" id="stage-free">
+    <div class="stage-top">
+      <div class="stage-title-wrap">
+        <div class="stage-icon">🗺️</div>
+        <div>
+          <h2>Free choice stalls</h2>
+          <p class="subtitle">Choose the remaining dodgy attractions. Collect all 5 stamps to unlock the Big Prize Wheel.</p>
+        </div>
+      </div>
+    </div>
+    <div class="free-choice-grid" id="freeChoiceGrid"></div>
+    <div class="button-row">
+      <button class="btn ghost" id="bigWheelFromFree" onclick="openFinal()" disabled>Big Prize Wheel locked</button>
+    </div>
+    <div class="message" id="freeMsg"></div>
+  </section>
+
+  <section class="stage" id="stage-final">
+    <div id="finalHost"></div>
+  </section>
+
+  <section class="stage" id="stage-report">
+    <div class="stage-top">
+      <div class="stage-title-wrap">
+        <div class="stage-icon">📄</div>
+        <div>
+          <h2>Dodgy Funfair report</h2>
+          <p class="subtitle">A one-page written summary for evidence of learning.</p>
+        </div>
+      </div>
+    </div>
+    <div id="reportHost"></div>
+    <div class="button-row">
+      <button class="btn secondary" onclick="exportPdf()">Export PDF</button>
+      <button class="btn" onclick="sendGmail()">Send to Jay</button>
+      <button class="btn ghost" onclick="sendMailto()">Fallback email</button>
+    </div>
+    <div class="message" id="reportMsg"></div>
+  </section>
+
+  <p class="footer-note">Base 6 · Chilton Bridge School · Silent activity · no surprise haunted carousel music.</p>
+</main>
+
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+
+<script>
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+const STUDENTS = ['LW','AP','LS','LC','HK','JTK'];
+const SCALE = [
+  { word:'impossible', label:'Impossible', percent:'0%', puck:0 },
+  { word:'unlikely', label:'Unlikely', percent:'about 25%', puck:25 },
+  { word:'even chance', label:'Even chance', percent:'50%', puck:50 },
+  { word:'likely', label:'Likely', percent:'about 75%', puck:75 },
+  { word:'certain', label:'Certain', percent:'100%', puck:100 }
+];
+
+const GAME_DATA = [
+  {
+    id:'spinner', icon:'🌀', name:'Suspicious Spinner of Wobble', guided:true,
+    subtitle:'Spin the wheel and see which section it lands on.',
+    learning:'Spinner probability', targetLabel:'Land on the star section', targetIcon:'⭐', actualWord:'unlikely', actualText:'The star is 1 section out of 4, so it is unlikely.',
+    outcomes:[
+      {label:'Red', icon:'🔴', weight:1}, {label:'Blue', icon:'🔵', weight:1}, {label:'Green', icon:'🟢', weight:1}, {label:'Star', icon:'⭐', weight:1}
+    ],
+    target:function(o){ return o.label === 'Star'; },
+    bonus:'Bonus idea: What would be certain on this spinner?'
+  },
+  {
+    id:'dice', icon:'🎲', name:'Dice of Mild Doom', guided:true,
+    subtitle:'Roll one dice. The dice is dramatic, but it is still just numbers 1 to 6.',
+    learning:'Dice probability', targetLabel:'Roll a 6', targetIcon:'6️⃣', actualWord:'unlikely', actualText:'Rolling one exact number is 1 out of 6, so it is unlikely.',
+    outcomes:[1,2,3,4,5,6].map(function(n){ return {label:String(n), icon:String(n), weight:1}; }),
+    target:function(o){ return o.label === '6'; },
+    bonus:'Bonus idea: Is rolling an even number impossible, unlikely, even chance, likely or certain?'
+  },
+  {
+    id:'bag', icon:'🛍️', name:'Probably Crisps Bag', guided:false,
+    subtitle:'Pull one mystery item from the bag. It probably is not treasure. It may be crisps.',
+    learning:'Chance from a bag', targetLabel:'Pull out crisps', targetIcon:'🥔', actualWord:'even chance', actualText:'There are 5 crisps out of 10 items, so it is an even chance.',
+    outcomes:[
+      {label:'Crisps', icon:'🥔', weight:5}, {label:'Sticker', icon:'🌟', weight:3}, {label:'Slime', icon:'🟣', weight:2}
+    ],
+    target:function(o){ return o.label === 'Crisps'; },
+    bonus:'Bonus idea: What is impossible if there is no golden ticket in the bag?'
+  },
+  {
+    id:'claw', icon:'🕹️', name:'Claw Machine of Broken Dreams', guided:false,
+    subtitle:'Try the claw machine. It has opinions about whether you deserve a prize.',
+    learning:'Uncertain outcomes', targetLabel:'Win any prize', targetIcon:'🧸', actualWord:'unlikely', actualText:'There are 4 prize results out of 10 possible outcomes, so winning is unlikely.',
+    outcomes:[
+      {label:'No prize', icon:'💨', weight:6}, {label:'Tiny bear', icon:'🧸', weight:3}, {label:'Mega duck', icon:'🦆', weight:1}
+    ],
+    target:function(o){ return o.label !== 'No prize'; },
+    bonus:'Bonus idea: Is winning the mega duck more or less likely than winning any prize?'
+  },
+  {
+    id:'wheel', icon:'🎡', name:'Wonky Wheel of Questionable Prizes', guided:false,
+    subtitle:'Spin the prize wheel. Some prizes are real. Some are emotionally confusing.',
+    learning:'Prize wheel probability', targetLabel:'Win a sticker', targetIcon:'🌟', actualWord:'likely', actualText:'Sticker appears on 5 out of 8 sections, so it is likely.',
+    outcomes:[
+      {label:'Sticker', icon:'🌟', weight:5}, {label:'Tiny pencil', icon:'✏️', weight:2}, {label:'Rubber chicken', icon:'🐔', weight:1}
+    ],
+    target:function(o){ return o.label === 'Sticker'; },
+    bonus:'Bonus idea: Is the rubber chicken likely or unlikely?'
+  }
+];
+
+const FINAL_GAME = {
+  id:'big', icon:'🏆', name:'Big Prize Wheel of Very Dubious Glory',
+  subtitle:'Final evidence challenge. Predict first, then spin 10 times and reflect.',
+  learning:'Final probability evidence', targetLabel:'Land on a prize', targetIcon:'🎁', actualWord:'likely', actualText:'Prize outcomes are 7 out of 10 sections, so landing on a prize is likely.',
+  outcomes:[
+    {label:'Prize', icon:'🎁', weight:7}, {label:'No prize', icon:'😬', weight:2}, {label:'Mystery squeak', icon:'🦆', weight:1}
+  ],
+  target:function(o){ return o.label === 'Prize'; }
+};
+
+let state = {
+  initials:'',
+  currentId:'teach',
+  started:false,
+  completed:{},
+  results:{},
+  final:null,
+  finalReport:null
+};
+
+function $(id){ return document.getElementById(id); }
+function gameById(id){ return GAME_DATA.find(function(g){ return g.id === id; }); }
+function showMessage(id, text){ const el = $(id); if(!el) return; el.textContent = text; el.classList.add('show'); setTimeout(function(){ el.classList.remove('show'); }, 4200); }
+function hideAllStages(){ document.querySelectorAll('.stage').forEach(function(s){ s.classList.remove('active'); }); }
+function setStage(id){ hideAllStages(); $(id).classList.add('active'); window.scrollTo({top:0, behavior:'smooth'}); }
+
+function initInitials(){
+  const row = $('initialRow');
+  row.innerHTML = '';
+  STUDENTS.forEach(function(s){
+    const btn = document.createElement('button');
+    btn.className = 'initial-btn';
+    btn.type = 'button';
+    btn.textContent = s;
+    btn.onclick = function(){ selectInitials(s); };
+    row.appendChild(btn);
+  });
+  try {
+    const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+    if(profile && profile.initials){
+      const found = STUDENTS.find(function(s){ return s.toLowerCase() === String(profile.initials).toLowerCase(); });
+      if(found) selectInitials(found, true);
+    }
+  } catch(e) {}
+}
+function selectInitials(initials, quiet){
+  state.initials = initials;
+  document.querySelectorAll('.initial-btn').forEach(function(b){ b.classList.toggle('selected', b.textContent === initials); });
+  try {
+    const profile = JSON.parse(localStorage.getItem('base6Profile') || '{}');
+    profile.initials = initials.toLowerCase();
+    localStorage.setItem('base6Profile', JSON.stringify(profile));
+  } catch(e) {}
+  if(!quiet) showMessage('teachMsg', 'Initials set. The dodgy funfair clipboard is satisfied.');
+}
+
+function mapItems(){
+  return [
+    {id:'teach', icon:'🎪', name:'Tiny teaching', type:'teach'},
+    ...GAME_DATA.map(function(g){ return {id:g.id, icon:g.icon, name:g.name, type:'game', guided:g.guided}; }),
+    {id:'big', icon:'🏆', name:'Big Prize Wheel', type:'final'}
+  ];
+}
+function canOpen(item){
+  if(item.type === 'teach') return true;
+  if(item.type === 'game'){
+    if(!state.started) return false;
+    if(item.guided && item.id === 'spinner') return true;
+    if(item.guided && item.id === 'dice') return !!state.completed.spinner;
+    if(!item.guided) return !!state.completed.spinner && !!state.completed.dice;
+  }
+  if(item.type === 'final') return allGamesDone();
+  return false;
+}
+function renderMap(){
+  const map = $('fairMap'); map.innerHTML = '';
+  mapItems().forEach(function(item, i){
+    const stall = document.createElement('button');
+    stall.type = 'button';
+    stall.className = 'map-stall';
+    stall.style.setProperty('--tilt', (i % 2 === 0 ? '-0.4deg' : '0.45deg'));
+    const done = item.type === 'teach' ? state.started : item.type === 'game' ? !!state.completed[item.id] : !!state.finalReport;
+    const available = canOpen(item);
+    if(done) stall.classList.add('done');
+    if(available && !done) stall.classList.add('available');
+    if(item.id === state.currentId) stall.classList.add('current');
+    if(!available && !done) stall.classList.add('locked');
+    const status = done ? 'stamp' : item.id === state.currentId ? 'here' : available ? 'open' : 'locked';
+    stall.innerHTML = '<span class="map-icon">' + item.icon + '</span><span class="map-name">' + item.name + '</span><span class="map-status">' + status + '</span>';
+    stall.onclick = function(){
+      if(!canOpen(item) && !done){ showMessage('teachMsg', 'That stall is locked for now. The funfair goblin insists on doing things in order.'); return; }
+      if(item.type === 'teach') { state.currentId = 'teach'; setStage('stage-teach'); }
+      if(item.type === 'game') openGame(item.id);
+      if(item.type === 'final') openFinal();
+      renderMap();
+    };
+    map.appendChild(stall);
+  });
+}
+function startGuided(){
+  if(!state.initials){ showMessage('teachMsg','Choose your initials first, then the dodgy gates can open.'); return; }
+  state.started = true;
+  openGame('spinner');
+}
+function allGamesDone(){ return GAME_DATA.every(function(g){ return !!state.completed[g.id]; }); }
+
+function weightedPick(outcomes){
+  const total = outcomes.reduce(function(sum,o){ return sum + o.weight; },0);
+  let r = Math.random() * total;
+  for(const o of outcomes){ r -= o.weight; if(r <= 0) return o; }
+  return outcomes[outcomes.length - 1];
+}
+function simulate(game, trials){
+  const tally = {};
+  let targetCount = 0;
+  for(let i=0; i<trials; i++){
+    const outcome = weightedPick(game.outcomes);
+    tally[outcome.label] = (tally[outcome.label] || 0) + 1;
+    if(game.target(outcome)) targetCount++;
+  }
+  return { trials:trials, tally:tally, targetCount:targetCount };
+}
+function targetProbability(game){
+  const total = game.outcomes.reduce(function(sum,o){ return sum + o.weight; },0);
+  const target = game.outcomes.reduce(function(sum,o){ return sum + (game.target(o) ? o.weight : 0); },0);
+  return { target:target, total:total, percent:Math.round((target/total)*100) };
+}
+function scaleIndex(word){ return SCALE.findIndex(function(s){ return s.word === word; }); }
+
+function predictionScaleHtml(selected){
+  return '<div class="scale-wrap"><div class="scale-label">Place the outcome on the chance strength tester</div><div class="prob-scale" id="probScale">' + SCALE.map(function(s){
+    return '<button type="button" class="scale-slot ' + (selected === s.word ? 'selected' : '') + '" data-word="' + s.word + '">' +
+      '<span class="scale-word">' + s.label + '</span><span class="scale-percent">' + s.percent + '</span>' +
+      '<span class="scale-tick"><span class="scale-fill" style="--fill:' + s.puck + '%"></span></span></button>';
+  }).join('') + '</div></div>';
+}
+
+function openGame(id){
+  const game = gameById(id);
+  if(!game) return;
+  if(id === 'dice' && !state.completed.spinner){ showMessage('teachMsg','Do the spinner first. The dice is waiting dramatically.'); return; }
+  if(!game.guided && (!state.completed.spinner || !state.completed.dice)){ showMessage('freeMsg','Finish the first two guided stalls first.'); return; }
+  state.currentId = id;
+  renderGame(game);
+  setStage('stage-game');
+  renderMap();
+}
+
+function renderGame(game){
+  const existing = state.results[game.id] || { prediction:null, ranOne:false, completed:false };
+  const locked = !!existing.completed;
+  $('gameHost').innerHTML = `
+    <div class="stage-top">
+      <div class="stage-title-wrap">
+        <div class="stage-icon">${game.icon}</div>
+        <div>
+          <h2>${game.name}</h2>
+          <p class="subtitle">${game.subtitle}</p>
+        </div>
+      </div>
+      <div class="tag-row"><span class="tag">prediction first</span><span class="tag">then test</span><span class="tag">tally evidence</span></div>
+    </div>
+    <div class="game-layout">
+      <div class="game-card">
+        <p class="eyebrow">Outcome to predict</p>
+        <div class="outcome-card" id="outcomeCard" draggable="${locked ? 'false' : 'true'}" aria-label="Outcome card">
+          <div class="outcome-icon">${game.targetIcon}</div>
+          <div class="outcome-text"><strong>${game.targetLabel}</strong><span>Choose how likely this is before running the test.</span></div>
+        </div>
+        ${predictionScaleHtml(existing.prediction)}
+        <details class="bonus-box"><summary>Optional second challenge</summary><p class="muted">${game.bonus}</p></details>
+        <div class="trial-panel ${existing.prediction ? 'show' : ''}" id="trialPanel">
+          <p><strong>Prediction locked:</strong> <span id="predictionText">${existing.prediction ? existing.prediction : ''}</span></p>
+          <div class="trial-buttons" id="trialButtons"></div>
+          <div class="result-box ${existing.lastResult ? 'show' : ''}" id="resultBox"></div>
+          <div class="actual-prob ${locked && existing.bigTrials ? 'show' : ''}" id="actualProb"></div>
+          <div class="stamp-earned ${locked ? 'show' : ''}" id="stampEarned">🎟️ Dodgy Funfair stamp earned for ${game.name}.</div>
+        </div>
+        <div class="message" id="gameMsg"></div>
+        <div class="button-row" id="gameNav"></div>
+      </div>
+      <aside class="strength-side" aria-hidden="true">
+        <div class="tower">
+          <span class="tower-mark m100">certain</span><span class="tower-mark m75">likely</span><span class="tower-mark m50">even</span><span class="tower-mark m25">unlikely</span><span class="tower-mark m0">impossible</span>
+          <span class="puck" id="puck" style="--puck:${existing.prediction ? SCALE[scaleIndex(existing.prediction)].puck : 0}%"></span>
+        </div>
+        <p class="strength-caption">The higher it goes, the stronger the chance.</p>
+      </aside>
+    </div>
+  `;
+  wirePrediction(game, locked);
+  renderTrialButtons(game);
+  if(existing.lastResult) renderResult(game, existing.lastResult);
+  if(locked) showActualProbability(game);
+  renderGameNav(game);
+}
+
+function wirePrediction(game, locked){
+  const slots = Array.from(document.querySelectorAll('#probScale .scale-slot'));
+  slots.forEach(function(slot){
+    slot.onclick = function(){ if(!locked) choosePrediction(game, slot.dataset.word); };
+    slot.addEventListener('dragover', function(e){ if(locked) return; e.preventDefault(); slot.classList.add('drag-over'); });
+    slot.addEventListener('dragleave', function(){ slot.classList.remove('drag-over'); });
+    slot.addEventListener('drop', function(e){
+      e.preventDefault(); slot.classList.remove('drag-over');
+      if(!locked) choosePrediction(game, slot.dataset.word);
+    });
+  });
+  const card = $('outcomeCard');
+  if(card){ card.addEventListener('dragstart', function(e){ e.dataTransfer.setData('text/plain', game.id); }); }
+}
+function choosePrediction(game, word){
+  const result = state.results[game.id] || {};
+  if(result.ranOne || result.completed){ showMessage('gameMsg','Prediction is locked now. Chance has entered the chat.'); return; }
+  result.prediction = word;
+  state.results[game.id] = result;
+  document.querySelectorAll('#probScale .scale-slot').forEach(function(s){ s.classList.toggle('selected', s.dataset.word === word); });
+  $('predictionText').textContent = word;
+  $('trialPanel').classList.add('show');
+  const idx = scaleIndex(word);
+  const puck = $('puck'); if(puck && idx >= 0) puck.style.setProperty('--puck', SCALE[idx].puck + '%');
+  renderTrialButtons(game);
+}
+function renderTrialButtons(game){
+  const res = state.results[game.id] || {};
+  const box = $('trialButtons'); if(!box) return;
+  if(!res.prediction){ box.innerHTML = '<button class="btn" disabled>Choose a prediction first</button>'; return; }
+  if(res.completed){ box.innerHTML = '<button class="btn" disabled>Test completed</button>'; return; }
+  if(!res.ranOne){ box.innerHTML = '<button class="btn secondary" onclick="runGameTrials(\'' + game.id + '\',1)">Run 1 trial</button>'; return; }
+  box.innerHTML = '<button class="btn secondary" onclick="runGameTrials(\'' + game.id + '\',10)">Run 10 trials</button><button class="btn" onclick="runGameTrials(\'' + game.id + '\',20)">Run 20 trials</button>';
+}
+function runGameTrials(id, trials){
+  const game = gameById(id); const res = state.results[id] || {};
+  if(!res.prediction){ showMessage('gameMsg','Choose a prediction first. The funfair cannot read minds.'); return; }
+  if(res.completed){ showMessage('gameMsg','This stall is already complete. No reruns; the funfair goblin is strict.'); return; }
+  const outcome = simulate(game, trials);
+  res.lastResult = outcome;
+  if(trials === 1){
+    res.ranOne = true;
+    state.results[id] = res;
+    renderResult(game, outcome);
+    renderTrialButtons(game);
+    showMessage('gameMsg','One result is interesting, but it is not strong evidence yet. Run 10 or 20 trials next.');
+    return;
+  }
+  res.bigTrials = trials;
+  res.completed = true;
+  state.results[id] = res;
+  state.completed[id] = true;
+  renderResult(game, outcome);
+  showActualProbability(game);
+  $('stampEarned').classList.add('show');
+  renderTrialButtons(game);
+  renderGameNav(game);
+  renderMap();
+  burstConfetti(['🎟️','🎪','⭐']);
+}
+function renderResult(game, outcome){
+  const box = $('resultBox'); if(!box) return;
+  const targetLine = 'This happened ' + outcome.targetCount + ' out of ' + outcome.trials + ' times.';
+  const funny = outcome.targetCount === 0 ? 'Chance has gone full gremlin.' : outcome.targetCount === outcome.trials ? 'Chance has suddenly become very confident.' : 'Chance has behaved... sort of.';
+  box.classList.add('show');
+  const max = Math.max.apply(null, Object.values(outcome.tally).concat([1]));
+  let rows = game.outcomes.map(function(o){
+    const count = outcome.tally[o.label] || 0;
+    const width = Math.round((count / max) * 100);
+    return '<div class="tally-row"><strong>' + o.icon + ' ' + o.label + '</strong><div class="bar-track"><div class="bar-fill" style="width:' + width + '%"></div></div><span>' + count + '</span></div>';
+  }).join('');
+  box.innerHTML = '<p class="result-line">' + funny + '</p><p class="muted">' + targetLine + '</p><div class="tally-list">' + rows + '</div>';
+}
+function showActualProbability(game){
+  const box = $('actualProb'); if(!box) return;
+  const p = targetProbability(game);
+  box.classList.add('show');
+  box.textContent = 'Actual chance: ' + p.target + ' out of ' + p.total + ' = about ' + p.percent + '%. ' + game.actualText;
+}
+function renderGameNav(game){
+  const nav = $('gameNav'); if(!nav) return;
+  const res = state.results[game.id] || {};
+  if(!res.completed){
+    nav.innerHTML = '<button class="btn ghost" onclick="showMessage(\'gameMsg\',\'Finish the prediction and test first, then this stall can stamp your ticket.\')">Next stall</button>';
+    return;
+  }
+  if(game.id === 'spinner') nav.innerHTML = '<button class="btn secondary" onclick="openGame(\'dice\')">Next: Dice of Mild Doom</button>';
+  else if(game.id === 'dice') nav.innerHTML = '<button class="btn secondary" onclick="openFreeChoice()">Open free choice stalls</button>';
+  else if(allGamesDone()) nav.innerHTML = '<button class="btn" onclick="openFinal()">Unlock Big Prize Wheel</button><button class="btn ghost" onclick="openFreeChoice()">Back to map</button>';
+  else nav.innerHTML = '<button class="btn secondary" onclick="openFreeChoice()">Choose another stall</button>';
+}
+function openFreeChoice(){
+  state.currentId = 'free';
+  renderFreeChoice();
+  setStage('stage-free');
+  renderMap();
+}
+function renderFreeChoice(){
+  const grid = $('freeChoiceGrid');
+  grid.innerHTML = '';
+  GAME_DATA.filter(function(g){ return !g.guided; }).forEach(function(g){
+    const card = document.createElement('button');
+    card.className = 'choice-card' + (state.completed[g.id] ? ' done' : '');
+    card.type = 'button';
+    card.innerHTML = '<span class="choice-icon">' + g.icon + '</span><h3>' + g.name + '</h3><p>' + (state.completed[g.id] ? 'Stamp collected. Jay has grudgingly approved this stall.' : g.subtitle) + '</p>';
+    card.onclick = function(){ if(state.completed[g.id]) return; openGame(g.id); };
+    grid.appendChild(card);
+  });
+  const btn = $('bigWheelFromFree');
+  if(allGamesDone()){
+    btn.disabled = false;
+    btn.textContent = 'Big Prize Wheel unlocked';
+    btn.className = 'btn';
+  } else {
+    const done = Object.keys(state.completed).length;
+    btn.disabled = true;
+    btn.textContent = 'Big Prize Wheel locked · ' + done + '/5 stamps';
+    btn.className = 'btn ghost';
+  }
+}
+
+function openFinal(){
+  if(!allGamesDone()){ showMessage('freeMsg','Collect all 5 stamps first. The big wheel is being dramatic.'); return; }
+  state.currentId = 'big';
+  renderFinal();
+  setStage('stage-final');
+  renderMap();
+}
+function renderFinal(){
+  const f = state.final || { prediction:null, completed:false, reflect1:'', reflect2:'' };
+  $('finalHost').innerHTML = `
+    <div class="stage-top">
+      <div class="stage-title-wrap">
+        <div class="stage-icon">${FINAL_GAME.icon}</div>
+        <div><h2>${FINAL_GAME.name}</h2><p class="subtitle">${FINAL_GAME.subtitle}</p></div>
+      </div>
+      <div class="tag-row"><span class="tag">10 spins</span><span class="tag">reflection</span><span class="tag">evidence</span></div>
+    </div>
+    <div class="game-layout">
+      <div class="game-card">
+        <p class="eyebrow">Final prediction</p>
+        <div class="outcome-card" id="finalOutcomeCard" draggable="${f.completed ? 'false' : 'true'}"><div class="outcome-icon">${FINAL_GAME.targetIcon}</div><div class="outcome-text"><strong>${FINAL_GAME.targetLabel}</strong><span>Choose your probability word before spinning 10 times.</span></div></div>
+        ${predictionScaleHtml(f.prediction)}
+        <div class="trial-panel ${f.prediction ? 'show' : ''}" id="finalTrialPanel">
+          <p><strong>Prediction:</strong> <span id="finalPredictionText">${f.prediction || ''}</span></p>
+          <div class="trial-buttons" id="finalButtons"></div>
+          <div class="result-box ${f.result ? 'show' : ''}" id="finalResultBox"></div>
+          <div class="actual-prob ${f.completed ? 'show' : ''}" id="finalActualProb"></div>
+        </div>
+        <div class="message" id="finalMsg"></div>
+        <div id="reflectionArea"></div>
+      </div>
+      <aside class="strength-side" aria-hidden="true">
+        <div class="tower"><span class="tower-mark m100">certain</span><span class="tower-mark m75">likely</span><span class="tower-mark m50">even</span><span class="tower-mark m25">unlikely</span><span class="tower-mark m0">impossible</span><span class="puck" id="puck" style="--puck:${f.prediction ? SCALE[scaleIndex(f.prediction)].puck : 0}%"></span></div>
+        <p class="strength-caption">Final chance strength test.</p>
+      </aside>
+    </div>
+  `;
+  wireFinalPrediction();
+  renderFinalButtons();
+  if(f.result) renderFinalResult();
+  if(f.completed) { showFinalActual(); renderReflectionArea(); }
+}
+function wireFinalPrediction(){
+  const locked = !!(state.final && state.final.completed);
+  document.querySelectorAll('#probScale .scale-slot').forEach(function(slot){
+    slot.onclick = function(){ if(!locked) chooseFinalPrediction(slot.dataset.word); };
+    slot.addEventListener('dragover', function(e){ if(locked) return; e.preventDefault(); slot.classList.add('drag-over'); });
+    slot.addEventListener('dragleave', function(){ slot.classList.remove('drag-over'); });
+    slot.addEventListener('drop', function(e){ e.preventDefault(); slot.classList.remove('drag-over'); if(!locked) chooseFinalPrediction(slot.dataset.word); });
+  });
+}
+function chooseFinalPrediction(word){
+  if(!state.final) state.final = {};
+  if(state.final.completed){ showMessage('finalMsg','Final prediction is locked now. The big wheel has spoken.'); return; }
+  state.final.prediction = word;
+  document.querySelectorAll('#probScale .scale-slot').forEach(function(s){ s.classList.toggle('selected', s.dataset.word === word); });
+  $('finalPredictionText').textContent = word;
+  $('finalTrialPanel').classList.add('show');
+  const idx = scaleIndex(word); const puck = $('puck'); if(puck && idx >= 0) puck.style.setProperty('--puck', SCALE[idx].puck + '%');
+  renderFinalButtons();
+}
+function renderFinalButtons(){
+  const box = $('finalButtons'); if(!box) return;
+  if(!state.final || !state.final.prediction){ box.innerHTML = '<button class="btn" disabled>Choose a prediction first</button>'; return; }
+  if(state.final.completed){ box.innerHTML = '<button class="btn" disabled>10 spins completed</button>'; return; }
+  box.innerHTML = '<button class="btn" onclick="runFinalTrials()">Run 10 spins</button>';
+}
+function runFinalTrials(){
+  if(!state.final || !state.final.prediction){ showMessage('finalMsg','Choose a prediction first. The big wheel cannot guess your guess.'); return; }
+  const result = simulate(FINAL_GAME, 10);
+  state.final.result = result;
+  state.final.completed = true;
+  const matched = state.final.prediction === FINAL_GAME.actualWord;
+  state.final.judgement = matched ? 'Prediction matched' : 'Prediction did not match';
+  renderFinalResult();
+  showFinalActual();
+  renderFinalButtons();
+  renderReflectionArea();
+  burstConfetti(['🏆','🎟️','🎡','⭐']);
+}
+function renderFinalResult(){
+  const box = $('finalResultBox'); if(!box || !state.final || !state.final.result) return;
+  const result = state.final.result;
+  box.classList.add('show');
+  const max = Math.max.apply(null, Object.values(result.tally).concat([1]));
+  const rows = FINAL_GAME.outcomes.map(function(o){
+    const count = result.tally[o.label] || 0;
+    const width = Math.round((count / max) * 100);
+    return '<div class="tally-row"><strong>' + o.icon + ' ' + o.label + '</strong><div class="bar-track"><div class="bar-fill" style="width:' + width + '%"></div></div><span>' + count + '</span></div>';
+  }).join('');
+  box.innerHTML = '<p class="result-line">' + state.final.judgement + '</p><p class="muted">The target happened ' + result.targetCount + ' out of 10 times.</p><div class="tally-list">' + rows + '</div>';
+}
+function showFinalActual(){
+  const box = $('finalActualProb'); if(!box) return;
+  const p = targetProbability(FINAL_GAME);
+  box.classList.add('show');
+  box.textContent = 'Actual chance: ' + p.target + ' out of ' + p.total + ' = about ' + p.percent + '%. ' + FINAL_GAME.actualText;
+}
+function renderReflectionArea(){
+  const f = state.final || {};
+  $('reflectionArea').innerHTML = `
+    <div class="reflection-grid">
+      <div class="reflect-box">
+        <label for="reflect1">Was your result what you expected? Why?</label>
+        <div class="starter-row"><button class="starter-chip" onclick="addStarter('reflect1','I expected it because ')">I expected it because...</button><button class="starter-chip" onclick="addStarter('reflect1','I was surprised because ')">I was surprised because...</button></div>
+        <textarea id="reflect1" placeholder="I expected it because...">${escapeHtml(f.reflect1 || '')}</textarea>
+      </div>
+      <div class="reflect-box">
+        <label for="reflect2">Did more trials give better evidence? How do you know?</label>
+        <div class="starter-row"><button class="starter-chip" onclick="addStarter('reflect2','More trials helped because ')">More trials helped because...</button><button class="starter-chip" onclick="addStarter('reflect2','The result changed when ')">The result changed when...</button></div>
+        <textarea id="reflect2" placeholder="More trials helped because...">${escapeHtml(f.reflect2 || '')}</textarea>
+      </div>
+    </div>
+    <div class="button-row"><button class="btn secondary" onclick="createReport()">Create report</button></div>
+    <div class="message" id="reflectMsg"></div>
+  `;
+  $('reflect1').addEventListener('input', function(){ state.final.reflect1 = this.value; });
+  $('reflect2').addEventListener('input', function(){ state.final.reflect2 = this.value; });
+}
+function addStarter(id, text){
+  const ta = $(id); if(!ta) return;
+  if(ta.value.trim().length === 0){ ta.value = text; }
+  else { ta.value += (ta.value.endsWith(' ') ? '' : ' ') + text; }
+  ta.focus();
+  ta.dispatchEvent(new Event('input'));
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(ch){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[ch]; }); }
+
+function createReport(){
+  const r1 = ($('reflect1') ? $('reflect1').value.trim() : '').trim();
+  const r2 = ($('reflect2') ? $('reflect2').value.trim() : '').trim();
+  if(!r1 || !r2){ showMessage('reflectMsg','Add both short reflections first. Jay needs actual evidence, not mysterious vibes.'); return; }
+  state.final.reflect1 = r1;
+  state.final.reflect2 = r2;
+  const report = buildReportData();
+  state.finalReport = report;
+  try { localStorage.setItem('probabilityThemeParkFinalReport', JSON.stringify(report)); } catch(e) {}
+  renderReport();
+  state.currentId = 'report';
+  setStage('stage-report');
+  renderMap();
+}
+function buildReportData(){
+  const date = new Date().toLocaleDateString('en-GB');
+  const gameRows = GAME_DATA.map(function(g){
+    const res = state.results[g.id] || {};
+    const lr = res.lastResult || {targetCount:0, trials:0};
+    return { name:g.name, learning:g.learning, prediction:res.prediction || '', target:g.targetLabel, result:lr.targetCount + ' out of ' + lr.trials, actualWord:g.actualWord };
+  });
+  const finalRes = state.final.result;
+  return {
+    title:"Jay's Dodgy Funfair — Probability Report",
+    initials:state.initials || 'Not selected',
+    date:date,
+    games:gameRows,
+    finalPrediction:state.final.prediction,
+    finalResult:finalRes.targetCount + ' out of ' + finalRes.trials,
+    finalJudgement:state.final.judgement,
+    reflection1:state.final.reflect1,
+    reflection2:state.final.reflect2,
+    evidence:'Evidence of learning: probability language, chance and uncertainty, prediction versus result, tally interpretation, and understanding that more trials give better evidence.'
+  };
+}
+function renderReport(){
+  const report = state.finalReport || buildReportData();
+  const rows = report.games.map(function(r){
+    return '<tr><td>' + escapeHtml(r.name) + '</td><td>' + escapeHtml(r.prediction) + '</td><td>' + escapeHtml(r.result) + '</td><td>' + escapeHtml(r.actualWord) + '</td></tr>';
+  }).join('');
+  $('reportHost').innerHTML = `
+    <div class="report-card">
+      <p class="eyebrow">${escapeHtml(report.date)} · ${escapeHtml(report.initials)}</p>
+      <h3>${escapeHtml(report.title)}</h3>
+      <table class="report-table">
+        <thead><tr><th>Game</th><th>Prediction word</th><th>Actual tally</th><th>Actual chance word</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="evidence-line">Final Big Prize Wheel: ${escapeHtml(report.finalPrediction)} · ${escapeHtml(report.finalResult)} · ${escapeHtml(report.finalJudgement)}</div>
+      <p style="margin-top:0.8rem;"><strong>Was the result expected?</strong><br>${escapeHtml(report.reflection1)}</p>
+      <p style="margin-top:0.8rem;"><strong>Did more trials give better evidence?</strong><br>${escapeHtml(report.reflection2)}</p>
+      <div class="evidence-line">${escapeHtml(report.evidence)}</div>
+    </div>
+  `;
+}
+
+function burstConfetti(items){
+  const box = $('confetti'); box.innerHTML = '';
+  for(let i=0; i<20; i++){
+    const s = document.createElement('span');
+    s.textContent = items[Math.floor(Math.random()*items.length)];
+    s.style.left = Math.random()*100 + 'vw';
+    s.style.animationDelay = (Math.random()*0.25) + 's';
+    s.style.fontSize = (1 + Math.random()*0.9) + 'rem';
+    box.appendChild(s);
+  }
+  setTimeout(function(){ box.innerHTML = ''; }, 1500);
+}
+
+function reportTextLines(){
+  const report = state.finalReport || buildReportData();
+  const lines = [];
+  lines.push(report.title);
+  lines.push('Student: ' + report.initials + '    Date: ' + report.date);
+  lines.push('');
+  lines.push('Game results:');
+  report.games.forEach(function(g){
+    lines.push('- ' + g.name + ': predicted ' + g.prediction + '; result ' + g.result + '; actual word ' + g.actualWord + '.');
+  });
+  lines.push('');
+  lines.push('Big Prize Wheel: predicted ' + report.finalPrediction + '; result ' + report.finalResult + '; ' + report.finalJudgement + '.');
+  lines.push('');
+  lines.push('Reflection 1: ' + report.reflection1);
+  lines.push('Reflection 2: ' + report.reflection2);
+  lines.push('');
+  lines.push(report.evidence);
+  return lines;
+}
+function wrapPdfLines(lines, maxChars){
+  const out = [];
+  lines.forEach(function(line){
+    if(line.length <= maxChars){ out.push(line); return; }
+    let words = line.split(' '), current = '';
+    words.forEach(function(w){
+      if((current + ' ' + w).trim().length > maxChars){ out.push(current); current = w; }
+      else current = (current + ' ' + w).trim();
+    });
+    if(current) out.push(current);
+  });
+  return out;
+}
+function pdfEscape(text){ return String(text).replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)').replace(/[\u2018\u2019]/g,"'").replace(/[\u201c\u201d]/g,'"').replace(/[–—]/g,'-').replace(/[^\x00-\x7F]/g,''); }
+function exportPdf(){
+  if(!state.finalReport){ showMessage('reportMsg','Create the report first.'); return; }
+  const lines = wrapPdfLines(reportTextLines(), 88).slice(0, 48);
+  let content = 'BT\n/F1 14 Tf\n50 790 Td\n';
+  lines.forEach(function(line, i){
+    const fontSize = i === 0 ? 16 : 10;
+    const lead = i === 0 ? 22 : 15;
+    content += '/' + (i === 0 ? 'F2' : 'F1') + ' ' + fontSize + ' Tf\n(' + pdfEscape(line) + ') Tj\n0 -' + lead + ' Td\n';
+  });
+  content += 'ET';
+  const objects = [];
+  objects.push('1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj');
+  objects.push('2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj');
+  objects.push('3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >> endobj');
+  objects.push('4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj');
+  objects.push('5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> endobj');
+  objects.push('6 0 obj << /Length ' + content.length + ' >> stream\n' + content + '\nendstream endobj');
+  let pdf = '%PDF-1.4\n';
+  const offsets = [0];
+  objects.forEach(function(obj){ offsets.push(pdf.length); pdf += obj + '\n'; });
+  const xref = pdf.length;
+  pdf += 'xref\n0 ' + (objects.length + 1) + '\n0000000000 65535 f \n';
+  for(let i=1; i<offsets.length; i++){ pdf += String(offsets[i]).padStart(10,'0') + ' 00000 n \n'; }
+  pdf += 'trailer << /Size ' + (objects.length + 1) + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF';
+  const blob = new Blob([pdf], {type:'application/pdf'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'dodgy-funfair-probability-report-' + (state.initials || 'student') + '.pdf';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+function emailSubject(){ return encodeURIComponent('Base 6 · Dodgy Funfair Probability Report — ' + (state.initials || 'Student')); }
+function emailBody(){ return encodeURIComponent(reportTextLines().join('\n')); }
+function sendGmail(){
+  if(!state.finalReport){ showMessage('reportMsg','Create the report first.'); return; }
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + emailSubject() + '&body=' + emailBody(), '_blank');
+}
+function sendMailto(){
+  if(!state.finalReport){ showMessage('reportMsg','Create the report first.'); return; }
+  window.location.href = 'mailto:' + TEACHER_EMAIL + '?subject=' + emailSubject() + '&body=' + emailBody();
+}
+
+initInitials();
+renderMap();
+</script>
+</body>
+</html>
