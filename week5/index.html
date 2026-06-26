@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Week 5 · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  /* ── CURVED BANNER ── */
+  .site-header { position: relative; background-color: #007291; padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(239,119,36,0.18); border-radius: 50%; }
+  .site-header .header-inner { position: relative; z-index: 2; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .week-label { font-size: 0.85rem; font-weight: 700; color: #d7eef4; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2.5rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
+  .site-header .header-sub { font-size: 1.1rem; color: #d7eef4; margin-top: 0.5rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+
+  .main { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* ── WORD OF THE WEEK / CULTURAL RIBBONS ── */
+  .ribbon { display: block; border-radius: 14px; padding: 0.85rem 1.4rem; text-align: center; text-decoration: none; font-size: 0.98rem; font-weight: 700; margin-bottom: 1rem; transition: transform 0.12s ease, box-shadow 0.12s ease; }
+  .ribbon:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+  .ribbon.wotw { background: #ef7724; color: #fef8f4; }
+  .ribbon.cultural { background: #005a72; color: #fef8f4; }
+
+  /* ── INTRO CARD ── */
+  .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin: 1.25rem 0 2.25rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
+  .intro h2 { font-size: 1.3rem; color: #c05a10; margin-bottom: 0.5rem; }
+  .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
+
+  /* ── DAY BY DAY TILES ── */
+  .b6-day-section { margin-bottom: 2.5rem; }
+  .b6-day-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 1rem; }
+  .b6-day-tile {
+    position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.2rem;
+    text-decoration: none; color: inherit;
+    background: #ffffff; border: 2px solid var(--tile); border-radius: 16px;
+    padding: 1.4rem 0.9rem 1.1rem; overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .b6-day-tile::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--tile); }
+  .b6-day-tile:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 10px 26px var(--tile-shadow); }
+  .b6-day-badge { width: 52px; height: 52px; border-radius: 50%; background: var(--tile-soft); border: 2px solid var(--tile); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; line-height: 1; margin-bottom: 0.35rem; }
+  .b6-tile-day { font-size: 1.15rem; font-weight: 700; color: var(--tile); }
+  .b6-tile-date { font-size: 0.82rem; color: #555; }
+  .b6-tile-tag { font-size: 0.8rem; font-weight: 700; color: var(--tile); }
+  .b6-tile-today { display: none; margin-top: 0.5rem; background: var(--tile); color: #ffffff; font-weight: 700; border-radius: 8px; padding: 1px 12px; font-size: 0.78rem; }
+  .b6-day-tile.is-today { border-width: 4px; }
+  .b6-day-tile.is-today .b6-tile-today { display: inline-block; }
+  .b6-tile-dots { display: flex; gap: 4px; margin-top: 0.45rem; justify-content: center; min-height: 7px; }
+  .b6-dot { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--tile); background: transparent; }
+  .b6-dot.filled { background: var(--tile); }
+  .b6-day-note { font-size: 0.85rem; color: #555; line-height: 1.55; margin-top: 1rem; }
+
+  /* ── SUBJECT TILES (home-learning look) ── */
+  .tiles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem; margin-bottom: 2.5rem; }
+  .tile { position: relative; background: #ffffff; border: 2px solid var(--c); border-radius: 16px; padding: 1.5rem 1.5rem 1.25rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.45rem; transition: transform 0.18s ease, box-shadow 0.18s ease; overflow: hidden; }
+  .tile::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--c); }
+  .tile:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 10px 26px var(--shadow); }
+  .tile-badge { width: 56px; height: 56px; border-radius: 50%; background: var(--bg); border: 2px solid var(--c); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; line-height: 1; margin-bottom: 0.4rem; }
+  .tile-subject { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c); }
+  .tile-title { font-size: 1.25rem; font-weight: 700; color: var(--c); line-height: 1.3; }
+  .tile-desc { font-size: 0.92rem; color: #444; line-height: 1.55; flex-grow: 1; }
+  .tile-go { margin-top: 0.7rem; font-size: 0.85rem; font-weight: 700; color: var(--c); display: inline-flex; align-items: center; gap: 0.3rem; }
+  .tile-go .arrow { transition: transform 0.18s ease; }
+  .tile:hover .tile-go .arrow { transform: translateX(4px); }
+
+  /* ── STAMP CARD ── */
+  .stamp-card-section { margin-bottom: 2.5rem; }
+  .stamp-card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 1.25rem 1.5rem; }
+  .stamp-card-title { font-size: 0.9rem; font-weight: 700; color: #1a1a1a; margin-bottom: 0.25rem; }
+  .stamp-card-sub { font-size: 0.82rem; color: #888; margin-bottom: 1rem; }
+  .stamp-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .stamp-slot { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+  .stamp-slot .slot-circle { width: 52px; height: 52px; border-radius: 50%; border: 2px dashed #e0d8d0; background: #fef8f4; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; transition: border-color 0.2s, background 0.2s; }
+  .stamp-slot .slot-circle.filled { border-color: #ef7724; border-style: solid; background: #fff3e8; }
+  .stamp-slot .slot-label { font-size: 0.65rem; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.06em; }
+  .stamp-slot .slot-label.filled { color: #ef7724; }
+
+  /* ── WEEKLY CHALLENGE ── */
+  .challenge-section { margin-bottom: 2.5rem; }
+  .challenge-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ef7724; margin-bottom: 1.25rem; }
+  .challenge-card { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 16px; padding: 1.5rem; }
+  .challenge-top { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem; }
+  .challenge-icon { width: 44px; height: 44px; border-radius: 50%; background: #fff3e8; border: 1.5px solid #fcd8bc; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+  .challenge-meta { flex: 1; }
+  .challenge-optional { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #c05a10; margin-bottom: 0.3rem; }
+  .challenge-question { font-size: 1.05rem; font-weight: 700; color: #1a1a1a; line-height: 1.4; margin-bottom: 0.5rem; }
+  .challenge-desc { font-size: 0.88rem; color: #555; line-height: 1.6; margin-bottom: 0.75rem; }
+  .challenge-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .challenge-tag { font-size: 0.72rem; padding: 2px 8px; border-radius: 20px; border: 1px solid #e0d8d0; color: #888; background: #fff; }
+  .challenge-form { border-top: 1px solid #fcd8bc; padding-top: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+  .challenge-form label { font-size: 0.82rem; font-weight: 700; color: #555; }
+  .challenge-form input[type=text] { width: 100%; padding: 0.65rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #ffffff; color: #1a1a1a; outline: none; }
+  .challenge-form input:focus { border-color: #ef7724; }
+  .challenge-form textarea { width: 100%; min-height: 80px; padding: 0.65rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #ffffff; color: #1a1a1a; outline: none; resize: vertical; line-height: 1.5; }
+  .challenge-form textarea:focus { border-color: #ef7724; }
+  .challenge-submit { align-self: flex-end; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; background: #ef7724; color: #ffffff; border: none; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+  .challenge-submit:hover { background: #c05a10; }
+  .challenge-submit:disabled { background: #ccc; cursor: default; }
+  .challenge-done { border-top: 1px solid #fcd8bc; padding-top: 1.25rem; display: none; flex-direction: column; align-items: center; gap: 0.75rem; text-align: center; }
+  .challenge-done.show { display: flex; }
+  .stamp-circle { width: 80px; height: 80px; border-radius: 50%; border: 3px dashed #ef7724; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .stamp-circle .stamp-emoji { font-size: 1.8rem; }
+  .stamp-circle .stamp-wk { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #ef7724; }
+  .stamp-done-title { font-size: 1rem; font-weight: 700; color: #1a1a1a; }
+  .stamp-done-sub { font-size: 0.85rem; color: #555; }
+  .stamp-response-preview { font-size: 0.85rem; color: #555; background: #fff3e8; border-radius: 8px; padding: 0.5rem 0.75rem; max-width: 480px; line-height: 1.5; }
+  .notify-bar { display: none; padding: 0.65rem 1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; margin-top: 0.5rem; }
+  .notify-bar.show { display: block; }
+
+  .cheer { text-align: center; margin-top: 2rem; font-size: 1.05rem; font-weight: 700; color: #007291; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .ribbon:focus-visible, .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+  .teacher-link { color: #d8d0c8; font-size: 0.72rem; text-decoration: none; margin-left: 1rem; }
+  .teacher-link:hover { color: #888; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile, .b6-day-tile, .ribbon, .tile-go .arrow { transition: none; }
+    .tile:hover, .b6-day-tile:hover { transform: none; }
+  }
+
+  /* ===== BASE 6 AVATAR + COSMETICS (b6a-) ===== */
+  .b6a-badge { position: relative; width: var(--b6a-size,64px); height: var(--b6a-size,64px); border-radius: 50%; background: var(--b6a-bg,#ffe9d6); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .b6a-creature { font-size: calc(var(--b6a-size,64px) * 0.6); line-height: 1; }
+  .b6a-acc { position: absolute; line-height: 1; pointer-events: none; }
+  .b6a-head { top: -10%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.5); }
+  .b6a-eyes { top: 28%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.42); }
+  .b6a-neck { bottom: 0%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.4); }
+  .b6a-friend { bottom: -8%; right: -12%; font-size: calc(var(--b6a-size,64px) * 0.42); }
+  .b6a-hand { bottom: -6%; left: -12%; font-size: calc(var(--b6a-size,64px) * 0.42); }
+
+  .b6a-hero-badge { display: none; margin: 0.6rem auto 0; }
+
+  .b6a-pick-overlay, .b6a-cust-overlay { position: fixed; inset: 0; background: rgba(0,114,145,0.22); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 1000; }
+  .b6a-pick-card, .b6a-cust-card { position: relative; background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 18px; padding: 1.7rem 1.5rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.18); max-height: 88vh; overflow-y: auto; }
+  .b6a-eyebrow { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #ef7724; margin-bottom: 0.4rem; }
+  .b6a-pick-title { font-size: 1.35rem; font-weight: 700; color: #1a1a1a; line-height: 1.3; margin-bottom: 0.4rem; }
+  .b6a-pick-sub { font-size: 0.9rem; color: #555; line-height: 1.5; margin-bottom: 1.2rem; }
+  .b6a-pick-btns { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 1rem; }
+  .b6a-pick-btn { font-family: inherit; font-size: 1.3rem; font-weight: 700; color: #007291; background: #fff; border: 2px solid #007291; border-radius: 12px; padding: 0.8rem 0; cursor: pointer; flex: 1 1 calc(33% - 0.6rem); min-width: 84px; transition: background 0.15s, color 0.15s; }
+  .b6a-pick-btn:hover { background: #007291; color: #fff; }
+  .b6a-skip { font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; text-decoration: underline; }
+  .b6a-skip:hover { color: #555; }
+
+  .b6a-creature-grid, .b6a-creature-row { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .b6a-creature-opt { font-size: 1.7rem; line-height: 1; background: #fff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 0.4rem 0.5rem; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+  .b6a-creature-opt:hover { border-color: #007291; transform: translateY(-2px); }
+  .b6a-creature-opt.sel { border-color: #ef7724; background: #fff3e8; }
+
+  .b6a-close { position: absolute; top: 0.6rem; right: 0.8rem; font-size: 1.4rem; line-height: 1; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; }
+  .b6a-close:hover { color: #1a1a1a; }
+  .b6a-preview { display: flex; justify-content: center; margin-bottom: 0.6rem; }
+  .b6a-cust-initials { font-size: 1.1rem; font-weight: 700; color: #007291; margin-bottom: 0.3rem; }
+  .b6a-switch { font-family: inherit; font-size: 0.8rem; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; text-decoration: underline; margin-bottom: 1rem; }
+  .b6a-switch:hover { color: #555; }
+  .b6a-cust-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #007291; margin: 1rem 0 0.5rem; text-align: left; }
+  .b6a-slot { text-align: left; }
+  .b6a-opt-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .b6a-opt { font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #555; background: #fff; border: 2px solid #e0d8d0; border-radius: 10px; padding: 0.4rem 0.7rem; cursor: pointer; transition: border-color 0.15s; }
+  .b6a-opt:hover { border-color: #007291; }
+  .b6a-opt.sel { border-color: #ef7724; background: #fff3e8; color: #1a1a1a; }
+  .b6a-empty { font-size: 0.88rem; color: #555; line-height: 1.5; margin-top: 1rem; }
+
+  .b6a-chip { position: fixed; bottom: 1rem; right: 1rem; z-index: 900; display: inline-flex; align-items: center; gap: 0.45rem; font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #007291; background: #fff; border: 1.5px solid #007291; border-radius: 999px; padding: 0.3rem 0.8rem 0.3rem 0.35rem; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+  .b6a-chip:hover { background: #f0fafc; }
+
+  .b6a-toast { position: fixed; left: 50%; bottom: 1.2rem; transform: translateX(-50%); z-index: 1100; background: #007291; color: #fef8f4; font-family: inherit; font-size: 0.9rem; font-weight: 700; padding: 0.7rem 1.1rem; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.22); max-width: 90vw; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- ===== BASE 6 AVATAR + COSMETICS (self-contained, b6a-) ===== -->
+<div class="b6a-pick-overlay" id="b6a-pick" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="b6a-pick-title">
+  <div class="b6a-pick-card">
+    <p class="b6a-eyebrow">Base 6</p>
+    <div id="b6a-step1">
+      <h2 class="b6a-pick-title" id="b6a-pick-title">Who is working here today?</h2>
+      <p class="b6a-pick-sub">Tap your initials. This device will remember you.</p>
+      <div class="b6a-pick-btns" id="b6a-initials-row"></div>
+      <button class="b6a-skip" id="b6a-skip">Not now</button>
+    </div>
+    <div id="b6a-step2" style="display:none;">
+      <h2 class="b6a-pick-title">Choose your avatar</h2>
+      <p class="b6a-pick-sub">Pick a creature. You can change it any time.</p>
+      <div class="b6a-creature-grid" id="b6a-creature-grid"></div>
+    </div>
+  </div>
+</div>
+
+<div class="b6a-cust-overlay" id="b6a-cust" style="display:none;" role="dialog" aria-modal="true">
+  <div class="b6a-cust-card">
+    <button class="b6a-close" id="b6a-cust-close" aria-label="Close">&times;</button>
+    <p class="b6a-eyebrow">Your avatar</p>
+    <div class="b6a-preview"><span class="b6a-badge" id="b6a-cust-badge" style="--b6a-size:96px;"></span></div>
+    <p class="b6a-cust-initials" id="b6a-cust-initials">&nbsp;</p>
+    <button class="b6a-switch" id="b6a-switch">Switch student</button>
+    <div class="b6a-creature-row" id="b6a-creature-row"></div>
+    <div id="b6a-slots"></div>
+    <p class="b6a-empty" id="b6a-empty" style="display:none;">Do an activity this week to unlock things to wear.</p>
+  </div>
+</div>
+
+<button class="b6a-chip" id="b6a-chip" style="display:none;" aria-label="Your avatar">
+  <span class="b6a-badge" id="b6a-chip-badge" style="--b6a-size:30px;"></span>
+  <span id="b6a-chip-text">&nbsp;</span>
+</button>
+
+<div class="b6a-toast" id="b6a-toast" role="status" aria-live="polite" style="display:none;"></div>
+
+
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Home</a>
+  <div class="header-inner">
+    <p class="week-label">Week 5</p>
+    <!-- EDIT (draft, change to your actual theme): -->
+    <h1>Plan, Make and Explore</h1>
+    <p class="header-sub">Choose a day or a subject below to see this week's activities.</p>
+    <span class="b6a-badge b6a-hero-badge" id="b6a-hero-badge" style="--b6a-size:54px;"></span>
+    <p class="hero-greeting" id="hero-greeting" style="display:none; color:#fef8f4; font-weight:700; margin-top:0.6rem;">&nbsp;</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <!-- EDIT: set this week's explorer page filename if it differs -->
+  <a class="ribbon wotw" href="strategise-explorer.html">Word of the Week: Strategise &rarr;</a>
+
+  <!-- EDIT: Cultural Calendar. Set the theme + page filename, then uncomment.
+  <a class="ribbon cultural" href="CULTURAL-PAGE.html">Cultural Calendar: THEME &rarr;</a>
+  -->
+
+  <!-- EDIT (draft): warm welcome to the week -->
+  <div class="intro">
+    <h2>Welcome to Week 5</h2>
+    <p>There is a trip to look forward to, plus cooking, digital art, a bit of building, and some science. Pick a day or a subject below whenever you are ready. There is no rush, and you can come back to anything later. Jay loves seeing what you make.</p>
+  </div>
+
+  <!-- ── DAY BY DAY ──
+       data-total = number of activity cards on each day page. These are estimates from the
+       timetable. Adjust each one when you build day1 to day5. -->
+  <div class="b6-day-section">
+    <p class="section-label">This week, day by day</p>
+    <div class="b6-day-grid">
+      <a class="b6-day-tile" href="day1.html" data-date="2026-06-29" style="--tile:#007291; --tile-soft:#e3f1f5; --tile-shadow:rgba(0,114,145,0.22);">
+        <span class="b6-day-badge" aria-hidden="true">&#128652;</span>
+        <span class="b6-tile-day">Monday</span>
+        <span class="b6-tile-date">Mon 29 June</span>
+        <span class="b6-tile-tag">Trip</span>
+        <span class="b6-tile-dots" data-day="1" data-total="4" aria-hidden="true"></span>
+        <span class="b6-tile-today">Today</span>
+      </a>
+      <a class="b6-day-tile" href="day2.html" data-date="2026-06-30" style="--tile:#ef7724; --tile-soft:#fdeadd; --tile-shadow:rgba(239,119,36,0.24);">
+        <span class="b6-day-badge" aria-hidden="true">&#127912;</span>
+        <span class="b6-tile-day">Tuesday</span>
+        <span class="b6-tile-date">Tue 30 June</span>
+        <span class="b6-tile-tag">Digital Art</span>
+        <span class="b6-tile-dots" data-day="2" data-total="4" aria-hidden="true"></span>
+        <span class="b6-tile-today">Today</span>
+      </a>
+      <a class="b6-day-tile" href="day3.html" data-date="2026-07-01" style="--tile:#2e8b57; --tile-soft:#e6f3e6; --tile-shadow:rgba(46,139,87,0.22);">
+        <span class="b6-day-badge" aria-hidden="true">&#129521;</span>
+        <span class="b6-tile-day">Wednesday</span>
+        <span class="b6-tile-date">Wed 1 July</span>
+        <span class="b6-tile-tag">Construction</span>
+        <span class="b6-tile-dots" data-day="3" data-total="5" aria-hidden="true"></span>
+        <span class="b6-tile-today">Today</span>
+      </a>
+      <a class="b6-day-tile" href="day4.html" data-date="2026-07-02" style="--tile:#7b5ea7; --tile-soft:#efe9f6; --tile-shadow:rgba(123,94,167,0.22);">
+        <span class="b6-day-badge" aria-hidden="true">&#129517;</span>
+        <span class="b6-tile-day">Thursday</span>
+        <span class="b6-tile-date">Thu 2 July</span>
+        <span class="b6-tile-tag">Physical World</span>
+        <span class="b6-tile-dots" data-day="4" data-total="4" aria-hidden="true"></span>
+        <span class="b6-tile-today">Today</span>
+      </a>
+      <a class="b6-day-tile" href="day5.html" data-date="2026-07-03" style="--tile:#c2185b; --tile-soft:#fbe4ed; --tile-shadow:rgba(194,24,91,0.22);">
+        <span class="b6-day-badge" aria-hidden="true">&#128300;</span>
+        <span class="b6-tile-day">Friday</span>
+        <span class="b6-tile-date">Fri 3 July</span>
+        <span class="b6-tile-tag">Science</span>
+        <span class="b6-tile-dots" data-day="5" data-total="4" aria-hidden="true"></span>
+        <span class="b6-tile-today">Today</span>
+      </a>
+    </div>
+    <p class="b6-day-note">If choosing feels like a lot, you could start with today's tile. It lights up on the day.</p>
+  </div>
+
+  <script>
+  (function () {
+    var now = new Date();
+    var today = now.getFullYear() + '-' +
+      String(now.getMonth() + 1).padStart(2, '0') + '-' +
+      String(now.getDate()).padStart(2, '0');
+    document.querySelectorAll('.b6-day-tile').forEach(function (tile) {
+      if (tile.getAttribute('data-date') === today) { tile.classList.add('is-today'); }
+    });
+    document.querySelectorAll('.b6-tile-dots').forEach(function (el) {
+      var day = el.getAttribute('data-day');
+      var total = parseInt(el.getAttribute('data-total'), 10);
+      var done = [];
+      try { done = JSON.parse(localStorage.getItem('base6Done-week5-day' + day) || '[]'); } catch (e) { done = []; }
+      if (done.length === 0) { return; }
+      var dots = '';
+      for (var i = 0; i < total; i++) {
+        dots += '<span class="b6-dot' + (i < done.length ? ' filled' : '') + '"></span>';
+      }
+      el.innerHTML = dots;
+    });
+  })();
+  </script>
+
+  <!-- ── SUBJECTS ──
+       Descriptions are drafts from the timetable. History (Human and Social) is not on this
+       week's timetable, the same as Week 4. -->
+  <p class="section-label">This week's subjects</p>
+  <div class="tiles-grid">
+
+    <a class="tile" style="--c:#ef7724; --bg:#fdeee0; --shadow:rgba(239,119,36,0.24);" href="english/index.html">
+      <span class="tile-badge">&#128221;</span>
+      <span class="tile-subject">English</span>
+      <span class="tile-title">English</span>
+      <span class="tile-desc">Writing for a real purpose, using Standard English. Tuesday and Thursday this week.</span>
+      <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#007291; --bg:#e6f5f8; --shadow:rgba(0,114,145,0.22);" href="maths/index.html">
+      <span class="tile-badge">&#128290;</span>
+      <span class="tile-subject">Maths</span>
+      <span class="tile-title">Maths</span>
+      <span class="tile-desc">Number, measure and a bit of problem solving. Monday, Wednesday and Friday.</span>
+      <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#4a6fa5; --bg:#e8eef7; --shadow:rgba(74,111,165,0.22);" href="digital-media/index.html">
+      <span class="tile-badge">&#128187;</span>
+      <span class="tile-subject">Digital Media</span>
+      <span class="tile-title">Digital Art</span>
+      <span class="tile-desc">Making images and designs on screen. Tuesday this week.</span>
+      <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#2e8b57; --bg:#e6f3ec; --shadow:rgba(46,139,87,0.22);" href="science/index.html">
+      <span class="tile-badge">&#129514;</span>
+      <span class="tile-subject">Science and Environmental</span>
+      <span class="tile-title">Science</span>
+      <span class="tile-desc">Scientific and environmental thinking, with a hands-on enquiry. Friday this week.</span>
+      <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#6b8e23; --bg:#eef2e0; --shadow:rgba(107,142,35,0.22);" href="physical-world/index.html">
+      <span class="tile-badge">&#129517;</span>
+      <span class="tile-subject">Physical World &amp; Exploration</span>
+      <span class="tile-title">Physical World</span>
+      <span class="tile-desc">Getting out and exploring, including Monday's trip and a Thursday session.</span>
+      <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#0e8a9e; --bg:#e2f3f6; --shadow:rgba(14,138,158,0.22);" href="adulthood/index.html">
+      <span class="tile-badge">&#127859;</span>
+      <span class="tile-subject">Preparation for Adulthood</span>
+      <span class="tile-title">Real-Life Skills</span>
+      <span class="tile-desc">Cooking on Monday, and a session on Tuesday. Useful things for everyday life.</span>
+      <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#7b5ea7; --bg:#efe9f6; --shadow:rgba(123,94,167,0.22);" href="relational/index.html">
+      <span class="tile-badge">&#128172;</span>
+      <span class="tile-subject">Relational (PSHE &amp; RSE)</span>
+      <span class="tile-title">Check-In</span>
+      <span class="tile-desc">A short morning check-in most days, with this week's PSHE theme.</span>
+      <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#c2185b; --bg:#fbe7ee; --shadow:rgba(194,24,91,0.22);" href="creative/index.html">
+      <span class="tile-badge">&#127912;</span>
+      <span class="tile-subject">Aesthetic and Creative</span>
+      <span class="tile-title">Make and Design</span>
+      <span class="tile-desc">Making and designing, with construction on Wednesday.</span>
+      <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#007291; --bg:#e6f5f8; --shadow:rgba(0,114,145,0.22);" href="project/index.html">
+      <span class="tile-badge">&#128640;</span>
+      <span class="tile-subject">Project</span>
+      <span class="tile-title">Your Project</span>
+      <span class="tile-desc">Your individual project, on most mornings this week.</span>
+      <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
+    </a>
+
+  </div>
+
+  <!-- ── ASSESSMENT ACTIVITY ──
+       EDIT: add this week's assessment file, then uncomment.
+  <p class="section-label">Assessment activity</p>
+  <div class="tiles-grid">
+    <a class="tile" style="--c:#007291; --bg:#e6f5f8; --shadow:rgba(0,114,145,0.22);" href="ASSESSMENT-FILE.html">
+      <span class="tile-badge">&#129518;</span>
+      <span class="tile-subject">Assessment</span>
+      <span class="tile-title">ASSESSMENT NAME</span>
+      <span class="tile-desc">Short description for students.</span>
+      <span class="tile-go">Open assessment <span class="arrow">&#8594;</span></span>
+    </a>
+  </div>
+  -->
+
+  <!-- ── STAMP CARD ── -->
+  <div class="stamp-card-section">
+    <p class="section-label">My stamp card</p>
+    <div class="stamp-card">
+      <div class="stamp-card-title">Base 6 &middot; Weekly Challenges</div>
+      <div class="stamp-card-sub">Complete each week's challenge to earn a stamp. Your card saves on this device.</div>
+      <div class="stamp-row" id="stamp-row"></div>
+    </div>
+  </div>
+
+  <!-- ── WEEKLY CHALLENGE ── -->
+  <div class="challenge-section">
+    <p class="challenge-label">This week's challenge</p>
+    <div class="challenge-card">
+      <div class="challenge-top">
+        <div class="challenge-icon">&#128161;</div>
+        <div class="challenge-meta">
+          <div class="challenge-optional">Optional &middot; any time this week</div>
+          <!-- EDIT (draft): this week's challenge question -->
+          <div class="challenge-question">If you had something tricky to get done this week, what would your plan be, and what would you try first?</div>
+          <!-- EDIT (draft): short supporting description -->
+          <div class="challenge-desc">When we strategise, we make a plan for how to do something well. Even a small plan can make a big job feel easier to start.</div>
+          <div class="challenge-tags">
+            <span class="challenge-tag">links to Preparation for Adulthood</span>
+            <span class="challenge-tag">links to Project</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="challenge-form" id="challenge-form">
+        <div>
+          <label for="c-name">Your initials</label>
+          <input type="text" id="c-name" placeholder="Type your initials here">
+        </div>
+        <div>
+          <label for="c-answer">Your answer, a sentence or two is fine</label>
+          <textarea id="c-answer" placeholder="Type your answer here..."></textarea>
+        </div>
+        <div class="notify-bar" id="notify-bar"></div>
+        <button class="challenge-submit" id="challenge-submit" onclick="submitChallenge()">Earn my stamp &#128161;</button>
+      </div>
+
+      <div class="challenge-done" id="challenge-done">
+        <div class="stamp-circle">
+          <span class="stamp-emoji">&#128161;</span>
+          <span class="stamp-wk">Week 5</span>
+        </div>
+        <div class="stamp-done-title">Challenge complete!</div>
+        <div class="stamp-done-sub">Your stamp has been saved to this device.</div>
+        <div class="stamp-response-preview" id="done-preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="cheer">Keep going at your own pace, and remember Jay loves seeing what you make.</p>
+
+</main>
+
+<footer>
+  <span id="reset-target" onclick="handleResetClick()" style="cursor:default;">Base 6 &middot; Chilton Bridge School</span>
+  <a class="teacher-link" href="teacher.html">&middot;</a>
+</footer>
+
+<script>
+const THIS_WEEK = 5;
+const TOTAL_WEEKS = 7;
+const STORE_KEY = 'base6_stamps';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+// EDIT (draft): set this week's theme name (used in the email Jay receives)
+const WEEK_THEME_NAME = 'Plan, Make and Explore';
+// EDIT (draft): this should match the visible challenge question above
+const CHALLENGE_QUESTION = 'If you had something tricky to get done this week, what would your plan be, and what would you try first?';
+
+const WEEK_THEMES = {
+  1: { emoji: '\ud83c\udf31', label: 'Wk 1' },
+  2: { emoji: '\ud83c\udfc6', label: 'Wk 2' },
+  3: { emoji: '\u2699\ufe0f', label: 'Wk 3' },
+  4: { emoji: '\ud83d\udd25', label: 'Wk 4' },
+  5: { emoji: '\ud83d\udca1', label: 'Wk 5' },
+  6: { emoji: '\ud83d\ude80', label: 'Wk 6' },
+  7: { emoji: '\ud83c\udf93', label: 'Wk 7' },
+};
+
+function loadStamps() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveStamps(stamps) {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(stamps)); } catch(e) {}
+}
+
+function renderStampRow() {
+  const stamps = loadStamps();
+  const row = document.getElementById('stamp-row');
+  row.innerHTML = '';
+  for(let w = 1; w <= TOTAL_WEEKS; w++) {
+    const theme = WEEK_THEMES[w];
+    const filled = !!stamps[w];
+    const slot = document.createElement('div');
+    slot.className = 'stamp-slot';
+    slot.innerHTML = `
+      <div class="slot-circle ${filled ? 'filled' : ''}" title="${filled ? 'Week '+w+' complete, '+stamps[w].name : 'Week '+w+', not yet done'}">
+        ${filled ? theme.emoji : ''}
+      </div>
+      <div class="slot-label ${filled ? 'filled' : ''}">${theme.label}</div>
+    `;
+    row.appendChild(slot);
+  }
+}
+
+function checkAlreadyDone() {
+  const stamps = loadStamps();
+  if(stamps[THIS_WEEK]) {
+    showDoneState(stamps[THIS_WEEK].answer, stamps[THIS_WEEK].name);
+  }
+}
+
+function showDoneState(answer, name) {
+  document.getElementById('challenge-form').style.display = 'none';
+  const done = document.getElementById('challenge-done');
+  done.classList.add('show');
+  document.getElementById('done-preview').textContent = '"' + answer + '"';
+}
+
+function submitChallenge() {
+  const name = document.getElementById('c-name').value.trim();
+  const answer = document.getElementById('c-answer').value.trim();
+  const notify = document.getElementById('notify-bar');
+
+  if(!name) {
+    notify.textContent = 'Please type your initials first.';
+    notify.className = 'notify-bar show';
+    notify.style.background = '#fff3e6';
+    notify.style.border = '1.5px solid #e8a020';
+    notify.style.color = '#7a4a00';
+    document.getElementById('c-name').focus();
+    return;
+  }
+  if(!answer) {
+    notify.textContent = 'Add your answer before earning the stamp.';
+    notify.className = 'notify-bar show';
+    notify.style.background = '#fff3e6';
+    notify.style.border = '1.5px solid #e8a020';
+    notify.style.color = '#7a4a00';
+    document.getElementById('c-answer').focus();
+    return;
+  }
+
+  const stamps = loadStamps();
+  stamps[THIS_WEEK] = {
+    name,
+    answer,
+    date: new Date().toLocaleDateString('en-GB'),
+    week: THIS_WEEK
+  };
+  saveStamps(stamps);
+
+  try { localStorage.setItem('base6Profile', JSON.stringify({ initials: name })); } catch(e) {}
+
+  renderStampRow();
+  showDoneState(answer, name);
+
+  const subject = encodeURIComponent('Base 6 · Week ' + THIS_WEEK + ' Challenge — ' + name);
+  const body = encodeURIComponent(
+    'BASE 6 · WEEKLY CHALLENGE RESPONSE\n\n' +
+    'Student: ' + name + '\n' +
+    'Week: ' + THIS_WEEK + ' — ' + WEEK_THEME_NAME + '\n' +
+    'Date: ' + new Date().toLocaleDateString('en-GB') + '\n\n' +
+    'Challenge: ' + CHALLENGE_QUESTION + '\n\n' +
+    'Response:\n' + answer + '\n\n' +
+    '—\nSent automatically from Base 6'
+  );
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + subject + '&body=' + body, '_blank');
+}
+
+renderStampRow();
+checkAlreadyDone();
+
+try {
+  const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+  if (profile && profile.initials) {
+    document.getElementById('c-name').value = profile.initials;
+  }
+} catch(e) {}
+
+let resetClicks = 0, resetTimer = null;
+function handleResetClick() {
+  resetClicks++;
+  clearTimeout(resetTimer);
+  resetTimer = setTimeout(() => { resetClicks = 0; }, 600);
+  if (resetClicks >= 3) {
+    resetClicks = 0;
+    if (confirm('Reset your stamp card? This will clear all saved stamps on this device.')) {
+      localStorage.removeItem(STORE_KEY);
+      document.getElementById('challenge-form').style.display = 'flex';
+      document.getElementById('challenge-done').classList.remove('show');
+      renderStampRow();
+    }
+  }
+}
+</script>
+
+<script>
+(function () {
+  var STUDENTS = ['LW','AP','LS','LC','HK','JTK'];
+  var CREATURES = ['\ud83e\udd85','\ud83d\udc09','\ud83e\udd96','\ud83d\udc3a','\ud83e\udd84','\ud83e\udd8c','\ud83e\udda3','\ud83d\udc05','\ud83e\udd8e','\ud83e\udd8f'];
+  /* Week 5 cosmetics: cooking, digital art, construction, science and the outdoors.
+     Items unlock in order as activities are completed across the week. */
+  var ITEMS = [
+    { id:'goggles',    slot:'eyes',   emoji:'\ud83e\udd7d',       label:'Safety Goggles' },
+    { id:'cap',        slot:'head',   emoji:'\ud83e\udde2',       label:'Cap' },
+    { id:'palette',    slot:'hand',   emoji:'\ud83c\udfa8',       label:'Paint Palette' },
+    { id:'scarf',      slot:'neck',   emoji:'\ud83e\udde3',       label:'Scarf' },
+    { id:'sunrise',    slot:'bg',     color:'#ffe8cc',             label:'Morning Sky' },
+    { id:'bird',       slot:'friend', emoji:'\ud83d\udc26',       label:'Little Bird' },
+    { id:'shades',     slot:'eyes',   emoji:'\ud83d\udd76\ufe0f', label:'Shades' },
+    { id:'paintbrush', slot:'hand',   emoji:'\ud83d\udd8c\ufe0f', label:'Paintbrush' },
+    { id:'helmet',     slot:'head',   emoji:'\u26d1\ufe0f',       label:'Site Helmet' },
+    { id:'hivis',      slot:'neck',   emoji:'\ud83e\uddba',       label:'Hi-Vis' },
+    { id:'butterfly',  slot:'friend', emoji:'\ud83e\udd8b',       label:'Butterfly' },
+    { id:'mintlab',    slot:'bg',     color:'#e3f1ec',             label:'Mint Lab' },
+    { id:'microscope', slot:'hand',   emoji:'\ud83d\udd2c',       label:'Microscope' },
+    { id:'tophat',     slot:'head',   emoji:'\ud83c\udfa9',       label:'Top Hat' },
+    { id:'medal',      slot:'neck',   emoji:'\ud83c\udfc5',       label:'Medal' },
+    { id:'spanner',    slot:'hand',   emoji:'\ud83d\udd27',       label:'Spanner' },
+    { id:'crown',      slot:'head',   emoji:'\ud83d\udc51',       label:'Week Crown' },
+    /* ---- Bonus items: can also be granted by id from an activity page via wardrobe.unlocked ---- */
+    { id:'telescope',  slot:'hand',   emoji:'\ud83d\udd2d',       label:'Telescope' },
+    { id:'bee',        slot:'friend', emoji:'\ud83d\udc1d',       label:'Busy Bee' },
+    { id:'lavender',   slot:'bg',     color:'#e6e3f5',             label:'Stargazer' }
+  ];
+  var SLOT_ORDER = ['head','eyes','neck','hand','friend','bg'];
+  var SLOT_LABELS = { head:'Head', eyes:'Eyes', neck:'Neck', hand:'Holding', friend:'Friend', bg:'Background' };
+  var WEEK_KEY = 'base6Avatar-week5';
+  var pendingInitials = null;
+
+  function getProfile(){ try { return JSON.parse(localStorage.getItem('base6Profile') || 'null'); } catch(e){ return null; } }
+  function setProfile(p){ try { localStorage.setItem('base6Profile', JSON.stringify(p)); } catch(e){} }
+  function getWardrobe(){ try { return JSON.parse(localStorage.getItem(WEEK_KEY) || 'null') || { worn:{}, seen:[] }; } catch(e){ return { worn:{}, seen:[] }; } }
+  function setWardrobe(w){ try { localStorage.setItem(WEEK_KEY, JSON.stringify(w)); } catch(e){} }
+  function itemById(id){ for (var i=0;i<ITEMS.length;i++){ if (ITEMS[i].id===id) return ITEMS[i]; } return null; }
+
+  function totalDone(){
+    var t = 0;
+    for (var d=1; d<=5; d++){
+      try { var a = JSON.parse(localStorage.getItem('base6Done-week5-day'+d) || '[]'); if (a && a.length) t += a.length; } catch(e){}
+    }
+    return t;
+  }
+  function unlockedItems(){
+    var n = totalDone();
+    var w = getWardrobe(); var ex = Array.isArray(w.unlocked) ? w.unlocked : [];
+    return ITEMS.filter(function(it,i){ return (i+1) <= n || ex.indexOf(it.id) !== -1; });
+  }
+
+  function renderBadge(el, size){
+    var p = getProfile(); if (!p || !el) return;
+    var w = getWardrobe(); var worn = w.worn || {};
+    el.style.setProperty('--b6a-size', size + 'px');
+    var bg = '#ffe9d6';
+    if (worn.bg){ var b = itemById(worn.bg); if (b && b.color) bg = b.color; }
+    el.style.setProperty('--b6a-bg', bg);
+    var html = '<span class="b6a-creature" aria-hidden="true">' + (p.creature || CREATURES[0]) + '</span>';
+    ['head','eyes','neck','friend','hand'].forEach(function(slot){
+      var id = worn[slot]; if (!id) return; var it = itemById(id); if (!it || !it.emoji) return;
+      html += '<span class="b6a-acc b6a-' + slot + '" aria-hidden="true">' + it.emoji + '</span>';
+    });
+    el.innerHTML = html;
+  }
+
+  function updateGreeting(p){
+    var hero = document.getElementById('hero-greeting');
+    var greet = document.getElementById('greeting');
+    var dn = (typeof DAY_NAME !== 'undefined') ? DAY_NAME : '';
+    if (p && p.initials){
+      if (hero){ hero.textContent = 'Hello ' + p.initials.toUpperCase() + '.'; hero.style.display = 'block'; }
+      else if (greet){ greet.textContent = 'Hello ' + p.initials.toUpperCase() + (dn ? '. Welcome to ' + dn + '.' : '.'); }
+      var cName = document.getElementById('c-name'); if (cName && !cName.value){ cName.value = p.initials; }
+    } else if (hero){ hero.style.display = 'none'; }
+    var hb = document.getElementById('b6a-hero-badge');
+    if (hb){ if (p){ hb.style.display = 'inline-flex'; renderBadge(hb, 54); } else { hb.style.display = 'none'; } }
+  }
+
+  function refreshAll(){
+    var p = getProfile();
+    updateGreeting(p);
+    var chip = document.getElementById('b6a-chip');
+    if (p){
+      chip.style.display = 'inline-flex';
+      renderBadge(document.getElementById('b6a-chip-badge'), 30);
+      document.getElementById('b6a-chip-text').textContent = p.initials.toUpperCase();
+    } else { chip.style.display = 'none'; }
+  }
+
+  var toastTimer = null;
+  function showToast(msg){
+    var t = document.getElementById('b6a-toast');
+    t.textContent = msg; t.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.style.display = 'none'; }, 5500);
+  }
+  document.getElementById('b6a-toast').addEventListener('click', function(){ this.style.display = 'none'; });
+
+  function checkUnlocks(){
+    var p = getProfile(); if (!p) return;
+    var w = getWardrobe(); var unlocked = unlockedItems(); var seen = w.seen || [];
+    var fresh = unlocked.filter(function(it){ return seen.indexOf(it.id) === -1; });
+    if (fresh.length > 0){
+      w.seen = unlocked.map(function(it){ return it.id; }); setWardrobe(w);
+      showToast(fresh.length === 1
+        ? 'You found ' + fresh[0].label + '. Tap your avatar to add it.'
+        : 'You found ' + fresh.length + ' new things. Tap your avatar to add them.');
+    }
+  }
+
+  var pickOverlay = document.getElementById('b6a-pick');
+  function openPicker(step){ buildPickerOnce(); showStep(step || 1); pickOverlay.style.display = 'flex'; }
+  function closePicker(){ pickOverlay.style.display = 'none'; }
+  function showStep(n){
+    document.getElementById('b6a-step1').style.display = (n === 1) ? 'block' : 'none';
+    document.getElementById('b6a-step2').style.display = (n === 2) ? 'block' : 'none';
+  }
+  var pickerBuilt = false;
+  function buildPickerOnce(){
+    if (pickerBuilt) return; pickerBuilt = true;
+    var ir = document.getElementById('b6a-initials-row');
+    STUDENTS.forEach(function(s){
+      var b = document.createElement('button'); b.className = 'b6a-pick-btn'; b.textContent = s;
+      b.addEventListener('click', function(){ pendingInitials = s; showStep(2); });
+      ir.appendChild(b);
+    });
+    var cg = document.getElementById('b6a-creature-grid');
+    CREATURES.forEach(function(c){
+      var b = document.createElement('button'); b.className = 'b6a-creature-opt'; b.textContent = c;
+      b.addEventListener('click', function(){ commitNew(pendingInitials, c); });
+      cg.appendChild(b);
+    });
+  }
+  function commitNew(initials, creature){
+    setProfile({ initials: initials.toLowerCase(), creature: creature });
+    var w = getWardrobe(); w.seen = unlockedItems().map(function(it){ return it.id; }); setWardrobe(w);
+    closePicker(); refreshAll();
+  }
+  document.getElementById('b6a-skip').addEventListener('click', function(){
+    try { localStorage.setItem('base6ProfileAsked', '1'); } catch(e){}
+    closePicker();
+  });
+
+  var custOverlay = document.getElementById('b6a-cust');
+  function openCust(){ buildCust(); custOverlay.style.display = 'flex'; }
+  function closeCust(){ custOverlay.style.display = 'none'; }
+  document.getElementById('b6a-cust-close').addEventListener('click', closeCust);
+  document.getElementById('b6a-switch').addEventListener('click', function(){ closeCust(); openPicker(1); });
+
+  function buildCust(){
+    var p = getProfile(); if (!p) return;
+    var w = getWardrobe();
+    renderBadge(document.getElementById('b6a-cust-badge'), 96);
+    document.getElementById('b6a-cust-initials').textContent = p.initials.toUpperCase();
+
+    var cr = document.getElementById('b6a-creature-row'); cr.innerHTML = '';
+    CREATURES.forEach(function(c){
+      var b = document.createElement('button'); b.className = 'b6a-creature-opt' + (c === p.creature ? ' sel' : ''); b.textContent = c;
+      b.addEventListener('click', function(){ var pr = getProfile(); pr.creature = c; setProfile(pr); buildCust(); refreshAll(); });
+      cr.appendChild(b);
+    });
+
+    var unlocked = unlockedItems();
+    var slotsEl = document.getElementById('b6a-slots'); slotsEl.innerHTML = ''; var any = false;
+    SLOT_ORDER.forEach(function(slot){
+      var items = unlocked.filter(function(it){ return it.slot === slot; });
+      if (items.length === 0) return; any = true;
+      var wrap = document.createElement('div'); wrap.className = 'b6a-slot';
+      var lab = document.createElement('p'); lab.className = 'b6a-cust-label'; lab.textContent = SLOT_LABELS[slot]; wrap.appendChild(lab);
+      var row = document.createElement('div'); row.className = 'b6a-opt-row';
+      var none = document.createElement('button'); none.className = 'b6a-opt' + (!w.worn[slot] ? ' sel' : ''); none.textContent = 'None';
+      none.addEventListener('click', function(){ var ww = getWardrobe(); delete ww.worn[slot]; setWardrobe(ww); buildCust(); refreshAll(); });
+      row.appendChild(none);
+      items.forEach(function(it){
+        var b = document.createElement('button'); b.className = 'b6a-opt' + (w.worn[slot] === it.id ? ' sel' : '');
+        b.innerHTML = (it.emoji ? '<span aria-hidden="true">' + it.emoji + '</span> ' : '') + it.label;
+        b.addEventListener('click', function(){ var ww = getWardrobe(); ww.worn[slot] = it.id; setWardrobe(ww); buildCust(); refreshAll(); });
+        row.appendChild(b);
+      });
+      wrap.appendChild(row); slotsEl.appendChild(wrap);
+    });
+    document.getElementById('b6a-empty').style.display = any ? 'none' : 'block';
+  }
+
+  document.getElementById('b6a-chip').addEventListener('click', function(){ if (getProfile()) openCust(); else openPicker(1); });
+
+  var asked = (function(){ try { return localStorage.getItem('base6ProfileAsked'); } catch(e){ return null; } })();
+  if (document.getElementById('hero-greeting') && !getProfile() && !asked){ openPicker(1); }
+  refreshAll();
+  checkUnlocks();
+})();
+</script>
+
+</body>
+</html>
