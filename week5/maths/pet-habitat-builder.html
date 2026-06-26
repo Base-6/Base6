@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Pet Habitat Builder · Maths · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root{
+    --cream:#fef8f4;
+    --teal:#007291;
+    --teal-dark:#005a72;
+    --orange:#ef7724;
+    --orange-dark:#c05a10;
+    --ink:#1a1a1a;
+    --muted:#555;
+    --line:#e0d8d0;
+    --soft-orange:#fff3e8;
+    --soft-teal:#e6f5f8;
+    --green:#2e8b57;
+    --amber:#e8a020;
+    --red:#c73636;
+    --purple:#7b5ea7;
+    --shadow:0 8px 24px rgba(0,0,0,0.10);
+  }
+  body { font-family:'Atkinson Hyperlegible', sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; }
+  .site-header { position:relative; background:var(--teal); padding:2.5rem 2rem 3.25rem; text-align:center; overflow:hidden; }
+  .site-header::before { content:""; position:absolute; top:-60px; left:-40px; width:180px; height:180px; background:rgba(255,255,255,0.08); border-radius:50%; }
+  .site-header::after { content:""; position:absolute; bottom:10px; right:-50px; width:200px; height:200px; background:rgba(239,119,36,0.18); border-radius:50%; }
+  .header-inner { position:relative; z-index:2; }
+  .header-back { position:absolute; top:1rem; left:1.25rem; z-index:3; color:var(--cream); font-size:0.9rem; font-weight:700; text-decoration:none; opacity:0.9; }
+  .header-back:hover { opacity:1; text-decoration:underline; }
+  .week-label { font-size:0.85rem; font-weight:700; color:#d7eef4; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.4rem; }
+  .site-header h1 { font-size:clamp(2rem, 5vw, 2.8rem); font-weight:700; color:var(--cream); letter-spacing:0.02em; line-height:1.15; }
+  .header-sub { font-size:1.05rem; color:#d7eef4; margin:0.55rem auto 0; max-width:680px; line-height:1.5; }
+  .header-wave { position:absolute; bottom:-1px; left:0; width:100%; height:40px; z-index:1; }
+  .main { max-width:1120px; margin:0 auto; padding:1.7rem 1.2rem 4rem; }
+  .top-strip { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.8rem; background:#fff; border:2px solid var(--orange); border-radius:16px; padding:1rem 1.1rem; box-shadow:0 4px 14px rgba(239,119,36,0.10); margin-bottom:1rem; }
+  .top-strip h2 { color:var(--orange-dark); font-size:1.15rem; }
+  .initials-row { display:flex; gap:0.4rem; flex-wrap:wrap; align-items:center; }
+  .mini-label { font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--teal); margin-right:0.2rem; }
+  .initial-btn { font-family:inherit; font-weight:700; font-size:0.88rem; color:var(--teal); background:#fff; border:2px solid var(--teal); border-radius:999px; padding:0.38rem 0.7rem; cursor:pointer; }
+  .initial-btn.active { color:#fff; background:var(--teal); }
+  .progress-wrap { position:sticky; top:0; z-index:50; background:rgba(254,248,244,0.96); backdrop-filter:blur(8px); padding:0.7rem 0; margin-bottom:1rem; }
+  .progress { display:grid; grid-template-columns:repeat(5, 1fr); gap:0.45rem; }
+  .step-pill { border:2px solid var(--line); background:#fff; color:#777; border-radius:999px; padding:0.55rem 0.45rem; text-align:center; font-size:0.82rem; font-weight:700; }
+  .step-pill.done { border-color:var(--teal); background:var(--soft-teal); color:var(--teal); }
+  .step-pill.active { border-color:var(--orange); background:var(--soft-orange); color:var(--orange-dark); box-shadow:0 4px 12px rgba(239,119,36,0.16); }
+  .screen { display:none; animation:fadeIn 0.18s ease; }
+  .screen.active { display:block; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;} }
+  .card { background:#fff; border:2px solid var(--line); border-radius:18px; padding:1.25rem; box-shadow:0 4px 14px rgba(0,0,0,0.05); }
+  .card.orange { border-color:var(--orange); background:#fffaf6; }
+  .card.teal { border-color:var(--teal); background:#f8fdff; }
+  .eyebrow { font-size:0.76rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--orange); margin-bottom:0.35rem; }
+  .screen-title { font-size:1.45rem; color:var(--teal); margin-bottom:0.5rem; line-height:1.2; }
+  .lead { color:#333; line-height:1.55; font-size:1rem; max-width:820px; }
+  .animal-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:0.9rem; margin-top:1.2rem; }
+  .animal-card { position:relative; text-align:left; background:#fff; border:2px solid var(--c, var(--teal)); border-radius:16px; padding:1rem; cursor:pointer; transition:transform 0.15s ease, box-shadow 0.15s ease; min-height:220px; overflow:hidden; }
+  .animal-card::before { content:""; position:absolute; top:0; left:0; width:100%; height:6px; background:var(--c, var(--teal)); }
+  .animal-card:hover { transform:translateY(-3px) rotate(-0.2deg); box-shadow:0 10px 24px var(--shadowc, rgba(0,114,145,0.18)); }
+  .animal-card.selected { border-width:4px; box-shadow:0 0 0 4px rgba(239,119,36,0.18); }
+  .animal-card.locked { filter:grayscale(1); opacity:0.62; cursor:not-allowed; }
+  .animal-card.locked:hover { transform:none; box-shadow:none; }
+  .animal-icon { width:62px; height:62px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; background:var(--bg, var(--soft-teal)); border:2px solid var(--c, var(--teal)); margin-bottom:0.7rem; }
+  .animal-name { font-size:1.2rem; font-weight:700; color:var(--c, var(--teal)); margin-bottom:0.25rem; }
+  .animal-desc { color:#444; font-size:0.9rem; line-height:1.45; margin-bottom:0.55rem; }
+  .needs-list { display:flex; flex-wrap:wrap; gap:0.3rem; }
+  .need-chip { font-size:0.72rem; color:#555; background:#f7f1ec; border:1px solid var(--line); border-radius:999px; padding:0.2rem 0.48rem; }
+  .locked-ribbon { position:absolute; top:0.85rem; right:0.75rem; background:#555; color:#fff; border-radius:999px; padding:0.2rem 0.55rem; font-size:0.72rem; font-weight:700; }
+  .mini-teach-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:0.85rem; margin-top:1rem; }
+  .teach-tile { border:2px solid var(--line); border-radius:16px; background:#fff; padding:1rem; }
+  .teach-icon { width:50px; height:50px; border-radius:50%; background:var(--soft-orange); border:2px solid var(--orange); display:flex; align-items:center; justify-content:center; font-size:1.45rem; margin-bottom:0.6rem; }
+  .teach-tile h3 { color:var(--teal); font-size:1.1rem; margin-bottom:0.3rem; }
+  .teach-tile p { color:#444; line-height:1.5; font-size:0.93rem; }
+  .build-layout { display:grid; grid-template-columns:320px 1fr; gap:1rem; align-items:start; }
+  .side-panel { display:flex; flex-direction:column; gap:0.8rem; }
+  .size-options { display:grid; gap:0.45rem; }
+  .size-btn { font-family:inherit; text-align:left; background:#fff; border:2px solid var(--line); border-radius:12px; padding:0.75rem; cursor:pointer; }
+  .size-btn strong { color:var(--teal); display:block; font-size:0.96rem; margin-bottom:0.12rem; }
+  .size-btn span { color:#555; font-size:0.82rem; line-height:1.4; display:block; }
+  .size-btn.active { border-color:var(--orange); background:var(--soft-orange); }
+  .budget-line { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.55rem; }
+  .budget-badge { background:#fff; border:2px solid var(--line); border-radius:999px; padding:0.35rem 0.6rem; font-size:0.82rem; font-weight:700; color:#555; }
+  .needs-card { border:2px solid #d8edf2; background:#f8fdff; border-radius:14px; overflow:hidden; }
+  .needs-toggle { width:100%; font-family:inherit; background:#e6f5f8; color:var(--teal); border:0; padding:0.75rem 0.9rem; text-align:left; font-weight:700; cursor:pointer; display:flex; justify-content:space-between; gap:1rem; }
+  .needs-body { padding:0.8rem 0.9rem; color:#444; font-size:0.9rem; line-height:1.5; }
+  .needs-body.collapsed { display:none; }
+  .calc-card label, .explain-card label { display:block; font-size:0.82rem; font-weight:700; color:#555; margin:0.65rem 0 0.25rem; }
+  .calc-line { display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap; color:#333; }
+  input[type="number"], textarea { font-family:inherit; font-size:0.95rem; border:2px solid var(--line); border-radius:10px; padding:0.55rem 0.65rem; background:#fff; color:var(--ink); outline:none; }
+  input[type="number"] { width:96px; }
+  textarea { width:100%; min-height:74px; resize:vertical; line-height:1.45; }
+  input:focus, textarea:focus { border-color:var(--orange); box-shadow:0 0 0 3px rgba(239,119,36,0.14); }
+  .capacity-options { display:flex; gap:0.45rem; flex-wrap:wrap; margin-top:0.35rem; }
+  .cap-btn { font-family:inherit; font-weight:700; border:2px solid var(--teal); background:#fff; color:var(--teal); border-radius:999px; padding:0.45rem 0.7rem; cursor:pointer; }
+  .cap-btn.active { background:var(--teal); color:#fff; }
+  .meter-card { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+  .meter { background:#fff; border:2px solid var(--line); border-radius:12px; padding:0.65rem; }
+  .meter-title { font-size:0.78rem; font-weight:700; color:#555; margin-bottom:0.35rem; }
+  .meter-track { height:12px; background:#eee5de; border-radius:999px; overflow:hidden; }
+  .meter-fill { height:100%; width:0%; background:var(--teal); border-radius:999px; transition:width 0.2s ease; }
+  .meter-value { font-size:0.78rem; font-weight:700; color:#555; margin-top:0.25rem; }
+  .workspace { display:grid; gap:0.85rem; }
+  .mascot-card { display:flex; align-items:center; gap:0.8rem; background:#fffaf6; border:2px solid #fcd8bc; border-radius:16px; padding:0.8rem 1rem; }
+  .mascot { width:62px; height:62px; border-radius:50%; background:#fff3e8; border:2px solid var(--orange); display:flex; align-items:center; justify-content:center; font-size:2rem; position:relative; flex-shrink:0; }
+  .mascot::after { content:""; position:absolute; width:18px; height:8px; background:rgba(0,0,0,0.07); border-radius:50%; bottom:7px; }
+  .mascot-talk { color:#444; line-height:1.45; font-size:0.92rem; }
+  .habitat-wrap { overflow:auto; padding:0.5rem; background:#fff; border:2px solid var(--line); border-radius:18px; }
+  .habitat-grid { display:grid; gap:6px; width:max-content; min-width:100%; justify-content:center; align-content:center; padding:0.6rem; }
+  .cell { width:78px; height:78px; border:2px solid #e4d8ce; border-radius:12px; background:linear-gradient(135deg,#fffdf8,#f5eadf); display:flex; align-items:center; justify-content:center; position:relative; cursor:pointer; }
+  .cell.free:hover { border-color:var(--orange); box-shadow:inset 0 0 0 2px rgba(239,119,36,0.18); }
+  .placed { width:100%; height:100%; border-radius:10px; border:2px solid var(--itemc, var(--teal)); background:var(--itembg, #e6f5f8); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.15rem; text-align:center; padding:0.25rem; font-size:0.72rem; font-weight:700; color:#1a1a1a; cursor:grab; user-select:none; }
+  .placed .shape { width:32px; height:22px; border-radius:8px; border:2px solid currentColor; background:rgba(255,255,255,0.55); position:relative; }
+  .placed[data-kind="water"] .shape { border-radius:50%; height:26px; }
+  .placed[data-kind="food"] .shape { border-radius:50% 50% 44% 44%; height:22px; }
+  .placed[data-kind="shelter"] .shape { border-radius:8px 8px 3px 3px; height:26px; }
+  .placed[data-kind="enrich"] .shape { border-radius:50%; height:28px; width:28px; }
+  .placed[data-kind="comfort"] .shape { border-radius:12px; height:18px; width:36px; }
+  .placed[data-kind="silly"] .shape { transform:rotate(-8deg); border-style:dashed; }
+  .cell.covered { opacity:0.96; }
+  .item-tray { display:grid; gap:0.8rem; }
+  .tray-group { border:2px solid var(--line); border-radius:16px; padding:0.75rem; background:#fff; }
+  .tray-title { font-size:0.82rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--teal); margin-bottom:0.55rem; }
+  .items { display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:0.55rem; }
+  .item-card { position:relative; min-height:92px; border:2px solid var(--itemc, var(--teal)); background:var(--itembg,#f8fdff); border-radius:14px; padding:0.55rem; cursor:grab; display:flex; flex-direction:column; gap:0.28rem; justify-content:center; align-items:center; text-align:center; font-family:inherit; color:#1a1a1a; }
+  .item-card:active { cursor:grabbing; }
+  .item-card.selected { outline:4px solid rgba(239,119,36,0.25); border-color:var(--orange); }
+  .item-visual { width:40px; height:27px; border:2px solid currentColor; border-radius:9px; background:rgba(255,255,255,0.56); }
+  .item-card[data-kind="water"] .item-visual { border-radius:50%; height:31px; }
+  .item-card[data-kind="food"] .item-visual { border-radius:50% 50% 44% 44%; }
+  .item-card[data-kind="shelter"] .item-visual { border-radius:10px 10px 3px 3px; height:32px; }
+  .item-card[data-kind="enrich"] .item-visual { border-radius:50%; width:34px; height:34px; }
+  .item-card[data-kind="comfort"] .item-visual { border-radius:14px; width:44px; height:22px; }
+  .item-card[data-kind="silly"] .item-visual { transform:rotate(-8deg); border-style:dashed; }
+  .item-name { font-size:0.78rem; font-weight:700; line-height:1.2; }
+  .cost { position:absolute; top:0.4rem; right:0.4rem; background:#fff; color:#555; border:1.5px solid var(--line); border-radius:999px; padding:0.08rem 0.38rem; font-size:0.72rem; font-weight:700; }
+  .tiny-note { color:#666; font-size:0.8rem; line-height:1.45; }
+  .bin-zone { display:none; position:fixed; left:50%; bottom:1.1rem; transform:translateX(-50%); z-index:100; border:3px dashed var(--red); background:#fff5f5; color:var(--red); border-radius:16px; padding:0.9rem 1.2rem; font-weight:700; box-shadow:var(--shadow); }
+  .bin-zone.show { display:block; }
+  .check-grid { display:grid; grid-template-columns:1fr 340px; gap:1rem; align-items:start; }
+  .traffic-list { display:grid; gap:0.6rem; margin-top:0.8rem; }
+  .traffic-row { display:flex; align-items:center; gap:0.7rem; border:2px solid var(--line); border-radius:14px; background:#fff; padding:0.75rem; }
+  .light { width:34px; height:34px; border-radius:50%; flex-shrink:0; border:2px solid currentColor; display:flex; align-items:center; justify-content:center; font-size:1rem; }
+  .traffic-row.green .light { color:var(--green); background:#e6f3ec; }
+  .traffic-row.amber .light { color:var(--amber); background:#fff4d7; }
+  .traffic-row.red .light { color:var(--red); background:#fff0f0; }
+  .traffic-main { flex:1; }
+  .traffic-title { font-weight:700; color:#1a1a1a; margin-bottom:0.12rem; }
+  .traffic-msg { color:#555; font-size:0.86rem; line-height:1.4; }
+  .result-card { text-align:center; border:2px solid var(--teal); background:#f8fdff; border-radius:18px; padding:1rem; }
+  .result-tier { font-size:1.45rem; font-weight:700; color:var(--teal); line-height:1.2; }
+  .reaction { margin:0.9rem auto; width:112px; height:112px; border-radius:50%; background:#fff3e8; border:3px solid var(--orange); display:flex; align-items:center; justify-content:center; font-size:3.4rem; position:relative; }
+  .reaction.celebrate { animation:bounce 0.8s ease infinite alternate; }
+  @keyframes bounce { from{transform:translateY(0) rotate(-2deg);} to{transform:translateY(-8px) rotate(3deg);} }
+  .reaction-text { color:#444; line-height:1.45; font-size:0.92rem; }
+  .report-layout { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
+  .report-preview { border:2px solid var(--line); border-radius:16px; background:#fff; padding:1rem; }
+  .report-preview h3 { color:var(--teal); margin-bottom:0.6rem; }
+  .mini-grid { display:grid; gap:3px; width:max-content; max-width:100%; margin:0.7rem auto; }
+  .mini-cell { width:42px; height:42px; border:1.5px solid #e4d8ce; border-radius:8px; background:#fbf1e8; display:flex; align-items:center; justify-content:center; font-size:0.55rem; text-align:center; padding:0.1rem; overflow:hidden; }
+  .mini-cell.has { border-color:var(--teal); background:#e6f5f8; font-weight:700; }
+  .report-lines { display:grid; gap:0.45rem; color:#444; font-size:0.92rem; line-height:1.45; margin-top:0.7rem; }
+  .teacher-evidence { background:var(--soft-orange); border:2px solid #fcd8bc; border-radius:14px; padding:0.85rem; color:#444; line-height:1.45; margin-top:0.8rem; }
+  .nav-row { display:flex; gap:0.65rem; flex-wrap:wrap; justify-content:flex-end; margin-top:1rem; }
+  .btn { font-family:inherit; font-size:0.95rem; font-weight:700; border:0; border-radius:10px; padding:0.72rem 1rem; cursor:pointer; transition:transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease; }
+  .btn:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,0.10); }
+  .btn.primary { background:var(--orange); color:#fff; }
+  .btn.primary:hover { background:var(--orange-dark); }
+  .btn.secondary { background:var(--teal); color:#fff; }
+  .btn.light { background:#fff; color:var(--teal); border:2px solid var(--teal); }
+  .btn.ghost { background:transparent; color:#777; border:2px solid var(--line); }
+  .notice { display:none; margin-top:0.75rem; border:2px solid #f4c471; background:#fff9e8; color:#6b4400; border-radius:12px; padding:0.7rem 0.8rem; font-weight:700; line-height:1.4; }
+  .notice.show { display:block; }
+  .toast { position:fixed; left:50%; bottom:1.1rem; transform:translateX(-50%); z-index:120; background:var(--teal); color:#fff; border-radius:12px; padding:0.75rem 1rem; box-shadow:var(--shadow); font-weight:700; max-width:min(520px, 92vw); display:none; }
+  .toast.show { display:block; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, .cell:focus-visible { outline:3px solid var(--orange); outline-offset:2px; }
+  footer { text-align:center; padding:1.3rem; color:#888; font-size:0.8rem; border-top:1px solid var(--line); }
+  @media (max-width: 900px) {
+    .build-layout, .check-grid, .report-layout { grid-template-columns:1fr; }
+    .side-panel { order:2; }
+    .workspace { order:1; }
+    .cell { width:64px; height:64px; }
+  }
+  @media (max-width: 560px) {
+    .main { padding-left:0.85rem; padding-right:0.85rem; }
+    .site-header { padding-left:1rem; padding-right:1rem; }
+    .header-back { position:relative; display:inline-block; left:auto; top:auto; margin-bottom:0.8rem; }
+    .progress { grid-template-columns:1fr; }
+    .step-pill { text-align:left; padding-left:1rem; }
+    .items { grid-template-columns:repeat(auto-fill, minmax(105px, 1fr)); }
+    .cell { width:56px; height:56px; }
+    .meter-card { grid-template-columns:1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation:none !important; transition:none !important; }
+    .btn:hover, .animal-card:hover { transform:none; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Maths</a>
+  <div class="header-inner">
+    <p class="week-label">Week 5 · Maths</p>
+    <h1>Pet Habitat Builder</h1>
+    <p class="header-sub">Choose an animal, design a safe habitat, calculate the area, pick a water capacity, and make a one-page evidence report.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+  <section class="top-strip" aria-label="Activity details">
+    <div>
+      <h2>Mission: build a habitat that passes Jay's checklist.</h2>
+      <p class="tiny-note">Mostly click/select. A little typing. No timer on the page.</p>
+    </div>
+    <div class="initials-row" aria-label="Choose initials">
+      <span class="mini-label">Initials</span>
+      <button class="initial-btn" data-initial="LW">LW</button>
+      <button class="initial-btn" data-initial="AP">AP</button>
+      <button class="initial-btn" data-initial="LS">LS</button>
+      <button class="initial-btn" data-initial="LC">LC</button>
+      <button class="initial-btn" data-initial="HK">HK</button>
+      <button class="initial-btn" data-initial="JTK">JTK</button>
+    </div>
+  </section>
+
+  <div class="progress-wrap" aria-label="Progress">
+    <div class="progress" id="progressBar">
+      <div class="step-pill active" data-step-pill="choose">1. Choose</div>
+      <div class="step-pill" data-step-pill="teach">2. Teach</div>
+      <div class="step-pill" data-step-pill="build">3. Build</div>
+      <div class="step-pill" data-step-pill="check">4. Check</div>
+      <div class="step-pill" data-step-pill="report">5. Report</div>
+    </div>
+  </div>
+
+  <section class="screen active" id="screen-choose" aria-labelledby="choose-title">
+    <div class="card orange">
+      <p class="eyebrow">Choose</p>
+      <h2 class="screen-title" id="choose-title">Pick your animal client.</h2>
+      <p class="lead">Each animal has different needs. Rabbit, hamster and tortoise are ready now. Fish and lizard unlock after a habitat gets <strong>Very Good</strong> or better.</p>
+      <div class="animal-grid" id="animalGrid"></div>
+      <div class="notice" id="chooseNotice"></div>
+      <div class="nav-row">
+        <button class="btn primary" onclick="goTeach()">Next: tiny maths briefing &rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-teach" aria-labelledby="teach-title">
+    <div class="card teal">
+      <p class="eyebrow">Teach</p>
+      <h2 class="screen-title" id="teach-title">Tiny maths briefing.</h2>
+      <p class="lead">These are the three ideas you need for the mission. Very dramatic. Mostly rectangles.</p>
+      <div class="mini-teach-grid">
+        <div class="teach-tile">
+          <div class="teach-icon">📏</div>
+          <h3>Area</h3>
+          <p>Area means floor space. Count the grid squares, then check it with <strong>length × width</strong>.</p>
+        </div>
+        <div class="teach-tile">
+          <div class="teach-icon">💧</div>
+          <h3>Capacity</h3>
+          <p>Capacity means how much something can hold. Water bowls use <strong>ml / millilitres</strong> and <strong>L / litres</strong>.</p>
+        </div>
+        <div class="teach-tile">
+          <div class="teach-icon">🧠</div>
+          <h3>Units matter</h3>
+          <p>Each square is <strong>1m² / one square metre</strong>. For water: <strong>1000ml = 1L</strong>.</p>
+        </div>
+      </div>
+      <div class="notice" id="teachNotice"></div>
+      <div class="nav-row">
+        <button class="btn ghost" onclick="showScreen('choose')">&larr; Back</button>
+        <button class="btn primary" onclick="goBuild()">Next: build habitat &rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-build" aria-labelledby="build-title">
+    <div class="build-layout">
+      <aside class="side-panel">
+        <div class="card teal">
+          <p class="eyebrow">Build</p>
+          <h2 class="screen-title" id="build-title">Set the space.</h2>
+          <div class="size-options" id="sizeOptions"></div>
+          <div class="budget-line">
+            <span class="budget-badge" id="coinsSpent">Spent: 0 coins</span>
+            <span class="budget-badge" id="coinsLeft">Left: 15 coins</span>
+          </div>
+        </div>
+
+        <div class="needs-card">
+          <button class="needs-toggle" onclick="toggleNeeds()"><span id="needsTitle">Animal needs</span><span id="needsArrow">−</span></button>
+          <div class="needs-body" id="needsBody"></div>
+        </div>
+
+        <div class="card calc-card">
+          <p class="eyebrow">Area and capacity</p>
+          <label for="countSquares">Count the grid squares</label>
+          <div class="calc-line"><input id="countSquares" type="number" min="0" inputmode="numeric" oninput="updateState()"> <span>m² / square metres</span></div>
+          <label for="areaAnswer">Check it: <span id="calcPrompt">length × width</span> =</label>
+          <div class="calc-line"><input id="areaAnswer" type="number" min="0" inputmode="numeric" oninput="updateState()"> <span>m² / square metres</span></div>
+          <label>Choose water capacity</label>
+          <div class="capacity-options" id="capacityOptions"></div>
+        </div>
+
+        <div class="meter-card">
+          <div class="meter">
+            <div class="meter-title">Safety</div>
+            <div class="meter-track"><div class="meter-fill" id="safetyFill"></div></div>
+            <div class="meter-value" id="safetyText">0%</div>
+          </div>
+          <div class="meter">
+            <div class="meter-title">Comfort</div>
+            <div class="meter-track"><div class="meter-fill" id="comfortFill"></div></div>
+            <div class="meter-value" id="comfortText">0%</div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <div class="mascot-card">
+          <div class="mascot" id="mascot">🐾</div>
+          <div class="mascot-talk" id="mascotTalk">Choose a good space, then add the essentials. The animal is supervising from a safe distance.</div>
+        </div>
+
+        <div class="habitat-wrap">
+          <div class="habitat-grid" id="habitatGrid" aria-label="Habitat grid"></div>
+        </div>
+
+        <div class="item-tray" id="itemTray"></div>
+        <div class="notice" id="buildNotice"></div>
+        <div class="nav-row">
+          <button class="btn ghost" onclick="showScreen('teach')">&larr; Back</button>
+          <button class="btn primary" onclick="goCheck()">Next: Jay's checklist &rarr;</button>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-check" aria-labelledby="check-title">
+    <div class="check-grid">
+      <div class="card orange">
+        <p class="eyebrow">Check</p>
+        <h2 class="screen-title" id="check-title">Jay's checklist.</h2>
+        <p class="lead">Traffic lights show what is sorted and what needs a tiny bit more habitat wisdom.</p>
+        <div class="traffic-list" id="trafficList"></div>
+        <div class="notice" id="checkNotice"></div>
+        <div class="nav-row">
+          <button class="btn ghost" onclick="showScreen('build')">&larr; Adjust habitat</button>
+          <button class="btn primary" onclick="goReport()">Next: final report &rarr;</button>
+        </div>
+      </div>
+      <aside class="result-card">
+        <p class="eyebrow">Result</p>
+        <div class="result-tier" id="resultTier">Checking...</div>
+        <div class="reaction" id="reaction">🐾</div>
+        <p class="reaction-text" id="reactionText">The animal awaits judgement, possibly while eating something.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-report" aria-labelledby="report-title">
+    <div class="report-layout">
+      <div class="card teal explain-card">
+        <p class="eyebrow">Report</p>
+        <h2 class="screen-title" id="report-title">Finish your evidence.</h2>
+        <p class="lead">Add two short explanations. Then export the one-page PDF or send the evidence to Jay.</p>
+        <label for="areaExplain">Area explanation</label>
+        <textarea id="areaExplain" placeholder="I chose this area because..." oninput="updateReportPreview()"></textarea>
+        <label for="capacityExplain">Capacity explanation</label>
+        <textarea id="capacityExplain" placeholder="I chose this capacity because..." oninput="updateReportPreview()"></textarea>
+        <div class="notice" id="reportNotice"></div>
+        <div class="nav-row">
+          <button class="btn ghost" onclick="showScreen('check')">&larr; Back</button>
+          <button class="btn light" onclick="exportPdf()">Export PDF</button>
+          <button class="btn secondary" onclick="sendGmail()">Open Gmail</button>
+          <button class="btn light" onclick="sendMailto()">Fallback email</button>
+        </div>
+      </div>
+      <div class="report-preview" id="reportPreview"></div>
+    </div>
+  </section>
+</main>
+
+<div class="bin-zone" id="binZone">Drop here to remove item</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<footer>Base 6 · Chilton Bridge School · Pet Habitat Builder</footer>
+
+<script>
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+const REPORT_KEY = 'base6_pet_habitat_final_report';
+const INITIALS = ['LW','AP','LS','LC','HK','JTK'];
+
+const sizes = {
+  small: { label:'Small', w:3, h:2, area:6, coins:15, desc:'3 × 2 = 6m². More coins, less space.' },
+  medium:{ label:'Medium', w:4, h:2, area:8, coins:13, desc:'4 × 2 = 8m². Balanced habitat energy.' },
+  large: { label:'Large', w:5, h:2, area:10, coins:11, desc:'5 × 2 = 10m². More space, fewer coins.' }
+};
+
+const animalData = {
+  rabbit: {
+    id:'rabbit', name:'Rabbit', icon:'🐰', color:'#2e8b57', bg:'#e6f3ec', active:true,
+    desc:'Soft zoom machine. Needs room, hay, water and things to chew that are not your furniture.',
+    minArea:8, minCapacity:1000, capacityOptions:[250,500,1000], capacityLabel:'1L / 1000ml is best for this rabbit.',
+    needs:['Space','Hay/food','Water','Hide/shelter','Chew/enrichment'],
+    reactionGood:'Rabbit does a tiny victory binky. Very professional.',
+    reactionNot:'Rabbit is withholding judgement and possibly judging the corner.',
+    items: [
+      { id:'hay', name:'Hay feeder', group:'Needs', kind:'food', cost:2, size:[1,1], need:'food', color:'#2e8b57', bg:'#e6f3ec' },
+      { id:'water', name:'Water bowl', group:'Needs', kind:'water', cost:1, size:[1,1], need:'water', color:'#0e8a9e', bg:'#e2f3f6' },
+      { id:'hide', name:'Hide house', group:'Needs', kind:'shelter', cost:3, size:[2,1], need:'shelter', color:'#7b5ea7', bg:'#efe9f6' },
+      { id:'bedding', name:'Soft bedding', group:'Comfort', kind:'comfort', cost:2, size:[1,1], need:'comfort', color:'#c2185b', bg:'#fbe7ee' },
+      { id:'chew', name:'Chew tunnel', group:'Comfort', kind:'enrich', cost:2, size:[2,1], need:'enrichment', color:'#ef7724', bg:'#fff3e8' },
+      { id:'dig', name:'Dig box', group:'Comfort', kind:'enrich', cost:3, size:[2,1], need:'enrichment', color:'#6b8e23', bg:'#eef2e0' }
+    ]
+  },
+  hamster: {
+    id:'hamster', name:'Hamster', icon:'🐹', color:'#ef7724', bg:'#fff3e8', active:true,
+    desc:'Tiny chaos potato. Needs bedding, water and a reason not to plot escape routes.',
+    minArea:4, minCapacity:250, capacityOptions:[250,500,1000], capacityLabel:'250ml is enough. 1L is ambitious tiny-barrel behaviour.',
+    needs:['Space','Food','Water','Safe hide','Wheel/enrichment'],
+    reactionGood:'Hamster performs one victory zoomie, then remembers snacks exist.',
+    reactionNot:'Hamster accountant has opened a very small clipboard.',
+    items: [
+      { id:'food', name:'Food bowl', group:'Needs', kind:'food', cost:1, size:[1,1], need:'food', color:'#2e8b57', bg:'#e6f3ec' },
+      { id:'water', name:'Water bottle', group:'Needs', kind:'water', cost:1, size:[1,1], need:'water', color:'#0e8a9e', bg:'#e2f3f6' },
+      { id:'hide', name:'Tiny hide', group:'Needs', kind:'shelter', cost:2, size:[1,1], need:'shelter', color:'#7b5ea7', bg:'#efe9f6' },
+      { id:'bedding', name:'Deep bedding', group:'Comfort', kind:'comfort', cost:2, size:[2,1], need:'comfort', color:'#c2185b', bg:'#fbe7ee' },
+      { id:'wheel', name:'Exercise wheel', group:'Comfort', kind:'enrich', cost:3, size:[2,1], need:'enrichment', color:'#ef7724', bg:'#fff3e8' },
+      { id:'tube', name:'Tube tunnel', group:'Comfort', kind:'enrich', cost:2, size:[2,1], need:'enrichment', color:'#6b8e23', bg:'#eef2e0' }
+    ]
+  },
+  tortoise: {
+    id:'tortoise', name:'Tortoise', icon:'🐢', color:'#6b8e23', bg:'#eef2e0', active:true,
+    desc:'Slow tank with opinions. Needs open space, warmth, water and a snack situation.',
+    minArea:6, minCapacity:500, capacityOptions:[250,500,1000], capacityLabel:'500ml or 1L works. 250ml is a puddle with confidence.',
+    needs:['Open floor space','Food','Water','Shelter','Basking spot'],
+    reactionGood:'Tortoise nods at an emotionally responsible speed.',
+    reactionNot:'Tortoise pauses for eight business days to consider this.',
+    items: [
+      { id:'food', name:'Leafy food plate', group:'Needs', kind:'food', cost:2, size:[1,1], need:'food', color:'#2e8b57', bg:'#e6f3ec' },
+      { id:'water', name:'Shallow water', group:'Needs', kind:'water', cost:1, size:[1,1], need:'water', color:'#0e8a9e', bg:'#e2f3f6' },
+      { id:'hide', name:'Tortoise hide', group:'Needs', kind:'shelter', cost:3, size:[2,1], need:'shelter', color:'#7b5ea7', bg:'#efe9f6' },
+      { id:'bask', name:'Basking spot', group:'Comfort', kind:'comfort', cost:3, size:[1,1], need:'enrichment', color:'#ef7724', bg:'#fff3e8' },
+      { id:'rock', name:'Textured rock', group:'Comfort', kind:'enrich', cost:2, size:[1,1], need:'enrichment', color:'#6b8e23', bg:'#eef2e0' },
+      { id:'ramp', name:'Gentle ramp', group:'Comfort', kind:'enrich', cost:2, size:[2,1], need:'comfort', color:'#c2185b', bg:'#fbe7ee' }
+    ]
+  },
+  fish: {
+    id:'fish', name:'Fish', icon:'🐟', color:'#0e8a9e', bg:'#e2f3f6', active:false,
+    desc:'Small aquatic drama bean. Extension: choose a tank capacity and add sensible tank items.',
+    minArea:6, minCapacity:40000, capacityOptions:[20000,40000,60000], capacityLabel:'40L / 40000ml is the sensible target.',
+    needs:['Tank space','Food','Clean water','Hide/plants','Filter/enrichment'],
+    reactionGood:'Fish gives one elegant bubble of approval.',
+    reactionNot:'Fish has concerns, expressed through bubbles.',
+    items: [
+      { id:'food', name:'Fish food', group:'Needs', kind:'food', cost:1, size:[1,1], need:'food', color:'#2e8b57', bg:'#e6f3ec' },
+      { id:'water', name:'Clean water', group:'Needs', kind:'water', cost:2, size:[1,1], need:'water', color:'#0e8a9e', bg:'#e2f3f6' },
+      { id:'filter', name:'Filter', group:'Needs', kind:'shelter', cost:3, size:[1,1], need:'shelter', color:'#7b5ea7', bg:'#efe9f6' },
+      { id:'plant', name:'Water plants', group:'Comfort', kind:'comfort', cost:2, size:[1,1], need:'comfort', color:'#6b8e23', bg:'#eef2e0' },
+      { id:'cave', name:'Tank cave', group:'Comfort', kind:'enrich', cost:3, size:[2,1], need:'enrichment', color:'#ef7724', bg:'#fff3e8' },
+      { id:'gravel', name:'Smooth gravel', group:'Comfort', kind:'comfort', cost:2, size:[2,1], need:'comfort', color:'#c2185b', bg:'#fbe7ee' }
+    ]
+  },
+  lizard: {
+    id:'lizard', name:'Lizard', icon:'🦎', color:'#7b5ea7', bg:'#efe9f6', active:false,
+    desc:'Tiny dinosaur with heating requirements. Extension: tank capacity plus warm/cool habitat choices.',
+    minArea:8, minCapacity:60000, capacityOptions:[30000,60000,90000], capacityLabel:'60L / 60000ml gives the lizard enough vivarium space.',
+    needs:['Vivarium space','Food','Water','Hide','Heat/basking'],
+    reactionGood:'Lizard blinks majestically. That is basically applause.',
+    reactionNot:'Lizard is side-eyeing the thermostat situation.',
+    items: [
+      { id:'food', name:'Food dish', group:'Needs', kind:'food', cost:1, size:[1,1], need:'food', color:'#2e8b57', bg:'#e6f3ec' },
+      { id:'water', name:'Water dish', group:'Needs', kind:'water', cost:1, size:[1,1], need:'water', color:'#0e8a9e', bg:'#e2f3f6' },
+      { id:'hide', name:'Warm hide', group:'Needs', kind:'shelter', cost:3, size:[2,1], need:'shelter', color:'#7b5ea7', bg:'#efe9f6' },
+      { id:'heat', name:'Heat lamp', group:'Comfort', kind:'comfort', cost:3, size:[1,1], need:'enrichment', color:'#ef7724', bg:'#fff3e8' },
+      { id:'branch', name:'Climbing branch', group:'Comfort', kind:'enrich', cost:2, size:[2,1], need:'enrichment', color:'#6b8e23', bg:'#eef2e0' },
+      { id:'rock', name:'Basking rock', group:'Comfort', kind:'comfort', cost:2, size:[1,1], need:'comfort', color:'#c2185b', bg:'#fbe7ee' }
+    ]
+  }
+};
+
+const sillyItems = [
+  { id:'tinytv', name:'Tiny TV', group:'Fun/Silly', kind:'silly', cost:1, size:[1,1], need:'silly', color:'#555', bg:'#f2f2f2' },
+  { id:'disco', name:'Disco ball', group:'Fun/Silly', kind:'silly', cost:1, size:[1,1], need:'silly', color:'#555', bg:'#f2f2f2' },
+  { id:'pizza', name:'Pizza oven', group:'Fun/Silly', kind:'silly', cost:2, size:[1,1], need:'silly', color:'#555', bg:'#f2f2f2' }
+];
+
+let state = {
+  initials:'',
+  screen:'choose',
+  animal:null,
+  size:'small',
+  selectedItem:null,
+  placed:[],
+  capacity:null,
+  extensionUnlocked:false,
+  check:null
+};
+
+function init(){
+  loadProfileInitials();
+  loadExtensionStatus();
+  renderInitials();
+  renderAnimals();
+  renderSizes();
+  renderAll();
+}
+
+function loadProfileInitials(){
+  try {
+    const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+    if(profile && profile.initials){
+      const up = String(profile.initials).toUpperCase();
+      if(INITIALS.includes(up)) state.initials = up;
+    }
+  } catch(e) {}
+}
+
+function loadExtensionStatus(){
+  try {
+    const report = JSON.parse(localStorage.getItem(REPORT_KEY) || 'null');
+    if(report && (report.tier === 'Very Good' || report.tier === 'Luxury Tiny Palace')) state.extensionUnlocked = true;
+  } catch(e) {}
+}
+
+function renderInitials(){
+  document.querySelectorAll('.initial-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.initial === state.initials);
+    btn.onclick = () => {
+      state.initials = btn.dataset.initial;
+      try {
+        const profile = JSON.parse(localStorage.getItem('base6Profile') || '{}') || {};
+        profile.initials = state.initials.toLowerCase();
+        localStorage.setItem('base6Profile', JSON.stringify(profile));
+      } catch(e) {}
+      renderInitials();
+    };
+  });
+}
+
+function renderAnimals(){
+  const grid = document.getElementById('animalGrid');
+  grid.innerHTML = '';
+  Object.values(animalData).forEach(a => {
+    const unlocked = a.active || state.extensionUnlocked;
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'animal-card' + (state.animal === a.id ? ' selected' : '') + (!unlocked ? ' locked' : '');
+    card.style.setProperty('--c', a.color);
+    card.style.setProperty('--bg', a.bg);
+    card.style.setProperty('--shadowc', colorToShadow(a.color));
+    card.innerHTML = `
+      ${unlocked ? '' : '<span class="locked-ribbon">🔒 Locked</span>'}
+      <div class="animal-icon">${a.icon}</div>
+      <div class="animal-name">${a.name}</div>
+      <div class="animal-desc">${a.desc}</div>
+      <div class="needs-list">
+        <span class="need-chip">min area ${a.minArea}m²</span>
+        ${a.needs.slice(0,3).map(n => `<span class="need-chip">${n}</span>`).join('')}
+      </div>
+      ${unlocked ? '' : '<p class="tiny-note" style="margin-top:.6rem;">Coming later if your habitat is Very Good.</p>'}
+    `;
+    card.addEventListener('click', () => {
+      if(!unlocked){ showNotice('chooseNotice', 'This extension unlocks after one habitat reaches Very Good or Luxury Tiny Palace.'); return; }
+      selectAnimal(a.id);
+    });
+    grid.appendChild(card);
+  });
+}
+
+function colorToShadow(hex){
+  const clean = hex.replace('#','');
+  const n = parseInt(clean, 16);
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return `rgba(${r},${g},${b},0.22)`;
+}
+
+function selectAnimal(id){
+  state.animal = id;
+  state.size = 'small';
+  state.selectedItem = null;
+  state.placed = [];
+  state.capacity = null;
+  document.getElementById('countSquares').value = '';
+  document.getElementById('areaAnswer').value = '';
+  renderAnimals();
+  renderAll();
+  showToast(`${animalData[id].name} selected. Excellent client. Possibly demanding.`);
+}
+
+function renderSizes(){
+  const wrap = document.getElementById('sizeOptions');
+  wrap.innerHTML = '';
+  Object.entries(sizes).forEach(([key, s]) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'size-btn' + (state.size === key ? ' active' : '');
+    btn.innerHTML = `<strong>${s.label}</strong><span>${s.desc}</span>`;
+    btn.addEventListener('click', () => {
+      state.size = key;
+      state.placed = [];
+      state.selectedItem = null;
+      document.getElementById('countSquares').value = '';
+      document.getElementById('areaAnswer').value = '';
+      renderAll();
+      showToast(`${s.label} enclosure selected. Grid cleared so nobody ends up half in a wall.`);
+    });
+    wrap.appendChild(btn);
+  });
+}
+
+function renderAll(){
+  renderSizes();
+  renderNeeds();
+  renderCapacity();
+  renderGrid();
+  renderTray();
+  updateState();
+}
+
+function renderNeeds(){
+  const a = getAnimal();
+  if(!a) return;
+  document.getElementById('needsTitle').textContent = `${a.name} needs`;
+  document.getElementById('needsBody').innerHTML = `
+    <p><strong>${a.icon} ${a.name}:</strong> ${a.desc}</p>
+    <p style="margin-top:.5rem;"><strong>Minimum area:</strong> ${a.minArea}m² / square metres.</p>
+    <p><strong>Capacity:</strong> ${a.capacityLabel}</p>
+    <div class="needs-list" style="margin-top:.55rem;">${a.needs.map(n => `<span class="need-chip">${n}</span>`).join('')}</div>
+  `;
+  document.getElementById('mascot').textContent = a.icon;
+  document.getElementById('mascotTalk').textContent = `${a.name} is supervising. Build something safe, not just expensive nonsense.`;
+}
+
+function toggleNeeds(){
+  const body = document.getElementById('needsBody');
+  body.classList.toggle('collapsed');
+  document.getElementById('needsArrow').textContent = body.classList.contains('collapsed') ? '+' : '−';
+}
+
+function renderCapacity(){
+  const a = getAnimal();
+  const wrap = document.getElementById('capacityOptions');
+  if(!a){ wrap.innerHTML=''; return; }
+  wrap.innerHTML = '';
+  a.capacityOptions.forEach(v => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'cap-btn' + (state.capacity === v ? ' active' : '');
+    btn.textContent = capacityLabel(v);
+    btn.addEventListener('click', () => { state.capacity = v; renderCapacity(); updateState(); });
+    wrap.appendChild(btn);
+  });
+}
+
+function capacityLabel(v){
+  if(v >= 1000) return `${v/1000}L / ${v}ml`;
+  return `${v}ml`;
+}
+
+function getAnimal(){ return state.animal ? animalData[state.animal] : null; }
+function getSize(){ return sizes[state.size]; }
+function baseItems(){ const a = getAnimal(); return a ? a.items.concat(sillyItems) : []; }
+function totalBudget(){ return getSize().coins; }
+function spentCoins(){ return state.placed.reduce((sum,p) => sum + p.cost, 0); }
+function coinsLeft(){ return totalBudget() - spentCoins(); }
+
+function renderGrid(){
+  const grid = document.getElementById('habitatGrid');
+  const s = getSize();
+  grid.style.gridTemplateColumns = `repeat(${s.w}, 78px)`;
+  grid.innerHTML = '';
+  const map = occupiedMap();
+  for(let y=0; y<s.h; y++){
+    for(let x=0; x<s.w; x++){
+      const key = `${x},${y}`;
+      const cell = document.createElement('div');
+      cell.className = 'cell free';
+      cell.tabIndex = 0;
+      cell.dataset.x = x;
+      cell.dataset.y = y;
+      cell.addEventListener('click', () => placeSelectedAt(x,y));
+      cell.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); placeSelectedAt(x,y); } });
+      cell.addEventListener('dragover', e => { e.preventDefault(); });
+      cell.addEventListener('drop', e => {
+        e.preventDefault();
+        const id = e.dataTransfer.getData('text/item-id');
+        if(id) placeItemAt(id,x,y);
+      });
+      if(map[key]){
+        const p = map[key];
+        if(p.originX === x && p.originY === y){
+          cell.innerHTML = placedHTML(p);
+          const placedEl = cell.querySelector('.placed');
+          placedEl.draggable = true;
+          placedEl.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/placed-id', p.uid);
+            document.getElementById('binZone').classList.add('show');
+          });
+          placedEl.addEventListener('dragend', () => document.getElementById('binZone').classList.remove('show'));
+        } else {
+          cell.classList.add('covered');
+          cell.innerHTML = '<span class="tiny-note">used</span>';
+        }
+      }
+      grid.appendChild(cell);
+    }
+  }
+  const bin = document.getElementById('binZone');
+  bin.ondragover = e => { e.preventDefault(); };
+  bin.ondrop = e => {
+    e.preventDefault();
+    const uid = e.dataTransfer.getData('text/placed-id');
+    if(uid){
+      state.placed = state.placed.filter(p => p.uid !== uid);
+      bin.classList.remove('show');
+      renderAll();
+      showToast('Item removed. The habitat has been gently un-chaosed.');
+    }
+  };
+}
+
+function occupiedMap(){
+  const map = {};
+  state.placed.forEach(p => {
+    for(let yy=0; yy<p.h; yy++){
+      for(let xx=0; xx<p.w; xx++){
+        map[`${p.x+xx},${p.y+yy}`] = Object.assign({}, p, { originX:p.x, originY:p.y });
+      }
+    }
+  });
+  return map;
+}
+
+function placedHTML(p){
+  return `<div class="placed" data-kind="${p.kind}" style="--itemc:${p.color}; --itembg:${p.bg};"><span class="shape"></span><span>${p.name}</span></div>`;
+}
+
+function renderTray(){
+  const tray = document.getElementById('itemTray');
+  if(!getAnimal()){ tray.innerHTML=''; return; }
+  const groups = ['Needs','Comfort','Fun/Silly'];
+  const items = baseItems();
+  tray.innerHTML = '';
+  groups.forEach(group => {
+    const groupItems = items.filter(i => i.group === group);
+    const section = document.createElement('div');
+    section.className = 'tray-group';
+    section.innerHTML = `<div class="tray-title">${group}</div><div class="items"></div>`;
+    const itemWrap = section.querySelector('.items');
+    groupItems.forEach(item => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'item-card' + (state.selectedItem === item.id ? ' selected' : '');
+      btn.dataset.kind = item.kind;
+      btn.draggable = true;
+      btn.style.setProperty('--itemc', item.color);
+      btn.style.setProperty('--itembg', item.bg);
+      btn.innerHTML = `<span class="cost">${item.cost}🪙</span><span class="item-visual"></span><span class="item-name">${item.name}</span><span class="tiny-note">${item.size[0]}×${item.size[1]}</span>`;
+      btn.addEventListener('click', () => {
+        state.selectedItem = state.selectedItem === item.id ? null : item.id;
+        renderTray();
+        showNotice('buildNotice', state.selectedItem ? `Now tap a grid square to place ${item.name}.` : 'Item unselected.');
+      });
+      btn.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/item-id', item.id);
+      });
+      itemWrap.appendChild(btn);
+    });
+    tray.appendChild(section);
+  });
+}
+
+function findItem(id){ return baseItems().find(i => i.id === id); }
+
+function placeSelectedAt(x,y){
+  if(!state.selectedItem){ showNotice('buildNotice', 'Choose an item first, then tap a square on the habitat grid.'); return; }
+  placeItemAt(state.selectedItem, x, y);
+}
+
+function placeItemAt(itemId, x, y){
+  const item = findItem(itemId);
+  if(!item) return;
+  if(coinsLeft() < item.cost){
+    showNotice('buildNotice', `Not enough coins. You need ${item.cost} coins, but you only have ${coinsLeft()}.`);
+    return;
+  }
+  const limitMsg = limitMessage(item);
+  if(limitMsg){ showNotice('buildNotice', limitMsg); return; }
+  const [w,h] = item.size;
+  const s = getSize();
+  if(x + w > s.w || y + h > s.h){ showNotice('buildNotice', `${item.name} needs ${w}×${h} squares. It will not fit there.`); return; }
+  if(overlaps(x,y,w,h)){ showNotice('buildNotice', 'That spot is already used. No food bowl inside the wall, please.'); return; }
+  state.placed.push({ uid: item.id + '_' + Date.now() + '_' + Math.random().toString(16).slice(2), itemId:item.id, name:item.name, group:item.group, kind:item.kind, need:item.need, cost:item.cost, w, h, x, y, color:item.color, bg:item.bg });
+  state.selectedItem = null;
+  renderAll();
+}
+
+function limitMessage(item){
+  const same = state.placed.filter(p => p.itemId === item.id).length;
+  const need = state.placed.filter(p => p.need === item.need).length;
+  if(item.need === 'food' && need >= 1) return 'One food item is enough. We are not opening a buffet.';
+  if(item.need === 'water' && need >= 1) return 'One water item is enough. Hydrated, not flooded.';
+  if(item.need === 'shelter' && need >= 1) return 'One shelter is enough for this mission.';
+  if(item.need === 'enrichment' && need >= 2) return 'Two enrichment items max. The animal has hobbies, not a theme park.';
+  if(item.need === 'comfort' && need >= 2) return 'Two comfort items max. Cosy, not cluttered.';
+  if(item.need === 'silly' && same >= 1) return 'One of each silly item is plenty. The disco ball has had its moment.';
+  return '';
+}
+
+function overlaps(x,y,w,h){
+  const map = occupiedMap();
+  for(let yy=0; yy<h; yy++){
+    for(let xx=0; xx<w; xx++){
+      if(map[`${x+xx},${y+yy}`]) return true;
+    }
+  }
+  return false;
+}
+
+function updateState(){
+  const s = getSize();
+  document.getElementById('calcPrompt').textContent = `${s.w} × ${s.h}`;
+  document.getElementById('coinsSpent').textContent = `Spent: ${spentCoins()} coins`;
+  document.getElementById('coinsLeft').textContent = `Left: ${coinsLeft()} coins`;
+  const metrics = calculateMetrics();
+  document.getElementById('safetyFill').style.width = metrics.safety + '%';
+  document.getElementById('comfortFill').style.width = metrics.comfort + '%';
+  document.getElementById('safetyText').textContent = metrics.safety + '%';
+  document.getElementById('comfortText').textContent = metrics.comfort + '%';
+}
+
+function calculateMetrics(){
+  const a = getAnimal();
+  if(!a) return { safety:0, comfort:0 };
+  const s = getSize();
+  const needs = needStatus();
+  const green = needs.filter(n => n.status === 'green').length;
+  const amber = needs.filter(n => n.status === 'amber').length;
+  const safety = Math.min(100, Math.round(((green*2 + amber) / (needs.length*2)) * 100));
+  const areaBonus = Math.max(0, s.area - a.minArea) * 7;
+  const comfortItems = state.placed.filter(p => p.need === 'comfort' || p.need === 'enrichment').length;
+  const usefulItems = state.placed.filter(p => p.need !== 'silly').length;
+  const comfort = Math.min(100, Math.round(20 + (comfortItems*20) + (usefulItems*5) + areaBonus));
+  return { safety, comfort };
+}
+
+function needStatus(){
+  const a = getAnimal();
+  const s = getSize();
+  if(!a) return [];
+  const has = need => state.placed.some(p => p.need === need);
+  const statuses = [];
+  statuses.push({ key:'space', icon:'📏', label:a.needs[0] || 'Space', status: s.area >= a.minArea ? 'green' : (s.area >= a.minArea - 2 ? 'amber' : 'red'), msg: s.area >= a.minArea ? `Sorted. ${s.area}m² meets the ${a.minArea}m² target.` : `${s.area}m² is below the ${a.minArea}m² target. Tiny palace needs more floor.` });
+  statuses.push({ key:'food', icon:'🥣', label:a.needs[1] || 'Food', status: has('food') ? 'green' : 'red', msg: has('food') ? 'Food sorted. Snacks prevent rebellion.' : 'No food yet. Bold choice. Not recommended.' });
+  const waterItem = has('water');
+  const cap = state.capacity || 0;
+  let capStatus = 'red';
+  if(waterItem && cap >= a.minCapacity) capStatus = 'green';
+  else if(waterItem && cap >= a.minCapacity/2) capStatus = 'amber';
+  statuses.push({ key:'water', icon:'💧', label:a.needs[2] || 'Water', status: capStatus, msg: capStatus === 'green' ? `Water sorted: ${capacityLabel(cap)}.` : capStatus === 'amber' ? 'Nearly there. Water exists, but capacity is a bit suspicious.' : 'Water/capacity needs help. The tiny client is filing a complaint.' });
+  statuses.push({ key:'shelter', icon:'🏠', label:a.needs[3] || 'Shelter', status: has('shelter') ? 'green' : 'red', msg: has('shelter') ? 'Shelter sorted. Excellent hiding-from-the-world option.' : 'No shelter yet. Everyone needs a nope corner.' });
+  const enrich = has('enrichment') || has('comfort');
+  statuses.push({ key:'enrichment', icon:'🧸', label:a.needs[4] || 'Enrichment', status: enrich ? 'green' : 'amber', msg: enrich ? 'Enrichment/comfort sorted. Tiny life upgraded.' : 'Could use one comfort or enrichment item. Not urgent, but a bit bare.' });
+  return statuses;
+}
+
+function evaluate(){
+  const needs = needStatus();
+  const metrics = calculateMetrics();
+  const reds = needs.filter(n => n.status === 'red').length;
+  const ambers = needs.filter(n => n.status === 'amber').length;
+  const sillyCount = state.placed.filter(p => p.need === 'silly').length;
+  let tier = 'Needs Help';
+  if(reds === 0) tier = 'Safe';
+  if(reds === 0 && metrics.comfort >= 60 && ambers <= 1) tier = 'Very Good';
+  if(reds === 0 && ambers === 0 && metrics.comfort >= 85 && sillyCount <= 1) tier = 'Luxury Tiny Palace';
+  return { tier, needs, metrics, sillyCount };
+}
+
+function renderCheck(){
+  const result = evaluate();
+  state.check = result;
+  const list = document.getElementById('trafficList');
+  list.innerHTML = result.needs.map(n => `
+    <div class="traffic-row ${n.status}">
+      <div class="light">${n.status === 'green' ? '✓' : n.status === 'amber' ? '!' : '×'}</div>
+      <div class="traffic-main">
+        <div class="traffic-title">${n.icon} ${n.label}</div>
+        <div class="traffic-msg">${n.msg}</div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('resultTier').textContent = result.tier;
+  const a = getAnimal();
+  const reaction = document.getElementById('reaction');
+  reaction.textContent = a.icon;
+  reaction.classList.toggle('celebrate', result.tier === 'Very Good' || result.tier === 'Luxury Tiny Palace');
+  let txt = '';
+  if(result.tier === 'Needs Help') txt = a.reactionNot + ' Adjust the red lights first.';
+  if(result.tier === 'Safe') txt = 'Safe habitat. Good enough to pass. Add one more clever choice for Very Good.';
+  if(result.tier === 'Very Good') txt = a.reactionGood + ' Extension animals are now unlocked.';
+  if(result.tier === 'Luxury Tiny Palace') txt = a.reactionGood + ' Absolute tiny estate agent masterpiece.';
+  document.getElementById('reactionText').textContent = txt;
+  if(result.tier === 'Very Good' || result.tier === 'Luxury Tiny Palace'){
+    state.extensionUnlocked = true;
+  }
+}
+
+function renderReportPreview(){
+  const preview = document.getElementById('reportPreview');
+  const a = getAnimal();
+  const s = getSize();
+  const result = state.check || evaluate();
+  preview.innerHTML = `
+    <h3>${state.initials || 'Student'}'s ${a.name} habitat</h3>
+    <div class="mini-grid" id="miniGrid" style="grid-template-columns:repeat(${s.w}, 42px);"></div>
+    <div class="report-lines">
+      <div><strong>Animal:</strong> ${a.icon} ${a.name}</div>
+      <div><strong>Area:</strong> ${s.w} × ${s.h} = ${s.area}m² / square metres</div>
+      <div><strong>Capacity:</strong> ${state.capacity ? capacityLabel(state.capacity) : 'not selected'}</div>
+      <div><strong>Budget:</strong> ${spentCoins()} spent, ${coinsLeft()} left</div>
+      <div><strong>Final result:</strong> ${result.tier}</div>
+      <div><strong>Area choice:</strong> ${document.getElementById('areaExplain').value.trim() || 'I chose this area because...'}</div>
+      <div><strong>Capacity choice:</strong> ${document.getElementById('capacityExplain').value.trim() || 'I chose this capacity because...'}</div>
+    </div>
+    <div class="teacher-evidence"><strong>Evidence of learning:</strong> area, capacity, units and practical problem solving.</div>
+  `;
+  renderMiniGrid();
+}
+
+function renderMiniGrid(){
+  const mini = document.getElementById('miniGrid');
+  if(!mini) return;
+  const s = getSize();
+  const map = occupiedMap();
+  mini.innerHTML = '';
+  for(let y=0; y<s.h; y++){
+    for(let x=0; x<s.w; x++){
+      const p = map[`${x},${y}`];
+      const cell = document.createElement('div');
+      cell.className = 'mini-cell' + (p ? ' has' : '');
+      cell.textContent = p && p.originX === x && p.originY === y ? p.name.split(' ')[0] : '';
+      mini.appendChild(cell);
+    }
+  }
+}
+
+function updateReportPreview(){ renderReportPreview(); saveFinalReport(false); }
+
+function saveFinalReport(requireText){
+  const areaExplain = document.getElementById('areaExplain').value.trim();
+  const capacityExplain = document.getElementById('capacityExplain').value.trim();
+  if(requireText && (!areaExplain || !capacityExplain)){
+    showNotice('reportNotice', 'Add both short explanations first, then export or send.');
+    return null;
+  }
+  const a = getAnimal(); const s = getSize(); const result = state.check || evaluate();
+  const report = {
+    initials: state.initials || '',
+    animal: a.name,
+    animalId: a.id,
+    icon: a.icon,
+    size: s.label,
+    width: s.w,
+    height: s.h,
+    area: s.area,
+    capacity: state.capacity,
+    capacityText: state.capacity ? capacityLabel(state.capacity) : '',
+    spent: spentCoins(),
+    left: coinsLeft(),
+    tier: result.tier,
+    safety: result.metrics.safety,
+    comfort: result.metrics.comfort,
+    items: state.placed.map(p => ({ name:p.name, x:p.x, y:p.y, w:p.w, h:p.h, kind:p.kind })),
+    areaExplain,
+    capacityExplain,
+    evidence: 'Evidence of learning: area, capacity, units and practical problem solving.',
+    date: new Date().toLocaleDateString('en-GB')
+  };
+  try { localStorage.setItem(REPORT_KEY, JSON.stringify(report)); } catch(e) {}
+  return report;
+}
+
+function goTeach(){
+  if(!state.initials){ showNotice('chooseNotice', 'Choose your initials at the top first.'); return; }
+  if(!state.animal){ showNotice('chooseNotice', 'Choose your animal first, then we can build.'); return; }
+  showScreen('teach');
+}
+
+function goBuild(){
+  renderAll();
+  showScreen('build');
+}
+
+function goCheck(){
+  const s = getSize();
+  const counted = Number(document.getElementById('countSquares').value);
+  const area = Number(document.getElementById('areaAnswer').value);
+  if(state.placed.length === 0){ showNotice('buildNotice', 'Add some habitat items first. Empty floor is not quite animal care.'); return; }
+  if(!state.capacity){ showNotice('buildNotice', 'Choose a water capacity first.'); return; }
+  if(counted !== s.area){ showNotice('buildNotice', `Count the squares again. This grid has ${s.area}m² / square metres.`); return; }
+  if(area !== s.area){ showNotice('buildNotice', `${s.w} × ${s.h} = ${s.area}. Add that answer before checking.`); return; }
+  renderCheck();
+  showScreen('check');
+}
+
+function goReport(){
+  const result = state.check || evaluate();
+  if(result.tier === 'Needs Help'){
+    showNotice('checkNotice', 'Adjust the red lights first. The animal client is not ready to sign off.');
+    return;
+  }
+  renderReportPreview();
+  saveFinalReport(false);
+  renderAnimals();
+  showScreen('report');
+}
+
+function showScreen(name){
+  state.screen = name;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen-${name}`).classList.add('active');
+  document.querySelectorAll('.step-pill').forEach(p => {
+    const step = p.dataset.stepPill;
+    p.classList.toggle('active', step === name);
+    const order = ['choose','teach','build','check','report'];
+    p.classList.toggle('done', order.indexOf(step) < order.indexOf(name));
+  });
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function showNotice(id, msg){
+  const n = document.getElementById(id);
+  if(!n) return;
+  n.textContent = msg;
+  n.classList.add('show');
+  clearTimeout(n._timer);
+  n._timer = setTimeout(() => n.classList.remove('show'), 5500);
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3600);
+}
+
+function escapePdfText(s){
+  return String(s || '')
+    .normalize('NFKD')
+    .replace(/[^\x20-\x7E]/g, '')
+    .replace(/[\\()]/g, '\\$&')
+    .replace(/[\r\n]+/g, ' ');
+}
+
+function wrapText(text, maxChars){
+  const words = String(text || '').split(/\s+/).filter(Boolean);
+  const lines = [];
+  let line = '';
+  words.forEach(w => {
+    if((line + ' ' + w).trim().length > maxChars){ lines.push(line.trim()); line = w; }
+    else line = (line + ' ' + w).trim();
+  });
+  if(line) lines.push(line.trim());
+  return lines.length ? lines : [''];
+}
+
+function makePdf(report){
+  const pageW = 595, pageH = 842;
+  let stream = '';
+  function text(x,y,size,str){ stream += `BT /F1 ${size} Tf ${x} ${y} Td (${escapePdfText(str)}) Tj ET\n`; }
+  function line(x1,y1,x2,y2){ stream += `${x1} ${y1} m ${x2} ${y2} l S\n`; }
+  function rect(x,y,w,h){ stream += `${x} ${y} ${w} ${h} re S\n`; }
+  function fillRect(x,y,w,h,r,g,b){ stream += `${r} ${g} ${b} rg ${x} ${y} ${w} ${h} re f 0 0 0 RG\n`; }
+  stream += '0 0 0 RG 1 w\n';
+  fillRect(0, 790, pageW, 52, 0, 0.447, 0.569);
+  stream += '1 1 1 rg\n';
+  text(40, 812, 20, 'Pet Habitat Builder');
+  text(40, 795, 10, 'Base 6 Maths evidence');
+  stream += '0 0 0 rg\n';
+  text(40, 760, 16, `${report.initials || 'Student'}'s ${report.animal} habitat`);
+  text(40, 738, 11, `Date: ${report.date}`);
+  text(40, 722, 11, `Animal: ${report.icon} ${report.animal}`);
+  text(40, 706, 11, `Area: ${report.width} x ${report.height} = ${report.area}m2 / square metres`);
+  text(40, 690, 11, `Capacity: ${report.capacityText}`);
+  text(40, 674, 11, `Budget: ${report.spent} spent, ${report.left} left`);
+  text(40, 658, 11, `Final result: ${report.tier}`);
+  text(40, 635, 13, 'Habitat grid');
+  const cell = 42;
+  const startX = 40, startY = 605;
+  const itemMap = {};
+  report.items.forEach(it => {
+    for(let yy=0; yy<it.h; yy++) for(let xx=0; xx<it.w; xx++) itemMap[`${it.x+xx},${it.y+yy}`] = it;
+  });
+  for(let y=0; y<report.height; y++){
+    for(let x=0; x<report.width; x++){
+      const px = startX + x*cell;
+      const py = startY - y*cell;
+      const it = itemMap[`${x},${y}`];
+      if(it) fillRect(px, py-cell, cell, cell, 0.9, 0.96, 0.97);
+      rect(px, py-cell, cell, cell);
+      if(it && it.x === x && it.y === y){ text(px+4, py-23, 7, it.name.slice(0,18)); }
+    }
+  }
+  let y = 500;
+  text(40, y, 13, 'Student voice'); y -= 20;
+  text(40, y, 11, 'Area choice:'); y -= 15;
+  wrapText(report.areaExplain || 'Not written yet.', 74).slice(0,4).forEach(l => { text(55,y,10,l); y -= 13; });
+  y -= 8;
+  text(40, y, 11, 'Capacity choice:'); y -= 15;
+  wrapText(report.capacityExplain || 'Not written yet.', 74).slice(0,4).forEach(l => { text(55,y,10,l); y -= 13; });
+  y -= 12;
+  fillRect(40, y-54, 515, 64, 1, 0.953, 0.91);
+  rect(40, y-54, 515, 64);
+  text(55, y-10, 12, 'Jay evidence summary');
+  text(55, y-28, 10, report.evidence);
+  text(55, y-43, 10, `Safety meter: ${report.safety}%   Comfort meter: ${report.comfort}%`);
+  const content = stream;
+  const objects = [];
+  objects.push('1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n');
+  objects.push('2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n');
+  objects.push(`3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >> endobj\n`);
+  objects.push(`4 0 obj << /Length ${content.length} >> stream\n${content}endstream\nendobj\n`);
+  objects.push('5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\n');
+  let pdf = '%PDF-1.4\n';
+  const offsets = [0];
+  objects.forEach(o => { offsets.push(pdf.length); pdf += o; });
+  const xref = pdf.length;
+  pdf += `xref\n0 ${objects.length+1}\n0000000000 65535 f \n`;
+  for(let i=1; i<offsets.length; i++) pdf += String(offsets[i]).padStart(10,'0') + ' 00000 n \n';
+  pdf += `trailer << /Size ${objects.length+1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
+  return pdf;
+}
+
+function exportPdf(){
+  const report = saveFinalReport(true);
+  if(!report) return;
+  const pdf = makePdf(report);
+  const blob = new Blob([pdf], { type:'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `pet-habitat-builder-${report.initials || 'student'}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  showNotice('reportNotice', 'PDF exported. Report saved on this device.');
+}
+
+function emailBody(report){
+  return [
+    'BASE 6 · PET HABITAT BUILDER',
+    '',
+    `Student: ${report.initials}`,
+    `Date: ${report.date}`,
+    `Animal: ${report.animal}`,
+    `Area: ${report.width} x ${report.height} = ${report.area}m² / square metres`,
+    `Capacity: ${report.capacityText}`,
+    `Budget: ${report.spent} coins spent, ${report.left} coins left`,
+    `Final result: ${report.tier}`,
+    '',
+    'Items:',
+    report.items.map(i => `- ${i.name}`).join('\n'),
+    '',
+    'Area choice:',
+    report.areaExplain,
+    '',
+    'Capacity choice:',
+    report.capacityExplain,
+    '',
+    report.evidence,
+    '',
+    '—',
+    'Sent from Base 6 Pet Habitat Builder'
+  ].join('\n');
+}
+
+function sendGmail(){
+  const report = saveFinalReport(true);
+  if(!report) return;
+  const subject = encodeURIComponent(`Base 6 · Pet Habitat Builder — ${report.initials || 'Student'}`);
+  const body = encodeURIComponent(emailBody(report));
+  window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${TEACHER_EMAIL}&su=${subject}&body=${body}`, '_blank');
+  showNotice('reportNotice', 'Gmail opened in a new tab. The PDF does not attach automatically, so export it too if needed.');
+}
+
+function sendMailto(){
+  const report = saveFinalReport(true);
+  if(!report) return;
+  const subject = encodeURIComponent(`Base 6 · Pet Habitat Builder — ${report.initials || 'Student'}`);
+  const body = encodeURIComponent(emailBody(report));
+  window.location.href = `mailto:${TEACHER_EMAIL}?subject=${subject}&body=${body}`;
+}
+
+init();
+</script>
+</body>
+</html>
