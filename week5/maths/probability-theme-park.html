@@ -127,6 +127,53 @@
   .m0 { bottom:0%; } .m25 { bottom:25%; } .m50 { bottom:50%; } .m75 { bottom:75%; } .m100 { bottom:100%; }
   .strength-caption { color:#555; font-size:0.8rem; line-height:1.35; }
 
+
+  .diagram-panel { border:2px solid #d8d0c8; background:#ffffff; border-radius:18px; padding:0.9rem; margin:0.85rem 0 1rem; }
+  .diagram-top { display:flex; align-items:center; justify-content:space-between; gap:0.6rem; flex-wrap:wrap; margin-bottom:0.7rem; }
+  .diagram-title { font-size:0.9rem; font-weight:700; color:#005a72; display:flex; align-items:center; gap:0.35rem; }
+  .diagram-hint { font-size:0.78rem; color:#666; font-weight:700; background:#fff3e8; border:1.5px solid #fcd8bc; border-radius:999px; padding:0.18rem 0.55rem; }
+  .diagram-body { display:grid; grid-template-columns: 160px minmax(0, 1fr); gap:0.85rem; align-items:center; }
+  .wheel-diagram { width:150px; height:150px; border-radius:50%; border:5px solid #fff; box-shadow:0 0 0 3px #7b5ea7, 0 8px 18px rgba(0,0,0,0.12); background:var(--wheel-gradient); position:relative; margin:0 auto; }
+  .wheel-diagram::before { content:""; position:absolute; inset:22%; border-radius:50%; background:#fffaf6; border:3px solid rgba(0,0,0,0.08); }
+  .wheel-diagram::after { content:""; position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:13px solid transparent; border-right:13px solid transparent; border-top:24px solid #ef7724; filter:drop-shadow(0 2px 1px rgba(0,0,0,0.18)); }
+  .wheel-centre { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:2rem; z-index:2; }
+  .dice-diagram { display:grid; grid-template-columns:repeat(3, 46px); gap:0.42rem; justify-content:center; }
+  .die-face { width:46px; height:46px; border-radius:10px; border:2px solid #d8d0c8; background:#fffaf6; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.1rem; box-shadow:0 3px 0 rgba(0,0,0,0.06); }
+  .die-face.target, .chance-token.target { border-color:#ef7724; background:#fff3e8; box-shadow:0 0 0 3px rgba(239,119,36,0.14); }
+  .token-diagram { display:grid; grid-template-columns:repeat(5, 34px); gap:0.35rem; justify-content:center; padding:0.35rem; border-radius:18px; background:#fffaf6; border:2px dashed #d8d0c8; }
+  .chance-token { width:34px; height:34px; border-radius:50%; border:2px solid #d8d0c8; background:#fff; display:flex; align-items:center; justify-content:center; font-size:1.05rem; }
+  .claw-cabinet { position:relative; max-width:190px; margin:0 auto; background:#e6f5f8; border:3px solid #007291; border-radius:18px 18px 12px 12px; padding:1.9rem 0.55rem 0.55rem; }
+  .claw-cabinet::before { content:"CLAW"; position:absolute; top:0.35rem; left:50%; transform:translateX(-50%); font-size:0.7rem; font-weight:700; color:#005a72; letter-spacing:0.14em; }
+  .claw-arm { position:absolute; top:1.05rem; left:50%; width:28px; height:26px; transform:translateX(-50%); border-left:3px solid #7b5ea7; border-right:3px solid #7b5ea7; border-bottom:3px solid #7b5ea7; border-radius:0 0 12px 12px; }
+  .diagram-legend { display:flex; flex-direction:column; gap:0.4rem; }
+  .legend-row { display:grid; grid-template-columns:2.2rem minmax(0, 1fr) auto; gap:0.45rem; align-items:center; font-size:0.88rem; }
+  .legend-icon { width:2rem; height:2rem; border-radius:50%; background:#fffaf6; border:1.5px solid #d8d0c8; display:flex; align-items:center; justify-content:center; }
+  .legend-bar { height:12px; border-radius:999px; background:#eee5dd; overflow:hidden; }
+  .legend-fill { height:100%; width:var(--w); background:linear-gradient(90deg, #007291, #ef7724); border-radius:999px; }
+  .legend-count { color:#555; font-weight:700; white-space:nowrap; }
+  .target-note { margin-top:0.55rem; border-radius:12px; padding:0.55rem 0.65rem; background:#f0fafc; border:1.5px solid #b8dfe8; color:#005a72; font-weight:700; font-size:0.86rem; }
+
+  .test-callout { display:none; margin-top:0.7rem; border-radius:12px; padding:0.62rem 0.75rem; background:#fff7eb; border:1.5px solid #f6c893; color:#7a4a00; font-weight:700; font-size:0.86rem; }
+  .test-callout.show { display:block; }
+  .diagram-panel.is-testing { border-color:#ef7724; box-shadow:0 0 0 4px rgba(239,119,36,0.12), 0 10px 24px rgba(0,0,0,0.08); }
+  .diagram-panel.is-testing .wheel-diagram { animation:funfairSpin 1s cubic-bezier(.2,.8,.25,1) both; }
+  .diagram-panel.is-testing .die-face { animation:diceWobble .72s ease-in-out both; }
+  .diagram-panel.is-testing .die-face:nth-child(2n) { animation-delay:.05s; }
+  .diagram-panel.is-testing .die-face:nth-child(3n) { animation-delay:.1s; }
+  .diagram-panel.is-testing .chance-token { animation:tokenShuffle .82s ease-in-out both; }
+  .diagram-panel.is-testing .chance-token:nth-child(2n) { animation-delay:.04s; }
+  .diagram-panel.is-testing .chance-token:nth-child(3n) { animation-delay:.08s; }
+  .diagram-panel.is-testing .claw-arm { animation:clawDrop .95s ease-in-out both; }
+  .diagram-panel.is-testing .legend-fill { animation:barPulse .65s ease-in-out alternate 2; }
+  .die-face.landed, .chance-token.landed, .legend-row.landed .legend-icon { border-color:#2e8b57; background:#eef8e9; box-shadow:0 0 0 4px rgba(46,139,87,0.15); transform:scale(1.08); }
+  .legend-row.landed { background:#f2fff7; border-radius:12px; padding:0.12rem 0.25rem; }
+  .wheel-diagram.landed { box-shadow:0 0 0 4px #2e8b57, 0 8px 18px rgba(0,0,0,0.16); }
+  @keyframes funfairSpin { 0% { transform:rotate(0deg) scale(1); } 70% { transform:rotate(740deg) scale(1.04); } 100% { transform:rotate(810deg) scale(1); } }
+  @keyframes diceWobble { 0% { transform:translateY(0) rotate(0); } 25% { transform:translateY(-8px) rotate(-10deg); } 50% { transform:translateY(5px) rotate(8deg); } 75% { transform:translateY(-4px) rotate(-5deg); } 100% { transform:translateY(0) rotate(0); } }
+  @keyframes tokenShuffle { 0% { transform:translate(0,0) rotate(0); } 30% { transform:translate(4px,-7px) rotate(12deg); } 60% { transform:translate(-5px,5px) rotate(-10deg); } 100% { transform:translate(0,0) rotate(0); } }
+  @keyframes clawDrop { 0% { transform:translate(-50%,0); } 45% { transform:translate(-50%,78px); } 70% { transform:translate(-50%,78px) scaleX(0.8); } 100% { transform:translate(-50%,0); } }
+  @keyframes barPulse { from { filter:saturate(1); transform:scaleX(1); transform-origin:left; } to { filter:saturate(1.4); transform:scaleX(1.03); transform-origin:left; } }
+
   .trial-panel { display:none; border:2px solid #e0d8d0; border-radius:18px; padding:1rem; margin-top:1rem; background:#fff; }
   .trial-panel.show { display:block; }
   .trial-buttons { display:flex; gap:0.55rem; flex-wrap:wrap; margin:0.75rem 0; }
@@ -179,6 +226,8 @@
     .fair-map { grid-template-columns: repeat(3, 1fr); }
     .game-layout { grid-template-columns:1fr; }
     .strength-side { display:none; }
+    .diagram-body { grid-template-columns:1fr; }
+    .wheel-diagram { width:136px; height:136px; }
     .reflection-grid { grid-template-columns:1fr; }
   }
   @media (max-width: 560px) {
@@ -395,10 +444,12 @@ let state = {
   completed:{},
   results:{},
   final:null,
-  finalReport:null
+  finalReport:null,
+  isTesting:false
 };
 
 function $(id){ return document.getElementById(id); }
+function cssEscapeValue(value){ return (window.CSS && CSS.escape) ? CSS.escape(value) : String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&'); }
 function gameById(id){ return GAME_DATA.find(function(g){ return g.id === id; }); }
 function showMessage(id, text){ const el = $(id); if(!el) return; el.textContent = text; el.classList.add('show'); setTimeout(function(){ el.classList.remove('show'); }, 4200); }
 function hideAllStages(){ document.querySelectorAll('.stage').forEach(function(s){ s.classList.remove('active'); }); }
@@ -492,18 +543,67 @@ function weightedPick(outcomes){
 }
 function simulate(game, trials){
   const tally = {};
+  const picks = [];
   let targetCount = 0;
   for(let i=0; i<trials; i++){
     const outcome = weightedPick(game.outcomes);
+    picks.push(outcome);
     tally[outcome.label] = (tally[outcome.label] || 0) + 1;
     if(game.target(outcome)) targetCount++;
   }
-  return { trials:trials, tally:tally, targetCount:targetCount };
+  return { trials:trials, tally:tally, targetCount:targetCount, picks:picks };
 }
 function targetProbability(game){
   const total = game.outcomes.reduce(function(sum,o){ return sum + o.weight; },0);
   const target = game.outcomes.reduce(function(sum,o){ return sum + (game.target(o) ? o.weight : 0); },0);
   return { target:target, total:total, percent:Math.round((target/total)*100) };
+}
+
+function clearOutcomeHighlights(gameId){
+  const panel = document.querySelector('.diagram-panel[data-game-id="' + gameId + '"]');
+  if(!panel) return;
+  panel.querySelectorAll('.landed').forEach(function(el){ el.classList.remove('landed'); });
+}
+function setButtonsBusy(containerId, label){
+  const box = $(containerId);
+  if(!box) return;
+  box.querySelectorAll('button').forEach(function(btn){
+    btn.disabled = true;
+    btn.textContent = label || 'Testing...';
+  });
+}
+function animateTest(game, outcome, trials, done){
+  const panel = document.querySelector('.diagram-panel[data-game-id="' + game.id + '"]');
+  if(!panel){ done(); return; }
+  clearOutcomeHighlights(game.id);
+  const callout = panel.querySelector('.test-callout');
+  if(callout){
+    callout.classList.add('show');
+    callout.textContent = trials === 1 ? 'Testing 1 go... watch the dodgy machinery.' : 'Running ' + trials + ' quick tests... tally goblin is counting.';
+  }
+  panel.classList.remove('is-testing');
+  void panel.offsetWidth;
+  panel.classList.add('is-testing');
+  const duration = trials === 1 ? 950 : 1150;
+  setTimeout(function(){
+    panel.classList.remove('is-testing');
+    applyOutcomeHighlight(game, outcome, trials);
+    done();
+  }, duration);
+}
+function applyOutcomeHighlight(game, outcome, trials){
+  const panel = document.querySelector('.diagram-panel[data-game-id="' + game.id + '"]');
+  if(!panel) return;
+  const callout = panel.querySelector('.test-callout');
+  const finalPick = outcome.picks && outcome.picks.length ? outcome.picks[outcome.picks.length - 1] : null;
+  if(trials === 1 && finalPick){
+    panel.querySelectorAll('[data-outcome-label="' + cssEscapeValue(finalPick.label) + '"]').forEach(function(el){ el.classList.add('landed'); });
+    const wheel = panel.querySelector('.wheel-diagram');
+    if(wheel) wheel.classList.add('landed');
+    if(callout) callout.textContent = 'Result: ' + finalPick.icon + ' ' + finalPick.label + '. One go can be surprising.';
+    return;
+  }
+  if(callout) callout.textContent = 'Test complete: the target happened ' + outcome.targetCount + ' out of ' + outcome.trials + ' times.';
 }
 function scaleIndex(word){ return SCALE.findIndex(function(s){ return s.word === word; }); }
 
@@ -524,6 +624,85 @@ function openGame(id){
   renderGame(game);
   setStage('stage-game');
   renderMap();
+}
+
+
+function expandOutcomes(game){
+  const pieces = [];
+  game.outcomes.forEach(function(o){
+    for(let i = 0; i < o.weight; i++){ pieces.push(o); }
+  });
+  return pieces;
+}
+function safeAttr(text){ return escapeHtml(text).replace(/"/g, '&quot;'); }
+function outcomeTotal(game){
+  return game.outcomes.reduce(function(sum,o){ return sum + o.weight; },0);
+}
+function makeLegend(game){
+  const total = outcomeTotal(game);
+  return '<div class="diagram-legend">' + game.outcomes.map(function(o){
+    const pct = Math.round((o.weight / total) * 100);
+    const isTarget = game.target(o);
+    return '<div class="legend-row" data-outcome-label="' + safeAttr(o.label) + '">' +
+      '<span class="legend-icon">' + o.icon + '</span>' +
+      '<div><strong>' + escapeHtml(o.label) + '</strong><div class="legend-bar"><div class="legend-fill" style="--w:' + pct + '%"></div></div></div>' +
+      '<span class="legend-count">' + o.weight + ' / ' + total + (isTarget ? ' target' : '') + '</span>' +
+    '</div>';
+  }).join('') + '</div>';
+}
+function conicGradientFor(game){
+  const colours = ['#ef7724','#007291','#2e8b57','#ffc857','#c2185b','#7b5ea7','#0e8a9e','#f28ab2','#8cc96f','#ffb36b'];
+  const total = outcomeTotal(game);
+  let current = 0;
+  const stops = [];
+  expandOutcomes(game).forEach(function(o, i){
+    const next = current + (100 / total);
+    stops.push(colours[i % colours.length] + ' ' + current.toFixed(2) + '% ' + next.toFixed(2) + '%');
+    current = next;
+  });
+  return 'conic-gradient(' + stops.join(',') + ')';
+}
+function wheelDiagramHtml(game){
+  return '<div class="diagram-body">' +
+    '<div class="wheel-diagram" style="--wheel-gradient:' + conicGradientFor(game) + '"><span class="wheel-centre">' + game.icon + '</span></div>' +
+    '<div>' + makeLegend(game) + targetNoteHtml(game) + '</div>' +
+  '</div>';
+}
+function diceDiagramHtml(game){
+  const pieces = expandOutcomes(game);
+  return '<div class="diagram-body">' +
+    '<div class="dice-diagram">' + pieces.map(function(o){
+      return '<div class="die-face ' + (game.target(o) ? 'target' : '') + '" data-outcome-label="' + safeAttr(o.label) + '">' + escapeHtml(o.label) + '</div>';
+    }).join('') + '</div>' +
+    '<div>' + makeLegend(game) + targetNoteHtml(game) + '</div>' +
+  '</div>';
+}
+function tokenDiagramHtml(game, claw){
+  const pieces = expandOutcomes(game);
+  const tokenGrid = '<div class="token-diagram">' + pieces.map(function(o){
+    return '<span class="chance-token ' + (game.target(o) ? 'target' : '') + '" data-outcome-label="' + safeAttr(o.label) + '" title="' + safeAttr(o.label) + '">' + o.icon + '</span>';
+  }).join('') + '</div>';
+  const visual = claw ? '<div class="claw-cabinet"><span class="claw-arm"></span>' + tokenGrid + '</div>' : tokenGrid;
+  return '<div class="diagram-body">' +
+    visual +
+    '<div>' + makeLegend(game) + targetNoteHtml(game) + '</div>' +
+  '</div>';
+}
+function targetNoteHtml(game){
+  const p = targetProbability(game);
+  return '<div class="target-note">Visual clue: the target appears ' + p.target + ' out of ' + p.total + ' possible parts. Use that to choose the probability word.</div>';
+}
+function diagramHtml(game){
+  const title = game.id === 'big' ? 'Look at the Big Prize Wheel' : 'Look at the game first';
+  const intro = game.id === 'dice' ? diceDiagramHtml(game) :
+    (game.id === 'spinner' || game.id === 'wheel' || game.id === 'big') ? wheelDiagramHtml(game) :
+    game.id === 'claw' ? tokenDiagramHtml(game, true) :
+    tokenDiagramHtml(game, false);
+  return '<div class="diagram-panel" data-game-id="' + safeAttr(game.id) + '" aria-label="Visual probability diagram for ' + safeAttr(game.name) + '">' +
+    '<div class="diagram-top"><span class="diagram-title">👀 ' + title + '</span><span class="diagram-hint">Count first · predict second</span></div>' +
+    intro +
+    '<div class="test-callout" id="testCallout-' + safeAttr(game.id) + '"></div>' +
+  '</div>';
 }
 
 function renderGame(game){
@@ -547,6 +726,7 @@ function renderGame(game){
           <div class="outcome-icon">${game.targetIcon}</div>
           <div class="outcome-text"><strong>${game.targetLabel}</strong><span>Choose how likely this is before running the test.</span></div>
         </div>
+        ${diagramHtml(game)}
         ${predictionScaleHtml(existing.prediction)}
         <details class="bonus-box"><summary>Optional second challenge</summary><p class="muted">${game.bonus}</p></details>
         <div class="trial-panel ${existing.prediction ? 'show' : ''}" id="trialPanel">
@@ -604,6 +784,7 @@ function choosePrediction(game, word){
 function renderTrialButtons(game){
   const res = state.results[game.id] || {};
   const box = $('trialButtons'); if(!box) return;
+  if(state.isTesting){ box.innerHTML = '<button class="btn" disabled>Testing...</button>'; return; }
   if(!res.prediction){ box.innerHTML = '<button class="btn" disabled>Choose a prediction first</button>'; return; }
   if(res.completed){ box.innerHTML = '<button class="btn" disabled>Test completed</button>'; return; }
   if(!res.ranOne){ box.innerHTML = '<button class="btn secondary" onclick="runGameTrials(\'' + game.id + '\',1)">Run 1 trial</button>'; return; }
@@ -611,29 +792,36 @@ function renderTrialButtons(game){
 }
 function runGameTrials(id, trials){
   const game = gameById(id); const res = state.results[id] || {};
+  if(state.isTesting){ showMessage('gameMsg','Test already running. The dodgy machinery needs one moment.'); return; }
   if(!res.prediction){ showMessage('gameMsg','Choose a prediction first. The funfair cannot read minds.'); return; }
   if(res.completed){ showMessage('gameMsg','This stall is already complete. No reruns; the funfair goblin is strict.'); return; }
+  state.isTesting = true;
+  setButtonsBusy('trialButtons', trials === 1 ? 'Testing 1 go...' : 'Running ' + trials + ' trials...');
   const outcome = simulate(game, trials);
-  res.lastResult = outcome;
-  if(trials === 1){
-    res.ranOne = true;
+  animateTest(game, outcome, trials, function(){
+    res.lastResult = outcome;
+    if(trials === 1){
+      res.ranOne = true;
+      state.results[id] = res;
+      renderResult(game, outcome);
+      state.isTesting = false;
+      renderTrialButtons(game);
+      showMessage('gameMsg','One result is interesting, but it is not strong evidence yet. Run 10 or 20 trials next.');
+      return;
+    }
+    res.bigTrials = trials;
+    res.completed = true;
     state.results[id] = res;
+    state.completed[id] = true;
     renderResult(game, outcome);
+    showActualProbability(game);
+    $('stampEarned').classList.add('show');
+    state.isTesting = false;
     renderTrialButtons(game);
-    showMessage('gameMsg','One result is interesting, but it is not strong evidence yet. Run 10 or 20 trials next.');
-    return;
-  }
-  res.bigTrials = trials;
-  res.completed = true;
-  state.results[id] = res;
-  state.completed[id] = true;
-  renderResult(game, outcome);
-  showActualProbability(game);
-  $('stampEarned').classList.add('show');
-  renderTrialButtons(game);
-  renderGameNav(game);
-  renderMap();
-  burstConfetti(['🎟️','🎪','⭐']);
+    renderGameNav(game);
+    renderMap();
+    burstConfetti(['🎟️','🎪','⭐']);
+  });
 }
 function renderResult(game, outcome){
   const box = $('resultBox'); if(!box) return;
@@ -717,6 +905,7 @@ function renderFinal(){
       <div class="game-card">
         <p class="eyebrow">Final prediction</p>
         <div class="outcome-card" id="finalOutcomeCard" draggable="${f.completed ? 'false' : 'true'}"><div class="outcome-icon">${FINAL_GAME.targetIcon}</div><div class="outcome-text"><strong>${FINAL_GAME.targetLabel}</strong><span>Choose your probability word before spinning 10 times.</span></div></div>
+        ${diagramHtml(FINAL_GAME)}
         ${predictionScaleHtml(f.prediction)}
         <div class="trial-panel ${f.prediction ? 'show' : ''}" id="finalTrialPanel">
           <p><strong>Prediction:</strong> <span id="finalPredictionText">${f.prediction || ''}</span></p>
@@ -759,22 +948,29 @@ function chooseFinalPrediction(word){
 }
 function renderFinalButtons(){
   const box = $('finalButtons'); if(!box) return;
+  if(state.isTesting){ box.innerHTML = '<button class="btn" disabled>Spinning...</button>'; return; }
   if(!state.final || !state.final.prediction){ box.innerHTML = '<button class="btn" disabled>Choose a prediction first</button>'; return; }
   if(state.final.completed){ box.innerHTML = '<button class="btn" disabled>10 spins completed</button>'; return; }
   box.innerHTML = '<button class="btn" onclick="runFinalTrials()">Run 10 spins</button>';
 }
 function runFinalTrials(){
+  if(state.isTesting){ showMessage('finalMsg','The big wheel is already spinning. Hold onto your suspicious ticket.'); return; }
   if(!state.final || !state.final.prediction){ showMessage('finalMsg','Choose a prediction first. The big wheel cannot guess your guess.'); return; }
+  state.isTesting = true;
+  setButtonsBusy('finalButtons', 'Spinning 10 times...');
   const result = simulate(FINAL_GAME, 10);
-  state.final.result = result;
-  state.final.completed = true;
-  const matched = state.final.prediction === FINAL_GAME.actualWord;
-  state.final.judgement = matched ? 'Prediction matched' : 'Prediction did not match';
-  renderFinalResult();
-  showFinalActual();
-  renderFinalButtons();
-  renderReflectionArea();
-  burstConfetti(['🏆','🎟️','🎡','⭐']);
+  animateTest(FINAL_GAME, result, 10, function(){
+    state.final.result = result;
+    state.final.completed = true;
+    const matched = state.final.prediction === FINAL_GAME.actualWord;
+    state.final.judgement = matched ? 'Prediction matched' : 'Prediction did not match';
+    renderFinalResult();
+    showFinalActual();
+    state.isTesting = false;
+    renderFinalButtons();
+    renderReflectionArea();
+    burstConfetti(['🏆','🎟️','🎡','⭐']);
+  });
 }
 function renderFinalResult(){
   const box = $('finalResultBox'); if(!box || !state.final || !state.final.result) return;
