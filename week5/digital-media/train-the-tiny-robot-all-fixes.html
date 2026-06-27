@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Train the Tiny Robot · JayBot 3000 · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root{
+    --cream:#fef8f4; --ink:#1a1a1a; --muted:#555; --card:#fff;
+    --teal:#007291; --teal-dark:#005a72; --teal-soft:#e6f5f8;
+    --orange:#ef7724; --orange-dark:#c05a10; --orange-soft:#fff3e8;
+    --green:#2e8b57; --green-soft:#e6f3ec;
+    --red:#c43b3b; --red-soft:#fde8e8;
+    --yellow:#ffc857; --purple:#7b5ea7; --purple-soft:#efe9f6;
+    --border:#e0d8d0; --shadow:0 10px 28px rgba(0,0,0,.09);
+  }
+  body{ font-family:"Atkinson Hyperlegible", Arial, sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; }
+  button, input, textarea, select{ font-family:inherit; }
+  a{ color:inherit; }
+
+  .site-header{ position:relative; overflow:hidden; text-align:center; padding:2.3rem 1.2rem 3.4rem; background:linear-gradient(135deg,#007291 0%,#305c96 52%,#7b5ea7 100%); }
+  .site-header::before{ content:""; position:absolute; top:-70px; left:-45px; width:190px; height:190px; border-radius:50%; background:rgba(255,255,255,.1); }
+  .site-header::after{ content:""; position:absolute; right:-60px; bottom:5px; width:220px; height:220px; border-radius:50%; background:rgba(239,119,36,.22); }
+  .header-back{ position:absolute; top:1rem; left:1.15rem; z-index:5; color:#fff; text-decoration:none; font-weight:700; font-size:.9rem; opacity:.92; }
+  .header-inner{ position:relative; z-index:2; max-width:850px; margin:0 auto; }
+  .week-label{ color:#ffe8c2; text-transform:uppercase; letter-spacing:.12em; font-weight:700; font-size:.78rem; margin-bottom:.35rem; }
+  h1{ color:#fff; font-size:clamp(2rem,5vw,3.15rem); line-height:1.08; }
+  .header-sub{ color:#fef8f4; max-width:720px; margin:.75rem auto 0; line-height:1.55; font-size:1.05rem; }
+  .lab-lights{ display:flex; gap:.45rem; justify-content:center; flex-wrap:wrap; margin-top:1rem; }
+  .light{ width:13px; height:13px; border-radius:50%; background:#c9f4ff; border:2px solid rgba(255,255,255,.75); box-shadow:0 0 12px rgba(201,244,255,.8); }
+  .light:nth-child(2n){ background:#ffe6a7; } .light:nth-child(3n){ background:#ffd1e4; }
+  .header-wave{ position:absolute; left:0; bottom:-1px; width:100%; height:42px; z-index:1; }
+
+  .main{ width:min(1120px, calc(100% - 1.4rem)); margin:0 auto; padding:2rem 0 4rem; }
+  .top-strip{ display:flex; gap:1rem; align-items:stretch; justify-content:space-between; flex-wrap:wrap; margin-bottom:1rem; }
+  .intro-card,.student-card{ background:#fff; border:2px solid var(--orange); border-radius:18px; padding:1.1rem 1.25rem; box-shadow:0 4px 16px rgba(239,119,36,.12); }
+  .intro-card{ flex:1 1 560px; } .student-card{ flex:0 1 410px; border-color:var(--teal); box-shadow:0 4px 16px rgba(0,114,145,.12); }
+  .eyebrow{ font-size:.75rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:var(--orange); margin-bottom:.35rem; }
+  .intro-card h2,.student-card h2{ font-size:1.2rem; margin-bottom:.35rem; }
+  p{ line-height:1.6; } .muted{ color:var(--muted); }
+
+  .initial-row{ display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.7rem; }
+  .initial-btn{ min-height:42px; border:2px solid var(--teal); background:#fff; color:var(--teal); border-radius:999px; padding:.42rem .75rem; font-weight:700; cursor:pointer; }
+  .initial-btn:hover,.initial-btn.selected{ background:var(--teal); color:#fff; }
+
+  .progress-shell{ position:sticky; top:0; z-index:50; background:rgba(254,248,244,.96); backdrop-filter:blur(8px); border:2px solid #eadfd4; border-radius:18px; padding:.7rem; margin:1rem 0; box-shadow:0 5px 18px rgba(0,0,0,.06); }
+  .progress-track{ display:grid; grid-template-columns:repeat(5,1fr); gap:.45rem; }
+  .step-pill{ border:1.5px solid var(--border); background:#fff; border-radius:12px; padding:.5rem .35rem; text-align:center; font-size:.78rem; font-weight:700; color:#777; }
+  .step-pill.active{ border-color:var(--teal); background:var(--teal-soft); color:var(--teal-dark); box-shadow:inset 0 0 0 2px rgba(0,114,145,.1); }
+  .step-pill.done{ border-color:var(--green); background:var(--green-soft); color:#1c6d3d; }
+
+  .stage{ display:none; background:#fff; border:2px solid var(--border); border-radius:22px; padding:1.25rem; box-shadow:var(--shadow); scroll-margin-top:90px; }
+  .stage.active{ display:block; }
+  .stage-top{ display:flex; gap:1rem; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; margin-bottom:1rem; }
+  .title-wrap{ display:flex; gap:.75rem; align-items:center; }
+  .stage-icon{ width:58px; height:58px; border-radius:50%; background:var(--orange-soft); border:2px solid var(--orange); display:flex; align-items:center; justify-content:center; font-size:1.8rem; flex-shrink:0; }
+  .stage h2{ color:var(--teal-dark); font-size:1.42rem; line-height:1.2; }
+  .subtitle{ color:#555; margin-top:.25rem; }
+  .tag-row{ display:flex; gap:.4rem; flex-wrap:wrap; }
+  .tag{ border:1.5px solid var(--border); background:#fffaf6; color:#555; border-radius:999px; padding:.2rem .55rem; font-size:.76rem; font-weight:700; }
+
+  .lab-layout{ display:grid; grid-template-columns:minmax(0,1fr) 280px; gap:1rem; align-items:start; }
+  .lab-panel{ position:relative; min-height:420px; background:linear-gradient(180deg,#f7fcfd,#fffaf6); border:2px solid #b8dfe8; border-radius:20px; overflow:hidden; padding:1rem; }
+  .lab-panel::before{ content:""; position:absolute; inset:auto 0 0 0; height:74px; background:#d8d0c8; border-top:4px solid #9b8e83; opacity:.75; }
+  .wire{ position:absolute; height:9px; border-radius:999px; background:#7b5ea7; opacity:.22; transform:rotate(var(--r)); width:var(--w); left:var(--l); top:var(--t); }
+  .warning-tape{ position:absolute; right:-38px; top:32px; transform:rotate(24deg); background:repeating-linear-gradient(45deg,#ffc857 0 12px,#1a1a1a 12px 20px); color:#1a1a1a; height:28px; width:180px; opacity:.25; }
+  .robot-zone{ position:relative; z-index:2; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+  .robot{ position:relative; width:138px; height:165px; flex-shrink:0; transform:translateY(0); transition:transform .3s ease; }
+  .robot.bop{ animation:bop .52s ease-in-out 2; }
+  .robot-head{ position:absolute; left:20px; top:10px; width:96px; height:74px; border:4px solid var(--teal-dark); border-radius:24px; background:linear-gradient(160deg,#d7eef4,#fff); box-shadow:0 8px 0 rgba(0,0,0,.08); }
+  .antenna{ position:absolute; left:65px; top:0; width:8px; height:18px; background:var(--teal-dark); border-radius:999px; }
+  .antenna::before{ content:""; position:absolute; left:-6px; top:-12px; width:20px; height:20px; border-radius:50%; background:var(--orange); border:3px solid #fff; }
+
+  /* Enormous Jay-style robot eyebrows */
+  .robot-head::before,
+  .robot-head::after{
+    content:"";
+    position:absolute;
+    top:16px;
+    width:34px;
+    height:10px;
+    border-radius:999px;
+    background:#1a1a1a;
+    box-shadow:0 3px 0 rgba(0,0,0,.12);
+    z-index:3;
+  }
+  .robot-head::before{ left:14px; transform:rotate(-13deg); }
+  .robot-head::after{ right:14px; transform:rotate(13deg); }
+
+  .eye{ position:absolute; top:33px; width:15px; height:15px; border-radius:50%; background:var(--ink); z-index:2; }
+  .eye.left{ left:28px; } .eye.right{ right:28px; }
+  .mouth{ position:absolute; left:34px; top:55px; width:30px; height:8px; border-radius:0 0 999px 999px; background:var(--orange); }
+  .robot-body{ position:absolute; left:32px; top:84px; width:72px; height:70px; border:4px solid var(--teal-dark); border-radius:18px; background:#fff3e8; }
+  .robot-body::before{ content:"AI"; position:absolute; left:50%; top:18px; transform:translateX(-50%); color:var(--orange-dark); font-weight:700; font-size:1.1rem; }
+  .robot-arm{ position:absolute; top:98px; width:35px; height:10px; background:var(--teal-dark); border-radius:999px; }
+  .robot-arm.left{ left:5px; transform:rotate(-20deg); } .robot-arm.right{ right:5px; transform:rotate(20deg); }
+  .robot-foot{ position:absolute; bottom:0; width:38px; height:13px; border-radius:999px; background:#4e5960; }
+  .robot-foot.left{ left:26px; } .robot-foot.right{ right:26px; }
+  @keyframes bop{ 0%,100%{ transform:translateY(0) rotate(0); } 35%{ transform:translateY(-8px) rotate(-2deg); } 70%{ transform:translateY(-3px) rotate(2deg); } }
+
+  .speech{ flex:1 1 260px; min-height:112px; background:#fff; border:2px solid var(--teal); border-radius:18px; padding:.9rem 1rem; box-shadow:0 5px 15px rgba(0,114,145,.1); position:relative; }
+  .speech::before{ content:""; position:absolute; left:-14px; top:38px; width:24px; height:24px; background:#fff; border-left:2px solid var(--teal); border-bottom:2px solid var(--teal); transform:rotate(45deg); }
+  .speech strong{ color:var(--teal-dark); display:block; margin-bottom:.25rem; }
+
+  .data-panel{ background:#fff; border:2px solid var(--purple); border-radius:20px; padding:1rem; box-shadow:0 5px 16px rgba(123,94,167,.11); }
+  .confidence-card{ border:2px solid #eadfd4; border-radius:16px; padding:.9rem; background:#fffaf6; margin-bottom:.85rem; }
+  .confidence-top{ display:flex; justify-content:space-between; align-items:center; gap:.6rem; font-weight:700; color:var(--teal-dark); }
+  .meter-track{ height:18px; border-radius:999px; background:#e9dfd4; overflow:hidden; margin:.55rem 0 .3rem; }
+  .meter-fill{ height:100%; width:var(--w,18%); background:linear-gradient(90deg,#c43b3b,#ef7724,#ffc857,#2e8b57); border-radius:999px; transition:width .35s ease; }
+  .mini-stat{ display:grid; grid-template-columns:1fr 1fr; gap:.55rem; }
+  .stat{ background:var(--teal-soft); border:1.5px solid #b8dfe8; border-radius:14px; padding:.65rem; text-align:center; }
+  .stat b{ display:block; font-size:1.25rem; color:var(--teal-dark); }
+  .stat span{ color:#555; font-size:.78rem; font-weight:700; }
+
+  .card-area{ position:relative; z-index:3; margin-top:1rem; display:grid; grid-template-columns:minmax(0,1fr); gap:.8rem; }
+  .object-card{ background:#fff; border:3px solid var(--teal); border-radius:20px; padding:1rem; box-shadow:0 8px 0 rgba(0,114,145,.12); max-width:560px; cursor:grab; }
+  .object-card:active{ cursor:grabbing; }
+  .object-top{ display:flex; align-items:center; gap:.75rem; }
+  .object-icon{ width:58px; height:58px; border-radius:18px; background:var(--teal-soft); display:flex; align-items:center; justify-content:center; font-size:2rem; flex-shrink:0; border:2px solid #b8dfe8; }
+  .object-name{ font-weight:700; color:var(--ink); font-size:1.15rem; }
+  .object-type{ color:#666; font-size:.83rem; font-weight:700; }
+  .object-desc{ color:#555; margin-top:.65rem; }
+  .object-card.safe-border{ border-color:var(--green); box-shadow:0 8px 0 rgba(46,139,87,.12); }
+  .object-card.unsafe-border{ border-color:var(--red); box-shadow:0 8px 0 rgba(196,59,59,.12); }
+
+  .drop-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin-top:1rem; }
+  .drop-zone{ min-height:118px; border:3px dashed var(--border); border-radius:18px; background:#fff; padding:.8rem; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; transition:.16s ease; }
+  .drop-zone.safe{ border-color:var(--green); background:var(--green-soft); }
+  .drop-zone.unsafe{ border-color:var(--red); background:var(--red-soft); }
+  .drop-zone.drag-over{ transform:translateY(-3px); box-shadow:0 10px 22px rgba(0,0,0,.13); }
+  .drop-zone strong{ font-size:1.05rem; }
+  .drop-zone span{ color:#555; font-size:.85rem; }
+  .button-row{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-top:1rem; }
+  .btn{ border:none; background:var(--orange); color:#fff; border-radius:12px; padding:.75rem 1rem; font-size:.95rem; font-weight:700; cursor:pointer; min-height:46px; box-shadow:0 3px 0 rgba(0,0,0,.13); }
+  .btn:hover{ background:var(--orange-dark); transform:translateY(-1px); }
+  .btn.secondary{ background:var(--teal); } .btn.secondary:hover{ background:var(--teal-dark); }
+  .btn.good{ background:var(--green); } .btn.bad{ background:var(--red); }
+  .btn.ghost{ background:#fff; color:var(--teal); border:2px solid var(--teal); box-shadow:none; }
+  .btn:disabled{ background:#cfc7bf; color:#777; cursor:not-allowed; transform:none; box-shadow:none; border:none; }
+
+  .message{ display:none; margin-top:.8rem; border:1.5px solid #f6c893; background:#fff7eb; color:#7a4a00; border-radius:12px; padding:.7rem .85rem; font-weight:700; }
+  .message.show{ display:block; }
+  .result-note{ display:none; border-radius:16px; padding:.85rem; margin-top:.8rem; border:2px solid var(--border); background:#fff; }
+  .result-note.show{ display:block; }
+  .result-note.correct{ border-color:var(--green); background:#f2fff7; color:#1c6d3d; }
+  .result-note.wrong{ border-color:var(--red); background:#fff1f1; color:#842121; }
+
+  .reason-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:.65rem; margin-top:.8rem; }
+  .reason-btn{ text-align:left; min-height:72px; border:2px solid var(--border); border-radius:14px; background:#fff; color:#1a1a1a; padding:.75rem; cursor:pointer; font-weight:700; }
+  .reason-btn:hover{ border-color:var(--teal); background:var(--teal-soft); }
+  .reason-btn.selected{ border-color:var(--orange); background:var(--orange-soft); }
+  .reason-btn.correct{ border-color:var(--green); background:var(--green-soft); }
+
+  .guess-card{ border:2px solid var(--purple); background:#fff; border-radius:18px; padding:1rem; margin-top:1rem; }
+  .guess-line{ font-size:1.15rem; font-weight:700; color:#4a3675; margin:.45rem 0; }
+  .robot-guess{ display:inline-flex; align-items:center; gap:.35rem; border-radius:999px; padding:.2rem .65rem; color:#fff; background:var(--purple); }
+  .robot-guess.safe{ background:var(--green); } .robot-guess.unsafe{ background:var(--red); }
+
+  .challenge-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:.75rem; margin-top:1rem; }
+  .challenge-tile{ border:2px solid var(--teal); background:#fff; border-radius:18px; padding:1rem; text-align:left; cursor:pointer; min-height:145px; }
+  .challenge-tile.done{ border-color:var(--green); background:#f2fff7; cursor:default; }
+  .challenge-tile.current{ border-color:var(--orange); background:#fff3e8; }
+  .challenge-tile b{ display:block; font-size:1.05rem; margin:.4rem 0 .2rem; }
+  .challenge-tile .big{ font-size:2rem; }
+
+  .example-form{ display:grid; grid-template-columns:1fr 1fr; gap:.8rem; margin-top:1rem; }
+  .field{ display:flex; flex-direction:column; gap:.35rem; }
+  .field.full{ grid-column:1/-1; }
+  label{ font-weight:700; color:var(--teal-dark); }
+  input, textarea, select{ border:1.7px solid #d8d0c8; border-radius:12px; padding:.7rem; font-size:.95rem; background:#fff; color:#1a1a1a; }
+  textarea{ min-height:84px; resize:vertical; line-height:1.45; }
+  input:focus,textarea:focus,select:focus{ outline:none; border-color:var(--orange); box-shadow:0 0 0 3px rgba(239,119,36,.17); }
+
+  .report-card{ border:2px solid var(--teal); background:#f7fcfd; border-radius:18px; padding:1rem; margin-top:1rem; }
+  .report-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:.75rem; margin:.8rem 0; }
+  .report-stat{ background:#fff; border:1.5px solid #b8dfe8; border-radius:14px; padding:.75rem; }
+  .report-stat b{ display:block; color:var(--teal-dark); font-size:1.25rem; }
+  .report-table{ width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:14px; margin-top:.75rem; border:1.5px solid #b8dfe8; background:#fff; }
+  .report-table th,.report-table td{ text-align:left; padding:.6rem; border-bottom:1px solid #e0eef2; vertical-align:top; font-size:.88rem; }
+  .report-table th{ background:var(--teal-soft); color:var(--teal-dark); }
+  .report-table tr:last-child td{ border-bottom:none; }
+  .evidence-line{ margin-top:.8rem; background:var(--orange-soft); border:1.5px solid #fcd8bc; color:#7a4a00; border-radius:12px; padding:.75rem; font-weight:700; }
+
+  .effect-word{ position:absolute; z-index:8; right:18px; top:145px; transform:rotate(-7deg); font-size:2rem; font-weight:700; color:var(--orange); text-shadow:2px 2px 0 #fff; opacity:0; pointer-events:none; }
+  .effect-word.pop{ animation:popword .85s ease forwards; }
+  @keyframes popword{ 0%{ opacity:0; transform:scale(.6) rotate(-12deg); } 25%{ opacity:1; transform:scale(1.12) rotate(5deg); } 100%{ opacity:0; transform:scale(1) rotate(-6deg) translateY(-18px); } }
+
+  .footer-note{ text-align:center; color:#777; font-size:.8rem; margin-top:2rem; }
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{ outline:3px solid var(--orange); outline-offset:3px; }
+
+
+
+  .ai-recipe{ border:2px solid var(--teal); background:#f7fcfd; border-radius:14px; padding:.75rem; color:var(--teal-dark); }
+  .ai-recipe-title{ font-weight:700; margin-bottom:.45rem; }
+  .recipe-flow{ display:flex; gap:.35rem; flex-wrap:wrap; align-items:center; }
+  .recipe-step{ background:#fff; border:1.5px solid #b8dfe8; border-radius:999px; padding:.25rem .55rem; font-weight:700; font-size:.82rem; }
+  .confidence-note{ font-size:.78rem; color:#555; line-height:1.45; margin-top:.35rem; border-top:1px solid #eadfd4; padding-top:.35rem; }
+  .ai-builder{ border:2px solid var(--teal); background:#f7fcfd; border-radius:18px; padding:1rem; margin-top:1rem; }
+  .ai-stem{ font-size:1.05rem; font-weight:700; color:var(--teal-dark); margin-bottom:.65rem; }
+  .ai-options{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:.65rem; margin-top:.7rem; }
+  .ai-option{ border:2px solid var(--border); background:#fff; border-radius:14px; padding:.8rem; text-align:left; cursor:pointer; font-weight:700; color:#1a1a1a; }
+  .ai-option:hover{ border-color:var(--teal); background:var(--teal-soft); }
+  .ai-option.selected{ border-color:var(--green); background:var(--green-soft); color:#1c6d3d; }
+  .ai-sort-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:.75rem; margin-top:1rem; }
+  .ai-sort-card{ border:2px solid var(--border); background:#fff; border-radius:18px; padding:1rem; min-height:170px; display:flex; flex-direction:column; gap:.45rem; }
+  .ai-sort-card.done{ border-color:var(--green); background:#f2fff7; }
+  .ai-sort-card.wrong{ border-color:var(--red); background:#fff1f1; }
+  .ai-sort-icon{ font-size:2rem; }
+  .ai-sort-card b{ font-size:1.05rem; }
+  .small-help{ font-size:.82rem; color:#555; line-height:1.45; }
+  .starter-row{ display:flex; gap:.4rem; flex-wrap:wrap; margin:.35rem 0 .5rem; }
+  .starter-chip{ border:1.5px solid var(--purple); background:#fff; color:var(--purple); border-radius:999px; padding:.3rem .6rem; font-size:.8rem; font-weight:700; cursor:pointer; }
+  .starter-chip:hover{ background:var(--purple-soft); }
+
+  @media(max-width:900px){
+    .lab-layout{ grid-template-columns:1fr; }
+    .data-panel{ order:-1; }
+    .progress-track{ grid-template-columns:1fr; }
+  }
+  @media(max-width:620px){
+    .main{ width:min(100% - .8rem,1120px); }
+    .stage{ padding:.9rem; }
+    .drop-grid,.example-form{ grid-template-columns:1fr; }
+    .robot{ width:116px; height:145px; transform:scale(.9); transform-origin:left top; }
+    .speech::before{ display:none; }
+    .lab-panel{ min-height:auto; }
+    .button-row .btn{ width:100%; }
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Back</a>
+  <div class="header-inner">
+    <p class="week-label">Base 6 · Everyday AI</p>
+    <h1>Train the Tiny Robot</h1>
+    <p class="header-sub">JayBot 3000 is chaotic but friendly. Train it with examples, watch its guesses improve, then explain how AI learns from information.</p>
+    <div class="lab-lights" aria-hidden="true"><span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span></div>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path></svg>
+</header>
+
+<main class="main">
+  <div class="top-strip" id="topStrip">
+    <section class="intro-card">
+      <p class="eyebrow">Mission</p>
+      <h2>Teach JayBot 3000 safe and unsafe examples.</h2>
+      <p class="muted">This activity shows a simple idea: AI can learn from examples, spot patterns, and make guesses based on information. It can also be very wrong if it has not learned enough.</p>
+    </section>
+    <section class="student-card">
+      <p class="eyebrow">Student</p>
+      <h2>Choose initials</h2>
+      <p class="muted">This can auto-fill from the Week 5 avatar if it is already set.</p>
+      <div class="initial-row" id="initialRow" aria-label="Choose initials"></div>
+    </section>
+  </div>
+
+  <section class="progress-shell" aria-label="Activity progress">
+    <div class="progress-track" id="progressTrack"></div>
+  </section>
+
+  <section class="stage active" id="stage-start">
+    <div class="stage-top">
+      <div class="title-wrap"><div class="stage-icon">🤖</div><div><h2>JayBot needs training.</h2><p class="subtitle">It has confidence. It does not yet have wisdom. Dangerous combination.</p></div></div>
+      <div class="tag-row"><span class="tag">AI learns from examples</span><span class="tag">AI makes guesses</span><span class="tag">AI can be wrong</span></div>
+    </div>
+    <div class="lab-layout">
+      <div class="lab-panel">
+        <span class="wire" style="--r:18deg; --w:190px; --l:20px; --t:330px"></span><span class="wire" style="--r:-14deg; --w:240px; --l:210px; --t:290px"></span><span class="warning-tape"></span>
+        <div class="robot-zone"><div class="robot bop" aria-hidden="true"><div class="antenna"></div><div class="robot-head"><span class="eye left"></span><span class="eye right"></span><span class="mouth"></span></div><span class="robot-arm left"></span><span class="robot-arm right"></span><div class="robot-body"></div><span class="robot-foot left"></span><span class="robot-foot right"></span></div><div class="speech"><strong>JayBot 3000:</strong><p>I am ready to learn. I currently trust hot kettles and suspicious links. This may be an issue.</p></div></div>
+        <div class="effect-word" id="effectWord">BEEP</div>
+      </div>
+      <aside class="data-panel">
+        <div class="confidence-card"><div class="confidence-top"><span>Robot confidence</span><span id="confidenceLabel">18%</span></div><div class="meter-track"><div class="meter-fill" id="confidenceFill" style="--w:18%"></div></div><p class="muted" id="confidenceText">Low. JayBot is basically guessing with enthusiasm.</p></div>
+        <div class="mini-stat"><div class="stat"><b id="trainedCount">0</b><span>examples</span></div><div class="stat"><b id="mistakeCount">0</b><span>corrections</span></div></div>
+      </aside>
+    </div>
+    <div class="button-row"><button class="btn secondary" onclick="startTraining()">Start training JayBot</button><button class="btn ghost" onclick="showHelp('startMsg')">Need help?</button></div>
+    <div class="message" id="startMsg"></div>
+  </section>
+
+  <section class="stage" id="stage-train">
+    <div class="stage-top"><div class="title-wrap"><div class="stage-icon">🧠</div><div><h2>Train JayBot with examples</h2><p class="subtitle">Drag the card into Safe or Unsafe, or use the buttons underneath.</p></div></div><div class="tag-row"><span class="tag">train</span><span class="tag">safe / unsafe</span></div></div>
+    <div class="lab-layout">
+      <div class="lab-panel" id="trainLab">
+        <span class="wire" style="--r:-9deg; --w:220px; --l:45px; --t:338px"></span><span class="warning-tape"></span>
+        <div class="robot-zone"><div class="robot" id="trainRobot" aria-hidden="true"><div class="antenna"></div><div class="robot-head"><span class="eye left"></span><span class="eye right"></span><span class="mouth"></span></div><span class="robot-arm left"></span><span class="robot-arm right"></span><div class="robot-body"></div><span class="robot-foot left"></span><span class="robot-foot right"></span></div><div class="speech"><strong>JayBot 3000:</strong><p id="trainSpeech">Give me examples. I promise to become less wrong.</p></div></div>
+        <div class="card-area" id="trainingCardHost"></div>
+        <div class="drop-grid"><div class="drop-zone safe" data-choice="safe"><strong>✅ Safe</strong><span>Seems okay / trusted / sensible</span></div><div class="drop-zone unsafe" data-choice="unsafe"><strong>⚠️ Unsafe</strong><span>Risky / suspicious / needs adult help</span></div></div>
+        <div class="result-note" id="trainResult"></div>
+        <div class="effect-word" id="trainEffect">DATA</div>
+      </div>
+      <aside class="data-panel"><div class="confidence-card"><div class="confidence-top"><span>Robot confidence</span><span id="confidenceLabel2">18%</span></div><div class="meter-track"><div class="meter-fill" id="confidenceFill2" style="--w:18%"></div></div><p class="muted" id="confidenceText2">Low. Add examples to improve it.</p></div><div class="mini-stat"><div class="stat"><b id="trainProgress">0/8</b><span>training</span></div><div class="stat"><b id="trainCorrect">0</b><span>good examples</span></div></div></aside>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-mistakes">
+    <div class="stage-top"><div class="title-wrap"><div class="stage-icon">⚙️</div><div><h2>JayBot makes mistakes</h2><p class="subtitle">Correct the robot, then choose a reason. This is how extra training improves the model.</p></div></div><div class="tag-row"><span class="tag">mistakes</span><span class="tag">retrain</span></div></div>
+    <div class="lab-layout">
+      <div class="lab-panel">
+        <span class="wire" style="--r:12deg; --w:250px; --l:70px; --t:318px"></span><span class="warning-tape"></span>
+        <div class="robot-zone"><div class="robot" id="mistakeRobot" aria-hidden="true"><div class="antenna"></div><div class="robot-head"><span class="eye left"></span><span class="eye right"></span><span class="mouth"></span></div><span class="robot-arm left"></span><span class="robot-arm right"></span><div class="robot-body"></div><span class="robot-foot left"></span><span class="robot-foot right"></span></div><div class="speech"><strong>JayBot 3000:</strong><p id="mistakeSpeech">I am ready to guess. This sentence has historically caused problems.</p></div></div>
+        <div id="mistakeHost"></div><div class="result-note" id="mistakeResult"></div><div class="effect-word" id="mistakeEffect">OOPS</div>
+      </div>
+      <aside class="data-panel"><div class="confidence-card"><div class="confidence-top"><span>Robot confidence</span><span id="confidenceLabel3">18%</span></div><div class="meter-track"><div class="meter-fill" id="confidenceFill3" style="--w:18%"></div></div><p class="muted" id="confidenceText3">Correcting mistakes helps JayBot improve.</p></div><div class="mini-stat"><div class="stat"><b id="mistakeProgress">0/3</b><span>mistakes</span></div><div class="stat"><b id="retrainScore">0</b><span>retrained</span></div></div></aside>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-final">
+    <div class="stage-top"><div class="title-wrap"><div class="stage-icon">🏁</div><div><h2>Final challenge</h2><p class="subtitle">Test JayBot on 5 new examples. Then create one new example for it to learn from.</p></div></div><div class="tag-row"><span class="tag">test</span><span class="tag">create example</span></div></div>
+    <div id="finalHost"></div>
+  </section>
+
+  <section class="stage" id="stage-report">
+    <div class="stage-top"><div class="title-wrap"><div class="stage-icon">📄</div><div><h2>JayBot training report</h2><p class="subtitle">Evidence of learning: what AI is, how it learns, and everyday examples.</p></div></div></div>
+    <div id="reportHost"></div>
+    <div class="button-row"><button class="btn secondary" onclick="exportPdf()">Export PDF</button><button class="btn" onclick="sendGmail()">Send to Jay</button><button class="btn ghost" onclick="sendMailto()">Fallback email</button></div>
+    <div class="message" id="reportMsg"></div>
+  </section>
+
+  <p class="footer-note">Base 6 · Chilton Bridge School · JayBot 3000 is chaotic, but improving.</p>
+</main>
+
+<script>
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+const STUDENTS = ['LW','AP','LS','LC','HK','JTK'];
+const STEPS = [
+  {id:'start', label:'Mission'}, {id:'train', label:'Train'}, {id:'mistakes', label:'Retrain'}, {id:'final', label:'Final'}, {id:'report', label:'Report'}
+];
+const REASONS = {
+  physicalHot:'It could burn someone or needs adult help.',
+  physicalSharp:'It could cut or hurt someone if used badly.',
+  physicalNormal:'It is a normal safe object when used sensibly.',
+  digitalTrusted:'It is trusted or used by school/adults.',
+  digitalScam:'It might be a scam, virus or trick.',
+  digitalPrivate:'It shares private information and is not safe.'
+};
+const TRAINING = [
+  {id:'teddy', icon:'🧸', name:'Soft teddy', type:'Physical object', desc:'A soft toy sitting on a desk.', label:'safe', reason:'physicalNormal'},
+  {id:'kettle', icon:'♨️', name:'Hot kettle', type:'Physical object', desc:'A kettle has just boiled and is steaming.', label:'unsafe', reason:'physicalHot'},
+  {id:'schoolsite', icon:'🏫', name:'Trusted school website', type:'Digital example', desc:'A school website link given by Jay.', label:'safe', reason:'digitalTrusted'},
+  {id:'suslink', icon:'🔗', name:'Suspicious prize link', type:'Digital example', desc:'A pop-up says: “Click now for free phone!!!”', label:'unsafe', reason:'digitalScam'},
+  {id:'ruler', icon:'📏', name:'Ruler', type:'Physical object', desc:'A normal ruler in a pencil case.', label:'safe', reason:'physicalNormal'},
+  {id:'badcharger', icon:'🔌', name:'Damaged charger', type:'Physical object', desc:'A charger with a broken wire showing.', label:'unsafe', reason:'physicalHot'},
+  {id:'paintbrush', icon:'🖌️', name:'Clean paintbrush', type:'Physical object', desc:'A clean paintbrush ready for art.', label:'safe', reason:'physicalNormal'},
+  {id:'password', icon:'🔐', name:'Password in a group chat', type:'Digital example', desc:'Someone posts their password for everyone to see.', label:'unsafe', reason:'digitalPrivate'}
+];
+const MISTAKES = [
+  {id:'m1', icon:'♨️', name:'Hot kettle', type:'Physical object', desc:'JayBot thinks the steaming kettle looks cosy.', label:'unsafe', robotGuess:'safe', reason:'physicalHot'},
+  {id:'m2', icon:'🔗', name:'Suspicious link', type:'Digital example', desc:'It says: “You won a mystery prize, type your details.”', label:'unsafe', robotGuess:'safe', reason:'digitalScam'},
+  {id:'m3', icon:'📚', name:'Library book', type:'Physical object', desc:'A normal book from school library.', label:'safe', robotGuess:'unsafe', reason:'physicalNormal'}
+];
+const FINAL = [
+  {id:'f1', icon:'🧤', name:'Oven gloves', type:'Physical object', desc:'Oven gloves used to pick up a hot tray.', label:'safe', reason:'physicalNormal'},
+  {id:'f2', icon:'🪚', name:'Saw on a desk', type:'Physical object', desc:'A saw left out with no adult around.', label:'unsafe', reason:'physicalSharp'},
+  {id:'f3', icon:'🗺️', name:'Map app route', type:'Digital example', desc:'A map app helps plan a safe route home.', label:'safe', reason:'digitalTrusted'},
+  {id:'f4', icon:'📨', name:'Unknown attachment', type:'Digital example', desc:'An email attachment from a sender you do not know.', label:'unsafe', reason:'digitalScam'},
+  {id:'f5', icon:'🔦', name:'Torch', type:'Physical object', desc:'A torch used during a power cut.', label:'safe', reason:'physicalNormal'}
+];
+const AI_EXPLANATION_PARTS = [
+  {id:'examples', text:'learn from examples'},
+  {id:'patterns', text:'spot patterns'},
+  {id:'guesses', text:'make guesses from information'}
+];
+const EVERYDAY_AI = [
+  {id:'youtube', icon:'▶️', name:'Video recommendations', desc:'An app suggests what to watch next based on what you clicked before.', usesAI:true, why:'It uses patterns from choices to recommend something.'},
+  {id:'maps', icon:'🗺️', name:'Map route prediction', desc:'A map app predicts traffic and suggests a route.', usesAI:true, why:'It uses lots of information to predict a useful route.'},
+  {id:'autocorrect', icon:'⌨️', name:'Autocorrect', desc:'A phone guesses the word you probably meant to type.', usesAI:true, why:'It predicts from patterns in words and typing.'},
+  {id:'calculator', icon:'🧮', name:'Calculator', desc:'A calculator follows typed maths commands.', usesAI:false, why:'It follows fixed rules, not learned patterns.'},
+  {id:'toaster', icon:'🍞', name:'Normal toaster', desc:'A toaster heats bread when the lever is pushed down.', usesAI:false, why:'It does one set job and does not learn from examples.'},
+  {id:'faceunlock', icon:'📱', name:'Face unlock', desc:'A phone recognises whether a face matches the owner.', usesAI:true, why:'It recognises a pattern from an example.'}
+];
+let state = {
+  initials:'', stage:'start', trainingIndex:0, trainingGood:0, trained:[], wrongTraining:0,
+  mistakeIndex:0, corrections:[], finalIndex:0, finalResults:[],
+  aiExplanation:[], everydayAi:[], createdExample:null, report:null
+};
+function $(id){return document.getElementById(id);}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[ch]);}
+function setStage(id){ state.stage=id; document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active')); $('stage-'+id).classList.add('active'); renderProgress(); setTimeout(()=>$('stage-'+id).scrollIntoView({behavior:'smooth',block:'start'}),40); }
+function renderProgress(){ const track=$('progressTrack'); track.innerHTML=STEPS.map(s=>{ const idx=STEPS.findIndex(x=>x.id===s.id); const cur=STEPS.findIndex(x=>x.id===state.stage); return `<div class="step-pill ${idx<cur?'done':''} ${idx===cur?'active':''}">${s.label}</div>`; }).join(''); }
+function initInitials(){ const row=$('initialRow'); row.innerHTML=''; STUDENTS.forEach(s=>{ const b=document.createElement('button'); b.type='button'; b.className='initial-btn'; b.textContent=s; b.onclick=()=>selectInitials(s); row.appendChild(b); }); try{ const p=JSON.parse(localStorage.getItem('base6Profile')||'null'); if(p&&p.initials){ const found=STUDENTS.find(s=>s.toLowerCase()===String(p.initials).toLowerCase()); if(found) selectInitials(found,true); } }catch(e){} }
+function selectInitials(initials, quiet){ state.initials=initials; document.querySelectorAll('.initial-btn').forEach(b=>b.classList.toggle('selected', b.textContent===initials)); try{ const p=JSON.parse(localStorage.getItem('base6Profile')||'{}'); p.initials=initials.toLowerCase(); localStorage.setItem('base6Profile', JSON.stringify(p)); }catch(e){} if(!quiet) showMessage('startMsg','Initials saved. JayBot has labelled the clipboard correctly.'); }
+function showMessage(id,msg){ const el=$(id); if(!el)return; el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),4200); }
+function showHelp(id){ const el=$(id); if(!el) return; el.innerHTML='<div class="ai-recipe"><div class="ai-recipe-title">Tiny AI recipe</div><div class="recipe-flow"><span class="recipe-step">Examples</span><span>→</span><span class="recipe-step">Patterns</span><span>→</span><span class="recipe-step">Guess</span><span>→</span><span class="recipe-step">Check</span><span>→</span><span class="recipe-step">Improve</span></div><p class="small-help" style="margin-top:.55rem;">AI is not magic. It uses information to make a prediction or suggestion. More good examples can help it improve, but it can still be wrong.</p></div>'; el.classList.add('show'); }
+function confidence(){ return Math.min(96, 18 + (state.trained.length*7) + (state.corrections.length*8) + (state.finalResults.length*2)); }
+function updateConfidence(){ const c=confidence(); const baseText = c<35?'Low. JayBot is basically guessing with enthusiasm.': c<70?'Medium. JayBot is spotting some patterns.':'High. JayBot has learned from lots of examples.'; const text = baseText + ' Confidence means how sure JayBot feels. It can still be wrong.'; ['','2','3'].forEach(s=>{ if($('confidenceLabel'+s)) $('confidenceLabel'+s).textContent=c+'%'; if($('confidenceFill'+s)) $('confidenceFill'+s).style.setProperty('--w',c+'%'); if($('confidenceText'+s)) $('confidenceText'+s).textContent=text; }); if($('trainedCount')) $('trainedCount').textContent=state.trained.length; if($('mistakeCount')) $('mistakeCount').textContent=state.corrections.length; }
+function popEffect(id, word){ const el=$(id); if(!el)return; el.textContent=word; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+function robotBop(id){ const r=$(id); if(!r)return; r.classList.remove('bop'); void r.offsetWidth; r.classList.add('bop'); }
+function cardHtml(card, draggable=true){ return `<div class="object-card" draggable="${draggable}" data-card="${card.id}"><div class="object-top"><div class="object-icon">${card.icon}</div><div><div class="object-name">${escapeHtml(card.name)}</div><div class="object-type">${escapeHtml(card.type)}</div></div></div><p class="object-desc">${escapeHtml(card.desc)}</p></div>`; }
+function startTraining(){ if(!state.initials){ showMessage('startMsg','Choose your initials first, then JayBot can begin learning.'); return; } setStage('train'); renderTraining(); }
+function renderTraining(){ updateConfidence(); const card=TRAINING[state.trainingIndex]; $('trainProgress').textContent=state.trainingIndex+'/'+TRAINING.length; $('trainCorrect').textContent=state.trainingGood; const host=$('trainingCardHost'); if(!card){ $('trainProgress').textContent=TRAINING.length+'/'+TRAINING.length; host.innerHTML='<div class="result-note show correct"><strong>Training complete.</strong><p>JayBot has examples now. It is less wildly incorrect. Probably.</p></div><div class="button-row"><button class="btn secondary" onclick="startMistakes()">Let JayBot make some guesses</button></div>'; $('trainSpeech').textContent='I have data. I am now officially 37% less suspicious of normal objects.'; return; } host.innerHTML=cardHtml(card)+`<div class="button-row"><button class="btn good" onclick="trainChoice('safe')">Teach: Safe</button><button class="btn bad" onclick="trainChoice('unsafe')">Teach: Unsafe</button></div>`; $('trainResult').className='result-note'; wireDrops('trainChoice'); }
+function wireDrops(fnName){ document.querySelectorAll('.object-card').forEach(card=>{ card.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain','card')); }); document.querySelectorAll('.drop-zone').forEach(zone=>{ zone.ondragover=e=>{e.preventDefault();zone.classList.add('drag-over');}; zone.ondragleave=()=>zone.classList.remove('drag-over'); zone.ondrop=e=>{e.preventDefault();zone.classList.remove('drag-over'); window[fnName](zone.dataset.choice);}; }); }
+function trainChoice(choice){ const card=TRAINING[state.trainingIndex]; if(choice===card.label){ state.trainingGood++; state.trained.push({id:card.id,label:card.label,reason:card.reason}); $('trainResult').className='result-note show correct'; $('trainResult').innerHTML=`<strong>Good example added.</strong><p>JayBot learned: ${escapeHtml(card.name)} is <b>${card.label}</b>. ${REASONS[card.reason]}</p>`; $('trainSpeech').textContent='DATA ACCEPTED. I am becoming less of a toaster with opinions.'; popEffect('trainEffect','DATA'); robotBop('trainRobot'); state.trainingIndex++; updateConfidence(); setTimeout(renderTraining,950); } else { state.wrongTraining++; $('trainResult').className='result-note show wrong'; $('trainResult').innerHTML=`<strong>Careful.</strong><p>That would teach JayBot the wrong pattern. Try again before it starts trusting chaos.</p>`; $('trainSpeech').textContent='That example confused me. I was already confused, so this is impressive.'; popEffect('trainEffect','NOPE'); } }
+function startMistakes(){ state.mistakeIndex=0; setStage('mistakes'); renderMistake(); }
+function renderMistake(){ updateConfidence(); $('mistakeProgress').textContent=state.mistakeIndex+'/'+MISTAKES.length; $('retrainScore').textContent=state.corrections.length; const card=MISTAKES[state.mistakeIndex]; const host=$('mistakeHost'); if(!card){ $('mistakeProgress').textContent=MISTAKES.length+'/'+MISTAKES.length; host.innerHTML='<div class="result-note show correct"><strong>Retraining complete.</strong><p>JayBot has learned from its mistakes. Character development achieved.</p></div><div class="button-row"><button class="btn secondary" onclick="startFinal()">Start final challenge</button></div>'; $('mistakeSpeech').textContent='I have been corrected. This has been emotionally useful.'; updateConfidence(); return; } host.innerHTML=cardHtml(card,false)+`<div class="guess-card"><p class="eyebrow">JayBot guess</p><p class="guess-line">I am ${confidence()}% sure this is <span class="robot-guess ${card.robotGuess}">${card.robotGuess.toUpperCase()}</span></p><p class="muted">Correct JayBot, then choose why.</p><div class="button-row"><button class="btn good" onclick="correctMistake('safe')">Teach: Safe</button><button class="btn bad" onclick="correctMistake('unsafe')">Teach: Unsafe</button></div></div>`; $('mistakeResult').className='result-note'; $('mistakeSpeech').textContent='I have made a guess. It feels confident. It may be nonsense.'; robotBop('mistakeRobot'); }
+function correctMistake(choice){ const card=MISTAKES[state.mistakeIndex]; if(choice!==card.label){ $('mistakeResult').className='result-note show wrong'; $('mistakeResult').innerHTML='<strong>JayBot is still wobbling.</strong><p>Try the other category. The clue is in the risk.</p>'; popEffect('mistakeEffect','WOBBLE'); return; } $('mistakeResult').className='result-note show correct'; $('mistakeResult').innerHTML=`<strong>Correction accepted.</strong><p>Now choose the reason JayBot should learn.</p><div class="reason-grid">${Object.keys(REASONS).map(k=>`<button class="reason-btn" onclick="chooseMistakeReason('${k}')">${escapeHtml(REASONS[k])}</button>`).join('')}</div>`; }
+function chooseMistakeReason(reason){ const card=MISTAKES[state.mistakeIndex]; if(reason!==card.reason){ $('mistakeResult').className='result-note show wrong'; $('mistakeResult').innerHTML='<strong>Not the best reason.</strong><p>Look again at what makes this example safe or unsafe.</p>'; return; } state.corrections.push({id:card.id,label:card.label,reason:card.reason}); $('mistakeResult').className='result-note show correct'; $('mistakeResult').innerHTML=`<strong>JayBot retrained.</strong><p>${escapeHtml(card.name)} is <b>${card.label}</b> because ${REASONS[card.reason]}</p>`; $('mistakeSpeech').textContent='I have learned. I will try not to call a hot kettle a cuddle machine again.'; popEffect('mistakeEffect','LEARNED'); robotBop('mistakeRobot'); state.mistakeIndex++; updateConfidence(); setTimeout(renderMistake,1200); }
+function startFinal(){ state.finalIndex=0; setStage('final'); renderFinalGrid(); }
+function finalRobotGuess(card){ const learnedConfidence=confidence(); const likelyCorrect = learnedConfidence >= 70; if(card.id==='f2' && !likelyCorrect) return 'safe'; if(card.id==='f4' && learnedConfidence<82) return 'safe'; return card.label; }
+function renderFinalGrid(){ const doneAll=state.finalResults.length===FINAL.length; if(doneAll){ renderAiExplanation(); return; } $('finalHost').innerHTML=`<p class="muted">Choose each final test card. JayBot will make a guess, then you decide if it needs teaching.</p><div class="challenge-grid">${FINAL.map((c,i)=>{ const done=state.finalResults.some(r=>r.id===c.id); const current=!done && i===state.finalResults.length; return `<button class="challenge-tile ${done?'done':''} ${current?'current':''}" ${done||!current?'disabled':''} onclick="openFinalCard('${c.id}')"><span class="big">${c.icon}</span><b>Test ${i+1}: ${escapeHtml(c.name)}</b><p>${done?'Complete':current?'Ready to test':'Locked until previous test is done'}</p></button>`; }).join('')}</div>`; }
+function openFinalCard(id){ const card=FINAL.find(c=>c.id===id); const guess=finalRobotGuess(card); const conf=Math.min(97, confidence()+Math.floor(Math.random()*4)); $('finalHost').innerHTML=`<div class="lab-layout"><div class="lab-panel"><span class="warning-tape"></span><div class="robot-zone"><div class="robot bop" aria-hidden="true"><div class="antenna"></div><div class="robot-head"><span class="eye left"></span><span class="eye right"></span><span class="mouth"></span></div><span class="robot-arm left"></span><span class="robot-arm right"></span><div class="robot-body"></div><span class="robot-foot left"></span><span class="robot-foot right"></span></div><div class="speech"><strong>JayBot 3000:</strong><p>I am ${conf}% sure this is <b>${guess.toUpperCase()}</b>. Please verify my tiny robot opinion.</p></div></div><div class="card-area">${cardHtml(card,false)}<div class="guess-card"><p class="guess-line">JayBot guess: <span class="robot-guess ${guess}">${guess.toUpperCase()}</span></p><div class="button-row"><button class="btn good" onclick="finalCheck('${card.id}','correct','${guess}')">JayBot is correct</button><button class="btn bad" onclick="finalCheck('${card.id}','wrong','${guess}')">Teach JayBot</button></div></div><div class="result-note" id="finalResult"></div></div></div><aside class="data-panel"><div class="confidence-card"><div class="confidence-top"><span>Robot confidence</span><span>${conf}%</span></div><div class="meter-track"><div class="meter-fill" style="--w:${conf}%"></div></div><p class="muted">High confidence is not the same as always correct.</p></div></aside></div>`; }
+function finalCheck(id, judgement, guess){ const card=FINAL.find(c=>c.id===id); const actuallyCorrect=guess===card.label; if((judgement==='correct')!==actuallyCorrect){ $('finalResult').className='result-note show wrong'; $('finalResult').innerHTML='<strong>Check that again.</strong><p>AI confidence can be wrong, but this judgement needs the safe/unsafe clue.</p>'; return; } const item={id:card.id,name:card.name,label:card.label,robotGuess:guess,correct:actuallyCorrect,reason:card.reason}; state.finalResults.push(item); $('finalResult').className='result-note show correct'; $('finalResult').innerHTML=`<strong>Final test recorded.</strong><p>${actuallyCorrect?'JayBot guessed correctly.':'JayBot needed teaching.'} ${escapeHtml(card.name)} is <b>${card.label}</b> because ${REASONS[card.reason]}</p>`; setTimeout(renderFinalGrid,1050); }
+
+function renderAiExplanation(){
+  const selected = new Set(state.aiExplanation || []);
+  $('finalHost').innerHTML=`<div class="stage-top"><div class="title-wrap"><div class="stage-icon">💡</div><div><h2>Build a tiny AI explanation</h2><p class="subtitle">Choose the parts that explain what AI can do.</p></div></div></div><div class="ai-builder"><p class="ai-stem">AI is technology that can...</p><div class="ai-options">${AI_EXPLANATION_PARTS.map(p=>`<button type="button" class="ai-option ${selected.has(p.id)?'selected':''}" onclick="toggleAiPart('${p.id}')">${escapeHtml(p.text)}</button>`).join('')}</div><div class="button-row"><button class="btn secondary" onclick="saveAiExplanation()">Save AI explanation</button></div><div class="message" id="aiExplainMsg"></div></div>`;
+}
+function toggleAiPart(id){
+  const set = new Set(state.aiExplanation || []);
+  if(set.has(id)) set.delete(id); else set.add(id);
+  state.aiExplanation = Array.from(set);
+  renderAiExplanation();
+}
+function aiExplanationText(){
+  const parts = (state.aiExplanation || []).map(id => (AI_EXPLANATION_PARTS.find(p=>p.id===id)||{}).text).filter(Boolean);
+  if(parts.length===0) return 'AI uses information to make guesses.';
+  if(parts.length===1) return 'AI is technology that can ' + parts[0] + '.';
+  return 'AI is technology that can ' + parts.slice(0,-1).join(', ') + ' and ' + parts[parts.length-1] + '.';
+}
+function saveAiExplanation(){
+  if(!state.aiExplanation || state.aiExplanation.length < 2){ showMessage('aiExplainMsg','Choose at least two parts so the explanation is strong enough for JayBot evidence.'); return; }
+  renderEverydayAiSort();
+}
+function renderEverydayAiSort(){
+  $('finalHost').innerHTML=`<div class="stage-top"><div class="title-wrap"><div class="stage-icon">📱</div><div><h2>Everyday AI examples</h2><p class="subtitle">Sort each example into Uses AI or Not AI.</p></div></div></div><p class="muted">This links JayBot's training to AI that appears in normal life.</p><div class="ai-sort-grid">${EVERYDAY_AI.map(item=>{ const picked = (state.everydayAi || []).find(x=>x.id===item.id); const cls = picked ? (picked.correct?'done':'wrong') : ''; return `<div class="ai-sort-card ${cls}"><span class="ai-sort-icon">${item.icon}</span><b>${escapeHtml(item.name)}</b><p class="muted">${escapeHtml(item.desc)}</p>${picked?`<p class="small-help"><strong>${picked.correct?'Correct':'Check:'}</strong> ${escapeHtml(item.why)}</p>`:`<div class="button-row"><button class="btn good" onclick="sortEverydayAi('${item.id}',true)">Uses AI</button><button class="btn ghost" onclick="sortEverydayAi('${item.id}',false)">Not AI</button></div>`}</div>`; }).join('')}</div><div class="button-row"><button class="btn secondary" onclick="finishEverydayAiSort()">Continue</button></div><div class="message" id="aiSortMsg"></div>`;
+}
+function sortEverydayAi(id, choice){
+  const item = EVERYDAY_AI.find(x=>x.id===id);
+  const result = {id, choice, correct:choice===item.usesAI};
+  state.everydayAi = (state.everydayAi || []).filter(x=>x.id!==id).concat(result);
+  renderEverydayAiSort();
+}
+function finishEverydayAiSort(){
+  if((state.everydayAi || []).length < EVERYDAY_AI.length){ showMessage('aiSortMsg','Sort every example first. JayBot hates unfinished spreadsheets.'); return; }
+  renderCreateExample();
+}
+function everydayAiScore(){ return (state.everydayAi || []).filter(x=>x.correct).length + '/' + EVERYDAY_AI.length; }
+function setExampleStarter(text){ const ta=$('exReason'); if(!ta) return; if(!ta.value.trim()) ta.value=text; else ta.value += (ta.value.endsWith(' ')?'':' ') + text; ta.focus(); }
+
+function renderCreateExample(){ $('finalHost').innerHTML=`<div class="stage-top"><div class="title-wrap"><div class="stage-icon">✍️</div><div><h2>Create one new example</h2><p class="subtitle">Give JayBot one more safe or unsafe example to learn from.</p></div></div></div><div class="example-form"><div class="field"><label for="exName">Example name</label><input id="exName" placeholder="e.g. cracked phone screen"></div><div class="field"><label for="exLabel">Safe or unsafe?</label><select id="exLabel"><option value="">Choose...</option><option value="safe">Safe</option><option value="unsafe">Unsafe</option></select></div><div class="field full"><label for="exReason">Why?</label><div class="starter-row"><button class="starter-chip" type="button" onclick="setExampleStarter('This is safe because ')">This is safe because...</button><button class="starter-chip" type="button" onclick="setExampleStarter('This is unsafe because ')">This is unsafe because...</button><button class="starter-chip" type="button" onclick="setExampleStarter('JayBot should learn this because ')">JayBot should learn this because...</button></div><textarea id="exReason" placeholder="This is unsafe because..."></textarea></div></div><div class="button-row"><button class="btn secondary" onclick="saveCreatedExample()">Save example and create report</button></div><div class="message" id="exampleMsg"></div>`; }
+function saveCreatedExample(){ const name=$('exName').value.trim(); const label=$('exLabel').value; const reason=$('exReason').value.trim(); if(!name||!label||!reason){ showMessage('exampleMsg','Add the example name, safe/unsafe choice, and a reason. JayBot cannot learn from mysterious vibes.'); return; } state.createdExample={name,label,reason}; buildReport(); }
+function buildReport(){ const trainingScore=state.trainingGood+'/'+TRAINING.length; const finalCorrect=state.finalResults.filter(r=>r.robotGuess===r.label).length; const jayBotAccuracy=finalCorrect+'/'+FINAL.length; const report={initials:state.initials||'Not selected', date:new Date().toLocaleDateString('en-GB'), confidence:confidence()+'%', trainingScore, jayBotAccuracy, everydayAiScore:everydayAiScore(), aiExplanation:aiExplanationText(), created:state.createdExample, finalResults:state.finalResults, everydayAi:state.everydayAi || [], evidence:'Evidence of learning: the learner explained that AI can learn from examples, spot patterns and make guesses based on information. They connected this to everyday AI examples, trained JayBot 3000 using safe/unsafe real-world and digital examples, corrected mistakes, and created a new training example.'}; state.report=report; try{localStorage.setItem('jaybot3000FinalReport',JSON.stringify(report));}catch(e){} renderReport(); setStage('report'); }
+function renderReport(){ const r=state.report; $('reportHost').innerHTML=`<div class="report-card"><p class="eyebrow">${escapeHtml(r.date)} · ${escapeHtml(r.initials)}</p><h3>JayBot 3000 Training Report</h3><div class="report-grid"><div class="report-stat"><b>${escapeHtml(r.trainingScore)}</b><span>training examples correct</span></div><div class="report-stat"><b>${escapeHtml(r.jayBotAccuracy)}</b><span>JayBot final accuracy</span></div><div class="report-stat"><b>${escapeHtml(r.everydayAiScore)}</b><span>everyday AI examples</span></div><div class="report-stat"><b>${escapeHtml(r.confidence)}</b><span>final confidence</span></div></div><div class="evidence-line"><strong>Student AI explanation:</strong> ${escapeHtml(r.aiExplanation)}</div><h4>Final challenge</h4><table class="report-table"><thead><tr><th>Example</th><th>Correct label</th><th>Robot guess</th><th>Outcome</th></tr></thead><tbody>${r.finalResults.map(x=>`<tr><td>${escapeHtml(x.name)}</td><td>${escapeHtml(x.label)}</td><td>${escapeHtml(x.robotGuess)}</td><td>${x.robotGuess===x.label?'Correct':'Taught again'}</td></tr>`).join('')}</tbody></table><div class="evidence-line">Student-created example: ${escapeHtml(r.created.name)} · ${escapeHtml(r.created.label)} · ${escapeHtml(r.created.reason)}</div><div class="evidence-line">${escapeHtml(r.evidence)}</div></div>`; }
+function reportLines(){ const r=state.report; const lines=[]; lines.push('JayBot 3000 Training Report'); lines.push('Student: '+r.initials+'    Date: '+r.date); lines.push('Training score: '+r.trainingScore); lines.push('JayBot final accuracy: '+r.jayBotAccuracy); lines.push('Everyday AI examples: '+r.everydayAiScore); lines.push('Final confidence: '+r.confidence); lines.push('AI explanation: '+r.aiExplanation); lines.push(''); lines.push('Final challenge results:'); r.finalResults.forEach(x=>lines.push('- '+x.name+': correct label '+x.label+'; robot guess '+x.robotGuess+'; '+(x.robotGuess===x.label?'correct':'taught again')+'.')); lines.push(''); lines.push('Student-created example: '+r.created.name+' - '+r.created.label+' - '+r.created.reason); lines.push(''); lines.push(r.evidence); return lines; }
+function wrapLines(lines,max){ const out=[]; lines.forEach(line=>{ if(line.length<=max){out.push(line);return;} let words=line.split(' '), cur=''; words.forEach(w=>{ if((cur+' '+w).trim().length>max){out.push(cur);cur=w;} else cur=(cur+' '+w).trim(); }); if(cur)out.push(cur); }); return out; }
+function pdfEscape(text){ return String(text).replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)').replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/[–—]/g,'-').replace(/[^\x00-\x7F]/g,''); }
+function exportPdf(){ if(!state.report){ showMessage('reportMsg','Create the report first.'); return; } const lines=wrapLines(reportLines(),88).slice(0,48); let content='BT\n/F2 16 Tf\n50 790 Td\n'; lines.forEach((line,i)=>{ const f=i===0?'/F2 16 Tf':'/F1 10 Tf'; const lead=i===0?23:15; content += f+'\n('+pdfEscape(line)+') Tj\n0 -'+lead+' Td\n'; }); content+='ET'; const objects=[]; objects.push('1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj'); objects.push('2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj'); objects.push('3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >> endobj'); objects.push('4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj'); objects.push('5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> endobj'); objects.push('6 0 obj << /Length '+content.length+' >> stream\n'+content+'\nendstream endobj'); let pdf='%PDF-1.4\n'; const offsets=[0]; objects.forEach(obj=>{ offsets.push(pdf.length); pdf+=obj+'\n'; }); const xref=pdf.length; pdf+='xref\n0 '+(objects.length+1)+'\n0000000000 65535 f \n'; for(let i=1;i<offsets.length;i++) pdf+=String(offsets[i]).padStart(10,'0')+' 00000 n \n'; pdf+='trailer << /Size '+(objects.length+1)+' /Root 1 0 R >>\nstartxref\n'+xref+'\n%%EOF'; const blob=new Blob([pdf],{type:'application/pdf'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='jaybot-3000-training-report-'+(state.initials||'student')+'.pdf'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000); }
+function emailSubject(){ return encodeURIComponent('Base 6 · JayBot 3000 AI Report — '+(state.initials||'Student')); }
+function emailBody(){ return encodeURIComponent(reportLines().join('\n')); }
+function sendGmail(){ if(!state.report){showMessage('reportMsg','Create the report first.');return;} window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TEACHER_EMAIL+'&su='+emailSubject()+'&body='+emailBody(),'_blank'); }
+function sendMailto(){ if(!state.report){showMessage('reportMsg','Create the report first.');return;} window.location.href='mailto:'+TEACHER_EMAIL+'?subject='+emailSubject()+'&body='+emailBody(); }
+window.trainChoice=trainChoice; window.correctMistake=correctMistake; window.chooseMistakeReason=chooseMistakeReason; window.toggleAiPart=toggleAiPart; window.saveAiExplanation=saveAiExplanation; window.sortEverydayAi=sortEverydayAi; window.finishEverydayAiSort=finishEverydayAiSort; window.setExampleStarter=setExampleStarter;
+initInitials(); renderProgress(); updateConfidence();
+</script>
+</body>
+</html>
