@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Strategise | Word of the Week | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: #007291; padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(239,119,36,0.18); border-radius: 50%; }
+  .site-header .header-inner { position: relative; z-index: 2; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .week-label { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.82); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2.6rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
+  .site-header .header-sub { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-top: 0.5rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+
+  .main { max-width: 640px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 700; color: #007291; text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+
+  .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin-bottom: 2.25rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
+  .intro h2 { font-size: 1.3rem; color: #c05a10; margin-bottom: 0.5rem; }
+  .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
+  .intro .say-it { display: inline-block; margin-top: 0.75rem; font-size: 0.9rem; font-weight: 700; color: #007291; background: #e6f5f8; border-radius: 999px; padding: 0.3rem 0.9rem; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1rem; }
+
+  .game-card { background: #ffffff; border: 2px solid #007291; border-radius: 18px; padding: 1.5rem; text-align: center; box-shadow: 0 4px 14px rgba(0,114,145,0.08); }
+  .game-how { font-size: 0.95rem; color: #555; line-height: 1.55; margin-bottom: 1.25rem; }
+
+  .ladder { display: flex; gap: 0.6rem; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap; }
+  .rung { flex: 1 1 0; min-width: 92px; max-width: 150px; background: #fef8f4; border: 2px solid #e0d8d0; border-radius: 14px; padding: 0.7rem 0.5rem; cursor: pointer; font-family: inherit; text-align: center; transition: border-color 0.15s, transform 0.1s, background 0.15s; }
+  .rung:hover:not(:disabled) { transform: translateY(-2px); }
+  .rung:disabled { opacity: 0.5; cursor: default; }
+  .rung.current { border-color: #007291; background: #e6f5f8; }
+  .rung.cleared { border-color: #2e8b57; }
+  .rung-face { font-size: 1.7rem; line-height: 1; }
+  .rung-name { font-size: 0.85rem; font-weight: 700; color: #1a1a1a; margin-top: 0.25rem; }
+  .rung-state { font-size: 0.72rem; font-weight: 700; color: #888; margin-top: 0.1rem; }
+  .rung.cleared .rung-state { color: #2e8b57; }
+  .rung.current .rung-state { color: #007291; }
+
+  .goal-line { font-size: 0.92rem; font-weight: 700; color: #c05a10; margin-bottom: 1.1rem; min-height: 1.3em; }
+  .ladder-done { display: none; background: #e6f5e6; border: 2px solid #2e8b57; border-radius: 12px; padding: 0.9rem 1rem; font-weight: 700; color: #1f6b3a; margin-bottom: 1.1rem; }
+  .ladder-done.show { display: block; }
+
+  .status { font-size: 1.1rem; font-weight: 700; color: #007291; min-height: 1.5em; margin-bottom: 1.1rem; }
+  .status.win { color: #2e8b57; }
+  .status.lose { color: #c05a10; }
+  .status.draw { color: #7b5ea7; }
+
+  .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; max-width: 320px; margin: 0 auto 1.1rem; }
+  .cell { aspect-ratio: 1 / 1; background: #fef8f4; border: 2px solid #cfe6ec; border-radius: 14px; font-family: inherit; font-size: 2.6rem; font-weight: 700; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.12s, border-color 0.12s, transform 0.08s; }
+  .cell:hover:not(:disabled) { background: #f0fafc; border-color: #007291; }
+  .cell:active:not(:disabled) { transform: scale(0.97); }
+  .cell:disabled { cursor: default; }
+  .cell.x { color: #007291; }
+  .cell.o { color: #ef7724; }
+  .cell.win { background: #e6f5e6; border-color: #2e8b57; }
+
+  .tally { font-size: 0.9rem; font-weight: 700; color: #888; margin-bottom: 1.1rem; }
+  .tally strong { color: #2e8b57; }
+
+  .play-again { font-family: inherit; font-size: 0.95rem; font-weight: 700; padding: 0.7rem 1.6rem; background: #ef7724; color: #ffffff; border: none; border-radius: 999px; cursor: pointer; transition: background 0.15s; }
+  .play-again:hover { background: #c05a10; }
+
+  .reflect { display: none; font-size: 0.95rem; color: #555; line-height: 1.55; background: #fff3e8; border-radius: 12px; padding: 0.8rem 1rem; margin-top: 1.1rem; }
+  .reflect.show { display: block; }
+
+  .closing { text-align: center; margin-top: 2rem; font-size: 1rem; font-weight: 700; color: #007291; line-height: 1.5; }
+
+  a:focus-visible, button:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+
+  @media (prefers-reduced-motion: reduce) { .cell, .rung { transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Week 5</a>
+  <div class="header-inner">
+    <p class="week-label">Word of the Week</p>
+    <h1>Strategise</h1>
+    <p class="header-sub">Making a plan to reach a goal.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <a class="back-link" href="index.html">Back to Week 5</a>
+
+  <div class="intro">
+    <h2>Meet the word: Strategise</h2>
+    <p>To strategise means to make a plan for how to reach a goal. We strategise when we work out the best order to do things, or think a move or two ahead. People strategise in games, in sport, in cooking, and when they are getting ready for the day.</p>
+    <span class="say-it">Say it: stra-tuh-jize</span>
+  </div>
+
+  <p class="section-label">Beat the robots</p>
+  <div class="game-card">
+    <p class="game-how">You are X and the robots are O. Take turns to tap a square, and get three of your marks in a row to win. Climb the ladder by beating each robot in turn. The trick is to think a move ahead and set up two ways to win at once.</p>
+
+    <div class="ladder" id="ladder"></div>
+    <div class="goal-line" id="goal-line"></div>
+    <div class="ladder-done" id="ladder-done">Ladder complete. You out-strategised every robot. Top strategist!</div>
+
+    <div class="status" id="status" role="status" aria-live="polite">Your turn. You go first.</div>
+
+    <div class="board" id="board" role="grid" aria-label="Noughts and crosses board"></div>
+
+    <div class="tally" id="tally">Won: <strong>0</strong> &middot; Drawn: 0</div>
+
+    <button class="play-again" id="play-again" type="button">Play again</button>
+
+    <div class="reflect" id="reflect"></div>
+  </div>
+
+  <p class="closing">Winning is not really the point. The plan is. What did you try this time?</p>
+
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+(function () {
+  var LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  var POS = ['Top left','Top middle','Top right','Middle left','Centre','Middle right','Bottom left','Bottom middle','Bottom right'];
+  var REFLECTIONS = [
+    'What was your plan that time?',
+    'Did you see the robot\u2019s move coming?',
+    'Could you make two threats at once so the robot cannot block both?',
+    'Which square felt like the strongest first move?',
+    'Did your plan change halfway through?'
+  ];
+
+  var ROBOTS = [
+    { id: 0, name: 'Sprocket', face: '\uD83E\uDD16', tag: 'Warm-up',  goal: 'win',  blurb: 'Beat Sprocket to unlock Cog.' },
+    { id: 1, name: 'Cog',      face: '\u2699\uFE0F', tag: 'Tricky',   goal: 'win',  blurb: 'Beat Cog to unlock Titan.' },
+    { id: 2, name: 'Titan',    face: '\uD83D\uDC51', tag: 'Champion', goal: 'draw', blurb: 'Titan never loses. Hold it to a draw to finish the ladder.' }
+  ];
+
+  var board = ['','','','','','','','',''];
+  var wins = 0, draws = 0;
+  var locked = false;
+  var currentLevel = 0;
+  var cleared = [false, false, false];
+  var unlocked = [true, false, false];
+
+  var boardEl = document.getElementById('board');
+  var statusEl = document.getElementById('status');
+  var tallyEl = document.getElementById('tally');
+  var reflectEl = document.getElementById('reflect');
+  var againBtn = document.getElementById('play-again');
+  var ladderEl = document.getElementById('ladder');
+  var goalEl = document.getElementById('goal-line');
+  var doneEl = document.getElementById('ladder-done');
+
+  var cellEls = [];
+  for (var i = 0; i < 9; i++) {
+    var b = document.createElement('button');
+    b.className = 'cell';
+    b.setAttribute('type', 'button');
+    b.setAttribute('role', 'gridcell');
+    b.setAttribute('data-i', i);
+    b.setAttribute('aria-label', POS[i] + ', empty');
+    b.addEventListener('click', onCellClick);
+    boardEl.appendChild(b);
+    cellEls.push(b);
+  }
+
+  function winnerOf(bd) {
+    for (var i = 0; i < LINES.length; i++) {
+      var L = LINES[i];
+      if (bd[L[0]] && bd[L[0]] === bd[L[1]] && bd[L[1]] === bd[L[2]]) {
+        return { who: bd[L[0]], line: L };
+      }
+    }
+    return null;
+  }
+  function emptyCells(bd) {
+    var e = [];
+    for (var i = 0; i < 9; i++) { if (!bd[i]) e.push(i); }
+    return e;
+  }
+  function findWinningMove(bd, who) {
+    var e = emptyCells(bd);
+    for (var i = 0; i < e.length; i++) {
+      var t = bd.slice();
+      t[e[i]] = who;
+      var w = winnerOf(t);
+      if (w && w.who === who) { return e[i]; }
+    }
+    return -1;
+  }
+  function findFork(bd, who) {
+    var e = emptyCells(bd);
+    for (var i = 0; i < e.length; i++) {
+      var t = bd.slice();
+      t[e[i]] = who;
+      var ee = emptyCells(t);
+      var threats = 0;
+      for (var j = 0; j < ee.length; j++) {
+        var t2 = t.slice();
+        t2[ee[j]] = who;
+        var w = winnerOf(t2);
+        if (w && w.who === who) { threats++; }
+      }
+      if (threats >= 2) { return e[i]; }
+    }
+    return -1;
+  }
+
+  // Sprocket: take a win, block half the time, otherwise play anywhere.
+  function easyMove() {
+    var m = findWinningMove(board, 'O');
+    if (m === -1) {
+      var blk = findWinningMove(board, 'X');
+      if (blk !== -1 && Math.random() < 0.5) { m = blk; }
+    }
+    if (m === -1) {
+      var e = emptyCells(board);
+      m = e[Math.floor(Math.random() * e.length)];
+    }
+    return m;
+  }
+
+  // Cog: take a win, always block, half the time make or block a fork, then favour centre and corners.
+  function trickyMove() {
+    var m = findWinningMove(board, 'O');
+    if (m !== -1) { return m; }
+    var blk = findWinningMove(board, 'X');
+    if (blk !== -1) { return blk; }
+    if (Math.random() < 0.5) { var f = findFork(board, 'O'); if (f !== -1) { return f; } }
+    if (Math.random() < 0.5) { var pf = findFork(board, 'X'); if (pf !== -1) { return pf; } }
+    if (!board[4]) { return 4; }
+    var opp = { 0: 8, 8: 0, 2: 6, 6: 2 };
+    var keys = Object.keys(opp);
+    for (var k = 0; k < keys.length; k++) {
+      var idx = parseInt(keys[k], 10);
+      if (board[idx] === 'X' && !board[opp[idx]]) { return opp[idx]; }
+    }
+    var corners = [0, 2, 6, 8].filter(function (c) { return !board[c]; });
+    if (corners.length) { return corners[Math.floor(Math.random() * corners.length)]; }
+    var sides = [1, 3, 5, 7].filter(function (s) { return !board[s]; });
+    if (sides.length) { return sides[Math.floor(Math.random() * sides.length)]; }
+    return emptyCells(board)[0];
+  }
+
+  // Titan: perfect play, never loses.
+  function minimax(bd, turn) {
+    var w = winnerOf(bd);
+    if (w) { return { score: w.who === 'O' ? 10 : -10, move: -1 }; }
+    var e = emptyCells(bd);
+    if (e.length === 0) { return { score: 0, move: -1 }; }
+    var best = null;
+    for (var i = 0; i < e.length; i++) {
+      var t = bd.slice();
+      t[e[i]] = turn;
+      var res = minimax(t, turn === 'O' ? 'X' : 'O');
+      if (turn === 'O') {
+        if (best === null || res.score > best.score) { best = { score: res.score, move: e[i] }; }
+      } else {
+        if (best === null || res.score < best.score) { best = { score: res.score, move: e[i] }; }
+      }
+    }
+    return best;
+  }
+  function bestMove() { return minimax(board, 'O').move; }
+
+  function setStatus(text, cls) {
+    statusEl.textContent = text;
+    statusEl.className = 'status' + (cls ? ' ' + cls : '');
+  }
+  function renderTally() {
+    tallyEl.innerHTML = 'Won: <strong>' + wins + '</strong> &middot; Drawn: ' + draws;
+  }
+  function render() {
+    for (var i = 0; i < 9; i++) {
+      var c = cellEls[i];
+      c.textContent = board[i];
+      c.classList.remove('x', 'o', 'win');
+      if (board[i] === 'X') { c.classList.add('x'); }
+      if (board[i] === 'O') { c.classList.add('o'); }
+      c.disabled = !!board[i] || locked;
+      c.setAttribute('aria-label', POS[i] + (board[i] ? (', ' + (board[i] === 'X' ? 'your mark' : 'robot mark')) : ', empty'));
+    }
+  }
+  function highlight(line) {
+    for (var i = 0; i < line.length; i++) { cellEls[line[i]].classList.add('win'); }
+  }
+  function lockAll() {
+    for (var i = 0; i < 9; i++) { cellEls[i].disabled = true; }
+  }
+  function showReflection() {
+    reflectEl.textContent = REFLECTIONS[Math.floor(Math.random() * REFLECTIONS.length)];
+    reflectEl.classList.add('show');
+  }
+
+  function renderLadder() {
+    ladderEl.innerHTML = '';
+    ROBOTS.forEach(function (r) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'rung' + (r.id === currentLevel ? ' current' : '') + (cleared[r.id] ? ' cleared' : '');
+      btn.disabled = !unlocked[r.id];
+      var state = cleared[r.id] ? 'Cleared \u2713' : (unlocked[r.id] ? (r.id === currentLevel ? 'Playing' : 'Ready') : 'Locked');
+      btn.innerHTML = '<div class="rung-face" aria-hidden="true">' + r.face + '</div>' +
+                      '<div class="rung-name">' + r.name + '</div>' +
+                      '<div class="rung-state">' + state + '</div>';
+      btn.setAttribute('aria-label', r.name + ', ' + r.tag + ', ' + state);
+      btn.addEventListener('click', function () {
+        if (!unlocked[r.id]) { return; }
+        currentLevel = r.id;
+        newGame();
+      });
+      ladderEl.appendChild(btn);
+    });
+  }
+  function updateGoalLine() {
+    if (cleared[0] && cleared[1] && cleared[2]) {
+      goalEl.textContent = 'You have cleared the whole ladder. Play any robot again for fun.';
+      return;
+    }
+    if (cleared[currentLevel] && currentLevel + 1 < ROBOTS.length && !cleared[currentLevel + 1]) {
+      goalEl.textContent = 'Nice one. Tap ' + ROBOTS[currentLevel + 1].name + ' above when you are ready for a tougher robot.';
+      return;
+    }
+    goalEl.textContent = ROBOTS[currentLevel].blurb;
+  }
+
+  function endRound(result, line) {
+    locked = true;
+    lockAll();
+    if (line) { highlight(line); }
+    var robot = ROBOTS[currentLevel];
+    if (result === 'win') { wins++; }
+    else if (result === 'draw') { draws++; }
+    renderTally();
+
+    if (result === 'win') {
+      setStatus('You beat ' + robot.name + '! Nice plan.', 'win');
+    } else if (result === 'draw') {
+      setStatus(robot.goal === 'draw' ? 'A draw. You held ' + robot.name + '!' : 'A draw against ' + robot.name + '. Good thinking.', 'draw');
+    } else {
+      setStatus(robot.name + ' got there first this time. Want another go?', 'lose');
+    }
+
+    var success = (robot.goal === 'win' && result === 'win') || (robot.goal === 'draw' && (result === 'draw' || result === 'win'));
+    if (success && !cleared[currentLevel]) {
+      cleared[currentLevel] = true;
+      if (currentLevel + 1 < ROBOTS.length) { unlocked[currentLevel + 1] = true; }
+      if (cleared[0] && cleared[1] && cleared[2]) { doneEl.classList.add('show'); }
+    }
+    renderLadder();
+    updateGoalLine();
+    showReflection();
+  }
+
+  function robotMove() {
+    var m;
+    if (currentLevel === 0) { m = easyMove(); }
+    else if (currentLevel === 1) { m = trickyMove(); }
+    else { m = bestMove(); }
+    if (m === undefined || m === -1) { m = emptyCells(board)[0]; }
+    board[m] = 'O';
+    render();
+    var w = winnerOf(board);
+    if (w) { endRound('lose', w.line); return; }
+    if (emptyCells(board).length === 0) { endRound('draw'); return; }
+    locked = false;
+    render();
+    setStatus('Your turn.');
+  }
+
+  function onCellClick(e) {
+    if (locked) { return; }
+    var i = parseInt(e.currentTarget.getAttribute('data-i'), 10);
+    if (board[i]) { return; }
+    board[i] = 'X';
+    render();
+    var w = winnerOf(board);
+    if (w) { endRound('win', w.line); return; }
+    if (emptyCells(board).length === 0) { endRound('draw'); return; }
+    locked = true;
+    render();
+    setStatus(ROBOTS[currentLevel].name + ' is thinking...');
+    setTimeout(robotMove, 550);
+  }
+
+  function newGame() {
+    board = ['', '', '', '', '', '', '', '', ''];
+    locked = false;
+    reflectEl.classList.remove('show');
+    render();
+    setStatus('Your turn against ' + ROBOTS[currentLevel].name + '. You go first.');
+    renderLadder();
+    updateGoalLine();
+  }
+
+  againBtn.addEventListener('click', newGame);
+
+  renderTally();
+  newGame();
+})();
+</script>
+
+</body>
+</html>
