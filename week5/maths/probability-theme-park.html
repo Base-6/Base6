@@ -219,10 +219,41 @@
   .confetti span { position:absolute; top:-20px; font-size:1.4rem; animation:fall 1.2s linear forwards; }
   @keyframes fall { to { transform:translateY(110vh) rotate(360deg); opacity:0.1; } }
 
+
+  /* QA FIXES: compact play mode, clearer evidence, and stronger repeated-trial visuals */
+  body.play-mode .top-strip { display:none; }
+  body.play-mode .site-header { padding:1.15rem 1.5rem 2.25rem; }
+  body.play-mode h1 { font-size:clamp(1.45rem, 3vw, 2.1rem); }
+  body.play-mode .week-label { margin-bottom:0.15rem; }
+  body.play-mode .header-sub, body.play-mode .fair-lights { display:none; }
+  body.play-mode .main { padding-top:0.85rem; }
+  body.play-mode .section-label { margin:0.65rem 0 0.55rem; }
+  body.play-mode .map-card { padding:0.65rem; margin-bottom:0.85rem; border-radius:16px; }
+  body.play-mode .fair-map { grid-template-columns:repeat(7, minmax(64px, 1fr)); gap:0.42rem; }
+  body.play-mode .map-stall { min-height:74px; padding:0.45rem 0.35rem; border-radius:13px; }
+  body.play-mode .map-icon { font-size:1.25rem; }
+  body.play-mode .map-name { font-size:0.72rem; }
+  body.play-mode .map-status { font-size:0.62rem; padding:0 6px; }
+
+  .diagram-panel { border-width:3px; }
+  .diagram-ask { margin-bottom:0.55rem; padding:0.58rem 0.68rem; border-radius:12px; background:#fff3e8; border:1.5px solid #fcd8bc; color:#7a4a00; font-weight:700; line-height:1.45; }
+  .target-note { font-size:0.95rem; border-width:2px; }
+  .target-note .target-big { display:block; color:#003f50; font-size:1.04rem; margin-bottom:0.12rem; }
+  .result-tokens { margin-top:0.75rem; border-radius:12px; background:#fffaf6; border:1.5px solid #eadfd4; padding:0.62rem; }
+  .result-token-title { font-size:0.78rem; color:#555; font-weight:700; margin-bottom:0.35rem; }
+  .result-token-row { display:flex; gap:0.28rem; flex-wrap:wrap; }
+  .result-token { width:28px; height:28px; border-radius:50%; border:1.5px solid #d8d0c8; background:#fff; display:flex; align-items:center; justify-content:center; font-size:0.94rem; }
+  .result-token.target-hit { border-color:#2e8b57; background:#eef8e9; box-shadow:0 0 0 3px rgba(46,139,87,0.12); }
+  .learning-feedback { margin-top:0.75rem; border-radius:12px; padding:0.68rem 0.75rem; background:#f7fcfd; border:1.5px solid #b8dfe8; color:#005a72; font-weight:700; line-height:1.45; }
+  .learning-feedback.good { background:#eef8e9; border-color:#bfe3c7; color:#1c6d3d; }
+  .report-learning { display:block; margin-top:0.22rem; color:#555; font-size:0.8rem; line-height:1.35; }
+
   .footer-note { text-align:center; color:#777; font-size:0.8rem; margin-top:2rem; }
   a:focus-visible, button:focus-visible, textarea:focus-visible { outline:3px solid var(--orange); outline-offset:3px; }
 
   @media (max-width: 900px) {
+    body.play-mode .fair-map { grid-template-columns: repeat(3, 1fr); }
+    body.play-mode .map-stall { min-height:76px; }
     .fair-map { grid-template-columns: repeat(3, 1fr); }
     .game-layout { grid-template-columns:1fr; }
     .strength-side { display:none; }
@@ -453,7 +484,15 @@ function cssEscapeValue(value){ return (window.CSS && CSS.escape) ? CSS.escape(v
 function gameById(id){ return GAME_DATA.find(function(g){ return g.id === id; }); }
 function showMessage(id, text){ const el = $(id); if(!el) return; el.textContent = text; el.classList.add('show'); setTimeout(function(){ el.classList.remove('show'); }, 4200); }
 function hideAllStages(){ document.querySelectorAll('.stage').forEach(function(s){ s.classList.remove('active'); }); }
-function setStage(id){ hideAllStages(); $(id).classList.add('active'); window.scrollTo({top:0, behavior:'smooth'}); }
+function setStage(id){
+  hideAllStages();
+  const stage = $(id);
+  stage.classList.add('active');
+  updatePlayMode();
+  setTimeout(function(){
+    stage.scrollIntoView({ behavior: shouldReduceMotion() ? 'auto' : 'smooth', block:'start' });
+  }, 40);
+}
 
 function initInitials(){
   const row = $('initialRow');
@@ -504,6 +543,7 @@ function canOpen(item){
   return false;
 }
 function renderMap(){
+  updatePlayMode();
   const map = $('fairMap'); map.innerHTML = '';
   mapItems().forEach(function(item, i){
     const stall = document.createElement('button');
@@ -577,9 +617,17 @@ function animateTest(game, outcome, trials, done){
   if(!panel){ done(); return; }
   clearOutcomeHighlights(game.id);
   const callout = panel.querySelector('.test-callout');
+  const reduced = shouldReduceMotion();
   if(callout){
     callout.classList.add('show');
-    callout.textContent = trials === 1 ? 'Testing 1 go... watch the dodgy machinery.' : 'Running ' + trials + ' quick tests... tally goblin is counting.';
+    callout.textContent = reduced
+      ? 'Animation skipped. Result shown below.'
+      : (trials === 1 ? 'Testing 1 go... watch the dodgy machinery.' : 'Running ' + trials + ' quick tests... tally goblin is counting.');
+  }
+  if(reduced){
+    applyOutcomeHighlight(game, outcome, trials, true);
+    setTimeout(done, 60);
+    return;
   }
   panel.classList.remove('is-testing');
   void panel.offsetWidth;
@@ -587,23 +635,24 @@ function animateTest(game, outcome, trials, done){
   const duration = trials === 1 ? 950 : 1150;
   setTimeout(function(){
     panel.classList.remove('is-testing');
-    applyOutcomeHighlight(game, outcome, trials);
+    applyOutcomeHighlight(game, outcome, trials, false);
     done();
   }, duration);
 }
-function applyOutcomeHighlight(game, outcome, trials){
+function applyOutcomeHighlight(game, outcome, trials, skipped){
   const panel = document.querySelector('.diagram-panel[data-game-id="' + game.id + '"]');
   if(!panel) return;
   const callout = panel.querySelector('.test-callout');
   const finalPick = outcome.picks && outcome.picks.length ? outcome.picks[outcome.picks.length - 1] : null;
+  const prefix = skipped ? 'Animation skipped. ' : '';
   if(trials === 1 && finalPick){
     panel.querySelectorAll('[data-outcome-label="' + cssEscapeValue(finalPick.label) + '"]').forEach(function(el){ el.classList.add('landed'); });
     const wheel = panel.querySelector('.wheel-diagram');
     if(wheel) wheel.classList.add('landed');
-    if(callout) callout.textContent = 'Result: ' + finalPick.icon + ' ' + finalPick.label + '. One go can be surprising.';
+    if(callout) callout.textContent = prefix + 'Result: ' + finalPick.icon + ' ' + finalPick.label + '. One go can be surprising.';
     return;
   }
-  if(callout) callout.textContent = 'Test complete: the target happened ' + outcome.targetCount + ' out of ' + outcome.trials + ' times.';
+  if(callout) callout.textContent = prefix + 'Test complete: the target happened ' + outcome.targetCount + ' out of ' + outcome.trials + ' times.';
 }
 function scaleIndex(word){ return SCALE.findIndex(function(s){ return s.word === word; }); }
 
@@ -690,7 +739,7 @@ function tokenDiagramHtml(game, claw){
 }
 function targetNoteHtml(game){
   const p = targetProbability(game);
-  return '<div class="target-note">Visual clue: the target appears ' + p.target + ' out of ' + p.total + ' possible parts. Use that to choose the probability word.</div>';
+  return '<div class="target-note"><span class="target-big">Target clue: ' + p.target + ' out of ' + p.total + '</span>The target appears ' + p.target + ' out of ' + p.total + ' possible parts. Use the diagram before you choose the probability word.</div>';
 }
 function diagramHtml(game){
   const title = game.id === 'big' ? 'Look at the Big Prize Wheel' : 'Look at the game first';
@@ -700,6 +749,7 @@ function diagramHtml(game){
     tokenDiagramHtml(game, false);
   return '<div class="diagram-panel" data-game-id="' + safeAttr(game.id) + '" aria-label="Visual probability diagram for ' + safeAttr(game.name) + '">' +
     '<div class="diagram-top"><span class="diagram-title">👀 ' + title + '</span><span class="diagram-hint">Count first · predict second</span></div>' +
+    '<div class="diagram-ask">Look at the diagram, count the target parts, then choose the chance word.</div>' +
     intro +
     '<div class="test-callout" id="testCallout-' + safeAttr(game.id) + '"></div>' +
   '</div>';
@@ -823,10 +873,26 @@ function runGameTrials(id, trials){
     burstConfetti(['🎟️','🎪','⭐']);
   });
 }
+function resultTokensHtml(game, outcome){
+  if(!outcome || !outcome.picks || outcome.picks.length === 0) return '';
+  const label = outcome.trials === 1 ? 'Result token' : 'Mini result tokens: each circle is one trial';
+  const tokens = outcome.picks.slice(0, 20).map(function(o){
+    return '<span class="result-token ' + (game.target(o) ? 'target-hit' : '') + '" title="' + safeAttr(o.label) + '">' + o.icon + '</span>';
+  }).join('');
+  return '<div class="result-tokens"><div class="result-token-title">' + label + '</div><div class="result-token-row">' + tokens + '</div></div>';
+}
+function predictionFeedbackHtml(prediction, actualWord, actualText){
+  if(!prediction) return '';
+  if(prediction === actualWord){
+    return '<div class="learning-feedback good">Good probability judgement: your prediction matched the diagram. The result can still wobble because chance is chance.</div>';
+  }
+  return '<div class="learning-feedback">Useful comparison: your prediction was "' + escapeHtml(prediction) + '", but the diagram suggests "' + escapeHtml(actualWord) + '". ' + escapeHtml(actualText) + '</div>';
+}
 function renderResult(game, outcome){
   const box = $('resultBox'); if(!box) return;
   const targetLine = 'This happened ' + outcome.targetCount + ' out of ' + outcome.trials + ' times.';
   const funny = outcome.targetCount === 0 ? 'Chance has gone full gremlin.' : outcome.targetCount === outcome.trials ? 'Chance has suddenly become very confident.' : 'Chance has behaved... sort of.';
+  const prediction = (state.results[game.id] || {}).prediction || '';
   box.classList.add('show');
   const max = Math.max.apply(null, Object.values(outcome.tally).concat([1]));
   let rows = game.outcomes.map(function(o){
@@ -834,7 +900,7 @@ function renderResult(game, outcome){
     const width = Math.round((count / max) * 100);
     return '<div class="tally-row"><strong>' + o.icon + ' ' + o.label + '</strong><div class="bar-track"><div class="bar-fill" style="width:' + width + '%"></div></div><span>' + count + '</span></div>';
   }).join('');
-  box.innerHTML = '<p class="result-line">' + funny + '</p><p class="muted">' + targetLine + '</p><div class="tally-list">' + rows + '</div>';
+  box.innerHTML = '<p class="result-line">' + funny + '</p><p class="muted">' + targetLine + '</p>' + resultTokensHtml(game, outcome) + '<div class="tally-list">' + rows + '</div>' + (outcome.trials > 1 ? predictionFeedbackHtml(prediction, game.actualWord, game.actualText) : '');
 }
 function showActualProbability(game){
   const box = $('actualProb'); if(!box) return;
@@ -982,7 +1048,7 @@ function renderFinalResult(){
     const width = Math.round((count / max) * 100);
     return '<div class="tally-row"><strong>' + o.icon + ' ' + o.label + '</strong><div class="bar-track"><div class="bar-fill" style="width:' + width + '%"></div></div><span>' + count + '</span></div>';
   }).join('');
-  box.innerHTML = '<p class="result-line">' + state.final.judgement + '</p><p class="muted">The target happened ' + result.targetCount + ' out of 10 times.</p><div class="tally-list">' + rows + '</div>';
+  box.innerHTML = '<p class="result-line">' + state.final.judgement + '</p><p class="muted">The target happened ' + result.targetCount + ' out of 10 times.</p>' + resultTokensHtml(FINAL_GAME, result) + '<div class="tally-list">' + rows + '</div>' + predictionFeedbackHtml(state.final.prediction, FINAL_GAME.actualWord, FINAL_GAME.actualText);
 }
 function showFinalActual(){
   const box = $('finalActualProb'); if(!box) return;
@@ -1058,7 +1124,7 @@ function buildReportData(){
 function renderReport(){
   const report = state.finalReport || buildReportData();
   const rows = report.games.map(function(r){
-    return '<tr><td>' + escapeHtml(r.name) + '</td><td>' + escapeHtml(r.prediction) + '</td><td>' + escapeHtml(r.result) + '</td><td>' + escapeHtml(r.actualWord) + '</td></tr>';
+    return '<tr><td><strong>' + escapeHtml(r.name) + '</strong><span class="report-learning">' + escapeHtml(r.learning) + '</span></td><td>' + escapeHtml(r.prediction) + '</td><td>' + escapeHtml(r.result) + '</td><td>' + escapeHtml(r.actualWord) + '</td></tr>';
   }).join('');
   $('reportHost').innerHTML = `
     <div class="report-card">
@@ -1097,7 +1163,7 @@ function reportTextLines(){
   lines.push('');
   lines.push('Game results:');
   report.games.forEach(function(g){
-    lines.push('- ' + g.name + ': predicted ' + g.prediction + '; result ' + g.result + '; actual word ' + g.actualWord + '.');
+    lines.push('- ' + g.name + ' (' + g.learning + '): predicted ' + g.prediction + '; result ' + g.result + '; actual word ' + g.actualWord + '.');
   });
   lines.push('');
   lines.push('Big Prize Wheel: predicted ' + report.finalPrediction + '; result ' + report.finalResult + '; ' + report.finalJudgement + '.');
@@ -1166,6 +1232,7 @@ function sendMailto(){
 }
 
 initInitials();
+updatePlayMode();
 renderMap();
 </script>
 </body>
