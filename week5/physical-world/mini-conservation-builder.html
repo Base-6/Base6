@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Mini-Conservation Builder · Physical World · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root {
+    --cream:#fef8f4;
+    --ink:#1a1a1a;
+    --muted:#555;
+    --card:#ffffff;
+    --teal:#007291;
+    --teal-dark:#005a72;
+    --teal-soft:#e6f5f8;
+    --orange:#ef7724;
+    --orange-dark:#c05a10;
+    --orange-soft:#fff3e8;
+    --green:#2e8b57;
+    --green-dark:#1f6840;
+    --green-soft:#e8f5ee;
+    --leaf:#dceccd;
+    --line:#e0d8d0;
+    --shadow:0 10px 26px rgba(0,0,0,.08);
+    --radius:16px;
+  }
+  body {
+    font-family:"Atkinson Hyperlegible", Arial, sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    min-height:100vh;
+  }
+  button, textarea { font-family:inherit; }
+  a { color:inherit; }
+  .site-header {
+    position:relative;
+    overflow:hidden;
+    text-align:center;
+    padding:2.3rem 1rem 3.2rem;
+    background:linear-gradient(135deg, var(--teal) 0%, #0b7f71 55%, var(--green) 100%);
+  }
+  .site-header::before {
+    content:"";
+    position:absolute;
+    top:-70px;
+    left:-50px;
+    width:190px;
+    height:190px;
+    border-radius:50%;
+    background:rgba(255,255,255,.12);
+  }
+  .site-header::after {
+    content:"";
+    position:absolute;
+    right:-70px;
+    bottom:0;
+    width:230px;
+    height:230px;
+    border-radius:50%;
+    background:rgba(239,119,36,.2);
+  }
+  .back-link {
+    position:absolute;
+    top:1rem;
+    left:1rem;
+    z-index:3;
+    color:#fff;
+    text-decoration:none;
+    font-weight:700;
+    font-size:.92rem;
+    opacity:.94;
+  }
+  .back-link:hover { opacity:1; }
+  .header-inner {
+    position:relative;
+    z-index:2;
+    width:min(820px, 100%);
+    margin:0 auto;
+  }
+  .subject-label {
+    color:#ffe8c2;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    font-size:.78rem;
+    font-weight:700;
+    margin-bottom:.45rem;
+  }
+  h1 {
+    color:#fff;
+    font-size:clamp(2rem, 5vw, 3.2rem);
+    line-height:1.08;
+  }
+  .header-sub {
+    max-width:700px;
+    color:#fff;
+    line-height:1.55;
+    font-size:1.05rem;
+    margin:.75rem auto 0;
+  }
+  .header-wave {
+    position:absolute;
+    left:0;
+    bottom:-1px;
+    width:100%;
+    height:42px;
+    z-index:1;
+  }
+  .main {
+    width:min(1160px, calc(100% - 1.2rem));
+    margin:0 auto;
+    padding:1.7rem 0 4rem;
+  }
+  .intro-card {
+    background:#fff;
+    border:2px solid var(--orange);
+    border-radius:20px;
+    box-shadow:0 6px 18px rgba(239,119,36,.11);
+    padding:1.1rem 1.2rem;
+    margin-bottom:1rem;
+  }
+  .eyebrow {
+    color:var(--orange-dark);
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    font-size:.75rem;
+    margin-bottom:.35rem;
+  }
+  h2, h3 { line-height:1.22; }
+  .intro-card h2 { color:var(--teal-dark); font-size:1.25rem; margin-bottom:.35rem; }
+  p { line-height:1.6; }
+  .muted { color:var(--muted); }
+  .app-grid {
+    display:grid;
+    grid-template-columns:minmax(0, 1.2fr) minmax(330px, .8fr);
+    gap:1rem;
+    align-items:start;
+  }
+  .panel {
+    background:#fff;
+    border:2px solid var(--line);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    padding:1rem;
+  }
+  .panel-title {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:.75rem;
+    flex-wrap:wrap;
+    margin-bottom:.85rem;
+  }
+  .panel-title h2 { color:var(--teal-dark); font-size:1.35rem; }
+  .small-note { color:var(--muted); font-size:.9rem; margin-top:.2rem; }
+  .button-row { display:flex; gap:.55rem; flex-wrap:wrap; align-items:center; }
+  .btn {
+    border:none;
+    border-radius:13px;
+    min-height:46px;
+    padding:.75rem 1rem;
+    background:var(--teal);
+    color:#fff;
+    font-size:.95rem;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 3px 0 rgba(0,0,0,.13);
+  }
+  .btn:hover { background:var(--teal-dark); transform:translateY(-1px); }
+  .btn.orange { background:var(--orange); }
+  .btn.orange:hover { background:var(--orange-dark); }
+  .btn.ghost {
+    background:#fff;
+    color:var(--teal);
+    border:2px solid var(--teal);
+    box-shadow:none;
+  }
+  .btn.ghost:hover { background:var(--teal-soft); }
+  .builder-layout {
+    display:grid;
+    grid-template-columns:270px minmax(0, 1fr);
+    gap:1rem;
+    align-items:start;
+  }
+  .palette {
+    background:#fffaf6;
+    border:2px solid #f0d8c5;
+    border-radius:18px;
+    padding:.8rem;
+  }
+  .palette h3 {
+    color:var(--orange-dark);
+    font-size:1rem;
+    margin-bottom:.55rem;
+  }
+  .feature-btn {
+    width:100%;
+    display:flex;
+    align-items:flex-start;
+    gap:.55rem;
+    text-align:left;
+    border:2px solid #ead4bf;
+    background:#fff;
+    border-radius:15px;
+    padding:.7rem;
+    min-height:72px;
+    cursor:pointer;
+    margin-bottom:.5rem;
+    color:var(--ink);
+  }
+  .feature-btn:hover { border-color:var(--orange); background:#fff8f0; }
+  .feature-btn[aria-pressed="true"] {
+    border-color:var(--green);
+    background:var(--green-soft);
+  }
+  .feature-icon { font-size:1.7rem; line-height:1; flex:0 0 auto; }
+  .feature-name { display:block; font-weight:700; font-size:.98rem; color:var(--ink); }
+  .feature-small { display:block; color:#555; font-size:.8rem; line-height:1.35; margin-top:.15rem; }
+  .feature-state {
+    display:inline-block;
+    margin-top:.35rem;
+    border-radius:999px;
+    padding:.12rem .5rem;
+    background:#f0ede8;
+    color:#666;
+    font-size:.72rem;
+    font-weight:700;
+  }
+  .feature-btn[aria-pressed="true"] .feature-state { background:#fff; color:var(--green-dark); border:1px solid #b8ddc7; }
+  .plot-wrap {
+    background:linear-gradient(180deg, #eaf6dc, #d6ecc9);
+    border:2px solid #aed59f;
+    border-radius:20px;
+    min-height:360px;
+    padding:1rem;
+    position:relative;
+    overflow:hidden;
+  }
+  .plot-wrap::before {
+    content:"";
+    position:absolute;
+    inset:18px;
+    border:2px dashed rgba(46,139,87,.25);
+    border-radius:22px;
+    pointer-events:none;
+  }
+  .scene-deco {
+    position:absolute;
+    inset:auto 0 0 0;
+    height:70px;
+    background:linear-gradient(0deg, rgba(46,139,87,.18), rgba(46,139,87,0));
+    pointer-events:none;
+  }
+  .empty-plot {
+    position:relative;
+    z-index:2;
+    min-height:260px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:#45643d;
+    padding:1rem;
+  }
+  .empty-plot strong { display:block; color:var(--green-dark); font-size:1.15rem; margin-bottom:.2rem; }
+  .placed-grid {
+    position:relative;
+    z-index:2;
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(138px, 1fr));
+    gap:.7rem;
+  }
+  .placed-tile {
+    position:relative;
+    min-height:112px;
+    border:2px solid rgba(46,139,87,.45);
+    border-radius:18px;
+    background:rgba(255,255,255,.9);
+    padding:.8rem .7rem .7rem;
+    text-align:center;
+    cursor:pointer;
+    color:var(--ink);
+    box-shadow:0 5px 14px rgba(31,104,64,.11);
+  }
+  .placed-tile:hover { border-color:var(--orange); transform:translateY(-1px); }
+  .placed-tile .big { display:block; font-size:2.2rem; line-height:1; margin-bottom:.25rem; }
+  .placed-tile b { display:block; color:var(--green-dark); font-size:.95rem; }
+  .placed-tile span { color:#555; font-size:.78rem; }
+  .reserve-status {
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+    flex-wrap:wrap;
+    margin-top:.8rem;
+  }
+  .chip {
+    display:inline-flex;
+    align-items:center;
+    gap:.25rem;
+    border-radius:999px;
+    border:1.5px solid #cfe5d6;
+    background:#fff;
+    color:var(--green-dark);
+    font-size:.78rem;
+    font-weight:700;
+    padding:.26rem .58rem;
+  }
+  .live-panel {
+    position:sticky;
+    top:.6rem;
+  }
+  .score-card {
+    background:linear-gradient(135deg, var(--teal-soft), #f7fff9);
+    border:2px solid #b8dfe8;
+    border-radius:18px;
+    padding:1rem;
+    margin-bottom:.8rem;
+  }
+  .score-row {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:.75rem;
+  }
+  .score-number {
+    font-size:3.1rem;
+    line-height:1;
+    font-weight:700;
+    color:var(--teal-dark);
+    min-width:78px;
+    text-align:center;
+  }
+  .score-number.rise { animation:scorePop .45s ease; }
+  @keyframes scorePop {
+    0% { transform:scale(1); }
+    45% { transform:scale(1.12); }
+    100% { transform:scale(1); }
+  }
+  .rating {
+    display:inline-block;
+    border-radius:999px;
+    background:var(--orange-soft);
+    border:1.5px solid #f6c893;
+    color:#7a4a00;
+    padding:.32rem .7rem;
+    font-size:.86rem;
+    font-weight:700;
+    margin-top:.4rem;
+  }
+  .message {
+    background:#fff8ee;
+    border:1.5px solid #f4c99a;
+    color:#724900;
+    border-radius:14px;
+    padding:.65rem .75rem;
+    font-weight:700;
+    font-size:.9rem;
+    margin:.75rem 0;
+    line-height:1.45;
+  }
+  .message.good {
+    background:#f1fff6;
+    border-color:#afe0bf;
+    color:#1e6b3b;
+  }
+  .species-panel {
+    border:2px solid var(--line);
+    border-radius:18px;
+    background:#fff;
+    padding:.85rem;
+  }
+  .species-panel h3, .breakdown h3 { color:var(--teal-dark); font-size:1.05rem; margin-bottom:.5rem; }
+  .species-list {
+    max-height:310px;
+    overflow:auto;
+    display:grid;
+    gap:.42rem;
+    padding-right:.15rem;
+  }
+  .species-item {
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:.55rem;
+    align-items:start;
+    border:1.5px solid #eadfd4;
+    background:#fffaf6;
+    border-radius:13px;
+    padding:.55rem;
+  }
+  .species-item.bonus {
+    background:#f3fff8;
+    border-color:#aadbbd;
+  }
+  .species-icon { font-size:1.35rem; line-height:1; }
+  .species-name { font-weight:700; color:var(--ink); font-size:.92rem; }
+  .species-source { color:#555; font-size:.78rem; line-height:1.35; margin-top:.12rem; }
+  .bonus-tag {
+    display:inline-block;
+    margin-top:.25rem;
+    border-radius:999px;
+    background:#fff;
+    border:1px solid #9bd2af;
+    color:var(--green-dark);
+    font-size:.68rem;
+    font-weight:700;
+    padding:.12rem .45rem;
+  }
+  .empty-list {
+    color:#555;
+    background:#fffaf6;
+    border:1.5px dashed #d8c8b8;
+    border-radius:14px;
+    padding:.8rem;
+    line-height:1.5;
+  }
+  .breakdown {
+    margin-top:.85rem;
+    border:2px solid #d7e8d8;
+    border-radius:18px;
+    background:#f7fff8;
+    padding:.85rem;
+  }
+  .group-row {
+    display:grid;
+    grid-template-columns:145px 1fr auto;
+    gap:.45rem;
+    align-items:center;
+    margin:.5rem 0;
+    font-size:.82rem;
+    color:#444;
+  }
+  .group-label { font-weight:700; color:var(--green-dark); }
+  .group-track {
+    height:11px;
+    border-radius:999px;
+    background:#dde8dd;
+    overflow:hidden;
+  }
+  .group-fill {
+    height:100%;
+    width:0%;
+    border-radius:999px;
+    background:var(--green);
+    transition:width .25s ease;
+  }
+  .analysis-grid {
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:1rem;
+    margin-top:1rem;
+  }
+  .analysis-card, .reflection-card, .send-card {
+    background:#fff;
+    border:2px solid var(--line);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    padding:1rem;
+  }
+  .analysis-card h2, .reflection-card h2, .send-card h2 {
+    color:var(--teal-dark);
+    font-size:1.25rem;
+    margin-bottom:.45rem;
+  }
+  .hint-line {
+    background:var(--orange-soft);
+    border:2px solid #f6c893;
+    color:#744600;
+    border-radius:15px;
+    padding:.75rem .85rem;
+    font-weight:700;
+    line-height:1.45;
+    margin-bottom:.75rem;
+  }
+  .analysis-mini-grid {
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:.6rem;
+  }
+  .mini-card {
+    border:1.5px solid #e7ddd1;
+    background:#fffaf6;
+    border-radius:14px;
+    padding:.7rem;
+    min-height:112px;
+  }
+  .mini-card b { display:block; color:var(--green-dark); margin-bottom:.3rem; }
+  .mini-card p { color:#555; font-size:.86rem; line-height:1.45; }
+  .wordbank {
+    display:flex;
+    gap:.4rem;
+    flex-wrap:wrap;
+    margin:.65rem 0;
+  }
+  .wordbank button {
+    border:1.5px solid #cce4ad;
+    background:#f7fff0;
+    color:var(--green-dark);
+    border-radius:999px;
+    padding:.4rem .68rem;
+    font-weight:700;
+    cursor:pointer;
+    font-size:.82rem;
+  }
+  .wordbank button:hover { background:#edf7df; }
+  textarea {
+    width:100%;
+    min-height:115px;
+    border:2px solid var(--teal);
+    border-radius:14px;
+    padding:.75rem .85rem;
+    font-size:.96rem;
+    line-height:1.55;
+    resize:vertical;
+  }
+  textarea:focus { border-color:var(--orange); outline:none; box-shadow:0 0 0 3px rgba(239,119,36,.15); }
+  .send-card { margin-top:1rem; text-align:left; }
+  .summary-box {
+    background:#f7fcfd;
+    border:1.5px solid #b8dfe8;
+    border-radius:15px;
+    padding:.75rem;
+    margin:.75rem 0;
+    color:#444;
+    font-size:.9rem;
+    line-height:1.55;
+  }
+  .footer {
+    text-align:center;
+    padding:1.5rem 1rem 2rem;
+    color:#777;
+    font-size:.82rem;
+  }
+  a:focus-visible, button:focus-visible, textarea:focus-visible {
+    outline:3px solid var(--orange);
+    outline-offset:3px;
+  }
+  .sr-only {
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+  }
+  @media (max-width:980px) {
+    .app-grid { grid-template-columns:1fr; }
+    .live-panel { position:static; }
+  }
+  @media (max-width:740px) {
+    .main { width:min(100% - .8rem, 1160px); }
+    .site-header { padding-top:3.1rem; }
+    .back-link { top:.75rem; left:.75rem; }
+    .builder-layout, .analysis-grid { grid-template-columns:1fr; }
+    .analysis-mini-grid { grid-template-columns:1fr; }
+    .group-row { grid-template-columns:112px 1fr auto; }
+    .score-number { font-size:2.6rem; }
+    .btn { width:100%; }
+  }
+  @media (prefers-reduced-motion:reduce) {
+    *, *::before, *::after {
+      animation:none !important;
+      transition:none !important;
+      scroll-behavior:auto !important;
+    }
+    .btn:hover, .placed-tile:hover { transform:none; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="back-link" href="index.html">Back to Physical World</a>
+  <div class="header-inner">
+    <p class="subject-label">Physical World</p>
+    <h1>Mini-Conservation Builder</h1>
+    <p class="header-sub">Build a home for wildlife and watch biodiversity climb as your reserve comes to life.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+  <section class="intro-card" aria-labelledby="introTitle">
+    <p class="eyebrow">Wildlife Exploration</p>
+    <h2 id="introTitle">Create, record and analyse in one place.</h2>
+    <p class="muted">Build your own little nature reserve. Tap in a pond, a hedge, a log pile and more, and watch the wildlife arrive. There is no right answer, so try things and see what turns up.</p>
+  </section>
+
+  <div class="app-grid">
+    <section class="panel" aria-labelledby="builderTitle">
+      <div class="panel-title">
+        <div>
+          <p class="eyebrow">Create</p>
+          <h2 id="builderTitle">Your reserve plot</h2>
+          <p class="small-note">You could add up to seven features. Each one can be used once.</p>
+        </div>
+        <div class="button-row">
+          <button class="btn ghost" type="button" id="clearBtn">Start again</button>
+        </div>
+      </div>
+
+      <div class="builder-layout">
+        <div class="palette" aria-label="Habitat feature palette">
+          <h3>Habitat features</h3>
+          <div id="featurePalette"></div>
+        </div>
+
+        <div>
+          <div class="plot-wrap" id="reservePlot" aria-label="Reserve plot. Tap a placed feature to remove it." role="region">
+            <div id="plotContent"></div>
+            <div class="scene-deco" aria-hidden="true"></div>
+          </div>
+          <div class="reserve-status" id="reserveStatus" aria-label="Selected habitat features"></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel live-panel" aria-labelledby="liveTitle" aria-live="polite" aria-atomic="false">
+      <div class="score-card">
+        <p class="eyebrow">Record</p>
+        <div class="score-row">
+          <div>
+            <h2 id="liveTitle">Biodiversity score</h2>
+            <p class="small-note">Unique species currently supported.</p>
+            <span class="rating" id="ratingText">An empty plot. Add a feature to begin.</span>
+          </div>
+          <div class="score-number" id="scoreNumber">0</div>
+        </div>
+      </div>
+
+      <div class="message" id="statusMessage">Your plot is empty for now. Tap a feature below to get started.</div>
+
+      <div class="species-panel">
+        <h3>Species list</h3>
+        <div class="species-list" id="speciesList" aria-label="Current species list"></div>
+      </div>
+
+      <div class="breakdown" aria-label="Biodiversity group breakdown">
+        <h3>Balance by group</h3>
+        <div id="groupBreakdown"></div>
+      </div>
+    </aside>
+  </div>
+
+  <section class="analysis-grid" aria-labelledby="analysisTitle">
+    <div class="analysis-card">
+      <p class="eyebrow">Analyse</p>
+      <h2 id="analysisTitle">What is working?</h2>
+      <div class="hint-line" id="analysisHint">A pond, hedge or log pile could be a gentle place to begin.</div>
+      <div class="analysis-mini-grid">
+        <div class="mini-card">
+          <b>Working well</b>
+          <p id="workingText">Add a feature to see what starts working for wildlife.</p>
+        </div>
+        <div class="mini-card">
+          <b>Still missing</b>
+          <p id="missingText">The reserve is ready for its first habitat.</p>
+        </div>
+        <div class="mini-card">
+          <b>Most useful next</b>
+          <p id="nextText">Try one feature and watch the score change.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="reflection-card">
+      <p class="eyebrow">Reflect</p>
+      <h2>Optional reflection</h2>
+      <p class="muted">Which feature added the most new species? What is still missing from your reserve?</p>
+      <div class="wordbank" aria-label="Reflection sentence starters">
+        <button type="button" data-starter="The feature that helped most was ">The feature that helped most was</button>
+        <button type="button" data-starter="My reserve still needs ">My reserve still needs</button>
+        <button type="button" data-starter="I noticed that ">I noticed that</button>
+      </div>
+      <textarea id="reflectionText" placeholder="You could write a short thought here. This is optional." aria-label="Optional reflection"></textarea>
+    </div>
+  </section>
+
+  <section class="send-card" aria-labelledby="sendTitle">
+    <p class="eyebrow">Optional share</p>
+    <h2 id="sendTitle">Send to Jay</h2>
+    <p class="muted">This opens Gmail with your reserve summary. Sending is optional.</p>
+    <div class="summary-box" id="summaryBox">Features: none yet. Score: 0.</div>
+    <div class="button-row">
+      <button class="btn orange" type="button" id="gmailBtn">Open Gmail summary</button>
+      <button class="btn ghost" type="button" id="copyBtn">Copy summary</button>
+    </div>
+    <div class="message good" id="shareMessage" hidden>Summary copied.</div>
+  </section>
+</main>
+
+<footer class="footer">Base 6 · Chilton Bridge School</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  var STORE_KEY = 'base6-week5-mini-conservation-builder';
+  var TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+  var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var FEATURES = [
+    { id:'pond', icon:'💧', name:'Pond', short:'Water for amphibians and insects.', species:['frog','newt','dragonfly','pond-skater'] },
+    { id:'log-pile', icon:'🪵', name:'Log pile', short:'Damp shelter and food.', species:['beetle','woodlouse','centipede','fungi'] },
+    { id:'wildflower-patch', icon:'🌼', name:'Wildflower patch', short:'Nectar and pollen.', species:['bee','butterfly','hoverfly','grasshopper'] },
+    { id:'hedge', icon:'🌳', name:'Hedge', short:'Cover, food and nesting space.', species:['blackbird','robin','wren','sparrow'] },
+    { id:'bird-box', icon:'🏠', name:'Bird box', short:'A safe nesting spot.', species:['blue-tit','great-tit','starling'] },
+    { id:'bug-hotel', icon:'🏨', name:'Bug hotel', short:'Small shelters for insects.', species:['solitary-bee','ladybird','lacewing','spider'] },
+    { id:'compost-heap', icon:'♻️', name:'Compost heap', short:'Rotting plant matter for tiny life.', species:['earthworm','beetle','woodlouse','slug'] }
+  ];
+
+  var SPECIES = {
+    'frog':{ name:'Frog', icon:'🐸', group:'Amphibians and reptiles' },
+    'newt':{ name:'Newt', icon:'🦎', group:'Amphibians and reptiles' },
+    'dragonfly':{ name:'Dragonfly', icon:'🪰', group:'Insects' },
+    'pond-skater':{ name:'Pond skater', icon:'💧', group:'Insects' },
+    'beetle':{ name:'Beetle', icon:'🪲', group:'Insects' },
+    'woodlouse':{ name:'Woodlouse', icon:'🪲', group:'Other' },
+    'centipede':{ name:'Centipede', icon:'🐛', group:'Other' },
+    'fungi':{ name:'Fungi', icon:'🍄', group:'Other' },
+    'bee':{ name:'Bee', icon:'🐝', group:'Insects' },
+    'butterfly':{ name:'Butterfly', icon:'🦋', group:'Insects' },
+    'hoverfly':{ name:'Hoverfly', icon:'🪰', group:'Insects' },
+    'grasshopper':{ name:'Grasshopper', icon:'🦗', group:'Insects' },
+    'blackbird':{ name:'Blackbird', icon:'🐦', group:'Birds' },
+    'robin':{ name:'Robin', icon:'🐦', group:'Birds' },
+    'wren':{ name:'Wren', icon:'🐦', group:'Birds' },
+    'sparrow':{ name:'Sparrow', icon:'🐦', group:'Birds' },
+    'blue-tit':{ name:'Blue tit', icon:'🐦', group:'Birds' },
+    'great-tit':{ name:'Great tit', icon:'🐦', group:'Birds' },
+    'starling':{ name:'Starling', icon:'🐦', group:'Birds' },
+    'solitary-bee':{ name:'Solitary bee', icon:'🐝', group:'Insects' },
+    'ladybird':{ name:'Ladybird', icon:'🐞', group:'Insects' },
+    'lacewing':{ name:'Lacewing', icon:'🪰', group:'Insects' },
+    'spider':{ name:'Spider', icon:'🕷️', group:'Other' },
+    'earthworm':{ name:'Earthworm', icon:'🪱', group:'Other' },
+    'slug':{ name:'Slug', icon:'🐌', group:'Other' },
+    'hedgehog':{ name:'Hedgehog', icon:'🦔', group:'Mammals' },
+    'slow-worm':{ name:'Slow worm', icon:'🦎', group:'Amphibians and reptiles' },
+    'bat':{ name:'Bat', icon:'🦇', group:'Mammals' },
+    'toad':{ name:'Toad', icon:'🐸', group:'Amphibians and reptiles' },
+    'song-thrush':{ name:'Song thrush', icon:'🐦', group:'Birds' }
+  };
+
+  var BONUSES = [
+    { id:'hedgehog', needs:['log-pile','hedge'], source:'Log pile and Hedge', note:'needs shelter and food' },
+    { id:'slow-worm', needs:['compost-heap','log-pile'], source:'Compost heap and Log pile', note:'needs warmth and hiding places' },
+    { id:'bat', needs:['wildflower-patch','hedge'], source:'Wildflower patch and Hedge', note:'needs insects and flight paths' },
+    { id:'toad', needs:['pond','log-pile'], source:'Pond and Log pile', note:'needs water and land shelter' },
+    { id:'song-thrush', needs:['hedge','bird-box'], source:'Hedge and Bird box', note:'needs cover and nesting space' }
+  ];
+
+  var GROUPS = ['Birds', 'Insects', 'Amphibians and reptiles', 'Mammals', 'Other'];
+  var state = { selected:[], reflection:'', lastMessage:'' };
+  var previousScore = 0;
+  var currentDisplayScore = 0;
+
+  function $(id){ return document.getElementById(id); }
+  function escapeHtml(value){
+    return String(value).replace(/[&<>"']/g, function(ch){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch];
+    });
+  }
+  function featureById(id){ return FEATURES.find(function(feature){ return feature.id === id; }); }
+  function hasFeature(id){ return state.selected.indexOf(id) !== -1; }
+
+  function load(){
+    try {
+      var stored = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+      if(stored && Array.isArray(stored.selected)) {
+        state.selected = stored.selected.filter(function(id){ return !!featureById(id); }).slice(0, FEATURES.length);
+        state.reflection = typeof stored.reflection === 'string' ? stored.reflection : '';
+      }
+    } catch(e) {}
+  }
+  function save(){
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({ selected:state.selected, reflection:state.reflection }));
+    } catch(e) {}
+  }
+
+  function uniqueSpeciesFor(featureIds){
+    var set = new Set();
+    featureIds.forEach(function(id){
+      var feature = featureById(id);
+      if(feature) feature.species.forEach(function(speciesId){ set.add(speciesId); });
+    });
+    BONUSES.forEach(function(bonus){
+      var unlocked = bonus.needs.every(function(id){ return featureIds.indexOf(id) !== -1; });
+      if(unlocked) set.add(bonus.id);
+    });
+    return set;
+  }
+
+  function calculate(){
+    var selectedSet = new Set(state.selected);
+    var entries = {};
+    state.selected.forEach(function(featureId){
+      var feature = featureById(featureId);
+      if(!feature) return;
+      feature.species.forEach(function(speciesId){
+        if(!entries[speciesId]) entries[speciesId] = { id:speciesId, bonus:false, sources:[] };
+        entries[speciesId].sources.push(feature.name);
+      });
+    });
+    BONUSES.forEach(function(bonus){
+      var unlocked = bonus.needs.every(function(featureId){ return selectedSet.has(featureId); });
+      if(unlocked) entries[bonus.id] = { id:bonus.id, bonus:true, sources:[bonus.source], note:bonus.note };
+    });
+    var list = Object.keys(entries).map(function(id){ return entries[id]; }).sort(function(a,b){
+      var an = SPECIES[a.id] ? SPECIES[a.id].name : a.id;
+      var bn = SPECIES[b.id] ? SPECIES[b.id].name : b.id;
+      return an.localeCompare(bn);
+    });
+    var groups = {};
+    GROUPS.forEach(function(group){ groups[group] = 0; });
+    list.forEach(function(entry){
+      var meta = SPECIES[entry.id];
+      var group = meta ? meta.group : 'Other';
+      groups[group] = (groups[group] || 0) + 1;
+    });
+    return { entries:list, groups:groups, score:list.length };
+  }
+
+  function rating(score){
+    if(score === 0) return 'An empty plot. Add a feature to begin.';
+    if(score <= 4) return 'Just getting started';
+    if(score <= 9) return 'Coming to life';
+    if(score <= 15) return 'Buzzing with life';
+    return 'A thriving reserve';
+  }
+
+  function nextFeatureSuggestion(){
+    var currentSpecies = uniqueSpeciesFor(state.selected);
+    var best = null;
+    FEATURES.forEach(function(feature){
+      if(hasFeature(feature.id)) return;
+      var withFeature = state.selected.concat([feature.id]);
+      var nextSpecies = uniqueSpeciesFor(withFeature);
+      var delta = 0;
+      nextSpecies.forEach(function(speciesId){ if(!currentSpecies.has(speciesId)) delta++; });
+      if(!best || delta > best.delta) best = { feature:feature, delta:delta };
+    });
+    return best;
+  }
+
+  function groupText(groups){
+    var present = GROUPS.filter(function(group){ return groups[group] > 0; });
+    if(!present.length) return 'No groups yet.';
+    var top = present.slice().sort(function(a,b){ return groups[b] - groups[a]; })[0];
+    return 'Strongest group so far: ' + top.toLowerCase() + '.';
+  }
+
+  function missingText(groups){
+    var missing = GROUPS.filter(function(group){ return groups[group] === 0; });
+    if(!state.selected.length) return 'Food, water, shelter and nesting spaces are still open choices.';
+    if(!missing.length) return 'You have something from every wildlife group. Nice balance.';
+    return 'Still missing: ' + missing.map(function(group){ return group.toLowerCase(); }).join(', ') + '.';
+  }
+
+  function featureHintText(calc){
+    if(!state.selected.length) return 'A pond, hedge or log pile could be a gentle place to begin.';
+    var suggestion = nextFeatureSuggestion();
+    if(!suggestion) return 'You have used every feature. Your reserve has lots of different habitats.';
+    if(suggestion.delta <= 0) return 'You already have lots of overlap. A different real space might need a different habitat.';
+    var groupLead = groupText(calc.groups);
+    var text = suggestion.feature.name + ' would bring about ' + suggestion.delta + ' new species next.';
+    if(calc.groups.Insects >= 6 && !hasFeature('pond')) text = 'You have lots of insects. A pond would bring in amphibians and water life.';
+    else if(calc.groups.Birds === 0 && !hasFeature('hedge')) text = 'Birds are missing. A hedge could bring cover, food and nesting space.';
+    else if(calc.groups.Mammals === 0 && !hasFeature('hedge') && hasFeature('log-pile')) text = 'You have log shelter. A hedge could help unlock hedgehog habitat.';
+    return groupLead + ' ' + text;
+  }
+
+  function addedDelta(featureId){
+    var beforeIds = state.selected.filter(function(id){ return id !== featureId; });
+    var before = uniqueSpeciesFor(beforeIds);
+    var after = uniqueSpeciesFor(state.selected);
+    var delta = 0;
+    after.forEach(function(speciesId){ if(!before.has(speciesId)) delta++; });
+    return delta;
+  }
+
+  function setStatus(message, good){
+    var el = $('statusMessage');
+    el.textContent = message;
+    el.classList.toggle('good', !!good);
+  }
+
+  function addFeature(id){
+    if(hasFeature(id)) {
+      setStatus('That feature is already in your reserve. You already have those habitat benefits, so a different feature might bring new creatures.', false);
+      return;
+    }
+    state.selected.push(id);
+    var feature = featureById(id);
+    var delta = addedDelta(id);
+    save();
+    render();
+    if(delta > 0) setStatus('Nice. ' + feature.name + ' helped ' + delta + ' new species move in.', true);
+    else setStatus('That overlaps with what you already had. A different habitat might bring new creatures.', false);
+  }
+
+  function removeFeature(id){
+    var feature = featureById(id);
+    state.selected = state.selected.filter(function(existing){ return existing !== id; });
+    save();
+    render();
+    setStatus((feature ? feature.name : 'That feature') + ' has been removed. You can add it again later.', false);
+  }
+
+  function clearPlot(){
+    state.selected = [];
+    save();
+    render();
+    setStatus('Your plot is empty for now. Tap a feature below to get started.', false);
+  }
+
+  function renderPalette(){
+    var host = $('featurePalette');
+    host.innerHTML = '';
+    FEATURES.forEach(function(feature){
+      var used = hasFeature(feature.id);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'feature-btn';
+      btn.setAttribute('aria-pressed', used ? 'true' : 'false');
+      btn.setAttribute('aria-label', (used ? 'Already added. ' : 'Add ') + feature.name);
+      btn.innerHTML = '<span class="feature-icon" aria-hidden="true">' + feature.icon + '</span><span><span class="feature-name">' + escapeHtml(feature.name) + '</span><span class="feature-small">' + escapeHtml(feature.short) + '</span><span class="feature-state">' + (used ? 'In reserve' : 'Tap to add') + '</span></span>';
+      btn.addEventListener('click', function(){ addFeature(feature.id); });
+      host.appendChild(btn);
+    });
+  }
+
+  function renderPlot(){
+    var host = $('plotContent');
+    if(!state.selected.length) {
+      host.innerHTML = '<div class="empty-plot"><div><strong>Your plot is empty for now.</strong><p>Tap a feature from the palette to get started.</p></div></div>';
+    } else {
+      host.innerHTML = '<div class="placed-grid">' + state.selected.map(function(id){
+        var feature = featureById(id);
+        return '<button class="placed-tile" type="button" data-remove="' + escapeHtml(id) + '" aria-label="Remove ' + escapeHtml(feature.name) + '"><span class="big" aria-hidden="true">' + feature.icon + '</span><b>' + escapeHtml(feature.name) + '</b><span>tap to remove</span></button>';
+      }).join('') + '</div>';
+      host.querySelectorAll('[data-remove]').forEach(function(btn){
+        btn.addEventListener('click', function(){ removeFeature(btn.getAttribute('data-remove')); });
+      });
+    }
+    var status = $('reserveStatus');
+    if(!state.selected.length) status.innerHTML = '<span class="chip">0 features chosen</span><span class="chip">Open plot</span>';
+    else status.innerHTML = '<span class="chip">' + state.selected.length + ' of ' + FEATURES.length + ' features chosen</span>' + state.selected.map(function(id){
+      var feature = featureById(id);
+      return '<span class="chip"><span aria-hidden="true">' + feature.icon + '</span>' + escapeHtml(feature.name) + '</span>';
+    }).join('');
+  }
+
+  function renderScore(calc){
+    $('ratingText').textContent = rating(calc.score);
+    animateScore(calc.score);
+  }
+
+  function animateScore(target){
+    var el = $('scoreNumber');
+    if(prefersReducedMotion || target === currentDisplayScore) {
+      currentDisplayScore = target;
+      el.textContent = String(target);
+      return;
+    }
+    var start = currentDisplayScore;
+    var diff = target - start;
+    var steps = Math.max(1, Math.min(8, Math.abs(diff)));
+    var index = 0;
+    clearInterval(animateScore.timer);
+    animateScore.timer = setInterval(function(){
+      index++;
+      currentDisplayScore = Math.round(start + diff * (index / steps));
+      el.textContent = String(currentDisplayScore);
+      if(index >= steps) {
+        clearInterval(animateScore.timer);
+        currentDisplayScore = target;
+        el.textContent = String(target);
+      }
+    }, 34);
+    if(target > previousScore) {
+      el.classList.remove('rise');
+      void el.offsetWidth;
+      el.classList.add('rise');
+    }
+  }
+
+  function renderSpecies(calc){
+    var host = $('speciesList');
+    if(!calc.entries.length) {
+      host.innerHTML = '<div class="empty-list">No species yet. Add a habitat feature and this list will grow.</div>';
+      return;
+    }
+    host.innerHTML = calc.entries.map(function(entry){
+      var meta = SPECIES[entry.id] || { name:entry.id, icon:'•', group:'Other' };
+      var source = entry.sources.join(', ');
+      var tag = entry.bonus ? '<span class="bonus-tag">needs two habitats</span>' : '';
+      var note = entry.note ? ' ' + entry.note + '.' : '';
+      return '<div class="species-item' + (entry.bonus ? ' bonus' : '') + '"><span class="species-icon" aria-hidden="true">' + meta.icon + '</span><div><div class="species-name">' + escapeHtml(meta.name) + '</div><div class="species-source">From: ' + escapeHtml(source) + '.' + escapeHtml(note) + '</div>' + tag + '</div></div>';
+    }).join('');
+  }
+
+  function renderBreakdown(calc){
+    var max = Math.max(1, calc.score);
+    $('groupBreakdown').innerHTML = GROUPS.map(function(group){
+      var count = calc.groups[group] || 0;
+      var width = Math.round((count / max) * 100);
+      return '<div class="group-row"><span class="group-label">' + escapeHtml(group) + '</span><span class="group-track"><span class="group-fill" style="width:' + width + '%"></span></span><span>' + count + '</span></div>';
+    }).join('');
+  }
+
+  function renderAnalysis(calc){
+    $('analysisHint').textContent = featureHintText(calc);
+    if(!state.selected.length) {
+      $('workingText').textContent = 'Add a feature to see what starts working for wildlife.';
+      $('missingText').textContent = 'The reserve is ready for food, water, shelter and nesting spaces.';
+      $('nextText').textContent = 'A pond, hedge or log pile would be a good first test.';
+      return;
+    }
+    $('workingText').textContent = groupText(calc.groups) + ' Biodiversity score is ' + calc.score + '.';
+    $('missingText').textContent = missingText(calc.groups);
+    var suggestion = nextFeatureSuggestion();
+    if(!suggestion) $('nextText').textContent = 'All features are in the reserve. You could remove one and compare the score.';
+    else $('nextText').textContent = suggestion.feature.name + ' could add about ' + suggestion.delta + ' new species next.';
+  }
+
+  function summaryText(calc){
+    var features = state.selected.map(function(id){ return featureById(id).name; }).join(', ') || 'none yet';
+    var species = calc.entries.map(function(entry){ return SPECIES[entry.id].name + (entry.bonus ? ' (bonus)' : ''); }).join(', ') || 'none yet';
+    var bonus = calc.entries.filter(function(entry){ return entry.bonus; }).map(function(entry){ return SPECIES[entry.id].name; }).join(', ') || 'none yet';
+    var groups = GROUPS.map(function(group){ return group + ': ' + (calc.groups[group] || 0); }).join(', ');
+    var reflection = state.reflection.trim() || '(not written)';
+    return [
+      'MINI-CONSERVATION BUILDER, WEEK 5',
+      'Date: ' + new Date().toLocaleDateString('en-GB'),
+      '',
+      'Features chosen: ' + features,
+      'Biodiversity score: ' + calc.score,
+      'Rating: ' + rating(calc.score),
+      '',
+      'Species supported: ' + species,
+      'Bonus species: ' + bonus,
+      'Group breakdown: ' + groups,
+      '',
+      'Analysis hint: ' + featureHintText(calc),
+      'Reflection: ' + reflection,
+      '',
+      'Sent from Base 6'
+    ].join('\n');
+  }
+
+  function renderSummary(calc){
+    var features = state.selected.map(function(id){ return featureById(id).name; }).join(', ') || 'none yet';
+    $('summaryBox').textContent = 'Features: ' + features + '. Score: ' + calc.score + '. Rating: ' + rating(calc.score) + '.';
+  }
+
+  function openGmail(){
+    var calc = calculate();
+    var subject = encodeURIComponent('Base 6 · Mini-Conservation Builder');
+    var body = encodeURIComponent(summaryText(calc));
+    window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + subject + '&body=' + body, '_blank');
+  }
+
+  function copySummary(){
+    var calc = calculate();
+    var text = summaryText(calc);
+    function showCopied(){
+      var msg = $('shareMessage');
+      msg.hidden = false;
+      msg.textContent = 'Summary copied.';
+      setTimeout(function(){ msg.hidden = true; }, 2400);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(showCopied).catch(function(){ fallbackCopy(text); });
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'absolute';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+    var msg = $('shareMessage');
+    msg.hidden = false;
+    msg.textContent = 'Summary copied.';
+    setTimeout(function(){ msg.hidden = true; }, 2400);
+  }
+
+  function insertStarter(text){
+    var ta = $('reflectionText');
+    var needsSpace = ta.value.length && !/\s$/.test(ta.value);
+    ta.value += (needsSpace ? ' ' : '') + text;
+    state.reflection = ta.value;
+    save();
+    ta.focus();
+    render();
+  }
+
+  function bind(){
+    $('clearBtn').addEventListener('click', clearPlot);
+    $('gmailBtn').addEventListener('click', openGmail);
+    $('copyBtn').addEventListener('click', copySummary);
+    $('reflectionText').value = state.reflection;
+    $('reflectionText').addEventListener('input', function(){
+      state.reflection = $('reflectionText').value;
+      save();
+      render();
+    });
+    document.querySelectorAll('[data-starter]').forEach(function(btn){
+      btn.addEventListener('click', function(){ insertStarter(btn.getAttribute('data-starter')); });
+    });
+  }
+
+  function render(){
+    var calc = calculate();
+    renderPalette();
+    renderPlot();
+    renderScore(calc);
+    renderSpecies(calc);
+    renderBreakdown(calc);
+    renderAnalysis(calc);
+    renderSummary(calc);
+    previousScore = calc.score;
+  }
+
+  load();
+  currentDisplayScore = calculate().score;
+  previousScore = currentDisplayScore;
+  bind();
+  render();
+})();
+</script>
+</body>
+</html>
