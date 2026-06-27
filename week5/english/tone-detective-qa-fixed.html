@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Tone Detective · Agent Jay's Communication Bureau · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream:#fef8f4;
+    --teal:#007291;
+    --teal-dark:#005a72;
+    --orange:#ef7724;
+    --orange-dark:#c05a10;
+    --ink:#1a1a1a;
+    --muted:#555;
+    --soft:#e0d8d0;
+    --paper:#ffffff;
+    --purple:#5f4b8b;
+    --gold:#f6c453;
+    --green:#2e8b57;
+    --red:#b33a3a;
+    --desk:#e8d3b2;
+  }
+  body { font-family:'Atkinson Hyperlegible', Arial, sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; }
+  button, textarea { font-family:inherit; }
+  .site-header { position:relative; background:linear-gradient(135deg, #005a72 0%, #007291 45%, #5f4b8b 100%); padding:2.4rem 2rem 3.4rem; text-align:center; overflow:hidden; }
+  .site-header::before { content:""; position:absolute; top:-70px; left:-50px; width:190px; height:190px; background:rgba(255,255,255,0.10); border-radius:50%; }
+  .site-header::after { content:""; position:absolute; right:-60px; bottom:2px; width:220px; height:220px; background:rgba(239,119,36,0.18); border-radius:50%; }
+  .header-back { position:absolute; top:1rem; left:1.25rem; color:#fff; font-weight:700; font-size:0.9rem; text-decoration:none; opacity:0.9; z-index:3; }
+  .header-back:hover { opacity:1; text-decoration:underline; }
+  .header-inner { position:relative; z-index:2; max-width:850px; margin:0 auto; }
+  .week-label { color:#ffe8c2; font-size:0.78rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.35rem; }
+  h1 { color:#fff; font-size:clamp(2rem, 5vw, 3.1rem); line-height:1.06; }
+  .header-sub { color:#fef8f4; font-size:1.06rem; line-height:1.55; max-width:720px; margin:0.65rem auto 0; }
+  .header-wave { position:absolute; left:0; bottom:-1px; width:100%; height:42px; z-index:1; }
+  .spy-dots { display:flex; gap:0.45rem; justify-content:center; margin-top:1rem; flex-wrap:wrap; }
+  .spy-dot { width:13px; height:13px; border-radius:50%; background:#fff3c4; border:2px solid rgba(255,255,255,0.75); box-shadow:0 0 10px rgba(255,220,100,0.75); }
+  .spy-dot:nth-child(2n) { background:#c9f4ff; }
+  .spy-dot:nth-child(3n) { background:#ffd1e4; }
+
+  .main { width:min(1100px, calc(100% - 2rem)); margin:0 auto; padding:2rem 0 4rem; }
+  .top-strip { display:flex; gap:1rem; align-items:stretch; justify-content:space-between; flex-wrap:wrap; margin-bottom:1rem; transition:all .22s ease; }
+  body.play-mode .top-strip { transform:scale(0.98); opacity:0.96; }
+  body.play-mode .intro-card p:not(.eyebrow), body.play-mode .student-card p:not(.eyebrow) { display:none; }
+  body.play-mode .intro-card, body.play-mode .student-card { padding:0.75rem 1rem; }
+  body.play-mode .student-card h2 { font-size:1rem; }
+  .intro-card, .student-card { background:#fff; border:2px solid var(--orange); border-radius:18px; padding:1.1rem 1.25rem; box-shadow:0 4px 16px rgba(239,119,36,0.12); }
+  .intro-card { flex:1 1 520px; }
+  .student-card { flex:0 1 430px; border-color:var(--teal); box-shadow:0 4px 16px rgba(0,114,145,0.12); }
+  .eyebrow { font-size:0.74rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--orange-dark); margin-bottom:0.35rem; }
+  h2 { font-size:1.32rem; color:var(--teal-dark); line-height:1.25; }
+  h3 { line-height:1.25; }
+  p { line-height:1.6; }
+  .muted { color:var(--muted); }
+  .initial-row { display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:0.65rem; }
+  .initial-btn { border:2px solid var(--teal); background:#fff; color:var(--teal); border-radius:999px; padding:0.43rem 0.82rem; font-weight:700; cursor:pointer; min-height:42px; }
+  .initial-btn:hover, .initial-btn.selected { background:var(--teal); color:#fff; }
+  .help-toggle { margin-top:0.85rem; }
+  .need-help { display:none; margin-top:0.8rem; background:#fffaf6; border:2px solid #fcd8bc; border-radius:16px; padding:1rem; }
+  .need-help.show { display:block; }
+  .help-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:0.75rem; margin-top:0.7rem; }
+  .help-card { background:#fff; border:1.5px solid #eadfd4; border-radius:14px; padding:0.85rem; }
+  .help-card strong { color:var(--orange-dark); }
+
+  .section-label { color:var(--teal); font-size:0.78rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin:1.35rem 0 0.75rem; }
+
+  .progress-panel { background:#fffaf6; border:2px solid #fcd8bc; border-radius:20px; padding:1rem; margin-bottom:1rem; overflow:hidden; position:relative; }
+  .progress-panel::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 9% 20%, rgba(246,196,83,.18), transparent 20%), radial-gradient(circle at 85% 16%, rgba(0,114,145,.1), transparent 23%), radial-gradient(circle at 76% 86%, rgba(95,75,139,.10), transparent 25%); pointer-events:none; }
+  .badge-row { position:relative; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:0.7rem; flex-wrap:wrap; }
+  .badge-stat { display:flex; align-items:center; gap:0.5rem; background:#fff; border:2px solid #e0d8d0; border-radius:999px; padding:0.45rem 0.8rem; font-weight:700; color:#333; }
+  .badge-icon { width:30px; height:30px; border-radius:50%; background:#fff3c4; display:flex; align-items:center; justify-content:center; }
+  .mini-cases { display:flex; gap:0.3rem; flex-wrap:wrap; }
+  .case-dot { width:32px; height:32px; border-radius:50%; border:2px solid #d8d0c8; background:#fff; display:flex; align-items:center; justify-content:center; font-size:0.74rem; font-weight:700; color:#777; }
+  .case-dot.tick { border-color:var(--green); color:var(--green); background:#f2fff7; }
+  .case-dot.badge { border-color:#d89c16; color:#7a4a00; background:#fff3c4; }
+
+  .stage { display:none; background:#fff; border:2px solid var(--soft); border-radius:22px; padding:1.25rem; box-shadow:0 8px 26px rgba(0,0,0,0.07); }
+  .stage.active { display:block; }
+  .stage-top { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1rem; }
+  .stage-title-wrap { display:flex; align-items:center; gap:0.75rem; }
+  .stage-icon { width:58px; height:58px; border:2px solid var(--orange); background:#fff3e8; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.75rem; flex-shrink:0; }
+  .subtitle { color:#555; font-size:0.96rem; margin-top:0.25rem; }
+  .tag-row { display:flex; gap:0.4rem; flex-wrap:wrap; }
+  .tag { border:1.5px solid #e0d8d0; background:#fffaf6; color:#555; padding:0.2rem 0.55rem; border-radius:999px; font-size:0.76rem; font-weight:700; }
+  .button-row { display:flex; gap:0.6rem; flex-wrap:wrap; align-items:center; margin-top:1rem; }
+  .btn { border:none; background:var(--orange); color:#fff; border-radius:12px; padding:0.75rem 1rem; font-size:0.95rem; font-weight:700; cursor:pointer; min-height:46px; box-shadow:0 3px 0 rgba(0,0,0,0.12); }
+  .btn:hover { background:var(--orange-dark); transform:translateY(-1px); }
+  .btn.secondary { background:var(--teal); }
+  .btn.secondary:hover { background:var(--teal-dark); }
+  .btn.ghost { background:#fff; color:var(--teal); border:2px solid var(--teal); box-shadow:none; }
+  .btn.ghost:hover { background:#e6f5f8; }
+  .btn:disabled { background:#cfc7bf; color:#777; cursor:not-allowed; transform:none; box-shadow:none; }
+  .message { display:none; margin-top:0.75rem; border:1.5px solid #f6c893; background:#fff7eb; color:#7a4a00; border-radius:12px; padding:0.7rem 0.85rem; font-weight:700; }
+  .message.show { display:block; }
+
+  .case-layout { display:grid; grid-template-columns:minmax(0, 1fr) minmax(280px, 360px); gap:1rem; align-items:start; }
+  .case-card { border:2px solid #e0d8d0; background:#fffaf6; border-radius:18px; padding:1rem; }
+  .case-context { background:#f7fcfd; border:1.5px solid #b8dfe8; border-radius:14px; padding:0.75rem; margin-bottom:0.9rem; color:#005a72; font-weight:700; }
+
+  .phone-frame { max-width:390px; margin:0 auto; border:4px solid #1a1a1a; border-radius:30px; padding:0.8rem; background:#111; box-shadow:0 10px 24px rgba(0,0,0,0.18); }
+  .phone-screen { background:#f2f5f7; border-radius:20px; overflow:hidden; min-height:285px; }
+  .phone-top { background:#fff; border-bottom:1px solid #d8dfe4; padding:0.75rem; text-align:center; font-weight:700; }
+  .phone-bubble-wrap { padding:1rem; display:flex; flex-direction:column; gap:0.55rem; }
+  .phone-bubble { background:#fff; border:1.5px solid #d8dfe4; border-radius:18px 18px 18px 6px; padding:0.75rem 0.85rem; line-height:1.45; max-width:92%; box-shadow:0 2px 4px rgba(0,0,0,0.05); }
+  .email-frame { max-width:620px; margin:0 auto; border:2px solid #d8d0c8; border-radius:16px; overflow:hidden; background:#fff; box-shadow:0 8px 20px rgba(0,0,0,0.08); }
+  .email-bar { display:flex; align-items:center; gap:0.35rem; background:#f4eee8; border-bottom:1px solid #d8d0c8; padding:0.65rem 0.85rem; }
+  .email-dot { width:11px; height:11px; border-radius:50%; background:#c9c2ba; }
+  .email-head { padding:0.85rem 1rem; border-bottom:1px solid #eee3da; }
+  .email-subject { font-weight:700; color:#1a1a1a; margin-bottom:0.25rem; }
+  .email-meta { font-size:0.82rem; color:#666; line-height:1.45; }
+  .email-body { padding:1rem; line-height:1.65; }
+  .message-segment { cursor:pointer; border-radius:6px; padding:1px 3px; margin:-1px; }
+  .message-segment:hover, .message-segment.selected { background:#fff3c4; box-shadow:0 0 0 2px #f6c453; }
+  .message-segment.locked { cursor:default; }
+
+  .scanner-card { border:2px solid #cfc7bf; border-radius:20px; background:#fff; padding:1rem; position:relative; overflow:hidden; }
+  .scanner-card::before { content:""; position:absolute; inset:auto -20px -65px auto; width:150px; height:150px; border-radius:50%; background:rgba(0,114,145,0.08); pointer-events:none; }
+  .scanner-head { display:flex; align-items:center; justify-content:space-between; gap:0.75rem; margin-bottom:0.7rem; }
+  .scanner-label { font-weight:700; color:#005a72; }
+  .scanner-status { font-size:0.8rem; color:#555; font-weight:700; background:#fffaf6; border:1.5px solid #e0d8d0; border-radius:999px; padding:0.22rem 0.55rem; }
+  .dial { width:min(280px, 100%); aspect-ratio:1/1; margin:0.6rem auto; position:relative; border-radius:50%; background:radial-gradient(circle, #fff 0 36%, #f6efe8 37% 58%, #e6f5f8 59% 100%); border:3px solid #005a72; box-shadow:inset 0 0 0 8px rgba(255,255,255,0.75), 0 8px 18px rgba(0,0,0,0.1); }
+  .dial-center { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:76px; height:76px; border-radius:50%; background:#fff; border:3px solid var(--orange); display:flex; align-items:center; justify-content:center; text-align:center; font-size:0.78rem; font-weight:700; color:#005a72; z-index:3; padding:0.4rem; }
+  .needle { position:absolute; left:50%; top:50%; width:4px; height:34%; background:var(--orange); border-radius:999px; transform-origin:50% 100%; transform:translate(-50%, -100%) rotate(var(--needle, 0deg)); transition:transform .28s ease; z-index:2; box-shadow:0 0 0 2px rgba(255,255,255,0.5); }
+  .tone-option { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) rotate(var(--angle)) translateY(-116px) rotate(calc(-1 * var(--angle))); border:2px solid #d8d0c8; background:#fff; color:#1a1a1a; border-radius:999px; padding:0.42rem 0.55rem; font-size:0.75rem; font-weight:700; cursor:pointer; min-width:78px; box-shadow:0 3px 8px rgba(0,0,0,0.08); }
+  .tone-option:hover, .tone-option.selected { border-color:var(--orange); background:#fff3e8; }
+  .tone-button-row { display:none; gap:0.45rem; flex-wrap:wrap; justify-content:center; margin:0.8rem 0 0; }
+  .tone-button { border:2px solid #d8d0c8; background:#fff; color:#1a1a1a; border-radius:999px; padding:0.48rem 0.7rem; font-size:0.82rem; font-weight:700; cursor:pointer; min-height:42px; }
+  .tone-button:hover, .tone-button.selected { border-color:var(--orange); background:#fff3e8; }
+
+  .task-block { border-top:1.5px solid #eadfd4; margin-top:1rem; padding-top:1rem; }
+  .step-title { color:#005a72; font-size:1rem; margin-bottom:0.5rem; }
+  .choice-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.55rem; }
+  .choice-btn { background:#fff; border:2px solid #d8d0c8; border-radius:14px; padding:0.75rem; text-align:left; cursor:pointer; font-weight:700; color:#333; min-height:56px; }
+  .choice-btn:hover { border-color:var(--teal); background:#f7fcfd; }
+  .choice-btn.correct { border-color:var(--green); background:#f2fff7; }
+  .choice-btn.wrong { border-color:var(--red); background:#fff0f0; }
+  .feedback { display:none; margin-top:0.65rem; border-radius:12px; padding:0.65rem 0.8rem; font-weight:700; line-height:1.45; }
+  .feedback.show { display:block; }
+  .feedback.good { background:#f2fff7; border:1.5px solid #bfe3c7; color:#1c6d3d; }
+  .feedback.try { background:#fff7eb; border:1.5px solid #f6c893; color:#7a4a00; }
+  .feedback.answer { background:#f0fafc; border:1.5px solid #b8dfe8; color:#005a72; }
+
+  .case-actions { display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:1rem; }
+  .case-summary { background:#f2fff7; border:2px solid #bfe3c7; border-radius:16px; padding:0.85rem; margin-top:1rem; color:#1c6d3d; font-weight:700; display:none; }
+  .case-summary.show { display:block; }
+
+  .desk { background:linear-gradient(135deg, #e8d3b2, #f4e2c8); border:2px solid #c9a777; border-radius:20px; padding:1.1rem; position:relative; overflow:hidden; }
+  .desk::before { content:""; position:absolute; inset:0; background:linear-gradient(90deg, rgba(255,255,255,0.12), transparent 18%, rgba(255,255,255,0.1) 34%, transparent 49%, rgba(255,255,255,0.1) 72%, transparent); pointer-events:none; }
+  .folder-grid { position:relative; z-index:1; display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:1rem; }
+  .folder { border:none; background:#f6c453; color:#3a2a00; border-radius:10px 10px 16px 16px; min-height:126px; padding:1.1rem 0.9rem 0.9rem; text-align:left; cursor:pointer; box-shadow:0 8px 0 rgba(105,77,24,0.22), 0 12px 20px rgba(0,0,0,0.15); position:relative; transform:rotate(var(--tilt)); }
+  .folder::before { content:""; position:absolute; top:-12px; left:14px; width:72px; height:24px; background:#f6c453; border-radius:8px 8px 0 0; }
+  .folder:hover { transform:translateY(-3px) rotate(var(--tilt)); }
+  .folder.done { background:#d8f2df; color:#124a26; box-shadow:0 8px 0 rgba(20,90,46,0.18), 0 12px 20px rgba(0,0,0,0.12); }
+  .folder.done::before { background:#d8f2df; }
+  .folder h3 { font-size:1rem; margin-bottom:0.35rem; }
+  .folder p { font-size:0.88rem; }
+  .folder-stamp { position:absolute; right:0.6rem; bottom:0.55rem; font-size:1.3rem; }
+
+  .builder-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:start; }
+  .builder-card { border:2px solid #e0d8d0; background:#fffaf6; border-radius:18px; padding:1rem; }
+  .bad-message { border:2px dashed #d8d0c8; background:#fff; border-radius:14px; padding:0.85rem; font-weight:700; color:#4a2b2b; margin:0.7rem 0; }
+  .slot { margin-top:0.8rem; border-radius:14px; padding:0.35rem; margin-left:-0.35rem; margin-right:-0.35rem; }
+  .slot h3 { font-size:0.95rem; color:#005a72; margin-bottom:0.4rem; }
+  .slot.needs-fix { background:#fff7eb; box-shadow:0 0 0 2px #f6c893 inset; }
+  .slot.needs-fix h3::after { content:' · check this'; color:#7a4a00; font-size:0.8rem; }
+  .slot-options { display:flex; flex-direction:column; gap:0.45rem; }
+  .slot-btn { border:2px solid #d8d0c8; background:#fff; border-radius:12px; padding:0.65rem 0.75rem; text-align:left; cursor:pointer; font-weight:700; }
+  .slot-btn:hover, .slot-btn.selected { border-color:var(--teal); background:#f7fcfd; }
+  .slot-btn.needs-fix { border-color:#e8a020; background:#fff3e6; box-shadow:0 0 0 3px rgba(232,160,32,0.12); }
+  .built-message { background:#fff; border:2px solid #b8dfe8; border-radius:16px; padding:1rem; min-height:150px; line-height:1.7; font-weight:700; color:#005a72; }
+  .rank-card { display:none; background:#f7fcfd; border:2px solid #b8dfe8; border-radius:18px; padding:1rem; margin-top:1rem; }
+  .rank-card.show { display:block; }
+  .rank-title { font-size:1.35rem; font-weight:700; color:#005a72; margin-bottom:0.35rem; }
+
+  .report-card { border:2px solid var(--teal); background:#f7fcfd; border-radius:18px; padding:1rem; margin-top:1rem; }
+  .report-table { width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:14px; margin-top:0.75rem; border:1.5px solid #b8dfe8; background:#fff; }
+  .report-table th, .report-table td { text-align:left; padding:0.58rem; border-bottom:1px solid #e0eef2; vertical-align:top; font-size:0.88rem; }
+  .report-table th { background:#e6f5f8; color:#005a72; font-weight:700; }
+  .report-table tr:last-child td { border-bottom:none; }
+  .evidence-line { margin-top:0.85rem; background:#fff3e8; border:1.5px solid #fcd8bc; color:#7a4a00; border-radius:12px; padding:0.75rem; font-weight:700; }
+
+  .confetti { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:9999; }
+  .confetti span { position:absolute; top:-20px; font-size:1.4rem; animation:fall 1.2s linear forwards; }
+  @keyframes fall { to { transform:translateY(110vh) rotate(360deg); opacity:0.1; } }
+  .footer-note { text-align:center; color:#777; font-size:0.8rem; margin-top:2rem; }
+  a:focus-visible, button:focus-visible, textarea:focus-visible { outline:3px solid var(--orange); outline-offset:3px; }
+  @media (max-width: 900px) {
+    .case-layout, .builder-grid { grid-template-columns:1fr; }
+    .tone-option { transform:translate(-50%,-50%) rotate(var(--angle)) translateY(-102px) rotate(calc(-1 * var(--angle))); min-width:70px; font-size:0.7rem; }
+  }
+  @media (max-width: 560px) {
+    .main { width:min(100% - 1rem, 1100px); }
+    .site-header { padding-left:1rem; padding-right:1rem; }
+    .dial { width:min(250px, 100%); }
+    .tone-option { display:none; }
+    .tone-button-row { display:flex; }
+    .email-body, .phone-bubble { font-size:0.92rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Back</a>
+  <div class="header-inner">
+    <p class="week-label">Base 6 · Communication and Listening</p>
+    <h1>Tone Detective</h1>
+    <p class="header-sub">Agent Jay's Communication Bureau needs help decoding phone messages and emails. Find the tone, spot the clue, and decide if the message fits the audience.</p>
+    <div class="spy-dots" aria-hidden="true"><span class="spy-dot"></span><span class="spy-dot"></span><span class="spy-dot"></span><span class="spy-dot"></span><span class="spy-dot"></span><span class="spy-dot"></span><span class="spy-dot"></span></div>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+  <div class="top-strip">
+    <section class="intro-card">
+      <p class="eyebrow">Mission</p>
+      <h2>Decode tone without making it weird.</h2>
+      <p class="muted">Inspect each phone message or email. Use the scanner dial, choose the clue, then judge if the message suits the audience.</p>
+      <div class="help-toggle"><button class="btn ghost" onclick="toggleHelp()">Need help?</button></div>
+      <div class="need-help" id="helpBox">
+        <p><strong>Agent Jay briefing:</strong> Tone is how a message sounds. Look for clues in word choice, punctuation and layout.</p>
+        <div class="help-grid">
+          <div class="help-card"><strong>Word choice</strong><p class="muted">Words like please, thanks, whatever, unfortunately or amazing can change tone.</p></div>
+          <div class="help-card"><strong>Punctuation</strong><p class="muted">!!! can sound excited. Short full stops can sound blunt or annoyed.</p></div>
+          <div class="help-card"><strong>Layout</strong><p class="muted">Emails often need a greeting, clear information and a sign-off.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="student-card">
+      <p class="eyebrow">Agent ID</p>
+      <h2>Choose initials</h2>
+      <p class="muted">This can auto-fill from the Week 5 avatar if it is already set.</p>
+      <div class="initial-row" id="initialRow" aria-label="Choose initials"></div>
+    </section>
+  </div>
+
+  <p class="section-label">Agent progress</p>
+  <section class="progress-panel">
+    <div class="badge-row">
+      <div class="badge-stat"><span class="badge-icon">🕵️</span><span id="caseCount">0/10 cases complete</span></div>
+      <div class="badge-stat"><span class="badge-icon">🏅</span><span id="badgeCount">0 first-time badges</span></div>
+      <div class="mini-cases" id="miniCases"></div>
+    </div>
+  </section>
+
+  <section class="stage active" id="stage-start">
+    <div class="stage-top">
+      <div class="stage-title-wrap">
+        <div class="stage-icon">📡</div>
+        <div>
+          <h2>Agent Jay's Communication Bureau</h2>
+          <p class="subtitle">First 3 cases are guided. After that, the detective desk unlocks.</p>
+        </div>
+      </div>
+      <div class="tag-row"><span class="tag">tone</span><span class="tag">clues</span><span class="tag">audience</span></div>
+    </div>
+    <p class="muted">The scanner begins with 4 tones. After Case 3, it unlocks the trickier tones: serious, casual, worried and rude.</p>
+    <div class="button-row"><button class="btn secondary" onclick="startCases()">Start Case 01</button></div>
+    <div class="message" id="startMsg"></div>
+  </section>
+
+  <section class="stage" id="stage-case">
+    <div id="caseHost"></div>
+  </section>
+
+  <section class="stage" id="stage-desk">
+    <div class="stage-top">
+      <div class="stage-title-wrap">
+        <div class="stage-icon">🗂️</div>
+        <div>
+          <h2>Detective desk</h2>
+          <p class="subtitle">Open the remaining case folders. Complete all 10 to unlock the final message builder.</p>
+        </div>
+      </div>
+    </div>
+    <div class="desk"><div class="folder-grid" id="folderGrid"></div></div>
+    <div class="button-row"><button class="btn" id="builderBtn" onclick="openBuilder()" disabled>Final message builder locked</button></div>
+    <div class="message" id="deskMsg"></div>
+  </section>
+
+  <section class="stage" id="stage-builder">
+    <div id="builderHost"></div>
+  </section>
+
+  <section class="stage" id="stage-report">
+    <div class="stage-top">
+      <div class="stage-title-wrap">
+        <div class="stage-icon">📄</div>
+        <div>
+          <h2>Agent report</h2>
+          <p class="subtitle">One-page evidence summary for Jay.</p>
+        </div>
+      </div>
+    </div>
+    <div id="reportHost"></div>
+    <div class="button-row">
+      <button class="btn secondary" onclick="exportPdf()">Export PDF</button>
+      <button class="btn" onclick="sendGmail()">Send to Jay</button>
+      <button class="btn ghost" onclick="sendMailto()">Fallback email</button>
+    </div>
+    <div class="message" id="reportMsg"></div>
+  </section>
+
+  <p class="footer-note">Base 6 · Chilton Bridge School · Tone, style, register and communication clues.</p>
+</main>
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+
+<script>
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+const STUDENTS = ['LW','AP','LS','LC','HK','JTK'];
+const STARTER_TONES = ['friendly','annoyed','excited','formal'];
+const ALL_TONES = ['friendly','serious','annoyed','excited','formal','casual','worried','rude'];
+const TONE_LABELS = {
+  friendly:'Friendly', serious:'Serious', annoyed:'Annoyed', excited:'Excited', formal:'Formal', casual:'Casual', worried:'Worried', rude:'Rude'
+};
+const CHANGE_OPTIONS = [
+  {key:'tone', label:'Tone'}, {key:'word choice', label:'Word choice'}, {key:'punctuation', label:'Punctuation'}, {key:'format', label:'Format'}, {key:'nothing', label:'Nothing needs changing'}
+];
+
+const CASES = [
+  {
+    id:1, format:'text', sender:'Agent Toast', recipient:'Jay', context:'Work experience form update', tone:'friendly',
+    message:'Hi Jay, thanks for helping me with my work experience form. I understand what I need to do now.',
+    clueMode:'list', clue:'thanks',
+    clues:[
+      {key:'thanks', label:'The message says “thanks” and explains clearly.'},
+      {key:'!!!', label:'There are lots of exclamation marks.'},
+      {key:'short', label:'The message is short and blunt.'}
+    ],
+    audienceMode:'yesno', audience:'yes', audiencePrompt:'Is this suitable to send to Jay?',
+    learning:'Identifying friendly tone in a clear message.'
+  },
+  {
+    id:2, format:'text', sender:'Captain Wobble', recipient:'Colleague', context:'Cafe stall news', tone:'excited',
+    message:'I got invited to help with the cafe stall!!! This is going to be amazing!',
+    clueMode:'list', clue:'excited punctuation',
+    clues:[
+      {key:'polite greeting', label:'It starts with a formal greeting.'},
+      {key:'excited punctuation', label:'The words “amazing” and “!!!” make it sound excited.'},
+      {key:'worried words', label:'It uses worried words like nervous and unsure.'}
+    ],
+    audienceMode:'yesno', audience:'yes', audiencePrompt:'Is this suitable for a friendly message to a colleague?',
+    learning:'Recognising excited tone from word choice and punctuation.'
+  },
+  {
+    id:3, format:'email', sender:'Professor Side-Eye', recipient:'Agent Jay', subject:'Work experience visit', context:'Asking to join a visit', tone:'formal',
+    message:'Dear Agent Jay,\n\nI am writing to ask whether I may join the work experience visit on Thursday.\n\nKind regards,\nProfessor Side-Eye',
+    clueMode:'list', clue:'email layout',
+    clues:[
+      {key:'whatever', label:'It uses the word “whatever”.'},
+      {key:'email layout', label:'It has a formal greeting, clear request and sign-off.'},
+      {key:'lots of slang', label:'It uses lots of slang and shortcuts.'}
+    ],
+    audienceMode:'yesno', audience:'yes', audiencePrompt:'Is this suitable for a formal email?',
+    learning:'Recognising formal tone using email layout and word choice.'
+  },
+  {
+    id:4, format:'text', sender:'Major Crisps', recipient:'Placement Mentor', context:'Reminder about a task', tone:'annoyed',
+    message:'Fine. I already said I will do it. Stop asking.',
+    clueMode:'list', clue:'blunt words',
+    clues:[
+      {key:'blunt words', label:'Short sentences like “Fine” and “Stop asking” sound annoyed.'},
+      {key:'kind sign off', label:'It has a polite sign-off.'},
+      {key:'happy words', label:'It uses happy words like brilliant and excited.'}
+    ],
+    audienceMode:'yesno', audience:'no', audiencePrompt:'Is this suitable to send to a placement mentor?',
+    learning:'Recognising annoyed tone and audience mismatch.'
+  },
+  {
+    id:5, format:'text', sender:'The Spreadsheet Goblin', recipient:'Employer', context:'Availability for Friday', tone:'casual',
+    message:'yeah i can come in friday if u want',
+    clueMode:'list', clue:'casual shortcuts',
+    clues:[
+      {key:'casual shortcuts', label:'Shortcuts like “yeah” and “u” make it sound casual.'},
+      {key:'formal greeting', label:'It uses a formal greeting and sign-off.'},
+      {key:'worried question', label:'It asks a worried question.'}
+    ],
+    audienceMode:'yesno', audience:'no', audiencePrompt:'Is this suitable to send to an employer?',
+    learning:'Recognising casual register in a work message.'
+  },
+  {
+    id:6, format:'email', sender:'Agent Noodle', recipient:'Visit Coordinator', subject:'Transport change', context:'Transport has changed before a visit', tone:'serious',
+    segments:[
+      {text:'Dear Visit Coordinator,\n\n', key:'format'},
+      {text:'I am unable to attend the visit because my transport has changed. ', key:'serious words'},
+      {text:'Please can you advise me what to do next?\n\n', key:'clear request'},
+      {text:'Kind regards,\nAgent Noodle', key:'format'}
+    ],
+    message:'Dear Visit Coordinator,\n\nI am unable to attend the visit because my transport has changed. Please can you advise me what to do next?\n\nKind regards,\nAgent Noodle',
+    clueMode:'highlight', clue:'serious words',
+    clues:[
+      {key:'serious words', label:'Highlight the words that show a serious problem.'},
+      {key:'clear request', label:'Highlight the request for help.'},
+      {key:'format', label:'Highlight only the greeting/sign-off.'}
+    ],
+    audienceMode:'change', audience:'nothing', audiencePrompt:'What should change before sending?',
+    learning:'Recognising serious tone in a suitable formal email.'
+  },
+  {
+    id:7, format:'text', sender:'Agent Marshmallow', recipient:'Work Coach', context:'Arriving at a new place', tone:'worried',
+    segments:[
+      {text:'I do not know where to go when I arrive ', key:'worried words'},
+      {text:'and I am worried I will get it wrong.', key:'worried words'}
+    ],
+    message:'I do not know where to go when I arrive and I am worried I will get it wrong.',
+    clueMode:'highlight', clue:'worried words',
+    clues:[
+      {key:'worried words', label:'Highlight the part that shows worry.'},
+      {key:'excited words', label:'Highlight words that sound excited.'},
+      {key:'rude words', label:'Highlight words that sound rude.'}
+    ],
+    audienceMode:'change', audience:'nothing', audiencePrompt:'What should change before sending to a work coach?',
+    learning:'Recognising worried tone and clear help-seeking.'
+  },
+  {
+    id:8, format:'email', sender:'Captain Wobble', recipient:'Placement Manager', subject:'Instructions', context:'Replying after unclear instructions', tone:'rude',
+    segments:[
+      {text:'You did not explain this properly. ', key:'blame'},
+      {text:'This is useless.', key:'blame'}
+    ],
+    message:'You did not explain this properly. This is useless.',
+    clueMode:'highlight', clue:'blame',
+    clues:[
+      {key:'blame', label:'Highlight the blaming or insulting words.'},
+      {key:'formal layout', label:'Highlight a formal greeting.'},
+      {key:'friendly thanks', label:'Highlight a friendly thank you.'}
+    ],
+    audienceMode:'change', audience:'tone', audiencePrompt:'What should change before sending?',
+    learning:'Recognising rude tone and why tone matters for work communication.'
+  },
+  {
+    id:9, format:'email', sender:'Professor Side-Eye', recipient:'Shift Supervisor', subject:'Shift', context:'Saying they cannot attend a shift', tone:'casual',
+    segments:[
+      {text:'Hi.\n\n', key:'too short'},
+      {text:'Can’t make it. ', key:'too short'},
+      {text:'Stuff came up.\n\nSide-Eye', key:'too short'}
+    ],
+    message:'Hi.\n\nCan’t make it. Stuff came up.\n\nSide-Eye',
+    clueMode:'highlight', clue:'too short',
+    clues:[
+      {key:'too short', label:'Highlight the short, unclear wording.'},
+      {key:'excited punctuation', label:'Highlight lots of exclamation marks.'},
+      {key:'kind request', label:'Highlight a polite request.'}
+    ],
+    audienceMode:'change', audience:'word choice', audiencePrompt:'What should change before sending to a supervisor?',
+    learning:'Recognising casual and unclear wording in a work email.'
+  },
+  {
+    id:10, format:'text', sender:'The Clipboard Phantom', recipient:'Agent Jay', context:'Frustrated about a task', tone:'annoyed',
+    segments:[
+      {text:'This is stupid. ', key:'annoyed words'},
+      {text:'I done it but ', key:'standard english'},
+      {text:'we was confused ', key:'standard english'},
+      {text:'and nobody helped.', key:'annoyed words'}
+    ],
+    message:'This is stupid. I done it but we was confused and nobody helped.',
+    clueMode:'highlight', clue:'annoyed words',
+    clues:[
+      {key:'annoyed words', label:'Highlight words that show annoyance.'},
+      {key:'standard english', label:'Highlight the local spoken forms.'},
+      {key:'formal layout', label:'Highlight the formal email sign-off.'}
+    ],
+    audienceMode:'change', audience:'tone', audiencePrompt:'What should change before sending?',
+    learning:'Recognising annoyed tone before rebuilding the message clearly.'
+  }
+];
+
+const BUILDER = [
+  {slot:'Feeling', key:'feeling', options:[
+    {text:'I feel frustrated', good:true},
+    {text:'This is stupid', good:false},
+    {text:'Whatever', good:false}
+  ]},
+  {slot:'Reason', key:'reason', options:[
+    {text:'because I am not sure what to do yet.', good:true},
+    {text:'because people keep annoying me.', good:false},
+    {text:'because it is all useless.', good:false}
+  ]},
+  {slot:'Standard English action', key:'action', options:[
+    {text:'I have done the first part,', good:true},
+    {text:'I done the first part,', good:false},
+    {text:'I did done the first part,', good:false}
+  ]},
+  {slot:'Standard English group', key:'group', options:[
+    {text:'but we were confused by the next step.', good:true},
+    {text:'but we was confused by the next step.', good:false},
+    {text:'but us was confused by the next step.', good:false}
+  ]},
+  {slot:'Request', key:'request', options:[
+    {text:'Please can I have help to check what to do next?', good:true},
+    {text:'Sort it out.', good:false},
+    {text:'You need to fix it now.', good:false}
+  ]}
+];
+
+let state = {
+  initials:'', currentCase:null, completed:{}, results:{}, caseOrderStarted:false,
+  builder:{}, finalMessage:'', finalCorrect:false, finalRank:'Agent in Training', finalReport:null
+};
+let caseRun = null;
+
+function $(id){ return document.getElementById(id); }
+function toggleHelp(){ $('helpBox').classList.toggle('show'); }
+function showMessage(id, text){ const el = $(id); if(!el) return; el.textContent = text; el.classList.add('show'); setTimeout(function(){ el.classList.remove('show'); }, 4300); }
+function hideStages(){ document.querySelectorAll('.stage').forEach(function(s){ s.classList.remove('active'); }); }
+function setStage(id){ hideStages(); const el = $(id); el.classList.add('active'); setTimeout(function(){ el.scrollIntoView({behavior:'smooth', block:'start'}); }, 40); }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(ch){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[ch]; }); }
+function nl2br(s){ return escapeHtml(s).replace(/\n/g,'<br>'); }
+function caseById(id){ return CASES.find(function(c){ return c.id === id; }); }
+
+function initInitials(){
+  const row = $('initialRow'); row.innerHTML = '';
+  STUDENTS.forEach(function(s){
+    const b = document.createElement('button'); b.className = 'initial-btn'; b.type = 'button'; b.textContent = s;
+    b.onclick = function(){ selectInitials(s); };
+    row.appendChild(b);
+  });
+  try {
+    const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+    if(profile && profile.initials){
+      const found = STUDENTS.find(function(s){ return s.toLowerCase() === String(profile.initials).toLowerCase(); });
+      if(found) selectInitials(found, true);
+    }
+  } catch(e) {}
+}
+function selectInitials(initials, quiet){
+  state.initials = initials;
+  document.querySelectorAll('.initial-btn').forEach(function(b){ b.classList.toggle('selected', b.textContent === initials); });
+  try { const profile = JSON.parse(localStorage.getItem('base6Profile') || '{}'); profile.initials = initials.toLowerCase(); localStorage.setItem('base6Profile', JSON.stringify(profile)); } catch(e) {}
+  if(!quiet) showMessage('startMsg', 'Agent ID set. The Bureau clipboard is unusually calm.');
+}
+
+function renderProgress(){
+  const done = Object.keys(state.completed).length;
+  const badges = Object.values(state.results).filter(function(r){ return r.badge; }).length;
+  $('caseCount').textContent = done + '/10 cases complete';
+  $('badgeCount').textContent = badges + ' first-time badge' + (badges === 1 ? '' : 's');
+  const mini = $('miniCases'); mini.innerHTML = '';
+  CASES.forEach(function(c){
+    const d = document.createElement('span'); d.className = 'case-dot'; d.textContent = String(c.id).padStart(2,'0');
+    if(state.completed[c.id]) d.classList.add(state.results[c.id] && state.results[c.id].badge ? 'badge' : 'tick');
+    mini.appendChild(d);
+  });
+}
+function startCases(){
+  if(!state.initials){ showMessage('startMsg','Choose your initials first. Secret agents need a badge, apparently.'); return; }
+  state.caseOrderStarted = true; document.body.classList.add('play-mode'); openCase(1);
+}
+function availableTonesForCase(id){ return id <= 3 ? STARTER_TONES : ALL_TONES; }
+function allCasesDone(){ return CASES.every(function(c){ return !!state.completed[c.id]; }); }
+
+function renderMessage(c){
+  if(c.format === 'text'){
+    const body = c.segments ? c.segments.map(function(seg, idx){ return '<span class="message-segment" data-key="' + seg.key + '" data-idx="' + idx + '">' + nl2br(seg.text) + '</span>'; }).join('') : nl2br(c.message);
+    return '<div class="phone-frame"><div class="phone-screen"><div class="phone-top">' + escapeHtml(c.sender) + '</div><div class="phone-bubble-wrap"><div class="phone-bubble">' + body + '</div></div></div></div>';
+  }
+  const body = c.segments ? c.segments.map(function(seg, idx){ return '<span class="message-segment" data-key="' + seg.key + '" data-idx="' + idx + '">' + nl2br(seg.text) + '</span>'; }).join('') : nl2br(c.message);
+  return '<div class="email-frame"><div class="email-bar"><span class="email-dot"></span><span class="email-dot"></span><span class="email-dot"></span></div><div class="email-head"><div class="email-subject">' + escapeHtml(c.subject || 'Message') + '</div><div class="email-meta">From: ' + escapeHtml(c.sender) + '<br>To: ' + escapeHtml(c.recipient) + '</div></div><div class="email-body">' + body + '</div></div>';
+}
+function renderToneDial(c){
+  const tones = availableTonesForCase(c.id);
+  const step = 360 / tones.length;
+  const dialButtons = tones.map(function(t, i){ const angle = -90 + (step * i); return '<button type="button" class="tone-option" data-tone="' + t + '" style="--angle:' + angle + 'deg" onclick="chooseTone(\'' + t + '\')">' + TONE_LABELS[t] + '</button>'; }).join('');
+  const mobileButtons = '<div class="tone-button-row" aria-label="Tone buttons for smaller screens">' + tones.map(function(t){ return '<button type="button" class="tone-button" data-tone="' + t + '" onclick="chooseTone(\'' + t + '\')">' + TONE_LABELS[t] + '</button>'; }).join('') + '</div>';
+  return '<div class="scanner-card"><div class="scanner-head"><div class="scanner-label">Tone scanner dial</div><div class="scanner-status" id="scannerStatus">Choose the tone</div></div><div class="dial" id="toneDial"><span class="needle" id="toneNeedle" style="--needle:0deg"></span><span class="dial-center">Tone<br>scanner</span>' +
+    dialButtons + '</div>' + mobileButtons + '<div class="feedback" id="toneFeedback"></div></div>';
+}
+function openCase(id){
+  const c = caseById(id); if(!c) return;
+  state.currentCase = id;
+  const previous = state.results[id];
+  caseRun = previous && previous.complete ? null : {
+    id:id, toneAttempts:0, clueAttempts:0, audienceAttempts:0, toneDone:false, clueDone:false, audienceDone:false,
+    firstTime:true, toneChoice:'', clueChoice:'', audienceChoice:''
+  };
+  const completed = !!(previous && previous.complete);
+  $('caseHost').innerHTML = '<div class="stage-top"><div class="stage-title-wrap"><div class="stage-icon">' + (c.format === 'email' ? '✉️' : '📱') + '</div><div><h2>Case ' + String(c.id).padStart(2,'0') + ' · ' + (c.format === 'email' ? 'Email' : 'Text message') + '</h2><p class="subtitle">From ' + escapeHtml(c.sender) + ' · ' + escapeHtml(c.context) + '</p></div></div><div class="tag-row"><span class="tag">tone</span><span class="tag">clue</span><span class="tag">audience</span></div></div>' +
+    '<div class="case-layout"><div class="case-card"><div class="case-context">Mission context: ' + escapeHtml(c.context) + '</div>' + renderMessage(c) + '</div>' +
+    '<div class="case-card">' + (completed ? renderCompletedCase(c, previous) : renderToneDial(c) + renderClueBlock(c, false) + renderAudienceBlock(c, false) + '<div class="case-summary" id="caseSummary"></div>') + '</div></div>';
+  setStage('stage-case');
+  if(!completed) wireHighlightClues(c);
+  renderProgress();
+}
+function renderCompletedCase(c, r){
+  return '<p class="eyebrow">Case already complete</p><h3>' + (r.badge ? '🏅 First-time correct' : '✅ Completed with support') + '</h3><p class="muted" style="margin-top:0.55rem;">Tone: <strong>' + TONE_LABELS[r.toneChoice] + '</strong><br>Clue: <strong>' + escapeHtml(r.clueLabel) + '</strong><br>Audience answer: <strong>' + escapeHtml(r.audienceLabel) + '</strong><br>Why: <strong>' + escapeHtml(r.explanation || c.learning) + '</strong></p><div class="button-row"><button class="btn secondary" onclick="afterCaseNav(' + c.id + ')">Continue</button>' + (c.id >= 3 ? '<button class="btn ghost" onclick="openDesk()">Detective desk</button>' : '') + '</div>';
+}
+function renderClueBlock(c, visible){
+  const hidden = visible ? '' : ' style="display:none;"';
+  if(c.clueMode === 'highlight'){
+    return '<div class="task-block" id="clueBlock"' + hidden + '><h3 class="step-title">Step 2 · Highlight the clue in the message</h3><p class="muted">Tap the suspicious part of the message itself.</p><div class="feedback" id="clueFeedback"></div></div>';
+  }
+  return '<div class="task-block" id="clueBlock"' + hidden + '><h3 class="step-title">Step 2 · Choose the clue</h3><div class="choice-grid">' + c.clues.map(function(cl){ return '<button type="button" class="choice-btn" data-clue="' + cl.key + '" onclick="chooseClue(\'' + cl.key.replace(/'/g,"\\'") + '\')">' + escapeHtml(cl.label) + '</button>'; }).join('') + '</div><div class="feedback" id="clueFeedback"></div></div>';
+}
+function renderAudienceBlock(c, visible){
+  const hidden = visible ? '' : ' style="display:none;"';
+  const options = c.audienceMode === 'yesno' ? [{key:'yes',label:'Yes, suitable'}, {key:'no',label:'No, not suitable'}] : CHANGE_OPTIONS;
+  return '<div class="task-block" id="audienceBlock"' + hidden + '><h3 class="step-title">Step 3 · Audience check</h3><p class="muted">' + escapeHtml(c.audiencePrompt) + '</p><div class="choice-grid">' + options.map(function(o){ return '<button type="button" class="choice-btn" data-audience="' + o.key + '" onclick="chooseAudience(\'' + o.key + '\')">' + escapeHtml(o.label) + '</button>'; }).join('') + '</div><div class="feedback" id="audienceFeedback"></div></div>';
+}
+
+function setFeedback(id, type, text){ const el = $(id); if(!el) return; el.className = 'feedback show ' + type; el.textContent = text; }
+function tonePhrase(tone){ return tone === 'rude' ? 'rude/blunt' : TONE_LABELS[tone].toLowerCase(); }
+function toneLearningLine(c){ return 'Learning clue: ' + clueLabel(c, c.clue); }
+function audienceLearningLine(c){
+  if(c.audienceMode === 'yesno'){
+    if(c.audience === 'yes') return 'This suits the audience because the tone, wording and layout fit the situation.';
+    return 'This does not suit the audience because the tone or register is not right for ' + c.recipient + '.';
+  }
+  if(c.audience === 'nothing') return 'Nothing needs changing because the message already fits the audience and purpose.';
+  return 'Best change: ' + audienceLabel(c, c.audience) + '. That would make the message fit the audience better.';
+}
+function clearHighlightSelection(){ document.querySelectorAll('.message-segment').forEach(function(s){ s.classList.remove('selected','locked'); }); }
+function clearBuilderIssues(){ document.querySelectorAll('.slot').forEach(function(s){ s.classList.remove('needs-fix'); }); document.querySelectorAll('.slot-btn').forEach(function(b){ b.classList.remove('needs-fix'); }); }
+function markBuilderIssue(key){
+  clearBuilderIssues();
+  const wrap = document.querySelector('.slot[data-slot-wrap="' + key + '"]');
+  if(wrap) wrap.classList.add('needs-fix');
+  const selected = document.querySelector('.slot-btn[data-slot="' + key + '"].selected');
+  if(selected) selected.classList.add('needs-fix');
+}
+function rotateNeedle(tone){
+  const tones = availableTonesForCase(state.currentCase); const idx = tones.indexOf(tone); if(idx < 0) return;
+  const step = 360 / tones.length; const angle = -90 + (step * idx);
+  const needle = $('toneNeedle'); if(needle) needle.style.setProperty('--needle', (angle + 90) + 'deg');
+  document.querySelectorAll('.tone-option, .tone-button').forEach(function(b){ b.classList.toggle('selected', b.dataset.tone === tone); });
+}
+function chooseTone(tone){
+  if(!caseRun || caseRun.toneDone) return;
+  const c = caseById(caseRun.id); caseRun.toneAttempts++; caseRun.toneChoice = tone; rotateNeedle(tone);
+  if(tone === c.tone){
+    caseRun.toneDone = true; $('scannerStatus').textContent = 'Tone decoded';
+    setFeedback('toneFeedback','good','Correct. This message sounds ' + tonePhrase(tone) + '. ' + toneLearningLine(c));
+    $('clueBlock').style.display = 'block';
+  } else if(caseRun.toneAttempts >= 2){
+    caseRun.firstTime = false; caseRun.toneDone = true; caseRun.toneChoice = c.tone; rotateNeedle(c.tone); $('scannerStatus').textContent = 'Answer revealed';
+    setFeedback('toneFeedback','answer','The scanner stopped wobbling. Agent Jay says the message sounds ' + tonePhrase(c.tone) + '. ' + toneLearningLine(c));
+    $('clueBlock').style.display = 'block';
+  } else {
+    caseRun.firstTime = false;
+    setFeedback('toneFeedback','try','The scanner is wobbling. Check the words, punctuation and layout again.');
+  }
+}
+function chooseClue(key){
+  if(!caseRun || !caseRun.toneDone || caseRun.clueDone) return;
+  const c = caseById(caseRun.id); caseRun.clueAttempts++; caseRun.clueChoice = key;
+  document.querySelectorAll('[data-clue]').forEach(function(b){ b.classList.remove('correct','wrong'); if(b.dataset.clue === key) b.classList.add(key === c.clue ? 'correct' : 'wrong'); });
+  if(key === c.clue){
+    caseRun.clueDone = true; setFeedback('clueFeedback','good','Clue secured. Agent Jay has added it to the suspicious evidence pile. This clue helps show the tone.'); $('audienceBlock').style.display = 'block';
+  } else if(caseRun.clueAttempts >= 2){
+    caseRun.firstTime = false; caseRun.clueDone = true; caseRun.clueChoice = c.clue;
+    document.querySelectorAll('[data-clue]').forEach(function(b){ if(b.dataset.clue === c.clue) b.classList.add('correct'); });
+    setFeedback('clueFeedback','answer','Answer revealed. The key clue is: ' + clueLabel(c, c.clue)); $('audienceBlock').style.display = 'block';
+  } else {
+    caseRun.firstTime = false; setFeedback('clueFeedback','try','Not that clue. The magnifying glass is judging us gently. Try again.');
+  }
+}
+function wireHighlightClues(c){
+  if(c.clueMode !== 'highlight') return;
+  document.querySelectorAll('.message-segment').forEach(function(seg){
+    seg.addEventListener('click', function(){ if(caseRun && caseRun.toneDone && !caseRun.clueDone) chooseHighlight(this.dataset.key, this); });
+  });
+}
+function chooseHighlight(key, el){
+  if(!caseRun || caseRun.clueDone) return;
+  const c = caseById(caseRun.id); caseRun.clueAttempts++; caseRun.clueChoice = key;
+  document.querySelectorAll('.message-segment').forEach(function(s){ s.classList.remove('selected'); });
+  el.classList.add('selected');
+  if(key === c.clue){
+    caseRun.clueDone = true; setFeedback('clueFeedback','good','Evidence highlighted. The clue has been captured without needing a tiny spy net. This part shows the tone.'); $('audienceBlock').style.display = 'block';
+  } else if(caseRun.clueAttempts >= 2){
+    caseRun.firstTime = false; caseRun.clueDone = true; caseRun.clueChoice = c.clue;
+    clearHighlightSelection();
+    document.querySelectorAll('.message-segment').forEach(function(s){ if(s.dataset.key === c.clue) s.classList.add('selected'); s.classList.add('locked'); });
+    setFeedback('clueFeedback','answer','Answer revealed. The strongest clue is: ' + clueLabel(c, c.clue)); $('audienceBlock').style.display = 'block';
+  } else {
+    caseRun.firstTime = false; setFeedback('clueFeedback','try','Close, but the clue file is not convinced. Try another part of the message.');
+  }
+}
+function chooseAudience(key){
+  if(!caseRun || !caseRun.clueDone || caseRun.audienceDone) return;
+  const c = caseById(caseRun.id); caseRun.audienceAttempts++; caseRun.audienceChoice = key;
+  document.querySelectorAll('[data-audience]').forEach(function(b){ b.classList.remove('correct','wrong'); if(b.dataset.audience === key) b.classList.add(key === c.audience ? 'correct' : 'wrong'); });
+  if(key === c.audience){
+    caseRun.audienceDone = true; setFeedback('audienceFeedback','good','Audience check complete. Agent Jay is nodding in a very official way. ' + audienceLearningLine(c)); completeCase();
+  } else if(caseRun.audienceAttempts >= 2){
+    caseRun.firstTime = false; caseRun.audienceDone = true; caseRun.audienceChoice = c.audience;
+    document.querySelectorAll('[data-audience]').forEach(function(b){ if(b.dataset.audience === c.audience) b.classList.add('correct'); });
+    setFeedback('audienceFeedback','answer','Answer revealed. The best audience judgement is: ' + audienceLabel(c, c.audience) + '. ' + audienceLearningLine(c)); completeCase();
+  } else {
+    caseRun.firstTime = false; setFeedback('audienceFeedback','try','The audience detector is blinking. Think about who receives the message.');
+  }
+}
+function clueLabel(c, key){ const found = c.clues.find(function(cl){ return cl.key === key; }); return found ? found.label : key; }
+function audienceLabel(c, key){
+  if(c.audienceMode === 'yesno') return key === 'yes' ? 'Yes, suitable' : 'No, not suitable';
+  const found = CHANGE_OPTIONS.find(function(o){ return o.key === key; }); return found ? found.label : key;
+}
+function completeCase(){
+  const c = caseById(caseRun.id);
+  const badge = !!caseRun.firstTime;
+  state.completed[c.id] = true;
+  const explanation = toneLearningLine(c) + ' ' + audienceLearningLine(c);
+  state.results[c.id] = {
+    complete:true, badge:badge, toneChoice:caseRun.toneChoice || c.tone, correctTone:c.tone,
+    clueChoice:caseRun.clueChoice || c.clue, clueLabel:clueLabel(c, caseRun.clueChoice || c.clue),
+    audienceChoice:caseRun.audienceChoice || c.audience, audienceLabel:audienceLabel(c, caseRun.audienceChoice || c.audience),
+    learning:c.learning, explanation:explanation
+  };
+  const summary = $('caseSummary');
+  summary.innerHTML = '<strong>' + (badge ? '🏅 First-time correct badge earned.' : '✅ Completed with support.') + '</strong>' +
+    '<div style="margin-top:0.55rem; line-height:1.55;">Tone: <strong>' + TONE_LABELS[state.results[c.id].toneChoice] + '</strong><br>Clue: <strong>' + escapeHtml(state.results[c.id].clueLabel) + '</strong><br>Audience: <strong>' + escapeHtml(state.results[c.id].audienceLabel) + '</strong><br>Why: ' + escapeHtml(explanation) + '</div>' +
+    '<div class="case-actions"><button class="btn secondary" onclick="afterCaseNav(' + c.id + ')">Continue</button>' + (c.id >= 3 ? '<button class="btn ghost" onclick="openDesk()">Detective desk</button>' : '') + '</div>';
+  summary.classList.add('show');
+  renderProgress();
+  burstConfetti(badge ? ['🏅','🕵️','📁'] : ['✅','📁','🔎']);
+}
+function afterCaseNav(id){
+  if(id < 3) openCase(id + 1);
+  else openDesk();
+}
+function guidedCasesDone(){ return !!state.completed[1] && !!state.completed[2] && !!state.completed[3]; }
+function openDesk(){
+  if(!guidedCasesDone()){
+    const next = !state.completed[1] ? 1 : !state.completed[2] ? 2 : 3;
+    showMessage('startMsg','Finish the first 3 guided cases first. Agent Jay is very serious about the filing order.');
+    openCase(next);
+    return;
+  }
+  renderDesk(); setStage('stage-desk'); renderProgress();
+}
+function renderDesk(){
+  const grid = $('folderGrid'); grid.innerHTML = '';
+  CASES.slice(3).forEach(function(c, idx){
+    const done = !!state.completed[c.id];
+    const f = document.createElement('button'); f.type = 'button'; f.className = 'folder' + (done ? ' done' : ''); f.style.setProperty('--tilt', (idx % 2 === 0 ? '-0.7deg' : '0.6deg'));
+    f.innerHTML = '<h3>Case ' + String(c.id).padStart(2,'0') + '</h3><p>' + (c.format === 'email' ? 'Email' : 'Text message') + '</p><p class="muted" style="color:inherit;opacity:.75;">' + escapeHtml(c.context) + '</p><span class="folder-stamp">' + (done ? (state.results[c.id].badge ? '🏅' : '✅') : '📁') + '</span>';
+    f.onclick = function(){ openCase(c.id); };
+    grid.appendChild(f);
+  });
+  const b = $('builderBtn');
+  if(allCasesDone()){ b.disabled = false; b.textContent = 'Open final message builder'; b.className = 'btn'; }
+  else { b.disabled = true; b.textContent = 'Final message builder locked · ' + Object.keys(state.completed).length + '/10 cases'; b.className = 'btn'; }
+}
+
+function openBuilder(){
+  if(!allCasesDone()){ showMessage('deskMsg','Complete all case folders first. The final file is still locked.'); return; }
+  renderBuilder(); setStage('stage-builder');
+}
+function renderBuilder(){
+  $('builderHost').innerHTML = '<div class="stage-top"><div class="stage-title-wrap"><div class="stage-icon">🛠️</div><div><h2>Final message builder</h2><p class="subtitle">Turn an annoyed message into a clearer message that explains feelings and asks for help.</p></div></div><div class="tag-row"><span class="tag">tone repair</span><span class="tag">Standard English</span><span class="tag">supported writing</span></div></div>' +
+    '<div class="builder-grid"><div class="builder-card"><p class="eyebrow">Original message</p><div class="bad-message">This is stupid. I done it but we was confused and nobody helped.</div><p class="muted">Choose the best block for each slot. No blank-page panic required.</p><div id="slotHost"></div><div class="button-row"><button class="btn secondary" onclick="checkBuilder()">Check message</button></div><div class="message" id="builderMsg"></div></div><div class="builder-card"><p class="eyebrow">Built message</p><div class="built-message" id="builtMessage">Choose one block from each slot.</div><div class="rank-card" id="rankCard"></div></div></div>';
+  renderSlots(); updateBuiltMessage();
+}
+function renderSlots(){
+  const host = $('slotHost'); host.innerHTML = '';
+  BUILDER.forEach(function(slot){
+    const wrap = document.createElement('div'); wrap.className = 'slot'; wrap.setAttribute('data-slot-wrap', slot.key);
+    wrap.innerHTML = '<h3>' + slot.slot + '</h3><div class="slot-options">' + slot.options.map(function(o, idx){ return '<button type="button" class="slot-btn" data-slot="' + slot.key + '" data-idx="' + idx + '" onclick="chooseBlock(\'' + slot.key + '\',' + idx + ')">' + escapeHtml(o.text) + '</button>'; }).join('') + '</div>';
+    host.appendChild(wrap);
+  });
+}
+function chooseBlock(key, idx){
+  state.builder[key] = idx;
+  const wrap = document.querySelector('.slot[data-slot-wrap="' + key + '"]'); if(wrap) wrap.classList.remove('needs-fix');
+  document.querySelectorAll('[data-slot="' + key + '"]').forEach(function(b){ b.classList.remove('needs-fix'); b.classList.toggle('selected', Number(b.dataset.idx) === idx); });
+  updateBuiltMessage();
+}
+function updateBuiltMessage(){
+  const parts = [];
+  BUILDER.forEach(function(slot){ if(state.builder[slot.key] !== undefined) parts.push(slot.options[state.builder[slot.key]].text); });
+  const message = parts.length ? parts.join(' ') : 'Choose one block from each slot.';
+  state.finalMessage = message;
+  const box = $('builtMessage'); if(box) box.textContent = message;
+}
+function checkBuilder(){
+  const missing = BUILDER.find(function(slot){ return state.builder[slot.key] === undefined; });
+  if(missing){ markBuilderIssue(missing.key); showMessage('builderMsg','Choose a block for ' + missing.slot + ' first. Agent Jay refuses to file half a sentence.'); return; }
+  const wrong = BUILDER.find(function(slot){ return !slot.options[state.builder[slot.key]].good; });
+  state.finalCorrect = !wrong;
+  if(wrong){ markBuilderIssue(wrong.key); showMessage('builderMsg','This is close, but the ' + wrong.slot + ' block still needs a clearer choice. Try the more respectful/Standard English option.'); return; }
+  clearBuilderIssues();
+  state.finalRank = calculateRank();
+  const card = $('rankCard');
+  card.classList.add('show');
+  card.innerHTML = '<div class="rank-title">' + state.finalRank + '</div><p class="muted">Final message approved by Agent Jay\'s Communication Bureau.</p><div class="button-row"><button class="btn" onclick="createReport()">Create evidence report</button></div>';
+  burstConfetti(['🏅','🕵️','📄','✅']);
+}
+function calculateRank(){
+  const badges = Object.values(state.results).filter(function(r){ return r.badge; }).length;
+  if(badges >= 8 && state.finalCorrect) return 'Elite Communication Agent';
+  if(badges >= 5 && state.finalCorrect) return 'Tone Detective';
+  return 'Agent in Training';
+}
+function createReport(){
+  state.finalReport = buildReportData();
+  try { localStorage.setItem('toneDetectiveFinalReport', JSON.stringify(state.finalReport)); } catch(e) {}
+  renderReport(); setStage('stage-report');
+}
+function buildReportData(){
+  const date = new Date().toLocaleDateString('en-GB');
+  const rows = CASES.map(function(c){
+    const r = state.results[c.id] || {};
+    return { caseNo:c.id, format:c.format === 'email' ? 'Email' : 'Text', learning:c.learning, tone:r.toneChoice || '', correctTone:c.tone, outcome:r.badge ? 'First-time correct' : 'Completed with support' };
+  });
+  const badges = rows.filter(function(r){ return r.outcome === 'First-time correct'; }).length;
+  return {
+    title:'Tone Detective — Agent Report', initials:state.initials || 'Not selected', date:date, rank:state.finalRank,
+    badges:badges, ticks:10 - badges, message:state.finalMessage, cases:rows,
+    evidence:'Evidence of learning: identified tone in phone/email messages, selected language clues, judged audience suitability, and built a clearer message using appropriate tone and Standard English.'
+  };
+}
+function renderReport(){
+  const report = state.finalReport || buildReportData();
+  const rows = report.cases.map(function(r){ return '<tr><td>' + String(r.caseNo).padStart(2,'0') + '</td><td>' + r.format + '</td><td>' + TONE_LABELS[r.tone] + '</td><td>' + escapeHtml(r.outcome) + '</td></tr>'; }).join('');
+  $('reportHost').innerHTML = '<div class="report-card"><p class="eyebrow">' + escapeHtml(report.date) + ' · ' + escapeHtml(report.initials) + '</p><h3>' + escapeHtml(report.title) + '</h3><div class="evidence-line">Final rank: ' + escapeHtml(report.rank) + ' · First-time correct: ' + report.badges + ' · Completed with support: ' + report.ticks + '</div><table class="report-table"><thead><tr><th>Case</th><th>Format</th><th>Tone chosen</th><th>Outcome</th></tr></thead><tbody>' + rows + '</tbody></table><p style="margin-top:0.8rem;"><strong>Final improved message</strong><br>' + escapeHtml(report.message) + '</p><div class="evidence-line">' + escapeHtml(report.evidence) + '</div></div>';
+}
+
+function burstConfetti(items){
+  const box = $('confetti'); box.innerHTML = '';
+  for(let i=0; i<20; i++){
+    const s = document.createElement('span'); s.textContent = items[Math.floor(Math.random()*items.length)];
+    s.style.left = Math.random()*100 + 'vw'; s.style.animationDelay = (Math.random()*0.25) + 's'; s.style.fontSize = (1 + Math.random()*0.9) + 'rem'; box.appendChild(s);
+  }
+  setTimeout(function(){ box.innerHTML = ''; }, 1500);
+}
+function reportTextLines(){
+  const r = state.finalReport || buildReportData();
+  const lines = [];
+  lines.push(r.title);
+  lines.push('Student: ' + r.initials + '    Date: ' + r.date);
+  lines.push('Final rank: ' + r.rank + '    First-time correct: ' + r.badges + '    Completed with support: ' + r.ticks);
+  lines.push('');
+  lines.push('Case results:');
+  r.cases.forEach(function(c){ lines.push('- Case ' + String(c.caseNo).padStart(2,'0') + ' (' + c.format + '): tone chosen ' + TONE_LABELS[c.tone] + '; outcome ' + c.outcome + '; learning: ' + c.learning); });
+  lines.push('');
+  lines.push('Final improved message: ' + r.message);
+  lines.push('');
+  lines.push(r.evidence);
+  return lines;
+}
+function wrapPdfLines(lines, maxChars){
+  const out = [];
+  lines.forEach(function(line){
+    if(line.length <= maxChars){ out.push(line); return; }
+    let words = line.split(' '), current = '';
+    words.forEach(function(w){ if((current + ' ' + w).trim().length > maxChars){ out.push(current); current = w; } else current = (current + ' ' + w).trim(); });
+    if(current) out.push(current);
+  });
+  return out;
+}
+function pdfEscape(text){ return String(text).replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)').replace(/[\u2018\u2019]/g,"'").replace(/[\u201c\u201d]/g,'"').replace(/[–—]/g,'-').replace(/[^\x00-\x7F]/g,''); }
+function exportPdf(){
+  if(!state.finalReport){ showMessage('reportMsg','Create the report first.'); return; }
+  const lines = wrapPdfLines(reportTextLines(), 88).slice(0, 50);
+  let content = 'BT\n/F1 14 Tf\n50 790 Td\n';
+  lines.forEach(function(line, i){ const fontSize = i === 0 ? 16 : 9.5; const lead = i === 0 ? 22 : 14; content += '/' + (i === 0 ? 'F2' : 'F1') + ' ' + fontSize + ' Tf\n(' + pdfEscape(line) + ') Tj\n0 -' + lead + ' Td\n'; });
+  content += 'ET';
+  const objects = [];
+  objects.push('1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj');
+  objects.push('2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj');
+  objects.push('3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >> endobj');
+  objects.push('4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj');
+  objects.push('5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> endobj');
+  objects.push('6 0 obj << /Length ' + content.length + ' >> stream\n' + content + '\nendstream endobj');
+  let pdf = '%PDF-1.4\n'; const offsets = [0];
+  objects.forEach(function(obj){ offsets.push(pdf.length); pdf += obj + '\n'; });
+  const xref = pdf.length;
+  pdf += 'xref\n0 ' + (objects.length + 1) + '\n0000000000 65535 f \n';
+  for(let i=1; i<offsets.length; i++){ pdf += String(offsets[i]).padStart(10,'0') + ' 00000 n \n'; }
+  pdf += 'trailer << /Size ' + (objects.length + 1) + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF';
+  const blob = new Blob([pdf], {type:'application/pdf'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'tone-detective-report-' + (state.initials || 'student') + '.pdf'; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+function emailSubject(){ return encodeURIComponent('Base 6 · Tone Detective Report — ' + (state.initials || 'Student')); }
+function emailBody(){ return encodeURIComponent(reportTextLines().join('\n')); }
+function sendGmail(){ if(!state.finalReport){ showMessage('reportMsg','Create the report first.'); return; } window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + emailSubject() + '&body=' + emailBody(), '_blank'); }
+function sendMailto(){ if(!state.finalReport){ showMessage('reportMsg','Create the report first.'); return; } window.open('mailto:' + TEACHER_EMAIL + '?subject=' + emailSubject() + '&body=' + emailBody(), '_blank'); }
+
+initInitials();
+renderProgress();
+</script>
+</body>
+</html>
