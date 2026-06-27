@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Force Launch Lab · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root{
+    --cream:#fef8f4; --ink:#1a1a1a; --muted:#555; --card:#fff;
+    --teal:#007291; --teal-dark:#005a72; --teal-soft:#e6f5f8;
+    --orange:#ef7724; --orange-dark:#c05a10; --orange-soft:#fff3e8;
+    --green:#2e8b57; --green-soft:#e6f3ec;
+    --red:#c43b3b; --red-soft:#fde8e8;
+    --yellow:#ffc857; --purple:#7b5ea7; --purple-soft:#efe9f6;
+    --blue:#305c96; --blue-soft:#e9eef8;
+    --border:#e0d8d0; --shadow:0 10px 28px rgba(0,0,0,.09);
+  }
+  body{ font-family:"Atkinson Hyperlegible",Arial,sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; }
+  button,input,textarea,select{ font-family:inherit; }
+  a{ color:inherit; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{ outline:3px solid var(--orange); outline-offset:3px; }
+
+  .site-header{ position:relative; overflow:hidden; text-align:center; padding:2.3rem 1.2rem 3.4rem; background:linear-gradient(135deg,#007291 0%,#305c96 55%,#7b5ea7 100%); }
+  .site-header::before{ content:""; position:absolute; top:-80px; left:-40px; width:210px; height:210px; border-radius:50%; background:rgba(255,255,255,.1); }
+  .site-header::after{ content:""; position:absolute; right:-70px; bottom:0; width:230px; height:230px; border-radius:50%; background:rgba(239,119,36,.22); }
+  .header-back{ position:absolute; top:1rem; left:1.15rem; z-index:5; color:#fff; text-decoration:none; font-weight:700; font-size:.9rem; opacity:.92; }
+  .header-inner{ position:relative; z-index:2; max-width:900px; margin:0 auto; }
+  .week-label{ color:#ffe8c2; text-transform:uppercase; letter-spacing:.12em; font-weight:700; font-size:.78rem; margin-bottom:.35rem; }
+  h1{ color:#fff; font-size:clamp(2rem,5vw,3.2rem); line-height:1.08; }
+  .header-sub{ color:#fef8f4; max-width:760px; margin:.75rem auto 0; line-height:1.55; font-size:1.05rem; }
+  .lab-lights{ display:flex; gap:.45rem; justify-content:center; flex-wrap:wrap; margin-top:1rem; }
+  .light{ width:13px; height:13px; border-radius:50%; background:#c9f4ff; border:2px solid rgba(255,255,255,.75); box-shadow:0 0 12px rgba(201,244,255,.8); }
+  .light:nth-child(2n){ background:#ffe6a7; } .light:nth-child(3n){ background:#ffd1e4; }
+  .header-wave{ position:absolute; left:0; bottom:-1px; width:100%; height:42px; z-index:1; }
+
+  .main{ width:min(1160px, calc(100% - 1.4rem)); margin:0 auto; padding:2rem 0 4rem; }
+  .top-strip{ display:flex; gap:1rem; align-items:stretch; justify-content:space-between; flex-wrap:wrap; margin-bottom:1rem; }
+  .intro-card,.student-card{ background:#fff; border:2px solid var(--orange); border-radius:18px; padding:1.1rem 1.25rem; box-shadow:0 4px 16px rgba(239,119,36,.12); }
+  .intro-card{ flex:1 1 580px; } .student-card{ flex:0 1 390px; border-color:var(--teal); box-shadow:0 4px 16px rgba(0,114,145,.12); }
+  .eyebrow{ font-size:.75rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:var(--orange); margin-bottom:.35rem; }
+  .intro-card h2,.student-card h2{ font-size:1.2rem; margin-bottom:.35rem; }
+  p{ line-height:1.6; } .muted{ color:var(--muted); }
+  .student-card .small{ font-size:.86rem; color:#555; line-height:1.45; }
+  .initial-row{ display:flex; flex-wrap:wrap; gap:.45rem; margin-top:.7rem; }
+  .initial-btn{ min-height:42px; border:2px solid var(--teal); background:#fff; color:var(--teal); border-radius:999px; padding:.42rem .75rem; font-weight:700; cursor:pointer; }
+  .initial-btn:hover,.initial-btn.selected{ background:var(--teal); color:#fff; }
+
+  .progress-shell{ position:sticky; top:0; z-index:45; background:rgba(254,248,244,.96); backdrop-filter:blur(8px); border:2px solid #eadfd4; border-radius:18px; padding:.7rem; margin:1rem 0; box-shadow:0 5px 18px rgba(0,0,0,.06); }
+  .progress-top{ display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:.55rem; }
+  .progress-title{ font-weight:700; color:var(--teal-dark); }
+  .progress-count{ font-weight:700; color:var(--orange-dark); }
+  .bar-track{ height:16px; border-radius:999px; background:#eadfd4; overflow:hidden; }
+  .bar-fill{ height:100%; width:var(--w,0%); background:linear-gradient(90deg,var(--teal),var(--orange)); border-radius:999px; transition:width .35s ease; }
+  .mini-mission-row{ display:grid; grid-template-columns:repeat(8,1fr); gap:.35rem; margin-top:.55rem; }
+  .mini-dot{ min-height:32px; border:1.5px solid var(--border); background:#fff; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:700; color:#777; font-size:.8rem; }
+  .mini-dot.active{ border-color:var(--orange); background:var(--orange-soft); color:var(--orange-dark); }
+  .mini-dot.done{ border-color:var(--green); background:var(--green-soft); color:#1c6d3d; }
+
+  .stage{ display:none; background:#fff; border:2px solid var(--border); border-radius:22px; padding:1.25rem; box-shadow:var(--shadow); scroll-margin-top:110px; }
+  .stage.active{ display:block; }
+  .stage-top{ display:flex; gap:1rem; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; margin-bottom:1rem; }
+  .title-wrap{ display:flex; gap:.75rem; align-items:center; }
+  .stage-icon{ width:58px; height:58px; border-radius:50%; background:var(--orange-soft); border:2px solid var(--orange); display:flex; align-items:center; justify-content:center; font-size:1.8rem; flex-shrink:0; }
+  .stage h2{ color:var(--teal-dark); font-size:1.42rem; line-height:1.2; }
+  .subtitle{ color:#555; margin-top:.25rem; }
+  .tag-row{ display:flex; gap:.4rem; flex-wrap:wrap; }
+  .tag{ border:1.5px solid var(--border); background:#fffaf6; color:#555; border-radius:999px; padding:.2rem .55rem; font-size:.76rem; font-weight:700; }
+
+  .split-lab{ display:grid; grid-template-columns:minmax(310px,.92fr) minmax(360px,1.08fr); gap:1rem; align-items:stretch; }
+  .machine-panel,.arena-panel{ position:relative; overflow:hidden; background:linear-gradient(180deg,#f7fcfd,#fffaf6); border:2px solid #b8dfe8; border-radius:22px; padding:1rem; min-height:560px; }
+  .machine-panel::before,.arena-panel::before{ content:""; position:absolute; inset:auto 0 0 0; height:72px; background:#d8d0c8; border-top:4px solid #9b8e83; opacity:.6; }
+  .wire{ position:absolute; height:9px; border-radius:999px; background:#7b5ea7; opacity:.18; transform:rotate(var(--r)); width:var(--w); left:var(--l); top:var(--t); }
+  .warning-tape{ position:absolute; right:-36px; top:32px; transform:rotate(24deg); background:repeating-linear-gradient(45deg,#ffc857 0 12px,#1a1a1a 12px 20px); height:28px; width:180px; opacity:.18; }
+
+  .labbot-zone{ position:relative; z-index:2; display:flex; gap:.8rem; align-items:center; margin-bottom:.9rem; }
+  .labbot{ position:relative; width:104px; height:122px; flex-shrink:0; }
+  .labbot.bop{ animation:bop .48s ease-in-out 2; }
+  .bot-head{ position:absolute; left:15px; top:5px; width:74px; height:58px; border:4px solid var(--teal-dark); border-radius:20px; background:linear-gradient(160deg,#d7eef4,#fff); box-shadow:0 7px 0 rgba(0,0,0,.07); }
+  .bot-head::before,.bot-head::after{ content:""; position:absolute; top:11px; width:29px; height:9px; border-radius:999px; background:#1a1a1a; z-index:4; }
+  .bot-head::before{ left:7px; transform:rotate(-14deg); }
+  .bot-head::after{ right:7px; transform:rotate(14deg); }
+  .antenna{ position:absolute; left:49px; top:-3px; width:7px; height:15px; background:var(--teal-dark); border-radius:999px; }
+  .antenna::before{ content:""; position:absolute; left:-5px; top:-11px; width:18px; height:18px; border-radius:50%; background:var(--orange); border:3px solid #fff; }
+  .eye{ position:absolute; top:28px; width:10px; height:10px; border-radius:50%; background:var(--ink); z-index:2; }
+  .eye.left{ left:20px; } .eye.right{ right:20px; }
+  .mouth{ position:absolute; left:28px; top:44px; width:22px; height:6px; border-radius:0 0 999px 999px; background:var(--orange); }
+  .bot-body{ position:absolute; left:26px; top:64px; width:52px; height:49px; border:4px solid var(--teal-dark); border-radius:15px; background:#fff3e8; }
+  .bot-body::before{ content:"F"; position:absolute; left:50%; top:9px; transform:translateX(-50%); color:var(--orange-dark); font-weight:700; font-size:1.2rem; }
+  .bot-arm{ position:absolute; top:77px; width:26px; height:9px; background:var(--teal-dark); border-radius:999px; }
+  .bot-arm.left{ left:6px; transform:rotate(-23deg); } .bot-arm.right{ right:6px; transform:rotate(23deg); }
+  .bot-foot{ position:absolute; bottom:0; width:30px; height:11px; border-radius:999px; background:#4e5960; }
+  .bot-foot.left{ left:20px; } .bot-foot.right{ right:20px; }
+  @keyframes bop{ 0%,100%{ transform:translateY(0) rotate(0); } 35%{ transform:translateY(-7px) rotate(-2deg); } 70%{ transform:translateY(-3px) rotate(2deg); } }
+  .speech{ position:relative; background:#fff; border:2px solid var(--teal); border-radius:18px; padding:.8rem .9rem; box-shadow:0 5px 15px rgba(0,114,145,.1); flex:1; min-height:92px; }
+  .speech::before{ content:""; position:absolute; left:-13px; top:30px; width:22px; height:22px; background:#fff; border-left:2px solid var(--teal); border-bottom:2px solid var(--teal); transform:rotate(45deg); }
+  .speech strong{ display:block; color:var(--teal-dark); margin-bottom:.2rem; }
+
+  .mission-card{ position:relative; z-index:2; background:#fff; border:2px solid var(--orange); border-radius:18px; padding:1rem; box-shadow:0 6px 0 rgba(239,119,36,.12); margin-bottom:.9rem; }
+  .mission-kicker{ font-size:.75rem; text-transform:uppercase; letter-spacing:.1em; color:var(--orange-dark); font-weight:700; margin-bottom:.35rem; }
+  .mission-title{ font-weight:700; font-size:1.2rem; color:var(--teal-dark); margin-bottom:.25rem; }
+  .mission-prompt{ color:#444; }
+  .mission-goal{ display:inline-flex; align-items:center; gap:.35rem; background:var(--teal-soft); color:var(--teal-dark); border:1.5px solid #b8dfe8; border-radius:999px; padding:.3rem .7rem; font-weight:700; margin-top:.55rem; }
+
+  .slot-grid{ position:relative; z-index:3; display:grid; grid-template-columns:1fr 1fr; gap:.65rem; margin:.9rem 0; }
+  .machine-slot{ min-height:88px; border:3px dashed #cfc7bf; border-radius:18px; background:#fff; padding:.65rem; display:flex; flex-direction:column; justify-content:center; gap:.25rem; transition:.16s ease; }
+  .machine-slot.filled{ border-style:solid; border-color:var(--teal); background:var(--teal-soft); }
+  .machine-slot.bad{ border-color:var(--red); background:var(--red-soft); animation:wobble .35s ease-in-out 2; }
+  .machine-slot.next{ border-color:var(--orange); background:#fffaf6; box-shadow:0 0 0 3px rgba(239,119,36,.12); }
+  .slot-label{ font-size:.76rem; text-transform:uppercase; letter-spacing:.09em; font-weight:700; color:#777; }
+  .slot-value{ font-size:1rem; font-weight:700; color:var(--teal-dark); }
+  .slot-value.empty{ color:#777; font-weight:400; }
+  @keyframes wobble{ 0%,100%{ transform:translateX(0); } 25%{ transform:translateX(-4px); } 75%{ transform:translateX(4px); } }
+
+  .part-bank{ position:relative; z-index:3; background:#fff; border:2px solid #eadfd4; border-radius:18px; padding:.85rem; margin-top:.8rem; }
+  .part-bank h3{ color:var(--teal-dark); font-size:1rem; margin-bottom:.35rem; }
+  .part-hint{ color:#555; font-size:.85rem; margin-bottom:.6rem; }
+  .part-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.55rem; }
+  .part-card{ border:2px solid var(--border); background:#fff; border-radius:15px; padding:.7rem; min-height:74px; cursor:grab; display:flex; align-items:center; gap:.55rem; text-align:left; color:#1a1a1a; font-weight:700; transition:.12s ease; }
+  .part-card:hover{ border-color:var(--teal); background:var(--teal-soft); transform:translateY(-1px); }
+  .part-card.selected{ border-color:var(--green); background:var(--green-soft); color:#1c6d3d; }
+  .part-card.disabled{ opacity:.38; pointer-events:none; }
+  .part-card:active{ cursor:grabbing; }
+  .part-icon{ font-size:1.65rem; width:34px; text-align:center; flex-shrink:0; }
+  .part-name{ display:block; line-height:1.15; }
+  .part-sub{ display:block; font-size:.72rem; color:#666; font-weight:700; margin-top:.15rem; }
+
+  .button-row{ position:relative; z-index:3; display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-top:.9rem; }
+  .btn{ border:none; background:var(--orange); color:#fff; border-radius:12px; padding:.75rem 1rem; font-size:.95rem; font-weight:700; cursor:pointer; min-height:46px; box-shadow:0 3px 0 rgba(0,0,0,.13); }
+  .btn:hover{ background:var(--orange-dark); transform:translateY(-1px); }
+  .btn.secondary{ background:var(--teal); } .btn.secondary:hover{ background:var(--teal-dark); }
+  .btn.good{ background:var(--green); } .btn.bad{ background:var(--red); }
+  .btn.ghost{ background:#fff; color:var(--teal); border:2px solid var(--teal); box-shadow:none; }
+  .btn.small{ min-height:38px; padding:.55rem .75rem; font-size:.86rem; }
+  .btn:disabled{ background:#cfc7bf; color:#777; cursor:not-allowed; transform:none; box-shadow:none; border:none; }
+
+  .message{ display:none; position:relative; z-index:4; margin-top:.8rem; border:1.5px solid #f6c893; background:#fff7eb; color:#7a4a00; border-radius:12px; padding:.7rem .85rem; font-weight:700; }
+  .message.show{ display:block; }
+  .message.good{ border-color:var(--green); background:#f2fff7; color:#1c6d3d; }
+  .message.bad{ border-color:var(--red); background:#fff1f1; color:#842121; }
+
+  .arena-title{ position:relative; z-index:2; display:flex; align-items:center; justify-content:space-between; gap:.7rem; flex-wrap:wrap; margin-bottom:.65rem; }
+  .arena-title h3{ color:var(--teal-dark); font-size:1.05rem; }
+  .meter-badge{ display:inline-flex; align-items:center; gap:.35rem; background:#fff; border:2px solid var(--purple); color:#4a3675; border-radius:999px; padding:.3rem .65rem; font-weight:700; font-size:.8rem; }
+  .arena-stage{ position:relative; z-index:2; height:300px; border:2px solid #c8dce2; border-radius:20px; background:linear-gradient(180deg,#eaf8fb 0%,#f8fdff 63%,#d4c8bb 64%,#d4c8bb 100%); overflow:hidden; }
+  .track-line{ position:absolute; left:25px; right:25px; bottom:72px; height:6px; border-radius:999px; background:repeating-linear-gradient(90deg,#79858d 0 14px,#fff 14px 20px); opacity:.65; }
+  .ruler{ position:absolute; left:24px; right:24px; bottom:28px; height:28px; border-top:3px solid #7d746e; display:grid; grid-template-columns:repeat(6,1fr); color:#665b55; font-weight:700; font-size:.72rem; }
+  .ruler span{ border-left:2px solid #7d746e; padding-top:.32rem; text-align:left; }
+  .ruler span:last-child{ border-right:2px solid #7d746e; }
+  .motion-object{ position:absolute; left:var(--start-left,42px); bottom:var(--start-bottom,90px); width:58px; height:58px; border-radius:18px; background:#fff; border:3px solid var(--teal); display:flex; align-items:center; justify-content:center; font-size:2rem; box-shadow:0 7px 0 rgba(0,0,0,.08); transform:translate(0,0) rotate(0deg); transition:transform 1.05s cubic-bezier(.18,.76,.25,1); }
+  .motion-object.launched{ transform:translate(var(--tx),var(--ty)) rotate(var(--rot)); }
+  .trail{ position:absolute; left:var(--trail-left,68px); bottom:var(--trail-bottom,118px); height:8px; width:0; border-radius:999px; background:linear-gradient(90deg,rgba(239,119,36,.1),rgba(239,119,36,.75)); opacity:0; transition:width 1s ease, opacity .3s ease; }
+  .trail.show{ width:var(--trailw); opacity:1; }
+  .arrow-float{ position:absolute; z-index:4; left:var(--arrow-left,62px); bottom:var(--arrow-bottom,162px); font-size:2.1rem; color:var(--orange); font-weight:700; text-shadow:2px 2px 0 #fff; opacity:0; transform:translateY(10px); transition:.4s ease; }
+  .arrow-float.show{ opacity:1; transform:translateY(0); }
+  .motion-readout{ position:relative; z-index:2; display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; margin-top:.8rem; }
+  .readout-card{ background:#fff; border:1.5px solid #b8dfe8; border-radius:16px; padding:.75rem; min-height:82px; }
+  .readout-card b{ display:block; color:var(--teal-dark); font-size:1.12rem; margin-bottom:.15rem; }
+  .readout-card span{ color:#555; font-size:.82rem; font-weight:700; }
+  .force-meter{ position:relative; z-index:2; background:#fff; border:2px solid var(--orange); border-radius:16px; padding:.75rem; margin-top:.75rem; }
+  .force-meter-top{ display:flex; justify-content:space-between; align-items:center; gap:.5rem; font-weight:700; color:var(--orange-dark); }
+  .meter-track2{ height:18px; background:#eadfd4; border-radius:999px; overflow:hidden; margin-top:.5rem; }
+  .meter-fill2{ height:100%; width:var(--w,0%); background:linear-gradient(90deg,#ffc857,#ef7724,#c43b3b); border-radius:999px; transition:width .35s ease; }
+
+  .answer-zone{ position:relative; z-index:3; margin-top:.9rem; background:#fff; border:2px solid #eadfd4; border-radius:18px; padding:.85rem; }
+  .answer-zone h3{ color:var(--teal-dark); font-size:1rem; margin-bottom:.35rem; }
+  .motion-buttons{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.5rem; margin-top:.65rem; }
+  .motion-btn{ border:2px solid var(--border); background:#fff; border-radius:14px; padding:.7rem; min-height:58px; font-weight:700; color:#1a1a1a; cursor:pointer; text-align:left; }
+  .motion-btn:hover{ border-color:var(--teal); background:var(--teal-soft); }
+  .motion-btn.selected{ border-color:var(--green); background:var(--green-soft); color:#1c6d3d; }
+  .motion-btn.wrong{ border-color:var(--red); background:var(--red-soft); color:#842121; }
+  .final-writing{ margin-top:.75rem; display:none; }
+  .final-writing.show{ display:block; }
+  textarea{ width:100%; min-height:92px; resize:vertical; border:1.7px solid #d8d0c8; border-radius:12px; padding:.7rem; font-size:.95rem; line-height:1.45; background:#fff; color:#1a1a1a; }
+  textarea:focus{ border-color:var(--orange); box-shadow:0 0 0 3px rgba(239,119,36,.17); outline:none; }
+  .starter-row{ display:flex; gap:.4rem; flex-wrap:wrap; margin:.45rem 0 .55rem; }
+  .starter-chip{ border:1.5px solid var(--purple); background:#fff; color:var(--purple); border-radius:999px; padding:.3rem .6rem; font-size:.8rem; font-weight:700; cursor:pointer; }
+  .starter-chip:hover{ background:var(--purple-soft); }
+
+  .boss-banner{ position:relative; z-index:2; border:3px solid var(--purple); background:linear-gradient(135deg,#fff,#efe9f6); border-radius:20px; padding:1rem; margin-bottom:.9rem; box-shadow:0 8px 0 rgba(123,94,167,.12); }
+  .boss-banner h3{ color:#4a3675; font-size:1.2rem; }
+  .flying-brow{ position:absolute; right:26px; top:18px; width:70px; height:18px; border-radius:999px; background:#1a1a1a; transform:rotate(-13deg); box-shadow:0 28px 0 #1a1a1a; animation:floatBrows 1.5s ease-in-out infinite; }
+  @keyframes floatBrows{ 0%,100%{ transform:translateY(0) rotate(-13deg); } 50%{ transform:translateY(-8px) rotate(8deg); } }
+
+  .report-card{ border:2px solid var(--teal); background:#f7fcfd; border-radius:18px; padding:1rem; margin-top:1rem; }
+  .report-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:.75rem; margin:.8rem 0; }
+  .report-stat{ background:#fff; border:1.5px solid #b8dfe8; border-radius:14px; padding:.75rem; }
+  .report-stat b{ display:block; color:var(--teal-dark); font-size:1.25rem; }
+  .report-stat span{ color:#555; font-size:.82rem; font-weight:700; }
+
+  .custom-initials{ display:flex; gap:.45rem; margin-top:.65rem; align-items:center; flex-wrap:wrap; }
+  .custom-initials input{ min-height:42px; border:1.7px solid #d8d0c8; border-radius:12px; padding:.55rem .7rem; font-size:.92rem; max-width:150px; background:#fff; color:#1a1a1a; }
+  .part-bank.locked{ opacity:.62; background:#fbf7f2; }
+  .part-bank.active-bank{ border-color:var(--orange); box-shadow:0 0 0 3px rgba(239,119,36,.08); }
+  .part-card[disabled]{ opacity:.42; cursor:not-allowed; transform:none; }
+  .part-card[disabled]:hover{ border-color:var(--border); background:#fff; transform:none; }
+  .slot-status{ display:inline-flex; margin-top:.2rem; width:max-content; border-radius:999px; padding:.12rem .45rem; font-size:.72rem; font-weight:700; background:#fff; color:#777; border:1px solid #e5d8cc; }
+  .machine-slot.next .slot-status{ background:var(--orange-soft); color:var(--orange-dark); border-color:#f6c893; }
+  .machine-slot.filled .slot-status{ background:#fff; color:var(--teal-dark); border-color:#b8dfe8; }
+  .tag-list{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.5rem; }
+  .report-tag{ display:inline-flex; align-items:center; border:1.5px solid #b8dfe8; background:#fff; color:var(--teal-dark); border-radius:999px; padding:.28rem .6rem; font-weight:700; font-size:.82rem; }
+  .report-stat.wide{ grid-column:span 2; }
+
+  .report-table{ width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:14px; margin-top:.75rem; border:1.5px solid #b8dfe8; background:#fff; }
+  .report-table th,.report-table td{ text-align:left; padding:.6rem; border-bottom:1px solid #e0eef2; vertical-align:top; font-size:.88rem; }
+  .report-table th{ background:var(--teal-soft); color:var(--teal-dark); }
+  .report-table tr:last-child td{ border-bottom:none; }
+  .evidence-line{ margin-top:.8rem; background:var(--orange-soft); border:1.5px solid #fcd8bc; color:#7a4a00; border-radius:12px; padding:.75rem; font-weight:700; }
+  .footer-note{ text-align:center; color:#777; font-size:.8rem; margin-top:2rem; }
+
+  @media(max-width:960px){
+    .split-lab{ grid-template-columns:1fr; }
+    .machine-panel,.arena-panel{ min-height:auto; }
+    .arena-stage{ height:280px; }
+  }
+  @media(max-width:640px){
+    .main{ width:min(100% - .8rem,1160px); }
+    .stage{ padding:.9rem; }
+    .slot-grid,.part-grid,.motion-readout{ grid-template-columns:1fr; }
+    .mini-mission-row{ grid-template-columns:repeat(4,1fr); }
+    .button-row .btn{ width:100%; }
+    .speech::before{ display:none; }
+    .labbot{ width:88px; transform:scale(.85); transform-origin:left center; }
+    .arena-stage{ height:250px; }
+    .flying-brow{ position:static; display:block; margin:.85rem auto 0; }
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Back</a>
+  <div class="header-inner">
+    <p class="week-label">Base 6 · Forces, Motion and Energy</p>
+    <h1>Force Launch Lab</h1>
+    <p class="header-sub">Help Jay’s Lab Bot complete force missions. Choose the object, direction, strength and force type, then watch how motion changes.</p>
+    <div class="lab-lights" aria-hidden="true"><span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span><span class="light"></span></div>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path></svg>
+</header>
+
+<main class="main">
+  <div class="top-strip" id="topStrip">
+    <section class="intro-card">
+      <p class="eyebrow">Learning objective</p>
+      <h2>I can explore how the motion of objects can be affected by applying specific forces.</h2>
+      <p class="muted">Drag or tap machine parts. Jay’s Lab Bot will give tiny hints if the setup does not match the mission. The final boss needs one written explanation.</p>
+    </section>
+    <section class="student-card">
+      <p class="eyebrow">Student</p>
+      <h2>Choose initials</h2>
+      <p class="small">This can auto-fill from the Base 6 profile if one is already saved.</p>
+      <div class="initial-row" id="initialRow" aria-label="Choose initials"></div>
+      <div class="custom-initials"><input id="otherInitials" maxlength="4" placeholder="Other initials" aria-label="Other initials"><button class="initial-btn" type="button" onclick="selectOtherInitials()">Save</button></div>
+    </section>
+  </div>
+
+  <section class="progress-shell" aria-label="Mission progress">
+    <div class="progress-top">
+      <div class="progress-title" id="progressTitle">Ready to begin</div>
+      <div class="progress-count" id="progressCount">0/8 complete</div>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="barFill" style="--w:0%"></div></div>
+    <div class="mini-mission-row" id="miniMissionRow"></div>
+  </section>
+
+  <section class="stage active" id="stage-start">
+    <div class="stage-top">
+      <div class="title-wrap"><div class="stage-icon">🚀</div><div><h2>Jay’s Lab Bot needs force data.</h2><p class="subtitle">Complete 8 missions. Rescue the eyebrows. Learn actual science. Big day.</p></div></div>
+      <div class="tag-row"><span class="tag">push</span><span class="tag">pull</span><span class="tag">gravity</span><span class="tag">friction</span></div>
+    </div>
+    <div class="split-lab">
+      <div class="machine-panel">
+        <span class="wire" style="--r:18deg; --w:190px; --l:20px; --t:390px"></span><span class="wire" style="--r:-14deg; --w:240px; --l:180px; --t:310px"></span><span class="warning-tape"></span>
+        <div class="labbot-zone"><div class="labbot bop" aria-hidden="true"><div class="antenna"></div><div class="bot-head"><span class="eye left"></span><span class="eye right"></span><span class="mouth"></span></div><span class="bot-arm left"></span><span class="bot-arm right"></span><div class="bot-body"></div><span class="bot-foot left"></span><span class="bot-foot right"></span></div><div class="speech"><strong>Jay’s Lab Bot:</strong><p>My Force-O-Meter is ready. My eyebrows are secure. For now.</p></div></div>
+        <div class="mission-card"><p class="mission-kicker">How it works</p><div class="mission-title">Build the force setup</div><p class="mission-prompt">Each mission needs four parts: object, direction, strength and force type. Drag or tap the right parts into the launch machine.</p><span class="mission-goal">👀 Watch how the motion changes</span></div>
+      </div>
+      <div class="arena-panel">
+        <span class="warning-tape"></span>
+        <div class="arena-title"><h3>Motion arena preview</h3><span class="meter-badge">Force-O-Meter: sleeping</span></div>
+        <div class="arena-stage"><div class="track-line"></div><div class="trail"></div><div class="motion-object">🏎️</div><div class="arrow-float">→</div><div class="ruler"><span>0</span><span>1m</span><span>2m</span><span>3m</span><span>4m</span><span>5m</span></div></div>
+        <div class="motion-readout"><div class="readout-card"><b>Distance</b><span>Ready to test</span></div><div class="readout-card"><b>Speed</b><span>Ready to test</span></div><div class="readout-card"><b>Direction</b><span>Ready to test</span></div></div>
+        <div class="button-row"><button class="btn secondary" onclick="startActivity()">Start Force Launch Lab</button></div>
+        <div class="message" id="startMsg"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-lab">
+    <div class="stage-top">
+      <div class="title-wrap"><div class="stage-icon" id="stageIcon">🧪</div><div><h2 id="stageHeading">Mission</h2><p class="subtitle" id="stageSub">Build the correct setup.</p></div></div>
+      <div class="tag-row"><span class="tag">drag or tap</span><span class="tag">launch</span><span class="tag">observe</span></div>
+    </div>
+    <div id="labHost"></div>
+  </section>
+
+  <section class="stage" id="stage-report">
+    <div class="stage-top">
+      <div class="title-wrap"><div class="stage-icon">📄</div><div><h2>Force Launch Lab evidence</h2><p class="subtitle">Mission data and final explanation.</p></div></div>
+      <div class="tag-row"><span class="tag">complete</span><span class="tag">evidence</span></div>
+    </div>
+    <div id="reportHost"></div>
+    <div class="button-row"><button class="btn secondary" onclick="exportPdf()">Export PDF</button><button class="btn" onclick="sendMailto()">Send to Jay</button><button class="btn ghost" onclick="restartLab()">Restart</button></div>
+    <div class="message" id="reportMsg"></div>
+  </section>
+
+  <p class="footer-note">Base 6 · Chilton Bridge School · Force Launch Lab · Jay’s Lab Bot is protecting the eyebrows.</p>
+</main>
+
+<script>
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+const STUDENTS = ['LW','AP','LS','LC','HK','JTK'];
+const MOTION_OPTIONS = [
+  {id:'sped-up', label:'Sped up', icon:'⚡'},
+  {id:'slowed-down', label:'Slowed down', icon:'🐌'},
+  {id:'stopped', label:'Stopped', icon:'🛑'},
+  {id:'changed-direction', label:'Changed direction', icon:'↪️'},
+  {id:'moved-further', label:'Moved further', icon:'📏'}
+];
+const PARTS = {
+  object:[
+    {id:'toy-car', label:'Toy car', icon:'🏎️', sub:'light and wheely'},
+    {id:'skateboard', label:'Skateboard', icon:'🛹', sub:'rolls easily'},
+    {id:'balloon', label:'Balloon', icon:'🎈', sub:'light and floaty'},
+    {id:'metal-ball', label:'Metal ball', icon:'⚙️', sub:'heavy and round'},
+    {id:'eyebrows', label:'Lab Bot eyebrows', icon:'〰️', sub:'boss item', bossOnly:true}
+  ],
+  direction:[
+    {id:'right', label:'Right', icon:'➡️', sub:'move right'},
+    {id:'left', label:'Left', icon:'⬅️', sub:'move left'},
+    {id:'up', label:'Up', icon:'⬆️', sub:'move up'},
+    {id:'down', label:'Down', icon:'⬇️', sub:'move down'}
+  ],
+  strength:[
+    {id:'tiny', label:'Tiny', icon:'🤏', sub:'small force'},
+    {id:'medium', label:'Medium', icon:'✋', sub:'steady force'},
+    {id:'big', label:'Big', icon:'💥', sub:'strong force'}
+  ],
+  force:[
+    {id:'push', label:'Push', icon:'👉', sub:'starts or speeds up'},
+    {id:'pull', label:'Pull', icon:'🪝', sub:'brings back'},
+    {id:'gravity', label:'Gravity', icon:'🌍', sub:'pulls down'},
+    {id:'friction', label:'Friction', icon:'🧱', sub:'slows or stops'}
+  ]
+};
+const SLOT_ORDER = ['object','direction','strength','force'];
+const STRENGTH_VISUAL = {
+  tiny:{force:28, scale:.58, label:'Tiny'},
+  medium:{force:62, scale:1, label:'Medium'},
+  big:{force:94, scale:1.28, label:'Big'}
+};
+const MISSIONS = [
+  {
+    id:'car-start', title:'Start the toy car', icon:'🏎️', boss:false,
+    prompt:'The toy car is still. Make it start moving to the right.', goal:'Start motion',
+    correct:{object:'toy-car', direction:'right', strength:'medium', force:'push'}, accepted:{strength:['medium','big']},
+    motion:['sped-up','moved-further'], primary:'sped-up',
+    result:{distance:'3 metres', speed:'Faster', direction:'Right'},
+    resultByStrength:{medium:{distance:'3 metres', speed:'Faster', direction:'Right'}, big:{distance:'4 metres', speed:'Very fast', direction:'Right'}},
+    arena:{tx:250, ty:0, rot:380, trail:230, arrow:'→', force:62, startLeft:42, startBottom:90},
+    science:'A push can start an object moving. A bigger push usually makes it move faster or further.',
+    hints:{object:'Choose the toy car.', direction:'The mission says right.', strength:'A medium or big force can start it clearly.', force:'A push starts or speeds up motion.'}
+  },
+  {
+    id:'skate-pull', title:'Bring the skateboard back', icon:'🛹', boss:false,
+    prompt:'The skateboard rolled away. Pull it back to the left.', goal:'Change direction',
+    correct:{object:'skateboard', direction:'left', strength:'medium', force:'pull'}, accepted:{strength:['medium','big']},
+    motion:['changed-direction','moved-further'], primary:'changed-direction',
+    result:{distance:'2 metres back', speed:'Steady', direction:'Left'},
+    resultByStrength:{medium:{distance:'2 metres back', speed:'Steady', direction:'Left'}, big:{distance:'3 metres back', speed:'Faster pull', direction:'Left'}},
+    arena:{tx:-170, ty:0, rot:-260, trail:155, arrow:'←', force:58, startLeft:300, startBottom:90},
+    science:'A pull can change where an object moves, especially if the pull is in the opposite direction.',
+    hints:{object:'Choose the skateboard.', direction:'Back means left in this mission.', strength:'A medium pull is enough. A big pull works, but it moves further.', force:'Pull brings something back.'}
+  },
+  {
+    id:'balloon-up', title:'Lift the balloon', icon:'🎈', boss:false,
+    prompt:'The balloon needs a gentle upward force so it rises without zooming away.', goal:'Move upward',
+    correct:{object:'balloon', direction:'up', strength:'tiny', force:'push'},
+    motion:['changed-direction'], primary:'changed-direction',
+    result:{distance:'Up into the air', speed:'Gentle', direction:'Up'},
+    arena:{tx:95, ty:-120, rot:18, trail:110, arrow:'↑', force:28, startLeft:96, startBottom:90},
+    science:'A small push can change the direction of a light object like a balloon.',
+    hints:{object:'Choose the light object.', direction:'The mission says upward.', strength:'Gentle means tiny.', force:'You can push the balloon up.'}
+  },
+  {
+    id:'gravity-ball', title:'Let gravity do the work', icon:'🌍', boss:false,
+    prompt:'The metal ball is on a high shelf. Choose the force that pulls it down.', goal:'Move downward',
+    correct:{object:'metal-ball', direction:'down', strength:'medium', force:'gravity'}, accepted:{strength:['medium','big']},
+    motion:['sped-up','changed-direction'], primary:'changed-direction',
+    result:{distance:'Down to the floor', speed:'Faster as it falls', direction:'Down'},
+    resultByStrength:{medium:{distance:'Down to the floor', speed:'Faster as it falls', direction:'Down'}, big:{distance:'Down quickly', speed:'Very fast fall', direction:'Down'}},
+    arena:{tx:80, ty:95, rot:280, trail:100, arrow:'↓', force:70, startLeft:170, startBottom:175},
+    science:'Gravity pulls objects down towards Earth. Falling objects often speed up as they fall.',
+    hints:{object:'Choose the metal ball.', direction:'Gravity pulls down.', strength:'Gravity should be clear enough to see.', force:'Gravity is the force that pulls objects down.'}
+  },
+  {
+    id:'friction-stop', title:'Stop the runaway toy car', icon:'🛑', boss:false,
+    prompt:'The toy car is rolling right. Use friction against the movement to slow or stop it.', goal:'Slow or stop motion',
+    correct:{object:'toy-car', direction:'left', strength:'big', force:'friction'}, accepted:{strength:['medium','big']},
+    motion:['slowed-down','stopped'], primary:'stopped',
+    result:{distance:'Stopped before 1 metre', speed:'Stopped', direction:'Against the movement'},
+    resultByStrength:{medium:{distance:'About 1.5 metres', speed:'Slower', direction:'Against the movement'}, big:{distance:'Stopped before 1 metre', speed:'Stopped', direction:'Against the movement'}},
+    arena:{tx:70, ty:0, rot:80, trail:65, arrow:'⇠', force:82, startLeft:130, startBottom:90},
+    science:'Friction acts against motion. It can slow an object down or stop it.',
+    hints:{object:'Choose the toy car.', direction:'Use the force against the car’s movement.', strength:'A stronger slowing force works best. Medium slows; big stops.', force:'Friction slows or stops motion.'}
+  },
+  {
+    id:'metal-big-push', title:'Move the heavy metal ball', icon:'⚙️', boss:false,
+    prompt:'The metal ball is heavy. Make it travel further to the right.', goal:'Move further',
+    correct:{object:'metal-ball', direction:'right', strength:'big', force:'push'},
+    motion:['moved-further','sped-up'], primary:'moved-further',
+    result:{distance:'4 metres', speed:'Fast', direction:'Right'},
+    arena:{tx:320, ty:0, rot:620, trail:300, arrow:'→', force:96, startLeft:42, startBottom:90},
+    science:'A heavy object often needs a bigger push to change its motion clearly.',
+    hints:{object:'Choose the heavy metal ball.', direction:'The target is to the right.', strength:'Heavy object: choose big.', force:'A push can move it forwards.'}
+  },
+  {
+    id:'skateboard-slow', title:'Slow the skateboard safely', icon:'🛹', boss:false,
+    prompt:'The skateboard is moving fast. Use friction against its movement so it slows down without launching it.', goal:'Slow down',
+    correct:{object:'skateboard', direction:'left', strength:'medium', force:'friction'}, accepted:{strength:['medium']},
+    motion:['slowed-down'], primary:'slowed-down',
+    result:{distance:'Shorter distance', speed:'Slower', direction:'Against the movement'},
+    arena:{tx:95, ty:0, rot:140, trail:90, arrow:'⇠', force:60, startLeft:160, startBottom:90},
+    science:'Friction from the ground, brakes, or rough surfaces can reduce speed.',
+    hints:{object:'Choose the skateboard.', direction:'Slow it by acting against its movement.', strength:'Medium is controlled. Big might stop it too hard.', force:'Friction reduces motion.'}
+  },
+  {
+    id:'boss-eyebrows', title:'Final boss: Rescue Lab Bot’s eyebrows', icon:'〰️', boss:true,
+    prompt:'Disaster. Lab Bot’s emergency eyebrow claw needs to pull the eyebrows back down before they escape the lab.', goal:'Eyebrow rescue',
+    correct:{object:'eyebrows', direction:'down', strength:'medium', force:'pull'}, accepted:{strength:['medium','big']},
+    motion:['changed-direction','slowed-down'], primary:'changed-direction',
+    result:{distance:'Back to Lab Bot', speed:'Slower and safer', direction:'Down'},
+    resultByStrength:{medium:{distance:'Back to Lab Bot', speed:'Slower and safer', direction:'Down'}, big:{distance:'Snapped back quickly', speed:'Fast then stopped', direction:'Down'}},
+    arena:{tx:65, ty:90, rot:-20, trail:105, arrow:'↓', force:68, startLeft:210, startBottom:170},
+    science:'A pull can change the direction of motion. The eyebrow claw pulls down to bring the eyebrows back.',
+    hints:{object:'Choose the special eyebrow object.', direction:'They are flying up, so bring them down.', strength:'Use a clear but controlled force.', force:'Use Pull: the eyebrow claw pulls them back. Gravity pulls down too, but this rescue tool is a pull.'}
+  }
+];
+let state = {
+  initials:'', started:false, missionIndex:0, slots:{object:null,direction:null,strength:null,force:null},
+  launched:false, selectedMotion:null, completed:[], finalExplanation:'', report:null
+};
+function $(id){ return document.getElementById(id); }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[ch]); }
+function displayPart(type,id,mission=currentMission()){
+  const base=(PARTS[type]||[]).find(x=>x.id===id);
+  if(!base) return {label:'', icon:'', sub:''};
+  const item={...base};
+  if(type==='direction' && mission && mission.correct && mission.correct.force==='friction' && id==='left'){
+    item.label='Against movement'; item.icon='⇠'; item.sub='opposes motion';
+  }
+  if(type==='force' && mission && mission.boss && id==='pull') item.sub='eyebrow claw pulls back';
+  return item;
+}
+function partLabel(type,id,mission=currentMission()){ return displayPart(type,id,mission).label; }
+function partIcon(type,id,mission=currentMission()){ return displayPart(type,id,mission).icon; }
+function partSub(type,id,mission=currentMission()){ return displayPart(type,id,mission).sub; }
+function motionLabel(id){ const m=MOTION_OPTIONS.find(x=>x.id===id); return m ? m.label : id; }
+function currentMission(){ return MISSIONS[state.missionIndex]; }
+function setStage(id){ document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active')); $('stage-'+id).classList.add('active'); setTimeout(()=>$('stage-'+id).scrollIntoView({behavior:'smooth',block:'start'}),40); }
+function initInitials(){
+  const row=$('initialRow'); row.innerHTML='';
+  STUDENTS.forEach(s=>{ const b=document.createElement('button'); b.type='button'; b.className='initial-btn'; b.textContent=s; b.setAttribute('aria-pressed','false'); b.onclick=()=>selectInitials(s); row.appendChild(b); });
+  try{ const p=JSON.parse(localStorage.getItem('base6Profile')||'null'); if(p&&p.initials){ const found=STUDENTS.find(s=>s.toLowerCase()===String(p.initials).toLowerCase()); if(found) selectInitials(found,true); } }catch(e){}
+}
+function selectInitials(initials, quiet){
+  state.initials=initials.toUpperCase();
+  document.querySelectorAll('.initial-btn').forEach(b=>{ const isSel=b.textContent===state.initials; b.classList.toggle('selected', isSel); b.setAttribute('aria-pressed', isSel ? 'true':'false'); });
+  const other=$('otherInitials'); if(other && !STUDENTS.includes(state.initials)) other.value=state.initials;
+  try{ const p=JSON.parse(localStorage.getItem('base6Profile')||'{}'); p.initials=state.initials.toLowerCase(); localStorage.setItem('base6Profile', JSON.stringify(p)); }catch(e){}
+  if(!quiet) showMessage('startMsg','Initials saved. Force-O-Meter recognises the scientist.','good');
+}
+function selectOtherInitials(){ const input=$('otherInitials'); const val=(input?input.value:'').trim().toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,4); if(!val){ showMessage('startMsg','Add initials first.','bad'); return; } selectInitials(val); }
+function showMessage(id,msg,kind){ const el=$(id); if(!el)return; el.innerHTML=msg; el.className='message show '+(kind||''); el.setAttribute('role','status'); el.setAttribute('aria-live','polite'); }
+function hideMessage(id){ const el=$(id); if(el) el.className='message'; }
+function progressPercent(){ return Math.round((state.completed.length / MISSIONS.length) * 100); }
+function updateProgress(){
+  const mission = currentMission() || MISSIONS[MISSIONS.length-1];
+  $('progressTitle').textContent = state.report ? 'Evidence complete' : (!state.started ? 'Ready to begin' : `Mission ${Math.min(state.missionIndex+1, MISSIONS.length)}: ${mission.title}`);
+  $('progressCount').textContent = `${state.completed.length}/${MISSIONS.length} complete`;
+  $('barFill').style.setProperty('--w', progressPercent()+'%');
+  $('miniMissionRow').innerHTML = MISSIONS.map((m,i)=>`<div class="mini-dot ${i<state.completed.length?'done':''} ${state.started && i===state.missionIndex&&!state.report?'active':''}">${i===7?'★':i+1}</div>`).join('');
+}
+function startActivity(){ if(!state.initials){ showMessage('startMsg','Choose initials first so the evidence screen has a name.','bad'); return; } state.started=true; state.missionIndex=0; state.completed=[]; state.report=null; resetSlots(); renderMission(); setStage('lab'); }
+function resetSlots(){ state.slots={object:null,direction:null,strength:null,force:null}; state.launched=false; state.selectedMotion=null; state.finalExplanation=''; }
+function nextNeededSlot(){ return SLOT_ORDER.find(k=>!state.slots[k]) || null; }
+function isCorrectSlot(type,id,mission){ if((mission.accepted && mission.accepted[type] && mission.accepted[type].includes(id))) return true; return mission.correct[type] === id; }
+function slotHtml(type){
+  const labels={object:'Object',direction:'Direction',strength:'Force strength',force:'Force type'};
+  const val=state.slots[type]; const next=nextNeededSlot()===type;
+  const status=val?'Chosen':(next?'Choose this next':'Locked');
+  return `<div class="machine-slot ${val?'filled':''} ${next?'next':''}" id="slot-${type}" data-slot="${type}"><span class="slot-label">${labels[type]}</span><span class="slot-value ${val?'':'empty'}">${val?partIcon(type,val)+' '+escapeHtml(partLabel(type,val)):'Drop or tap '+labels[type].toLowerCase()}</span><span class="slot-status">${status}</span></div>`;
+}
+function strengthSettings(){ return STRENGTH_VISUAL[state.slots.strength || currentMission().correct.strength] || STRENGTH_VISUAL.medium; }
+function frictionScale(strength){ return strength==='big' ? .78 : strength==='medium' ? 1.05 : 1.35; }
+function arenaForMission(m){
+  const a={...m.arena}; const strength=state.slots.strength || m.correct.strength; const force=state.slots.force || m.correct.force; const settings=STRENGTH_VISUAL[strength] || STRENGTH_VISUAL.medium;
+  let scale=settings.scale;
+  if(force==='friction') scale=frictionScale(strength);
+  if(force==='gravity' && strength==='big') scale=1.16;
+  if(force==='gravity' && strength==='tiny') scale=.72;
+  a.tx=Math.round((a.tx||0)*scale); a.ty=Math.round((a.ty||0)*scale); a.trail=Math.max(35, Math.round((a.trail||80)*scale)); a.force=settings.force;
+  return a;
+}
+function resultForMission(m){ const strength=state.slots.strength || m.correct.strength; return (m.resultByStrength && m.resultByStrength[strength]) ? m.resultByStrength[strength] : m.result; }
+function trailLeftFromArena(a){ const start=a.startLeft||42; const tx=a.tx||0; return tx<0 ? start+tx+28 : start+28; }
+function trailBottomFromArena(a){ return (a.startBottom||90)+28; }
+function arrowLeftFromArena(a){ return (a.startLeft||42)+20; }
+function arrowBottomFromArena(a){ return (a.startBottom||90)+72; }
+function partBankHtml(type){
+  const mission=currentMission(); const needed=nextNeededSlot(); const active=needed===type;
+  const labels={object:'1. Choose object',direction:'2. Choose direction',strength:'3. Choose strength',force:'4. Choose force type'};
+  const hints={object:'What is being moved?',direction:mission.correct.force==='friction'?'Friction acts against movement.':'Which way should the force act?',strength:'How strong should the force be?',force:'Which force changes the motion?'};
+  const allowed = PARTS[type].filter(p => !p.bossOnly || mission.boss);
+  const lockText = active ? 'Active choice' : (state.slots[type] ? 'Already chosen. Use Reset setup to change it.' : 'Locked until the earlier part is chosen.');
+  return `<div class="part-bank ${active?'active-bank':'locked'}"><h3>${labels[type]}</h3><p class="part-hint">${hints[type]} <strong>${lockText}</strong></p><div class="part-grid">${allowed.map(p=>{ const chosen=state.slots[type]===p.id; const disabled=!active; const d=displayPart(type,p.id,mission); return `<button type="button" class="part-card ${chosen?'selected':''}" ${disabled?'disabled aria-disabled="true"':'aria-disabled="false"'} aria-pressed="${chosen?'true':'false'}" draggable="${active?'true':'false'}" data-type="${type}" data-id="${p.id}" onclick="choosePart('${type}','${p.id}')"><span class="part-icon">${d.icon}</span><span><span class="part-name">${escapeHtml(d.label)}</span><span class="part-sub">${escapeHtml(d.sub)}</span></span></button>`; }).join('')}</div></div>`;
+}
+function renderMission(){
+  const m=currentMission(); const a=arenaForMission(m);
+  updateProgress();
+  $('stageIcon').textContent = m.boss ? '〰️' : '🧪';
+  $('stageHeading').textContent = m.boss ? 'Final boss mission' : `Mission ${state.missionIndex+1}`;
+  $('stageSub').textContent = m.boss ? 'Rescue the eyebrows with the correct force setup.' : 'Build the correct force setup, then launch.';
+  const bossBlock = m.boss ? `<div class="boss-banner"><h3>Eyebrow emergency</h3><p class="muted">Lab Bot’s emergency eyebrow claw needs to <strong>pull</strong> the eyebrows back down. Gravity is real, but this tool uses a pull.</p><span class="flying-brow" aria-hidden="true"></span></div>` : '';
+  $('labHost').innerHTML = `${bossBlock}<div class="split-lab"><div class="machine-panel"><span class="wire" style="--r:18deg; --w:190px; --l:20px; --t:430px"></span><span class="wire" style="--r:-14deg; --w:240px; --l:190px; --t:330px"></span><span class="warning-tape"></span><div class="labbot-zone"><div class="labbot" id="labBot" aria-hidden="true"><div class="antenna"></div><div class="bot-head"><span class="eye left"></span><span class="eye right"></span><span class="mouth"></span></div><span class="bot-arm left"></span><span class="bot-arm right"></span><div class="bot-body"></div><span class="bot-foot left"></span><span class="bot-foot right"></span></div><div class="speech"><strong>Jay’s Lab Bot:</strong><p id="botSpeech">${m.boss?'The eyebrow claw is ready. Use a pull to bring them down.':'Read the mission, build the machine in order, then launch.'}</p></div></div><div class="mission-card"><p class="mission-kicker">${m.boss?'Final boss':'Mission '+(state.missionIndex+1)+' of '+MISSIONS.length}</p><div class="mission-title">${m.icon} ${escapeHtml(m.title)}</div><p class="mission-prompt">${escapeHtml(m.prompt)}</p><span class="mission-goal">🎯 ${escapeHtml(m.goal)}</span></div><div class="slot-grid">${SLOT_ORDER.map(slotHtml).join('')}</div><div class="button-row"><button class="btn secondary" onclick="checkAndLaunch()">Launch test</button><button class="btn ghost" onclick="clearMachine()">Reset setup</button></div><div class="message" id="hintMsg" aria-live="polite"></div>${SLOT_ORDER.map(partBankHtml).join('')}</div><div class="arena-panel"><span class="warning-tape"></span><div class="arena-title"><h3>Motion arena</h3><span class="meter-badge" id="meterBadge">Force-O-Meter: ready</span></div><div class="arena-stage"><div class="track-line"></div><div class="trail" id="trail" style="--trail-left:${trailLeftFromArena(a)}px;--trail-bottom:${trailBottomFromArena(a)}px"></div><div class="motion-object" id="motionObject" style="--start-left:${a.startLeft||42}px;--start-bottom:${a.startBottom||90}px">${partIcon('object', state.slots.object || m.correct.object)}</div><div class="arrow-float" id="arrowFloat" style="--arrow-left:${arrowLeftFromArena(a)}px;--arrow-bottom:${arrowBottomFromArena(a)}px">${a.arrow}</div><div class="ruler"><span>0</span><span>1m</span><span>2m</span><span>3m</span><span>4m</span><span>5m</span></div></div><div class="force-meter"><div class="force-meter-top"><span>Force-O-Meter</span><span id="forceMeterLabel">Waiting</span></div><div class="meter-track2"><div class="meter-fill2" id="forceMeterFill" style="--w:0%"></div></div></div><div class="motion-readout" id="readout"><div class="readout-card"><b>Distance</b><span>Not launched</span></div><div class="readout-card"><b>Speed</b><span>Not launched</span></div><div class="readout-card"><b>Direction</b><span>Not launched</span></div></div><div id="answerHost"></div></div></div>`;
+  wireDragAndDrop();
+}
+function wireDragAndDrop(){
+  document.querySelectorAll('.part-card').forEach(card=>{
+    if(card.disabled) return;
+    card.addEventListener('dragstart', e=>{ e.dataTransfer.setData('application/json', JSON.stringify({type:card.dataset.type,id:card.dataset.id})); });
+  });
+  document.querySelectorAll('.machine-slot').forEach(slot=>{
+    slot.addEventListener('dragover', e=>{ if(slot.dataset.slot===nextNeededSlot()){ e.preventDefault(); slot.classList.add('next'); } });
+    slot.addEventListener('dragleave', ()=>{ renderSlotClasses(); });
+    slot.addEventListener('drop', e=>{ e.preventDefault(); try{ const data=JSON.parse(e.dataTransfer.getData('application/json')); if(slot.dataset.slot!==nextNeededSlot()){ showMessage('hintMsg','Build in order: object, direction, strength, then force type.','bad'); renderSlotClasses(); return; } if(data.type===slot.dataset.slot) choosePart(data.type,data.id); else showMessage('hintMsg','That part belongs in the '+data.type+' slot. Try the matching slot.','bad'); }catch(err){} });
+  });
+}
+function renderSlotClasses(){ SLOT_ORDER.forEach(t=>{ const slot=$('slot-'+t); if(slot) slot.classList.toggle('next', nextNeededSlot()===t); }); }
+function choosePart(type,id){
+  if(type!==nextNeededSlot()){ showMessage('hintMsg','Build in order: object → direction → strength → force type. Use Reset setup to change earlier choices.','bad'); wobbleSlot(nextNeededSlot() || type); return; }
+  state.slots[type]=id; state.launched=false; state.selectedMotion=null; hideMessage('hintMsg'); renderMission();
+}
+function clearMachine(){ resetSlots(); renderMission(); }
+function checkAndLaunch(){
+  const m=currentMission();
+  const missing=SLOT_ORDER.find(t=>!state.slots[t]);
+  if(missing){ showMessage('hintMsg',`Add the ${missing} part before launching.`, 'bad'); wobbleSlot(missing); return; }
+  const wrong=SLOT_ORDER.filter(t=>!isCorrectSlot(t,state.slots[t],m));
+  if(wrong.length){ const first=wrong[0]; showMessage('hintMsg',`<strong>Tiny clue:</strong> ${escapeHtml(m.hints[first])}<br><span>Science clue: ${escapeHtml(m.science)}</span>`, 'bad'); wrong.forEach(wobbleSlot); bopBot(); return; }
+  launchMotion();
+}
+function wobbleSlot(type){ const el=$('slot-'+type); if(!el)return; el.classList.remove('bad'); void el.offsetWidth; el.classList.add('bad'); }
+function bopBot(){ const bot=$('labBot'); if(!bot)return; bot.classList.remove('bop'); void bot.offsetWidth; bot.classList.add('bop'); }
+function launchMotion(){
+  const m=currentMission(); const a=arenaForMission(m); const result=resultForMission(m);
+  state.launched=true;
+  $('botSpeech').innerHTML = m.boss ? 'Eyebrow trajectory corrected. Science has saved my face.' : 'Launch successful. Watch the motion, then tap what changed.';
+  bopBot();
+  const obj=$('motionObject'); const trail=$('trail'); const arrow=$('arrowFloat');
+  obj.textContent=partIcon('object', state.slots.object, m);
+  obj.classList.remove('launched'); trail.classList.remove('show'); arrow.classList.remove('show');
+  obj.style.setProperty('--start-left',(a.startLeft||42)+'px'); obj.style.setProperty('--start-bottom',(a.startBottom||90)+'px');
+  trail.style.setProperty('--trail-left',trailLeftFromArena(a)+'px'); trail.style.setProperty('--trail-bottom',trailBottomFromArena(a)+'px');
+  arrow.style.setProperty('--arrow-left',arrowLeftFromArena(a)+'px'); arrow.style.setProperty('--arrow-bottom',arrowBottomFromArena(a)+'px'); arrow.textContent=a.arrow;
+  obj.style.setProperty('--tx','0px'); obj.style.setProperty('--ty','0px'); obj.style.setProperty('--rot','0deg'); trail.style.setProperty('--trailw','0px');
+  setTimeout(()=>{
+    obj.style.setProperty('--tx', a.tx+'px'); obj.style.setProperty('--ty', a.ty+'px'); obj.style.setProperty('--rot', a.rot+'deg'); trail.style.setProperty('--trailw', a.trail+'px');
+    obj.classList.add('launched'); trail.classList.add('show'); arrow.classList.add('show');
+  },70);
+  $('meterBadge').textContent = 'Force-O-Meter: '+partLabel('strength',state.slots.strength,m);
+  $('forceMeterLabel').textContent = partLabel('strength',state.slots.strength,m)+' force';
+  $('forceMeterFill').style.setProperty('--w',a.force+'%');
+  $('readout').innerHTML = `<div class="readout-card"><b>${escapeHtml(result.distance)}</b><span>Distance travelled</span></div><div class="readout-card"><b>${escapeHtml(result.speed)}</b><span>Speed change</span></div><div class="readout-card"><b>${escapeHtml(result.direction)}</b><span>Direction</span></div>`;
+  renderAnswerZone();
+}
+function renderAnswerZone(){
+  const m=currentMission();
+  const finalBlock = m.boss ? `<div class="final-writing show"><label for="finalExplain"><strong>Final explanation</strong></label><div class="starter-row"><button class="starter-chip" type="button" onclick="addStarter('The object’s motion changed because ')">The object’s motion changed because...</button><button class="starter-chip" type="button" onclick="addStarter('The force changed the direction by ')">The force changed the direction by...</button><button class="starter-chip" type="button" onclick="addStarter('I know this because ')">I know this because...</button></div><textarea id="finalExplain" placeholder="The object’s motion changed because..."></textarea></div>` : '';
+  $('answerHost').innerHTML = `<div class="answer-zone"><h3>What changed after the force was applied?</h3><p class="muted">Tap one motion change you noticed. The main change was: <strong>${escapeHtml(motionLabel(m.primary))}</strong>.</p><div class="motion-buttons">${MOTION_OPTIONS.map(opt=>`<button class="motion-btn" id="motion-${opt.id}" aria-pressed="false" onclick="chooseMotion('${opt.id}')">${opt.icon} ${opt.label}</button>`).join('')}</div>${finalBlock}<div class="button-row"><button class="btn good" onclick="completeMission()">Complete mission</button></div><div class="message" id="answerMsg" aria-live="polite"></div></div>`;
+}
+function chooseMotion(id){ state.selectedMotion=id; document.querySelectorAll('.motion-btn').forEach(btn=>{ btn.classList.remove('selected','wrong'); btn.setAttribute('aria-pressed','false'); }); const btn=$('motion-'+id); if(btn){ btn.classList.add('selected'); btn.setAttribute('aria-pressed','true'); } hideMessage('answerMsg'); }
+function addStarter(text){ const ta=$('finalExplain'); if(!ta)return; if(!ta.value.trim()) ta.value=text; else ta.value += (ta.value.endsWith(' ')?'':' ') + text; ta.focus(); }
+function completeMission(){
+  const m=currentMission();
+  if(!state.launched){ showMessage('answerMsg','Launch the test first, then choose what changed.','bad'); return; }
+  if(!state.selectedMotion){ showMessage('answerMsg','Tap the motion change first.','bad'); return; }
+  if(!m.motion.includes(state.selectedMotion)){
+    const btn=$('motion-'+state.selectedMotion); if(btn) btn.classList.add('wrong');
+    showMessage('answerMsg',`Check the result again. Helpful clue: ${escapeHtml(m.science)}`,'bad');
+    return;
+  }
+  let explanation='';
+  if(m.boss){ const ta=$('finalExplain'); explanation=ta ? ta.value.trim() : ''; if(explanation.length<18){ showMessage('answerMsg','Add a short final explanation. Use a starter if that helps.','bad'); return; } state.finalExplanation=explanation; }
+  const selectedLabel=motionLabel(state.selectedMotion); const mainLabel=motionLabel(m.primary);
+  const record = {mission:m.title, force:partLabel('force',state.slots.force,m), strength:partLabel('strength',state.slots.strength,m), direction:partLabel('direction',state.slots.direction,m), object:partLabel('object',state.slots.object,m), motion:selectedLabel, primary:mainLabel, science:m.science, explanation};
+  state.completed.push(record);
+  const mainNote = state.selectedMotion===m.primary ? `Correct — the main change was ${escapeHtml(mainLabel.toLowerCase())}.` : `Correct — that is one motion change. The main change was ${escapeHtml(mainLabel.toLowerCase())}.`;
+  showMessage('answerMsg',`${mainNote} Force data saved.`, 'good');
+  setTimeout(()=>{ if(state.completed.length>=MISSIONS.length){ buildReport(); } else { state.missionIndex++; resetSlots(); renderMission(); } },1300);
+}
+function buildReport(){
+  const forcesUsed=[...new Set(state.completed.map(r=>r.force))];
+  const motionChanges=[...new Set(state.completed.map(r=>r.motion))];
+  state.report={
+    initials:state.initials||'Not selected', date:new Date().toLocaleDateString('en-GB'), completed:state.completed.length+'/'+MISSIONS.length,
+    forcesUsed, motionChanges, finalExplanation:state.finalExplanation,
+    evidence:'Evidence of learning: the learner explored how push, pull, gravity and friction can affect the motion of objects. They selected specific forces, observed distance/speed/direction changes, identified the motion change, and wrote a final explanation.'
+  };
+  try{ localStorage.setItem('forceLaunchLabReport', JSON.stringify(state.report)); }catch(e){}
+  renderReport(); state.report.done=true; updateProgress(); setStage('report');
+}
+function tagList(items){ return `<div class="tag-list">${items.map(x=>`<span class="report-tag">${escapeHtml(x)}</span>`).join('')}</div>`; }
+function renderReport(){
+  const r=state.report;
+  $('reportHost').innerHTML = `<div class="report-card"><p class="eyebrow">${escapeHtml(r.date)} · ${escapeHtml(r.initials)}</p><h3>Force Launch Lab Report</h3><div class="report-grid"><div class="report-stat"><b>${escapeHtml(r.completed)}</b><span>missions complete</span></div><div class="report-stat wide"><b>Forces used</b>${tagList(r.forcesUsed)}</div><div class="report-stat wide"><b>Motion changes</b>${tagList(r.motionChanges)}</div></div><table class="report-table"><thead><tr><th>Mission</th><th>Setup</th><th>Motion change</th></tr></thead><tbody>${state.completed.map(x=>`<tr><td>${escapeHtml(x.mission)}</td><td>${escapeHtml(x.object)} · ${escapeHtml(x.direction)} · ${escapeHtml(x.strength)} · ${escapeHtml(x.force)}</td><td>${escapeHtml(x.motion)}</td></tr>`).join('')}</tbody></table><div class="evidence-line"><strong>Final explanation:</strong> ${escapeHtml(r.finalExplanation)}</div><div class="evidence-line">${escapeHtml(r.evidence)}</div></div>`;
+}
+function reportLines(){
+  const r=state.report; const lines=[];
+  lines.push('Force Launch Lab Report');
+  lines.push('Student: '+r.initials+'    Date: '+r.date);
+  lines.push('Missions complete: '+r.completed);
+  lines.push('Forces used: '+r.forcesUsed.join(', '));
+  lines.push('Motion changes identified: '+r.motionChanges.join(', '));
+  lines.push('');
+  lines.push('Mission results:');
+  state.completed.forEach(x=>lines.push('- '+x.mission+': '+x.object+', '+x.direction+', '+x.strength+', '+x.force+' -> '+x.motion+'.'));
+  lines.push('');
+  lines.push('Final explanation: '+r.finalExplanation);
+  lines.push('');
+  lines.push(r.evidence);
+  return lines;
+}
+function wrapLines(lines,max){ const out=[]; lines.forEach(line=>{ if(line.length<=max){ out.push(line); return; } let words=line.split(' '), cur=''; words.forEach(w=>{ if((cur+' '+w).trim().length>max){ if(cur) out.push(cur); cur=w; } else cur=(cur+' '+w).trim(); }); if(cur) out.push(cur); }); return out; }
+function pdfEscape(text){ return String(text).replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)').replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/[–—]/g,'-').replace(/[^\x00-\x7F]/g,''); }
+function exportPdf(){
+  if(!state.report){ showMessage('reportMsg','Complete the lab first.','bad'); return; }
+  const lines=wrapLines(reportLines(),86).slice(0,52);
+  let content='BT\n/F2 16 Tf\n50 790 Td\n';
+  lines.forEach((line,i)=>{ const f=i===0?'/F2 16 Tf':'/F1 10 Tf'; const lead=i===0?23:15; content += f+'\n('+pdfEscape(line)+') Tj\n0 -'+lead+' Td\n'; });
+  content+='ET';
+  const objects=[];
+  objects.push('1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj');
+  objects.push('2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj');
+  objects.push('3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >> endobj');
+  objects.push('4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj');
+  objects.push('5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> endobj');
+  objects.push('6 0 obj << /Length '+content.length+' >> stream\n'+content+'\nendstream endobj');
+  let pdf='%PDF-1.4\n'; const offsets=[0];
+  objects.forEach(o=>{ offsets.push(pdf.length); pdf+=o+'\n'; });
+  const xref=pdf.length; pdf+='xref\n0 '+(objects.length+1)+'\n0000000000 65535 f \n';
+  for(let i=1;i<offsets.length;i++) pdf+=String(offsets[i]).padStart(10,'0')+' 00000 n \n';
+  pdf+='trailer << /Size '+(objects.length+1)+' /Root 1 0 R >>\nstartxref\n'+xref+'\n%%EOF';
+  const blob=new Blob([pdf],{type:'application/pdf'}); const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='force-launch-lab-report.pdf'; document.body.appendChild(a); a.click(); a.remove();
+  showMessage('reportMsg','PDF exported.','good');
+}
+function sendMailto(){
+  if(!state.report){ showMessage('reportMsg','Complete the lab first.','bad'); return; }
+  const subject=encodeURIComponent('Force Launch Lab evidence - '+state.report.initials);
+  const body=encodeURIComponent(reportLines().join('\n'));
+  window.location.href=`mailto:${TEACHER_EMAIL}?subject=${subject}&body=${body}`;
+}
+function restartLab(){ state.started=true; state.missionIndex=0; state.completed=[]; state.report=null; resetSlots(); updateProgress(); renderMission(); setStage('lab'); }
+function boot(){ initInitials(); updateProgress(); }
+boot();
+</script>
+</body>
+</html>
