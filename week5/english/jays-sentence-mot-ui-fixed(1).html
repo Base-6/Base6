@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Jay's Sentence MOT · Standard English Repair Shop · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root {
+    --cream:#fef8f4;
+    --ink:#1a1a1a;
+    --muted:#555;
+    --teal:#007291;
+    --teal-dark:#005a72;
+    --orange:#ef7724;
+    --orange-dark:#c05a10;
+    --steel:#3f4a53;
+    --steel-soft:#e9edf0;
+    --yellow:#ffc857;
+    --green:#2e8b57;
+    --red:#c0392b;
+    --card:#ffffff;
+    --line:#e0d8d0;
+    --shadow:rgba(26,26,26,0.12);
+  }
+  body { font-family:'Atkinson Hyperlegible', Arial, sans-serif; background:linear-gradient(180deg,#fff8ef 0%, var(--cream) 48%, #f5efe8 100%); color:var(--ink); min-height:100vh; }
+  button, input, textarea, select { font-family:inherit; }
+  button { touch-action:manipulation; }
+
+  .site-header { position:relative; overflow:hidden; background:linear-gradient(135deg,#26313a 0%, #007291 60%, #ef7724 100%); color:#fff; padding:2.35rem 1.5rem 3.1rem; text-align:center; }
+  .site-header::before { content:""; position:absolute; width:220px; height:220px; border-radius:50%; top:-80px; left:-60px; background:rgba(255,255,255,0.08); }
+  .site-header::after { content:""; position:absolute; width:260px; height:260px; border-radius:50%; bottom:-120px; right:-80px; background:rgba(255,200,87,0.22); }
+  .header-inner { position:relative; z-index:2; max-width:920px; margin:0 auto; }
+  .header-back { position:absolute; top:1rem; left:1.2rem; z-index:5; color:#fff; text-decoration:none; font-size:0.9rem; font-weight:700; opacity:0.9; }
+  .header-back:hover { opacity:1; text-decoration:underline; }
+  .eyebrow { font-size:0.76rem; text-transform:uppercase; letter-spacing:0.12em; font-weight:700; color:#ffe1c8; margin-bottom:0.4rem; }
+  h1 { font-size:clamp(2rem, 5vw, 3.1rem); line-height:1.05; letter-spacing:0.01em; }
+  .header-sub { margin:0.75rem auto 0; max-width:760px; line-height:1.55; color:#fff8ef; font-size:1.05rem; }
+  .header-wave { position:absolute; bottom:-1px; left:0; width:100%; height:44px; z-index:1; }
+  .garage-strip { display:flex; justify-content:center; gap:0.5rem; margin-top:1.05rem; flex-wrap:wrap; }
+  .garage-light { width:18px; height:18px; border-radius:50%; background:#ffe181; border:2px solid rgba(255,255,255,0.8); box-shadow:0 0 14px rgba(255,225,129,0.9); }
+  .garage-light:nth-child(2n) { background:#b7f0ff; }
+  .garage-light:nth-child(3n) { background:#ffc2d5; }
+
+  .main { width:min(1080px, calc(100% - 2rem)); margin:0 auto; padding:2rem 0 4rem; }
+  .top-row { display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:1rem; align-items:stretch; }
+  .card { background:var(--card); border:2px solid var(--line); border-radius:20px; padding:1.15rem; box-shadow:0 8px 24px rgba(0,0,0,0.06); }
+  .mission-card { border-color:#f5c99c; background:#fffaf6; }
+  .student-card { border-color:#b8dfe8; background:#f7fcfd; }
+  .section-kicker { color:var(--orange-dark); font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.35rem; }
+  .card h2 { font-size:1.22rem; color:var(--teal-dark); margin-bottom:0.35rem; }
+  p { line-height:1.6; }
+  .muted { color:var(--muted); }
+  .initial-row { display:flex; flex-wrap:wrap; gap:0.45rem; margin-top:0.7rem; }
+  .initial-btn { border:2px solid var(--teal); background:#fff; color:var(--teal); border-radius:999px; padding:0.44rem 0.78rem; min-height:42px; font-weight:700; cursor:pointer; }
+  .initial-btn:hover, .initial-btn.selected { background:var(--teal); color:#fff; }
+
+  .help-box { margin-top:0.8rem; display:none; background:#fff; border:2px dashed #f5c99c; border-radius:16px; padding:0.9rem; }
+  .help-box.show { display:block; }
+  .help-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:0.7rem; margin-top:0.7rem; }
+  .help-mini { background:#fff8ef; border:1.5px solid #f5d0aa; border-radius:14px; padding:0.75rem; }
+  .help-mini strong { color:var(--orange-dark); }
+
+  .progress-panel { margin:1rem 0; background:#fff; border:2px solid #d3dde4; border-radius:20px; padding:1rem; position:relative; overflow:hidden; }
+  .progress-panel::before { content:""; position:absolute; inset:auto -5% -18px -5%; height:56px; background:repeating-linear-gradient(45deg,#3f4a53 0 18px,#ffc857 18px 36px); opacity:0.12; transform:rotate(-1deg); }
+  .progress-top { position:relative; display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; align-items:center; }
+  .case-count { color:var(--teal-dark); font-weight:700; }
+  .station-track { position:relative; z-index:1; display:grid; grid-template-columns:repeat(3,1fr); gap:0.7rem; margin-top:0.85rem; }
+  .station { border:2px solid #d8d0c8; border-radius:16px; padding:0.8rem; text-align:center; background:#fff; color:#555; font-weight:700; }
+  .station .station-icon { display:block; font-size:1.5rem; margin-bottom:0.2rem; }
+  .station.active { border-color:var(--orange); background:#fff3e8; color:#7a3b00; box-shadow:0 0 0 4px rgba(239,119,36,0.12); }
+  .station.done { border-color:var(--green); background:#effaf2; color:#1c6d3d; }
+
+  .stage { display:none; }
+  .stage.active { display:block; }
+  .garage-stage { background:#fff; border:2px solid #d8d0c8; border-radius:24px; padding:1.15rem; box-shadow:0 10px 28px rgba(0,0,0,0.08); position:relative; overflow:hidden; isolation:isolate; }
+  .garage-stage::before { content:""; position:absolute; left:0; right:0; bottom:0; height:70px; background:linear-gradient(180deg,transparent,#e9edf0); pointer-events:none; z-index:0; }
+  .stage-head { position:relative; z-index:2; display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1rem; }
+  .title-wrap { display:flex; align-items:center; gap:0.8rem; }
+  .round-icon { width:60px; height:60px; border-radius:50%; background:#fff3e8; border:2px solid var(--orange); display:flex; align-items:center; justify-content:center; font-size:1.9rem; flex-shrink:0; }
+  .stage-title { color:var(--teal-dark); font-size:1.35rem; line-height:1.2; }
+  .tag-row { display:flex; gap:0.4rem; flex-wrap:wrap; }
+  .tag { background:#fffaf6; border:1.5px solid #e0d8d0; color:#555; border-radius:999px; padding:0.24rem 0.58rem; font-size:0.76rem; font-weight:700; }
+
+  .workshop-layout { position:relative; z-index:2; display:grid; grid-template-columns:minmax(0,1fr) 280px; gap:1rem; align-items:stretch; }
+  .bench { border:3px solid #46515b; border-radius:18px; background:linear-gradient(180deg,#fffaf6 0%, #f9efe5 100%); padding:1rem 1rem 1.45rem; min-height:430px; position:relative; overflow:hidden; isolation:isolate; }
+  .bench::after { content:""; position:absolute; left:-20px; right:-20px; bottom:-52px; height:78px; background:#5c6770; border-top:8px solid #3f4a53; transform:rotate(-1deg); z-index:0; pointer-events:none; }
+  .car-wrap { position:relative; z-index:2; min-height:145px; margin:0 auto 1rem; max-width:600px; }
+  .sentence-car { position:relative; width:min(520px,100%); margin:0.6rem auto 0; min-height:118px; background:linear-gradient(180deg,#ffcf6b,#ef7724); border:4px solid #3f4a53; border-radius:38px 48px 28px 28px; box-shadow:0 10px 0 #a64c13, 0 14px 24px rgba(0,0,0,0.16); display:flex; align-items:center; justify-content:center; padding:1rem 1.3rem 1.45rem; transition:transform .25s ease; }
+  .sentence-car::before { content:""; position:absolute; top:-26px; left:27%; width:46%; height:42px; background:#bfe7f0; border:4px solid #3f4a53; border-bottom:none; border-radius:28px 28px 6px 6px; }
+  .sentence-car::after { content:""; position:absolute; bottom:-24px; left:12%; width:76%; height:38px; background:radial-gradient(circle at 18% 50%,#1a1a1a 0 18px, transparent 19px), radial-gradient(circle at 82% 50%,#1a1a1a 0 18px, transparent 19px); }
+  .sentence-car.arrive { animation:carArrive .45s ease-out; }
+  .sentence-car.repairing { animation:wobble .38s ease-in-out 2; }
+  .sentence-car.passed { animation:vroom .55s ease-in-out; }
+  @keyframes carArrive { from { transform:translateX(-110%) rotate(-3deg); opacity:0.4; } to { transform:translateX(0) rotate(0); opacity:1; } }
+  @keyframes wobble { 0%,100%{ transform:rotate(0); } 25%{ transform:rotate(-1.5deg) translateY(-2px); } 75%{ transform:rotate(1.5deg) translateY(2px); } }
+  @keyframes vroom { 0%{ transform:translateX(0); } 45%{ transform:translateX(18px) rotate(1deg); } 100%{ transform:translateX(0); } }
+
+  .sentence-text { position:relative; z-index:2; display:flex; flex-wrap:wrap; gap:0.35rem; align-items:center; justify-content:center; font-size:clamp(1.1rem,2.5vw,1.45rem); font-weight:700; line-height:1.5; }
+  .word-btn { border:2px solid transparent; background:#fff; color:#1a1a1a; border-radius:10px; padding:0.08rem 0.34rem; font-size:inherit; font-weight:700; cursor:pointer; box-shadow:0 2px 0 rgba(0,0,0,0.12); }
+  .word-btn:hover { border-color:var(--teal); transform:translateY(-1px); }
+  .word-btn.fault { border-color:var(--red); background:#ffe7e3; color:#8f1d12; box-shadow:0 0 0 4px rgba(192,57,43,0.14); }
+  .word-btn.corrected { border-color:var(--green); background:#ebfaee; color:#176b34; }
+  .word-btn.locked { cursor:default; }
+  .word-btn.dimmed { opacity:0.42; cursor:default; box-shadow:none; }
+  .word-btn.dimmed:hover { border-color:transparent; transform:none; }
+
+
+  .tool-burst { position:absolute; left:50%; top:30px; transform:translateX(-50%); display:none; z-index:4; font-weight:700; color:#1a1a1a; pointer-events:none; }
+  .tool-burst.show { display:block; animation:popWord .9s ease-out forwards; }
+  @keyframes popWord { 0%{ opacity:0; transform:translate(-50%,8px) scale(0.6); } 25%{ opacity:1; transform:translate(-50%,-6px) scale(1.15); } 100%{ opacity:0; transform:translate(-50%,-28px) scale(1); } }
+  .mot-stamp { position:absolute; top:10px; right:12px; border:4px solid var(--green); color:var(--green); border-radius:12px; padding:0.25rem 0.45rem; font-weight:700; transform:rotate(7deg); background:#fff; display:none; z-index:5; }
+  .mot-stamp.show { display:block; animation:stampIn .28s ease-out; }
+  @keyframes stampIn { from { transform:scale(1.6) rotate(14deg); opacity:0; } to { transform:scale(1) rotate(7deg); opacity:1; } }
+
+  .instruction-box { background:#fff; border:2px solid #f5c99c; border-radius:16px; padding:0.85rem; margin-bottom:0.85rem; }
+  .instruction-box, .replace-panel, .message, .compare-card, #navRow { position:relative; z-index:3; }
+  .instruction-box strong { color:var(--orange-dark); }
+  .step-label { display:inline-flex; align-items:center; gap:0.35rem; background:#fff3e8; border:1.5px solid #f5c99c; color:#7a3b00; border-radius:999px; padding:0.18rem 0.55rem; font-weight:700; margin-right:0.35rem; }
+  .step-label.repair { background:#e6f5f8; border-color:#b8dfe8; color:#005a72; }
+  .step-label.pass { background:#effaf2; border-color:#bfe3c7; color:#176b34; }
+  .replace-panel { display:none; background:#f7fcfd; border:2px solid #b8dfe8; border-radius:16px; padding:0.9rem; margin-top:0.8rem; }
+  .replace-panel.show { display:block; }
+  .option-row { display:flex; gap:0.55rem; flex-wrap:wrap; margin-top:0.65rem; }
+  .repair-option { border:2px solid var(--teal); background:#fff; color:var(--teal); border-radius:12px; min-height:46px; padding:0.55rem 0.85rem; font-size:1rem; font-weight:700; cursor:pointer; }
+  .repair-option:hover { background:#e6f5f8; transform:translateY(-1px); }
+  .repair-option.correct { border-color:var(--green); color:#176b34; background:#effaf2; }
+  .repair-option.wrong { border-color:var(--red); color:#8f1d12; background:#ffe7e3; }
+  .repair-option.revealed { border-color:var(--green); background:#effaf2; color:#176b34; box-shadow:0 0 0 4px rgba(46,139,87,0.16), 0 3px 0 rgba(0,0,0,0.13); animation:pulseGlow 1s ease-in-out 2; }
+  @keyframes pulseGlow { 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.04); } }
+
+  .side-panel { border:2px solid #d3dde4; background:#f7f9fb; border-radius:18px; padding:1rem; min-height:430px; display:flex; flex-direction:column; justify-content:space-between; }
+  .clipboard { background:#fff; border:2px solid #b7c5cf; border-radius:16px; padding:0.9rem; position:relative; box-shadow:0 4px 0 rgba(63,74,83,0.1); }
+  .clipboard::before { content:""; position:absolute; top:-14px; left:50%; transform:translateX(-50%); width:76px; height:24px; background:#3f4a53; border-radius:10px 10px 5px 5px; }
+  .clipboard h3 { color:var(--steel); font-size:1.02rem; margin:0.35rem 0 0.45rem; }
+  .check-line { display:flex; gap:0.45rem; align-items:flex-start; color:#555; margin:0.45rem 0; line-height:1.4; }
+  .check-icon { width:24px; height:24px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; background:#eee; flex-shrink:0; font-size:0.85rem; }
+  .check-line.done .check-icon { background:#dff3e5; color:#176b34; }
+  .check-line.current .check-icon { background:#fff3e8; color:#c05a10; }
+  .score-box { background:#fff3e8; border:1.5px solid #f5c99c; border-radius:14px; padding:0.75rem; font-weight:700; color:#7a3b00; margin-top:0.8rem; }
+
+  .message { display:none; margin-top:0.75rem; border:1.5px solid #f6c893; background:#fff7eb; color:#7a4a00; border-radius:13px; padding:0.72rem 0.85rem; font-weight:700; }
+  .message.show { display:block; }
+  .explain { color:#555; font-weight:400; display:block; margin-top:0.2rem; }
+  .compare-card { display:none; margin-top:0.9rem; background:#fff; border:2px solid #d8d0c8; border-radius:16px; padding:0.9rem; }
+  .compare-card.show { display:block; }
+  .compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.7rem; margin-top:0.55rem; }
+  .compare-side { border:1.5px solid #e0d8d0; border-radius:13px; padding:0.75rem; background:#fffaf6; }
+  .compare-side.good { background:#effaf2; border-color:#bfe3c7; }
+  .compare-label { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.09em; font-weight:700; color:#666; margin-bottom:0.25rem; }
+  .compare-side.good .compare-label { color:#176b34; }
+
+  .button-row { display:flex; gap:0.6rem; flex-wrap:wrap; align-items:center; margin-top:1rem; }
+  .btn { border:none; background:var(--orange); color:#fff; border-radius:13px; padding:0.75rem 1rem; min-height:46px; font-size:0.95rem; font-weight:700; cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,0.13); }
+  .btn:hover { background:var(--orange-dark); transform:translateY(-1px); }
+  .btn.secondary { background:var(--teal); }
+  .btn.secondary:hover { background:var(--teal-dark); }
+  .btn.ghost { background:#fff; color:var(--teal); border:2px solid var(--teal); box-shadow:none; }
+  .btn.ghost:hover { background:#e6f5f8; }
+  .btn:disabled { background:#cfc7bf; color:#777; cursor:not-allowed; transform:none; box-shadow:none; }
+
+  .report-card { background:#f7fcfd; border:2px solid var(--teal); border-radius:22px; padding:1rem; }
+  .report-head { display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; flex-wrap:wrap; border-bottom:1.5px solid #b8dfe8; padding-bottom:0.8rem; margin-bottom:0.8rem; }
+  .rank-pill { background:#fff3e8; border:2px solid #f5c99c; color:#7a3b00; border-radius:999px; padding:0.4rem 0.75rem; font-weight:700; }
+  .report-table { width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:14px; border:1.5px solid #b8dfe8; background:#fff; margin-top:0.8rem; }
+  .report-table th, .report-table td { text-align:left; padding:0.62rem; border-bottom:1px solid #e0eef2; vertical-align:top; font-size:0.88rem; }
+  .report-table th { background:#e6f5f8; color:#005a72; font-weight:700; }
+  .report-table tr:last-child td { border-bottom:none; }
+  .evidence-line { margin-top:0.85rem; background:#fff3e8; border:1.5px solid #f5c99c; color:#7a3b00; border-radius:13px; padding:0.75rem; font-weight:700; }
+  .reflection-panel { margin-top:0.85rem; background:#fff; border:2px dashed #b8dfe8; border-radius:16px; padding:0.85rem; }
+  .reflection-panel h3 { color:var(--teal-dark); font-size:1rem; margin-bottom:0.25rem; }
+  .reflection-choice-row { display:flex; gap:0.45rem; flex-wrap:wrap; margin-top:0.65rem; }
+  .reflection-choice { border:2px solid var(--teal); background:#fff; color:var(--teal); border-radius:999px; padding:0.42rem 0.7rem; font-weight:700; cursor:pointer; }
+  .reflection-choice:hover, .reflection-choice.selected { background:var(--teal); color:#fff; }
+
+  .completion-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:0.75rem; margin-top:0.9rem; }
+  .mini-stat { background:#fff; border:1.5px solid #d8d0c8; border-radius:15px; padding:0.8rem; }
+  .mini-stat strong { display:block; font-size:1.35rem; color:var(--teal-dark); }
+
+  .footer-note { text-align:center; color:#777; font-size:0.8rem; margin-top:2rem; }
+  a:focus-visible, button:focus-visible { outline:3px solid var(--orange); outline-offset:3px; }
+
+  @media (max-width: 900px) {
+    .top-row, .workshop-layout { grid-template-columns:1fr; }
+    .side-panel { min-height:auto; }
+  }
+  @media (max-width: 600px) {
+    .main { width:min(100% - 1rem, 1080px); padding-top:1rem; }
+    .site-header { padding:1.6rem 1rem 2.2rem; }
+    .header-sub, .garage-strip { display:none; }
+    .top-row { gap:0.65rem; }
+    .card, .garage-stage, .bench, .side-panel { padding:0.75rem; border-radius:16px; }
+    .progress-panel { padding:0.75rem; margin:0.65rem 0; }
+    .stage-head { margin-bottom:0.65rem; }
+    .round-icon { width:46px; height:46px; font-size:1.45rem; }
+    .station-track, .compare-grid { grid-template-columns:1fr; }
+    .sentence-car { border-radius:28px; padding:0.8rem 0.6rem 1.2rem; min-height:96px; box-shadow:0 7px 0 #a64c13, 0 10px 18px rgba(0,0,0,0.14); }
+    .sentence-car::before { height:30px; top:-20px; border-width:3px; }
+    .sentence-car::after { bottom:-18px; height:28px; background:radial-gradient(circle at 18% 50%,#1a1a1a 0 13px, transparent 14px), radial-gradient(circle at 82% 50%,#1a1a1a 0 13px, transparent 14px); }
+    .car-wrap { min-height:116px; margin-bottom:0.55rem; }
+    .bench::after { bottom:-56px; height:72px; }
+    .sentence-text { font-size:1.05rem; }
+    .report-table th, .report-table td { font-size:0.78rem; padding:0.48rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Back</a>
+  <div class="header-inner">
+    <p class="eyebrow">Base 6 · Standard English</p>
+    <h1>Jay's Sentence MOT</h1>
+    <p class="header-sub">Broken sentences roll into the garage. Find the faulty verb, replace it with Standard English, and stamp the sentence as MOT pass.</p>
+    <div class="garage-strip" aria-hidden="true"><span class="garage-light"></span><span class="garage-light"></span><span class="garage-light"></span><span class="garage-light"></span><span class="garage-light"></span><span class="garage-light"></span></div>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 44" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,20 C180,48 350,0 620,20 C880,38 1030,4 1200,21 L1200,44 L0,44 Z" fill="#fef8f4"></path></svg>
+</header>
+
+<main class="main">
+  <div class="top-row" id="topRow">
+    <section class="card mission-card">
+      <p class="section-kicker">Mission</p>
+      <h2>Fix local spoken verb forms for Standard English.</h2>
+      <p class="muted">Tap the verb that sounds like the broken part. Then choose the repair. You will see the spoken/local form next to the Standard English version after each sentence.</p>
+      <div class="button-row"><button class="btn ghost" onclick="toggleHelp()">Need help?</button></div>
+      <div class="help-box" id="helpBox">
+        <p><strong>Garage manual:</strong> Standard English is useful when we want writing or formal speech to sound clear for school, work, reports, emails or visitors.</p>
+        <div class="help-grid">
+          <div class="help-mini"><strong>we was</strong><br>Repair to: <strong>we were</strong></div>
+          <div class="help-mini"><strong>I done</strong><br>Repair to: <strong>I did</strong></div>
+          <div class="help-mini"><strong>I seen</strong><br>Repair to: <strong>I saw</strong></div>
+          <div class="help-mini"><strong>she come</strong><br>Repair to: <strong>she came</strong></div>
+        </div>
+      </div>
+    </section>
+    <section class="card student-card">
+      <p class="section-kicker">Mechanic badge</p>
+      <h2>Choose initials</h2>
+      <p class="muted">This can auto-fill from the Base 6 avatar if it is already set.</p>
+      <div class="initial-row" id="initialRow" aria-label="Choose initials"></div>
+    </section>
+  </div>
+
+  <section class="progress-panel" aria-label="Garage progress">
+    <div class="progress-top">
+      <p class="case-count" id="caseCounter">Repair 1 of 10</p>
+      <p class="muted" id="scoreLine">Clean repairs: 0 · Repairs complete: 0</p>
+    </div>
+    <div class="station-track">
+      <div class="station active" id="station-inspection"><span class="station-icon">🔎</span>Inspection</div>
+      <div class="station" id="station-repair"><span class="station-icon">🔧</span>Repair</div>
+      <div class="station" id="station-pass"><span class="station-icon">✅</span>MOT Pass</div>
+    </div>
+  </section>
+
+  <section class="stage active" id="stage-repair">
+    <div class="garage-stage">
+      <div class="stage-head">
+        <div class="title-wrap">
+          <div class="round-icon">🚗</div>
+          <div><h2 class="stage-title" id="repairTitle">Sentence rolling into the garage...</h2><p class="muted" id="repairSubtitle">Tap the faulty verb first.</p></div>
+        </div>
+        <div class="tag-row"><span class="tag">find fault</span><span class="tag">choose repair</span><span class="tag">compare</span></div>
+      </div>
+
+      <div class="workshop-layout">
+        <div class="bench">
+          <div class="instruction-box" id="instructionBox"><strong>Inspection:</strong> Tap the verb that needs repairing.</div>
+          <div class="car-wrap">
+            <div class="tool-burst" id="toolBurst">CLANG</div>
+            <div class="mot-stamp" id="motStamp">MOT PASS</div>
+            <div class="sentence-car arrive" id="sentenceCar"><div class="sentence-text" id="sentenceText"></div></div>
+          </div>
+
+          <div class="replace-panel" id="replacePanel">
+            <p><strong>Repair shelf:</strong> Choose the Standard English replacement.</p>
+            <div class="option-row" id="optionRow"></div>
+          </div>
+
+          <div class="message" id="feedbackBox"></div>
+
+          <div class="compare-card" id="compareCard">
+            <p><strong>Side-by-side comparison</strong></p>
+            <div class="compare-grid">
+              <div class="compare-side"><p class="compare-label">Spoken/local form</p><p id="spokenForm"></p></div>
+              <div class="compare-side good"><p class="compare-label">Standard English</p><p id="standardForm"></p></div>
+            </div>
+          </div>
+
+          <div class="button-row" id="navRow"></div>
+        </div>
+
+        <aside class="side-panel">
+          <div class="clipboard">
+            <h3>Mechanic checklist</h3>
+            <div class="check-line current" id="checkFind"><span class="check-icon">1</span><span>Find the faulty verb.</span></div>
+            <div class="check-line" id="checkRepair"><span class="check-icon">2</span><span>Choose the Standard English repair.</span></div>
+            <div class="check-line" id="checkCompare"><span class="check-icon">3</span><span>Compare spoken/local and Standard English.</span></div>
+            <div class="score-box" id="caseBadge">Current job: inspection.</div>
+          </div>
+          <div class="clipboard">
+            <h3>Unlocks</h3>
+            <p class="muted" id="unlockText">Early repairs focus on <strong>was/were</strong> and <strong>did/done</strong>. Trickier repairs unlock later.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage" id="stage-report">
+    <div class="garage-stage">
+      <div class="stage-head">
+        <div class="title-wrap">
+          <div class="round-icon">📋</div>
+          <div><h2 class="stage-title">Sentence MOT report</h2><p class="muted">Evidence of Standard English verb repairs.</p></div>
+        </div>
+      </div>
+      <div id="reportHost"></div>
+      <div class="button-row">
+        <button class="btn secondary" onclick="exportPdf()">Export PDF</button>
+        <button class="btn" onclick="sendGmail()">Send to Jay</button>
+        <button class="btn ghost" onclick="sendMailto()">Fallback email</button>
+      </div>
+      <div class="message" id="reportMsg"></div>
+    </div>
+  </section>
+
+  <p class="footer-note">Base 6 · Chilton Bridge School · Silent activity · all garage noises are suspiciously visual.</p>
+</main>
+
+<script>
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+const STUDENTS = ['LW','AP','LS','LC','HK','JTK'];
+const REPAIRS = [
+  { id:1, original:'We was late for the work placement.', standard:'We were late for the work placement.', wrong:'was', correct:'were', options:['was','were','done'], focus:'was/were', explanation:'We use “were” with “we”.', funny:'Repair complete. The sentence engine no longer sounds cursed.' },
+  { id:2, original:'I done the safety check before lunch.', standard:'I did the safety check before lunch.', wrong:'done', correct:'did', options:['done','did','were'], focus:'did/done', explanation:'For a completed action, Standard English is “I did”.', funny:'Nice. The grammar spanner has done actual work.' },
+  { id:3, original:'They was waiting by the minibus.', standard:'They were waiting by the minibus.', wrong:'was', correct:'were', options:['were','was','did'], focus:'was/were', explanation:'We use “were” with “they”.', funny:'MOT pass. The sentence has stopped making clunking noises.' },
+  { id:4, original:'He done the first job on the list.', standard:'He did the first job on the list.', wrong:'done', correct:'did', options:['did','done','came'], focus:'did/done', explanation:'Standard English uses “he did”, not “he done”.', funny:'Excellent repair. The verb is no longer held on with tape.' },
+  { id:5, original:'We was confused by the instructions.', standard:'We were confused by the instructions.', wrong:'was', correct:'were', options:['was','were','saw'], focus:'was/were', explanation:'“We were” is the Standard English form.', funny:'Smooth fix. The sentence can safely leave the garage.' },
+  { id:6, original:'I seen the manager at reception.', standard:'I saw the manager at reception.', wrong:'seen', correct:'saw', options:['seen','saw','came'], focus:'saw/seen', explanation:'For simple past tense, Standard English uses “I saw”.', funny:'New part unlocked. The “seen” gremlin has been removed.' },
+  { id:7, original:'She come to the workshop early.', standard:'She came to the workshop early.', wrong:'come', correct:'came', options:['came','come','were'], focus:'came/come', explanation:'For simple past tense, Standard English uses “she came”.', funny:'Vroom. The sentence has upgraded from wonky to roadworthy.' },
+  { id:8, original:'They done the cleaning rota.', standard:'They did the cleaning rota.', wrong:'done', correct:'did', options:['did','done','saw'], focus:'did/done', explanation:'Standard English uses “they did”, not “they done”.', funny:'Good repair. The sentence passed without leaking grammar oil.' },
+  { id:9, original:'We seen the delivery arrive.', standard:'We saw the delivery arrive.', wrong:'seen', correct:'saw', options:['saw','seen','were'], focus:'saw/seen', explanation:'For simple past tense, Standard English uses “we saw”.', funny:'The faulty verb has been replaced. No further weird rattling detected.' },
+  { id:10, original:'He come back with the tools.', standard:'He came back with the tools.', wrong:'come', correct:'came', options:['come','came','did'], focus:'came/come', explanation:'For simple past tense, Standard English uses “he came”.', funny:'Final repair complete. Jay’s clipboard is quietly impressed.' }
+];
+
+let state = {
+  initials:'', index:0, phase:'inspect',
+  currentFaultAttempts:0, currentRepairAttempts:0, selectedFault:false,
+  repairRevealed:false, cleanThisCase:true, completed:false,
+  results:[], finalReport:null, reflection:''
+};
+
+function $(id){ return document.getElementById(id); }
+function current(){ return REPAIRS[state.index]; }
+function prefersReducedMotion(){ return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(ch){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[ch]; }); }
+function normaliseWord(w){ return String(w).replace(/[.,!?;:]/g,'').toLowerCase(); }
+
+function initInitials(){
+  const row = $('initialRow'); row.innerHTML = '';
+  STUDENTS.forEach(function(s){
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'initial-btn'; btn.textContent = s;
+    btn.onclick = function(){ selectInitials(s); };
+    row.appendChild(btn);
+  });
+  try {
+    const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+    if(profile && profile.initials){
+      const found = STUDENTS.find(function(s){ return s.toLowerCase() === String(profile.initials).toLowerCase(); });
+      if(found) selectInitials(found, true);
+    }
+  } catch(e) {}
+}
+function selectInitials(initials, quiet){
+  state.initials = initials;
+  document.querySelectorAll('.initial-btn').forEach(function(b){ b.classList.toggle('selected', b.textContent === initials); });
+  try { const profile = JSON.parse(localStorage.getItem('base6Profile') || '{}'); profile.initials = initials.toLowerCase(); localStorage.setItem('base6Profile', JSON.stringify(profile)); } catch(e) {}
+  if(!quiet) showFeedback('Mechanic badge set. The garage clipboard is pleased.', '');
+}
+function toggleHelp(){ $('helpBox').classList.toggle('show'); }
+
+function renderCase(){
+  const item = current();
+  state.phase = 'inspect'; state.currentFaultAttempts = 0; state.currentRepairAttempts = 0; state.selectedFault = false; state.repairRevealed = false; state.cleanThisCase = true;
+  $('repairTitle').textContent = 'Repair ' + item.id + ': faulty sentence incoming';
+  $('repairSubtitle').textContent = item.id <= 5 ? 'Start with was/were and did/done repairs.' : 'Trickier repairs unlocked: saw/seen and came/come.';
+  $('instructionBox').innerHTML = '<span class="step-label">Step 1</span><strong>Inspection:</strong> Tap the faulty verb.';
+  $('replacePanel').classList.remove('show');
+  $('compareCard').classList.remove('show');
+  $('feedbackBox').classList.remove('show');
+  $('motStamp').classList.remove('show');
+  $('navRow').innerHTML = '';
+  $('caseBadge').textContent = 'Current job: inspection.';
+  renderSentence(item.original, false);
+  renderOptions(item);
+  updateProgress();
+  updateChecklist();
+  animateCar('arrive');
+}
+
+function renderSentence(sentence, corrected){
+  const item = current();
+  const host = $('sentenceText'); host.innerHTML = '';
+  const words = sentence.split(' ');
+  words.forEach(function(word, idx){
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'word-btn';
+    const clean = normaliseWord(word);
+    btn.innerHTML = escapeHtml(word);
+    if(corrected && clean === item.correct) btn.classList.add('corrected', 'locked');
+    if(!corrected){ btn.onclick = function(){ chooseFault(clean, btn); }; }
+    else { btn.onclick = function(){}; }
+    host.appendChild(btn);
+  });
+}
+function renderOptions(item){
+  const row = $('optionRow'); row.innerHTML = '';
+  item.options.forEach(function(opt){
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'repair-option'; btn.textContent = opt;
+    btn.onclick = function(){ chooseRepair(opt, btn); };
+    row.appendChild(btn);
+  });
+}
+function chooseFault(word, btn){
+  if(state.phase !== 'inspect') return;
+  const item = current();
+  clearFaultHighlights();
+  if(word === item.wrong){
+    btn.classList.add('fault');
+    lockSentenceWords(btn);
+    state.selectedFault = true;
+    state.phase = 'repair';
+    $('replacePanel').classList.add('show');
+    $('instructionBox').innerHTML = '<span class="step-label repair">Step 2</span><strong>Repair:</strong> Fault found. Choose the Standard English replacement.';
+    $('caseBadge').textContent = 'Fault found: “' + item.wrong + '”. Choose the repair.';
+    updateChecklist();
+    showFeedback('Fault found. That verb is rattling around like a loose exhaust.', 'Now choose the Standard English form.');
+    animateBurst('CLANG');
+  } else {
+    state.currentFaultAttempts++;
+    state.cleanThisCase = false;
+    if(state.currentFaultAttempts >= 2){
+      revealFault();
+      state.phase = 'repair';
+      $('replacePanel').classList.add('show');
+      $('instructionBox').innerHTML = '<span class="step-label repair">Step 2</span><strong>Repair:</strong> Support mode: the faulty verb is highlighted. Choose the replacement.';
+      updateChecklist();
+      showFeedback('The inspection torch found it for us.', 'The faulty verb is “' + item.wrong + '”. Now choose the Standard English repair.');
+    } else {
+      showFeedback('Not that part. The mechanic goggles are fogging up.', 'Look for the verb that sounds spoken/local rather than Standard English.');
+    }
+  }
+}
+function clearFaultHighlights(){ document.querySelectorAll('.word-btn').forEach(function(b){ b.classList.remove('fault'); }); }
+function lockSentenceWords(activeBtn){
+  document.querySelectorAll('.word-btn').forEach(function(b){
+    b.classList.add('locked');
+    b.onclick = function(){};
+    if(activeBtn && b !== activeBtn) b.classList.add('dimmed');
+  });
+}
+function revealFault(){
+  const item = current();
+  clearFaultHighlights();
+  let faultBtn = null;
+  document.querySelectorAll('.word-btn').forEach(function(b){
+    if(normaliseWord(b.textContent) === item.wrong){ b.classList.add('fault'); faultBtn = b; }
+  });
+  lockSentenceWords(faultBtn);
+  state.selectedFault = true;
+  $('caseBadge').textContent = 'Fault shown: “' + item.wrong + '”. Choose the repair.';
+}
+function chooseRepair(opt, btn){
+  if(state.phase !== 'repair') return;
+  const item = current();
+  document.querySelectorAll('.repair-option').forEach(function(b){ b.classList.remove('wrong','correct'); });
+  if(opt === item.correct){
+    btn.classList.add('correct');
+    completeRepair(state.repairRevealed);
+  } else {
+    state.currentRepairAttempts++;
+    state.cleanThisCase = false;
+    btn.classList.add('wrong');
+    if(state.currentRepairAttempts >= 2){
+      state.repairRevealed = true;
+      document.querySelectorAll('.repair-option').forEach(function(b){
+        b.classList.toggle('revealed', b.textContent === item.correct);
+      });
+      showFeedback('The repair shelf has found the right part.', 'Click the glowing Standard English repair to complete the MOT: “' + item.correct + '”.');
+    } else {
+      showFeedback('That part does not fit. The sentence engine is making an expensive noise.', item.explanation);
+    }
+  }
+}
+function completeRepair(auto){
+  const item = current();
+  state.phase = 'pass';
+  renderSentence(item.standard, true);
+  $('replacePanel').classList.remove('show');
+  $('instructionBox').innerHTML = '<span class="step-label pass">Step 3</span><strong>MOT Pass:</strong> The sentence has been repaired into Standard English.';
+  $('spokenForm').textContent = item.original;
+  $('standardForm').textContent = item.standard;
+  $('compareCard').classList.add('show');
+  $('motStamp').classList.add('show');
+  $('caseBadge').textContent = state.cleanThisCase && !auto ? 'First-time repair: fault and repair found without support.' : 'Repair complete with support.';
+  updateChecklist();
+  animateCar('repairing');
+  animateBurst(auto ? 'STAMPED' : 'VROOM');
+  showFeedback(item.funny, item.explanation);
+  saveCaseResult(item, auto);
+  renderNav();
+}
+function saveCaseResult(item, auto){
+  const existing = state.results.find(function(r){ return r.id === item.id; });
+  const result = {
+    id:item.id,
+    original:item.original,
+    standard:item.standard,
+    wrong:item.wrong,
+    correct:item.correct,
+    focus:item.focus,
+    clean:state.cleanThisCase && !auto,
+    support:!(state.cleanThisCase && !auto)
+  };
+  if(existing){ Object.assign(existing, result); }
+  else { state.results.push(result); }
+}
+function renderNav(){
+  const row = $('navRow');
+  if(state.index < REPAIRS.length - 1){ row.innerHTML = '<button class="btn secondary" onclick="nextCase()">Next repair</button>'; }
+  else { row.innerHTML = '<button class="btn" onclick="finishActivity()">Create MOT report</button>'; }
+}
+function nextCase(){ state.index++; renderCase(); scrollToRepair(); }
+function finishActivity(){
+  if(state.results.length < REPAIRS.length){ showFeedback('The report printer is jammed.', 'Finish all 10 repairs first.'); return; }
+  if(!state.initials){ showFeedback('Choose your initials first so Jay knows whose MOT passed.', 'Use the mechanic badge buttons at the top, then create the report.'); const card = document.querySelector('.student-card'); if(card) card.scrollIntoView({behavior:prefersReducedMotion()?'auto':'smooth', block:'center'}); return; }
+  state.finalReport = buildReportData();
+  try { localStorage.setItem('jaysSentenceMotFinalReport', JSON.stringify(state.finalReport)); } catch(e) {}
+  renderReport();
+  $('stage-repair').classList.remove('active');
+  $('stage-report').classList.add('active');
+  setTimeout(function(){ $('stage-report').scrollIntoView({behavior:prefersReducedMotion()?'auto':'smooth', block:'start'}); }, 50);
+}
+function updateProgress(){
+  const complete = state.results.length;
+  const clean = state.results.filter(function(r){ return r.clean; }).length;
+  $('caseCounter').textContent = complete >= REPAIRS.length ? 'All repairs complete' : 'Repair ' + (state.index + 1) + ' of ' + REPAIRS.length;
+  $('scoreLine').textContent = 'First-time repairs: ' + clean + ' · Repairs complete: ' + complete;
+  $('unlockText').innerHTML = state.index < 5 ? 'Early repairs focus on <strong>was/were</strong> and <strong>did/done</strong>. Trickier repairs unlock after Repair 5.' : 'Trickier repairs unlocked: <strong>saw/seen</strong> and <strong>came/come</strong>.';
+}
+function updateChecklist(){
+  const phase = state.phase;
+  setCheck('checkFind', phase === 'inspect' ? 'current' : 'done');
+  setCheck('checkRepair', phase === 'repair' ? 'current' : (phase === 'pass' ? 'done' : ''));
+  setCheck('checkCompare', phase === 'pass' ? 'done' : '');
+  setStation('station-inspection', phase === 'inspect' ? 'active' : 'done');
+  setStation('station-repair', phase === 'repair' ? 'active' : (phase === 'pass' ? 'done' : ''));
+  setStation('station-pass', phase === 'pass' ? 'active done' : '');
+}
+function setCheck(id, status){ const el = $(id); el.className = 'check-line' + (status ? ' ' + status : ''); }
+function setStation(id, status){ const el = $(id); el.className = 'station' + (status ? ' ' + status : ''); }
+function showFeedback(line, explanation){
+  const box = $('feedbackBox');
+  box.innerHTML = escapeHtml(line) + (explanation ? '<span class="explain">' + escapeHtml(explanation) + '</span>' : '');
+  box.classList.add('show');
+}
+function animateBurst(text){
+  const burst = $('toolBurst');
+  burst.textContent = text;
+  burst.classList.remove('show');
+  void burst.offsetWidth;
+  burst.classList.add('show');
+}
+function animateCar(cls){
+  const car = $('sentenceCar');
+  car.classList.remove('arrive','repairing','passed');
+  void car.offsetWidth;
+  car.classList.add(cls);
+  if(cls === 'repairing') setTimeout(function(){ car.classList.remove('repairing'); car.classList.add('passed'); }, prefersReducedMotion() ? 80 : 820);
+}
+function scrollToRepair(){ setTimeout(function(){ $('stage-repair').scrollIntoView({behavior:prefersReducedMotion()?'auto':'smooth', block:'start'}); }, 40); }
+
+function rankFromResults(){
+  const clean = state.results.filter(function(r){ return r.clean; }).length;
+  if(clean >= 8) return 'Master Sentence Mechanic';
+  if(clean >= 5) return 'Standard English Mechanic';
+  return 'MOT Apprentice';
+}
+function buildReportData(){
+  const clean = state.results.filter(function(r){ return r.clean; }).length;
+  return {
+    title:"Jay's Sentence MOT — Standard English Report",
+    initials:state.initials || 'Not selected',
+    date:new Date().toLocaleDateString('en-GB'),
+    rank:rankFromResults(),
+    clean:clean,
+    total:REPAIRS.length,
+    repairs:state.results.slice().sort(function(a,b){ return a.id - b.id; }),
+    reflection:state.reflection || 'Not selected yet',
+    evidence:'Evidence of learning: the learner identified local/spoken verb forms and repaired them using Standard English verb inflections, including was/were, did/done, saw/seen and came/come.'
+  };
+}
+function renderReport(){
+  const report = state.finalReport || buildReportData();
+  const rows = report.repairs.map(function(r){
+    return '<tr><td>' + r.id + '</td><td>' + escapeHtml(r.focus) + '</td><td>' + escapeHtml(r.original) + '</td><td>' + escapeHtml(r.standard) + '</td><td>' + (r.clean ? 'First-time repair' : 'Completed with support') + '</td></tr>';
+  }).join('');
+  $('reportHost').innerHTML = '<div class="report-card">' +
+    '<div class="report-head"><div><p class="section-kicker">' + escapeHtml(report.date) + ' · ' + escapeHtml(report.initials) + '</p><h2>' + escapeHtml(report.title) + '</h2><p class="muted">Corrected sentences and side-by-side comparisons.</p></div><div class="rank-pill">' + escapeHtml(report.rank) + '</div></div>' +
+    '<div class="completion-grid"><div class="mini-stat"><strong>' + report.clean + '/' + report.total + '</strong>First-time repairs</div><div class="mini-stat"><strong>' + report.repairs.length + '</strong>Repairs completed</div><div class="mini-stat"><strong>MOT</strong>Standard English pass</div></div>' +
+    '<table class="report-table"><thead><tr><th>#</th><th>Focus</th><th>Spoken/local form</th><th>Standard English</th><th>Outcome</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div class="reflection-panel"><h3>Optional reflection</h3><p class="muted">One Standard English repair I used was...</p><div class="reflection-choice-row">' + reflectionButtons(report.reflection) + '</div><p class="evidence-line" id="reflectionPreview">Reflection: ' + escapeHtml(report.reflection) + '</p></div>' +
+    '<div class="evidence-line">' + escapeHtml(report.evidence) + '</div></div>';
+}
+
+function reflectionButtons(selected){
+  const choices = ['was → were','done → did','seen → saw','come → came'];
+  return choices.map(function(c){
+    return '<button class="reflection-choice ' + (selected === c ? 'selected' : '') + '" type="button" onclick="chooseReflection(\'' + c + '\')">' + escapeHtml(c) + '</button>';
+  }).join('');
+}
+function chooseReflection(choice){
+  state.reflection = choice;
+  if(state.finalReport) state.finalReport.reflection = choice;
+  try { localStorage.setItem('jaysSentenceMotFinalReport', JSON.stringify(state.finalReport)); } catch(e) {}
+  document.querySelectorAll('.reflection-choice').forEach(function(b){ b.classList.toggle('selected', b.textContent === choice); });
+  const preview = $('reflectionPreview'); if(preview) preview.textContent = 'Reflection: ' + choice;
+}
+
+function reportTextLines(){
+  const report = state.finalReport || buildReportData();
+  const lines = [];
+  lines.push(report.title);
+  lines.push('Student: ' + report.initials + '    Date: ' + report.date + '    Rank: ' + report.rank);
+  lines.push('First-time repairs: ' + report.clean + '/' + report.total);
+  lines.push('');
+  lines.push('Repairs:');
+  report.repairs.forEach(function(r){
+    lines.push(r.id + '. ' + r.focus + ' | Spoken/local: ' + r.original + ' | Standard English: ' + r.standard + ' | ' + (r.clean ? 'First-time repair' : 'Completed with support'));
+  });
+  lines.push('');
+  lines.push('Reflection: ' + (report.reflection || 'Not selected yet'));
+  lines.push('');
+  lines.push(report.evidence);
+  return lines;
+}
+function wrapPdfLines(lines, maxChars){
+  const out = [];
+  lines.forEach(function(line){
+    if(line.length <= maxChars){ out.push(line); return; }
+    let words = line.split(' '), current = '';
+    words.forEach(function(w){
+      if((current + ' ' + w).trim().length > maxChars){ out.push(current); current = w; }
+      else current = (current + ' ' + w).trim();
+    });
+    if(current) out.push(current);
+  });
+  return out;
+}
+function pdfEscape(text){ return String(text).replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)').replace(/[\u2018\u2019]/g,"'").replace(/[\u201c\u201d]/g,'"').replace(/[–—]/g,'-').replace(/[^\x00-\x7F]/g,''); }
+function exportPdf(){
+  if(!state.finalReport){ showReportMessage('Create the report first.'); return; }
+  const lines = wrapPdfLines(reportTextLines(), 91).slice(0, 50);
+  let content = 'BT\n/F1 14 Tf\n50 790 Td\n';
+  lines.forEach(function(line, i){
+    const font = i === 0 ? 'F2' : 'F1'; const size = i === 0 ? 16 : 9.2; const lead = i === 0 ? 22 : 13.5;
+    content += '/' + font + ' ' + size + ' Tf\n(' + pdfEscape(line) + ') Tj\n0 -' + lead + ' Td\n';
+  });
+  content += 'ET';
+  const objects = [];
+  objects.push('1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj');
+  objects.push('2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj');
+  objects.push('3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >> endobj');
+  objects.push('4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj');
+  objects.push('5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> endobj');
+  objects.push('6 0 obj << /Length ' + content.length + ' >> stream\n' + content + '\nendstream endobj');
+  let pdf = '%PDF-1.4\n'; const offsets = [0];
+  objects.forEach(function(obj){ offsets.push(pdf.length); pdf += obj + '\n'; });
+  const xref = pdf.length;
+  pdf += 'xref\n0 ' + (objects.length + 1) + '\n0000000000 65535 f \n';
+  for(let i=1; i<offsets.length; i++){ pdf += String(offsets[i]).padStart(10,'0') + ' 00000 n \n'; }
+  pdf += 'trailer << /Size ' + (objects.length + 1) + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF';
+  const blob = new Blob([pdf], {type:'application/pdf'});
+  const url = URL.createObjectURL(blob); const a = document.createElement('a');
+  a.href = url; a.download = 'jays-sentence-mot-' + (state.initials || 'student') + '.pdf';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+function emailSubject(){ return encodeURIComponent('Base 6 · Jay\'s Sentence MOT — ' + (state.initials || 'Student')); }
+function emailBody(){ return encodeURIComponent(reportTextLines().join('\n')); }
+function sendGmail(){
+  if(!state.finalReport){ showReportMessage('Create the report first.'); return; }
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + emailSubject() + '&body=' + emailBody(), '_blank');
+}
+function sendMailto(){
+  if(!state.finalReport){ showReportMessage('Create the report first.'); return; }
+  window.location.href = 'mailto:' + TEACHER_EMAIL + '?subject=' + emailSubject() + '&body=' + emailBody();
+}
+function showReportMessage(text){ const box = $('reportMsg'); box.textContent = text; box.classList.add('show'); setTimeout(function(){ box.classList.remove('show'); }, 3500); }
+
+initInitials();
+renderCase();
+</script>
+</body>
+</html>
