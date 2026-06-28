@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/Base6/favicon.ico">
+  <title>JTK's Football Kit Design Studio · Week 5 Project</title>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent: #1a5276;
+      --accent-dark: #0b2f4d;
+      --accent-light: #eaf4fb;
+      --accent-mid: #aed6f1;
+      --cream: #fef8f4;
+      --dark: #1a1a1a;
+      --muted: #555;
+      --line: #e0d8d0;
+      --green: #2e8b57;
+      --green-light: #eaf7f0;
+      --orange: #ef7724;
+      --orange-light: #fff3eb;
+      --gold: #b8860b;
+      --gold-light: #fff8e1;
+      --red: #c0392b;
+      --red-light: #fdecea;
+      --purple: #7b5ea7;
+      --purple-light: #f5eef8;
+      --pink: #c2185b;
+    }
+    body { font-family: 'Atkinson Hyperlegible', Arial, sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; }
+    #lockScreen { position: fixed; inset: 0; z-index: 999; background: radial-gradient(circle at 25% 20%, #2d77a8, var(--accent-dark)); display: flex; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; }
+    .lock-card { width: 100%; max-width: 430px; border: 2px solid rgba(255,255,255,0.32); border-radius: 18px; padding: 1.6rem; background: rgba(255,255,255,0.12); box-shadow: 0 16px 45px rgba(0,0,0,0.22); }
+    .lock-icon { font-size: 3.2rem; margin-bottom: 0.6rem; }
+    #lockScreen h1 { color: white; font-size: 1.75rem; line-height: 1.2; margin-bottom: 0.5rem; }
+    #lockScreen p { color: rgba(255,255,255,0.88); line-height: 1.45; margin-bottom: 1.1rem; }
+    #passwordInput { width: 100%; max-width: 260px; padding: 0.75rem 1rem; border-radius: 12px; border: 3px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.2); color: white; font: inherit; font-weight: 700; text-align: center; margin-bottom: 0.8rem; }
+    #passwordInput::placeholder { color: rgba(255,255,255,0.55); }
+    button, .btn { font: inherit; font-weight: 700; border: 0; border-radius: 10px; padding: 0.72rem 1.15rem; cursor: pointer; }
+    #unlockBtn { background: white; color: var(--accent); }
+    #lockError { display: none; color: white; background: rgba(0,0,0,0.22); border-radius: 8px; padding: 0.5rem 0.8rem; margin-top: 0.7rem; font-weight: 700; }
+    #mainContent { display: none; }
+    .site-header { background: radial-gradient(circle at 22% 20%, #2d77a8, var(--accent-dark)); color: white; text-align: center; padding: 1.5rem 1rem; }
+    .tag { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.84; margin-bottom: 0.35rem; }
+    .site-header h1 { font-size: 1.85rem; line-height: 1.2; }
+    .site-header p { font-size: 0.92rem; opacity: 0.9; margin: 0.45rem auto 0; line-height: 1.5; max-width: 620px; }
+    .back-bar { background: rgba(0,0,0,0.18); padding: 0.6rem 1rem; }
+    .back-link { color: white; text-decoration: none; font-weight: 700; font-size: 0.85rem; opacity: 0.88; }
+    .tabs { position: sticky; top: 0; z-index: 20; background: white; border-bottom: 2px solid var(--line); display: flex; overflow-x: auto; }
+    .tab { color: var(--muted); background: white; border-bottom: 3px solid transparent; white-space: nowrap; font-size: 0.84rem; padding: 0.88rem 1rem; }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .progress-bar { background: white; border-bottom: 1px solid var(--line); padding: 0.65rem 1rem; }
+    .progress-inner { max-width: 1100px; margin: 0 auto; }
+    .progress-text { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); font-weight: 700; margin-bottom: 0.35rem; gap: 1rem; }
+    .track { height: 10px; background: #e8e0d8; border-radius: 999px; overflow: hidden; }
+    .fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--orange)); border-radius: 999px; transition: width 0.25s; }
+    main { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .layout { display: grid; grid-template-columns: minmax(250px, 390px) 1fr; gap: 1rem; align-items: start; }
+    .preview-sticky { position: sticky; top: 92px; }
+    .card { background: white; border: 2px solid var(--line); border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; }
+    .card h2 { font-size: 1.08rem; color: var(--accent); margin-bottom: 0.8rem; }
+    .card h3 { font-size: 0.96rem; color: var(--dark); margin-bottom: 0.45rem; }
+    .body { font-size: 0.9rem; color: var(--muted); line-height: 1.55; margin-bottom: 0.8rem; }
+    .note { background: var(--accent-light); border: 2px solid var(--accent-mid); border-radius: 12px; padding: 0.85rem 1rem; font-size: 0.88rem; line-height: 1.5; color: #123c5c; margin: 0.6rem 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 0.75rem; }
+    .tile, .chip { border: 2px solid var(--line); background: white; border-radius: 12px; font: inherit; font-weight: 700; cursor: pointer; }
+    .tile { padding: 0.9rem; text-align: left; min-height: 96px; }
+    .tile .big { font-size: 1.55rem; display: block; margin-bottom: 0.35rem; }
+    .tile .small { font-size: 0.78rem; color: var(--muted); display: block; line-height: 1.35; margin-top: 0.25rem; }
+    .tile.sel, .chip.sel { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+    .chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0; }
+    .chip { padding: 0.5rem 0.85rem; }
+    label { display: block; font-size: 0.86rem; font-weight: 700; margin: 0.9rem 0 0.35rem; }
+    textarea, input[type=text], select { width: 100%; font: inherit; font-size: 0.94rem; line-height: 1.55; background: #fffaf6; border: 2px solid var(--line); border-radius: 10px; padding: 0.75rem; min-height: 74px; resize: vertical; }
+    input[type=text], select { min-height: unset; }
+    textarea:focus, input:focus, select:focus, button:focus-visible, a:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+    .hint { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 0.25rem; }
+    .swatch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(42px, 1fr)); gap: 0.45rem; margin: 0.45rem 0 0.85rem; }
+    .swatch { height: 42px; border-radius: 10px; border: 3px solid var(--line); cursor: pointer; position: relative; }
+    .swatch.sel { border-color: #111; box-shadow: 0 0 0 2px white, 0 0 0 5px var(--accent); }
+    .kit-card { background: linear-gradient(180deg, white 0%, #f6fbff 100%); border: 2px solid var(--accent-mid); border-radius: 18px; padding: 1rem; text-align: center; }
+    #kitSvg { width: 100%; max-width: 380px; height: auto; display: block; margin: 0 auto; }
+    .mini-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; margin-top: 0.75rem; }
+    .mini-card { border: 2px solid var(--line); border-radius: 12px; padding: 0.7rem; background: white; font-size: 0.78rem; font-weight: 700; color: var(--muted); }
+    .research-links { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.6rem 0 1rem; }
+    .research-links a { text-decoration: none; background: white; color: var(--accent); border: 2px solid var(--accent); border-radius: 999px; padding: 0.45rem 0.8rem; font-size: 0.82rem; font-weight: 700; }
+    .inspo-card { border: 2px solid var(--line); border-radius: 14px; padding: 0.9rem; background: #fffaf6; }
+    .inspo-top { display: flex; gap: 0.55rem; align-items: center; margin-bottom: 0.55rem; }
+    .inspo-icon { font-size: 1.45rem; }
+    .check { display: flex; gap: 0.65rem; align-items: flex-start; background: #fafaf8; border: 2px solid var(--line); border-radius: 12px; padding: 0.75rem 0.85rem; margin: 0.5rem 0; font-size: 0.92rem; font-weight: 700; line-height: 1.4; cursor: pointer; }
+    .check input { width: 22px; height: 22px; accent-color: var(--green); flex-shrink: 0; }
+    .btn-row { display: flex; gap: 0.65rem; flex-wrap: wrap; margin-top: 1rem; }
+    .btn { background: var(--accent); color: white; text-decoration: none; display: inline-block; }
+    .btn.alt { background: var(--orange); }
+    .btn.ghost { background: white; color: var(--accent); border: 2px solid var(--accent); }
+    .success { display: none; background: var(--green-light); border: 2px solid var(--green); color: #1a5c37; border-radius: 12px; padding: 0.85rem 1rem; margin-top: 0.8rem; font-weight: 700; }
+    .badge-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.55rem; }
+    .small-preview { background: white; border: 2px solid var(--line); border-radius: 14px; padding: 0.8rem; text-align: center; }
+    .print-sheet { display: none; }
+    footer { text-align: center; padding: 1.2rem; font-size: 0.78rem; color: #888; border-top: 1px solid var(--line); }
+    @media (max-width: 850px) { .layout { grid-template-columns: 1fr; } .preview-sticky { position: static; } }
+    @media (max-width: 640px) { .site-header h1 { font-size: 1.45rem; } .card { padding: 1rem; } .tab { font-size: 0.8rem; padding: 0.75rem 0.85rem; } }
+    @media print {
+      body { background: white; }
+      #lockScreen, .site-header, .back-bar, .tabs, .progress-bar, main, footer { display: none !important; }
+      .print-sheet { display: block; padding: 22mm 18mm; font-family: 'Atkinson Hyperlegible', Arial, sans-serif; color: #111; }
+      .print-title { font-size: 24pt; font-weight: 700; margin-bottom: 4mm; }
+      .print-sub { font-size: 11pt; color: #555; margin-bottom: 7mm; }
+      .print-grid { display: grid; grid-template-columns: 45% 55%; gap: 8mm; align-items: start; }
+      .print-box { border: 2px solid #ddd; border-radius: 8px; padding: 5mm; margin-bottom: 4mm; }
+      .print-box h2 { font-size: 13pt; margin-bottom: 3mm; color: #1a5276; }
+      .print-box p { font-size: 10.5pt; line-height: 1.45; margin: 0 0 2mm; }
+      #printSvgWrap svg { width: 100%; height: auto; }
+    }
+  
+
+/* ─────────────────────────────────────────────
+   Week 5 project shell update
+   Keeps the original project tools, but aligns the visual language with Week 5.
+───────────────────────────────────────────── */
+:root {
+  --week5-teal: #007291;
+  --week5-teal-dark: #005a73;
+  --week5-teal-light: #d7eef4;
+  --week5-orange: #ef7724;
+  --week5-orange-dark: #c05a10;
+  --week5-cream: #fef8f4;
+  --week5-line: #e0d8d0;
+}
+body { background-color: var(--week5-cream) !important; }
+#lockScreen, .lock {
+  background: linear-gradient(135deg, var(--week5-teal), var(--week5-teal-dark)) !important;
+}
+.lock-card {
+  background: #fffaf6 !important;
+  border: 2px solid #fcd8bc !important;
+  box-shadow: 0 12px 34px rgba(0,0,0,0.18) !important;
+}
+.lock-card h1, .lock-card p { color: #1a1a1a !important; }
+#lockScreen .lock-card h1 { color: #1a1a1a !important; }
+#lockScreen .lock-card p { color: #555 !important; }
+#lockScreen input, .lock input {
+  background: #fff !important;
+  color: #1a1a1a !important;
+  border: 2px solid #d8d0c8 !important;
+}
+#lockScreen input::placeholder, .lock input::placeholder { color: #777 !important; }
+#unlockBtn, .lock button, .btn-primary, .tool-btn.primary {
+  background: var(--week5-teal) !important;
+  color: #fff !important;
+  border-color: var(--week5-teal) !important;
+}
+#unlockBtn:hover, .lock button:hover, .btn-primary:hover, .tool-btn.primary:hover { background: var(--week5-teal-dark) !important; }
+.site-header, .hero {
+  position: relative !important;
+  background: var(--week5-teal) !important;
+  color: #fef8f4 !important;
+  text-align: center !important;
+  padding: 2.5rem 2rem 3.25rem !important;
+  overflow: hidden !important;
+}
+.site-header::before, .hero::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  left: -40px;
+  width: 180px;
+  height: 180px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+}
+.site-header::after, .hero::after {
+  content: "";
+  position: absolute;
+  bottom: 10px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background: rgba(239,119,36,0.18);
+  border-radius: 50%;
+}
+.site-header > *, .hero > * { position: relative; z-index: 2; }
+.site-header .tag, .hero .tag {
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  color: var(--week5-teal-light) !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 0.4rem !important;
+}
+.site-header h1, .hero h1 {
+  font-size: clamp(1.9rem, 5vw, 2.5rem) !important;
+  font-weight: 700 !important;
+  color: #fef8f4 !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1.2 !important;
+}
+.site-header p, .hero p {
+  color: var(--week5-teal-light) !important;
+  font-size: 1rem !important;
+  line-height: 1.55 !important;
+  max-width: 780px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.header-wave {
+  position: absolute !important;
+  bottom: -1px !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 40px !important;
+  z-index: 1 !important;
+  display: block !important;
+}
+.back-bar {
+  background: var(--week5-cream) !important;
+  padding: 1rem 1.5rem 0 !important;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+.back-link {
+  display: inline-block !important;
+  color: var(--week5-teal) !important;
+  text-decoration: none !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+  opacity: 1 !important;
+}
+.back-link:hover { text-decoration: underline !important; }
+.card, .section-card, .note, .info-box, .frame-card, .test-card, .photo-card, .presentation-preview {
+  border-radius: 16px !important;
+}
+.card, .section-card {
+  box-shadow: 0 4px 14px rgba(0,114,145,0.05);
+}
+.tab, .tab-btn {
+  min-height: 44px !important;
+}
+.success, .success-msg, .pdf-status, #successMsg {
+  border-radius: 12px !important;
+}
+.week5-context-card {
+  max-width: 1120px;
+  margin: 1rem auto 0;
+  background: #ffffff;
+  border: 2px solid var(--week5-orange);
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 4px 14px rgba(239,119,36,0.1);
+  color: #333;
+  line-height: 1.55;
+  font-size: 0.92rem;
+}
+.week5-context-card strong { color: var(--week5-orange-dark); }
+button, a, input, textarea { font-family: 'Atkinson Hyperlegible', Arial, sans-serif !important; }
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 3px solid var(--week5-orange) !important;
+  outline-offset: 2px !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}
+@media (max-width: 760px) {
+  .site-header, .hero { padding: 2rem 1rem 2.75rem !important; }
+  .back-bar { padding-left: 1rem !important; padding-right: 1rem !important; }
+  .week5-context-card { margin-left: 1rem; margin-right: 1rem; }
+}
+
+
+
+/* ── WEEK 5 STANDARD PASSWORD SCREEN ── */
+#lockScreen.week5-lock {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #007291;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  text-align: center;
+  overflow: hidden;
+}
+#lockScreen.week5-lock::before {
+  content: "";
+  position: absolute;
+  top: -70px;
+  left: -55px;
+  width: 190px;
+  height: 190px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+}
+#lockScreen.week5-lock::after {
+  content: "";
+  position: absolute;
+  right: -65px;
+  bottom: -35px;
+  width: 220px;
+  height: 220px;
+  background: rgba(239,119,36,0.2);
+  border-radius: 50%;
+}
+#lockScreen.week5-lock .lock-card {
+  position: relative;
+  z-index: 2;
+  width: min(440px, 100%);
+  background: #ffffff;
+  border: 2px solid #ef7724;
+  border-radius: 18px;
+  padding: 1.6rem;
+  color: #1a1a1a;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+}
+#lockScreen.week5-lock .lock-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #fdeee0;
+  border: 2px solid #ef7724;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.25rem;
+  margin: 0 auto 0.75rem;
+  line-height: 1;
+}
+#lockScreen.week5-lock .lock-week-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #007291;
+  margin: 0 0 0.4rem;
+}
+#lockScreen.week5-lock h1 {
+  color: #007291 !important;
+  font-size: 1.55rem;
+  line-height: 1.25;
+  margin: 0 0 0.45rem;
+}
+#lockScreen.week5-lock .lock-intro {
+  color: #333 !important;
+  font-size: 0.96rem;
+  line-height: 1.55;
+  margin: 0 auto 1rem;
+  max-width: 340px;
+}
+#lockScreen.week5-lock .lock-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 0.35rem;
+}
+#lockScreen.week5-lock #passwordInput {
+  width: 100%;
+  max-width: 280px;
+  min-height: 48px;
+  padding: 0.72rem 1rem;
+  border: 2px solid #e0d8d0;
+  border-radius: 12px;
+  background: #fffaf6;
+  color: #1a1a1a;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 auto 0.85rem;
+}
+#lockScreen.week5-lock #passwordInput::placeholder { color: #777; }
+#lockScreen.week5-lock #passwordInput:focus {
+  outline: 3px solid #fcd8bc;
+  outline-offset: 2px;
+  border-color: #007291;
+  background: #ffffff;
+}
+#lockScreen.week5-lock #unlockBtn,
+#lockScreen.week5-lock .lock-unlock-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  min-height: 46px;
+  border: none;
+  border-radius: 12px;
+  background: #007291;
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.96rem;
+  font-weight: 700;
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+}
+#lockScreen.week5-lock #unlockBtn:hover,
+#lockScreen.week5-lock .lock-unlock-btn:hover { background: #005a73; }
+#lockScreen.week5-lock #lockError,
+#lockScreen.week5-lock .lock-error {
+  display: none;
+  max-width: 330px;
+  margin: 0.85rem auto 0;
+  padding: 0.65rem 0.8rem;
+  border-radius: 10px;
+  background: #fdecea;
+  border: 2px solid #c0392b;
+  color: #7a1f17;
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+#lockScreen.week5-lock #lockError.show,
+#lockScreen.week5-lock .lock-error.show { display: block; }
+@media (prefers-reduced-motion: reduce) {
+  #lockScreen.week5-lock * { transition: none !important; }
+}
+
+</style>
+
+<style id="week5-unified-password-screen">
+/* Week 5 unified password screen: same structure, individual accent colours */
+#lockScreen.week5-lock,
+.lock.week5-lock {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9999 !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  width: 100% !important;
+  padding: clamp(1rem, 4vw, 2rem) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  overflow: auto !important;
+  background: radial-gradient(circle at 12% 12%, rgba(255,255,255,0.20), transparent 190px),
+              radial-gradient(circle at 88% 85%, rgba(239,119,36,0.18), transparent 230px),
+              linear-gradient(135deg, var(--lock-accent, #007291), var(--lock-dark, #005a73)) !important;
+  color: #1a1a1a !important;
+}
+#lockScreen.week5-lock::before,
+.lock.week5-lock::before {
+  content: "" !important;
+  position: absolute !important;
+  top: -58px !important;
+  left: -48px !important;
+  width: 185px !important;
+  height: 185px !important;
+  background: rgba(255,255,255,0.10) !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+}
+#lockScreen.week5-lock::after,
+.lock.week5-lock::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -55px !important;
+  bottom: 12px !important;
+  width: 210px !important;
+  height: 210px !important;
+  background: rgba(255,255,255,0.09) !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+}
+#lockScreen.week5-lock .lock-card,
+.lock.week5-lock .lock-card {
+  position: relative !important;
+  z-index: 2 !important;
+  width: min(520px, 100%) !important;
+  max-width: 520px !important;
+  padding: clamp(1.25rem, 4vw, 2rem) !important;
+  margin: 0 auto !important;
+  background: #fffaf6 !important;
+  border: 2px solid var(--lock-soft, #fcd8bc) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 16px 42px rgba(0,0,0,0.20) !important;
+  color: #1a1a1a !important;
+  text-align: center !important;
+}
+#lockScreen.week5-lock .lock-icon,
+.lock.week5-lock .lock-icon,
+#lockScreen.week5-lock .icon,
+.lock.week5-lock .icon {
+  width: 72px !important;
+  height: 72px !important;
+  margin: 0 auto 0.8rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  background: var(--lock-soft, #e6f5f8) !important;
+  border: 2px solid var(--lock-accent, #007291) !important;
+  font-size: 2.2rem !important;
+  line-height: 1 !important;
+}
+#lockScreen.week5-lock .lock-week-label,
+.lock.week5-lock .lock-week-label {
+  margin: 0 0 0.35rem !important;
+  color: var(--lock-accent, #007291) !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  line-height: 1.35 !important;
+  text-transform: uppercase !important;
+}
+#lockScreen.week5-lock h1,
+.lock.week5-lock h1 {
+  margin: 0 0 0.45rem !important;
+  color: #1a1a1a !important;
+  font-size: clamp(1.55rem, 6vw, 2rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.18 !important;
+}
+#lockScreen.week5-lock .lock-intro,
+.lock.week5-lock .lock-intro {
+  margin: 0 auto 1.15rem !important;
+  max-width: 360px !important;
+  color: #444 !important;
+  font-size: 0.98rem !important;
+  line-height: 1.55 !important;
+}
+#lockScreen.week5-lock .lock-label,
+.lock.week5-lock .lock-label {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 0 0.4rem !important;
+  color: #333 !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+}
+#lockScreen.week5-lock #passwordInput,
+.lock.week5-lock #passwordInput,
+#lockScreen.week5-lock input[type="password"],
+.lock.week5-lock input[type="password"] {
+  display: block !important;
+  width: min(320px, 100%) !important;
+  max-width: 320px !important;
+  min-height: 58px !important;
+  margin: 0 auto 0.9rem !important;
+  padding: 0.8rem 1rem !important;
+  background: #ffffff !important;
+  border: 2px solid #d8d0c8 !important;
+  border-radius: 16px !important;
+  color: #1a1a1a !important;
+  font-family: 'Atkinson Hyperlegible', Arial, sans-serif !important;
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  text-align: center !important;
+}
+#lockScreen.week5-lock #passwordInput::placeholder,
+.lock.week5-lock #passwordInput::placeholder,
+#lockScreen.week5-lock input[type="password"]::placeholder,
+.lock.week5-lock input[type="password"]::placeholder {
+  color: #777 !important;
+  opacity: 1 !important;
+}
+#lockScreen.week5-lock #passwordInput:focus,
+.lock.week5-lock #passwordInput:focus,
+#lockScreen.week5-lock input[type="password"]:focus,
+.lock.week5-lock input[type="password"]:focus {
+  outline: 3px solid var(--lock-soft, #e6f5f8) !important;
+  outline-offset: 2px !important;
+  border-color: var(--lock-accent, #007291) !important;
+}
+#lockScreen.week5-lock #unlockBtn,
+.lock.week5-lock #unlockBtn,
+#lockScreen.week5-lock .lock-unlock-btn,
+.lock.week5-lock .lock-unlock-btn,
+#lockScreen.week5-lock button,
+.lock.week5-lock button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.35rem !important;
+  min-height: 48px !important;
+  margin: 0 !important;
+  padding: 0.75rem 1.25rem !important;
+  border: 2px solid var(--lock-accent, #007291) !important;
+  border-radius: 14px !important;
+  background: var(--lock-accent, #007291) !important;
+  color: #ffffff !important;
+  font-family: 'Atkinson Hyperlegible', Arial, sans-serif !important;
+  font-size: 0.96rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+}
+#lockScreen.week5-lock #unlockBtn:hover,
+.lock.week5-lock #unlockBtn:hover,
+#lockScreen.week5-lock .lock-unlock-btn:hover,
+.lock.week5-lock .lock-unlock-btn:hover,
+#lockScreen.week5-lock button:hover,
+.lock.week5-lock button:hover {
+  background: var(--lock-dark, #005a73) !important;
+  border-color: var(--lock-dark, #005a73) !important;
+  transform: translateY(-1px) !important;
+}
+#lockScreen.week5-lock #lockError,
+.lock.week5-lock #lockError,
+#lockScreen.week5-lock .lock-error,
+.lock.week5-lock .lock-error,
+#lockScreen.week5-lock .err,
+.lock.week5-lock .err {
+  display: none;
+  max-width: 360px !important;
+  margin: 0.85rem auto 0 !important;
+  padding: 0.7rem 0.9rem !important;
+  background: #fdecea !important;
+  border: 2px solid #c0392b !important;
+  border-radius: 12px !important;
+  color: #7a1f17 !important;
+  font-size: 0.86rem !important;
+  font-weight: 700 !important;
+  line-height: 1.45 !important;
+}
+#lockScreen.week5-lock #lockError.show,
+.lock.week5-lock #lockError.show,
+#lockScreen.week5-lock .lock-error.show,
+.lock.week5-lock .lock-error.show,
+#lockScreen.week5-lock .err.show,
+.lock.week5-lock .err.show { display: block !important; }
+@media (max-width: 520px) {
+  #lockScreen.week5-lock,
+  .lock.week5-lock { align-items: center !important; padding: 1rem !important; }
+  #lockScreen.week5-lock .lock-card,
+  .lock.week5-lock .lock-card { border-radius: 18px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #lockScreen.week5-lock *,
+  .lock.week5-lock * { transition: none !important; }
+  #lockScreen.week5-lock button:hover,
+  .lock.week5-lock button:hover { transform: none !important; }
+}
+</style>
+
+</head>
+<body>
+  <div id="lockScreen" class="week5-lock" aria-label="Password screen" style="--lock-accent:#1a5276; --lock-dark:#0b2f4d; --lock-soft:#eaf4fb;">
+  <div class="lock-card">
+    <div class="lock-icon" aria-hidden="true">⚽</div>
+    <p class="lock-week-label">Base 6 · Week 5 Project</p>
+    <h1>JTK's Kit Design Studio</h1>
+    <p class="lock-intro">Open your Week 5 football kit design studio.</p>
+    <label class="lock-label" for="passwordInput">Password</label>
+    <input type="password" id="passwordInput" placeholder="Password..." autocomplete="off" onkeydown="if(event.key === 'Enter') unlock()">
+    <button id="unlockBtn" class="lock-unlock-btn" type="button" onclick="unlock()">Unlock project →</button>
+    <div id="lockError" class="lock-error" role="alert" aria-live="polite">That password doesn't match — try again.</div>
+  </div>
+</div>
+<div id="mainContent">
+    <header class="site-header">
+      <p class="tag">Week 5 · Project</p>
+      <h1>⚽ JTK's Football Kit Design Studio</h1>
+      <p>Research a kit style, build a shirt design, explain the choices, then save a design sheet.</p>
+    <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path></svg></header>
+
+    <div class="back-bar"><a class="back-link" href="index.html">← Back to Project Index</a></div>
+  <div class="week5-context-card"><strong>Week 5 project focus:</strong> continue the project, make one useful improvement, and save or send the evidence when you are ready. No rush.</div>
+
+    <nav class="tabs" aria-label="Project sections">
+      <button class="tab active" data-tab="brief" onclick="showTab('brief')">🎯 Brief</button>
+      <button class="tab" data-tab="research" onclick="showTab('research')">🔎 Research</button>
+      <button class="tab" data-tab="studio" onclick="showTab('studio')">🎨 Shirt Studio</button>
+      <button class="tab" data-tab="badge" onclick="showTab('badge')">🛡️ Badge</button>
+      <button class="tab" data-tab="review" onclick="showTab('review')">✅ Review</button>
+      <button class="tab" data-tab="export" onclick="showTab('export')">📄 Export</button>
+    </nav>
+
+    <div class="progress-bar">
+      <div class="progress-inner">
+        <div class="progress-text"><span>Design progress</span><span id="progressText">0 choices made</span></div>
+        <div class="track"><div class="fill" id="progressFill"></div></div>
+      </div>
+    </div>
+
+    <main>
+      <section class="panel active" id="brief">
+        <div class="layout">
+          <div class="preview-sticky">
+            <div class="kit-card">
+              <div id="livePreviewA"></div>
+              <div class="mini-row">
+                <div class="mini-card" id="miniIdentity">Identity: not chosen</div>
+                <div class="mini-card" id="miniPattern">Pattern: plain</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <h2>🎯 Kit design brief</h2>
+              <p class="body">Make a football kit with a clear team identity.</p>
+              <label>Team name</label>
+              <input id="teamName" data-save type="text" placeholder="e.g. JTK United" oninput="updateKit()">
+              <label>Kit type</label>
+              <div class="chips" id="kitType">
+                <button class="chip">🏠 Home</button>
+                <button class="chip">🚌 Away</button>
+                <button class="chip">✨ Third kit</button>
+                <button class="chip">🏋️ Training</button>
+              </div>
+              <label>Team personality</label>
+              <div class="grid" id="identityGrid">
+                <button class="tile"><span class="big">⚡</span>Fast<span class="small">sharp, bright, energetic</span></button>
+                <button class="tile"><span class="big">🛡️</span>Strong<span class="small">bold, solid, serious</span></button>
+                <button class="tile"><span class="big">🌊</span>Calm<span class="small">cool, clean, balanced</span></button>
+                <button class="tile"><span class="big">🔥</span>Fearless<span class="small">loud, brave, dramatic</span></button>
+              </div>
+              <label>One-sentence kit idea</label>
+              <textarea id="kitIdea" data-save placeholder="This kit is for a team that feels..."></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="research">
+        <div class="card">
+          <h2>🔎 Research board</h2>
+          <p class="body">Look for ideas. Save only the best bits.</p>
+          <div class="research-links">
+            <a target="_blank" rel="noopener" href="https://www.google.com/search?tbm=isch&q=football+kit+design+stripes">Striped kits</a>
+            <a target="_blank" rel="noopener" href="https://www.google.com/search?tbm=isch&q=football+kit+badge+design">Badge ideas</a>
+            <a target="_blank" rel="noopener" href="https://www.google.com/search?tbm=isch&q=football+kit+colour+palette">Colour palettes</a>
+            <a target="_blank" rel="noopener" href="https://www.google.com/search?tbm=isch&q=football+shirt+pattern+design">Pattern ideas</a>
+          </div>
+          <div class="grid">
+            <div class="inspo-card">
+              <div class="inspo-top"><span class="inspo-icon">🎨</span><strong>Colours</strong></div>
+              <textarea id="researchColours" data-save placeholder="Colours I noticed..."></textarea>
+            </div>
+            <div class="inspo-card">
+              <div class="inspo-top"><span class="inspo-icon">〰️</span><strong>Patterns</strong></div>
+              <textarea id="researchPatterns" data-save placeholder="Patterns I noticed..."></textarea>
+            </div>
+            <div class="inspo-card">
+              <div class="inspo-top"><span class="inspo-icon">🛡️</span><strong>Badges</strong></div>
+              <textarea id="researchBadges" data-save placeholder="Badge ideas..."></textarea>
+            </div>
+            <div class="inspo-card">
+              <div class="inspo-top"><span class="inspo-icon">👕</span><strong>Details</strong></div>
+              <textarea id="researchDetails" data-save placeholder="Collar, cuffs, sponsor, number..."></textarea>
+            </div>
+          </div>
+          <div class="note"><strong>Research question:</strong> what makes a kit look like it belongs to one team?</div>
+        </div>
+      </section>
+
+      <section class="panel" id="studio">
+        <div class="layout">
+          <div class="preview-sticky">
+            <div class="kit-card">
+              <div id="livePreviewB"></div>
+              <p class="hint">Preview updates as you choose.</p>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <h2>🎨 Shirt Studio</h2>
+              <label>Main colour</label>
+              <div class="swatch-grid" id="mainSwatches"></div>
+              <label>Second colour</label>
+              <div class="swatch-grid" id="secondSwatches"></div>
+              <label>Trim colour</label>
+              <div class="swatch-grid" id="trimSwatches"></div>
+              <label>Pattern</label>
+              <div class="chips" id="patternChips">
+                <button class="chip" data-pattern="plain">Plain</button>
+                <button class="chip" data-pattern="stripes">Stripes</button>
+                <button class="chip" data-pattern="hoops">Hoops</button>
+                <button class="chip" data-pattern="halves">Halves</button>
+                <button class="chip" data-pattern="sash">Sash</button>
+                <button class="chip" data-pattern="chevrons">Chevrons</button>
+                <button class="chip" data-pattern="pinstripes">Pinstripes</button>
+                <button class="chip" data-pattern="lightning">Lightning</button>
+              </div>
+              <label>Collar style</label>
+              <div class="chips" id="collarChips">
+                <button class="chip" data-collar="crew">Crew</button>
+                <button class="chip" data-collar="vneck">V-neck</button>
+                <button class="chip" data-collar="polo">Polo</button>
+              </div>
+              <label>Shirt number</label>
+              <input id="shirtNo" data-save type="text" value="10" maxlength="3" oninput="updateKit()">
+              <label>Sponsor / front text</label>
+              <input id="sponsorText" data-save type="text" value="BASE 6" maxlength="16" oninput="updateKit()">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="badge">
+        <div class="layout">
+          <div class="preview-sticky">
+            <div class="small-preview">
+              <svg id="badgePreview" viewBox="0 0 220 220" role="img" aria-label="Badge preview" style="width:100%;max-width:260px"></svg>
+              <p class="hint">Badge preview</p>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <h2>🛡️ Badge builder</h2>
+              <label>Badge text</label>
+              <input id="badgeText" data-save type="text" value="JTK" maxlength="5" oninput="updateKit()">
+              <label>Badge shape</label>
+              <div class="chips" id="badgeShapeChips">
+                <button class="chip" data-shape="shield">Shield</button>
+                <button class="chip" data-shape="circle">Circle</button>
+                <button class="chip" data-shape="diamond">Diamond</button>
+              </div>
+              <label>Badge symbol</label>
+              <div class="badge-options" id="symbolChips">
+                <button class="chip" data-symbol="⚽">⚽ Ball</button>
+                <button class="chip" data-symbol="⭐">⭐ Star</button>
+                <button class="chip" data-symbol="⚡">⚡ Bolt</button>
+                <button class="chip" data-symbol="🦁">🦁 Lion</button>
+                <button class="chip" data-symbol="👑">👑 Crown</button>
+                <button class="chip" data-symbol="🌊">🌊 Wave</button>
+              </div>
+              <label>Motto or tiny detail</label>
+              <input id="mottoText" data-save type="text" placeholder="e.g. Play Bold" maxlength="20" oninput="updateKit()">
+            </div>
+
+            <div class="card">
+              <h2>🧵 Kit details</h2>
+              <div class="grid" id="detailGrid">
+                <button class="tile"><span class="big">♻️</span>Recycled fabric<span class="small">eco design idea</span></button>
+                <button class="tile"><span class="big">💨</span>Breathable<span class="small">good for sport</span></button>
+                <button class="tile"><span class="big">🧦</span>Matching socks<span class="small">complete kit look</span></button>
+                <button class="tile"><span class="big">👕</span>Player fit<span class="small">comfortable movement</span></button>
+              </div>
+              <label>Why these colours?</label>
+              <textarea id="colourWhy" data-save placeholder="I chose these colours because..."></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="review">
+        <div class="card">
+          <h2>✅ Designer review</h2>
+          <p class="body">Check the design before exporting.</p>
+          <label class="check"><input type="checkbox" data-check="identity"> The kit has a clear team identity.</label>
+          <label class="check"><input type="checkbox" data-check="colours"> The colours work together.</label>
+          <label class="check"><input type="checkbox" data-check="pattern"> The pattern is clear from far away.</label>
+          <label class="check"><input type="checkbox" data-check="badge"> The badge links to the team idea.</label>
+          <label class="check"><input type="checkbox" data-check="sport"> The details make sense for football.</label>
+          <label>What makes this a strong kit?</label>
+          <textarea id="goodKit" data-save placeholder="It works because..."></textarea>
+          <label>One refinement I could make</label>
+          <textarea id="refinement" data-save placeholder="I could improve..."></textarea>
+        </div>
+      </section>
+
+      <section class="panel" id="export">
+        <div class="layout">
+          <div class="preview-sticky">
+            <div class="kit-card">
+              <div id="livePreviewC"></div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <h2>📄 Export and send</h2>
+              <p class="body">Save the design sheet, then email the notes to Jay.</p>
+              <div class="btn-row">
+                <button class="btn alt" onclick="exportPDF()">Print / save PDF sheet</button>
+                <button class="btn ghost" onclick="downloadSVG()">Download shirt SVG</button>
+                <button class="btn" onclick="sendJTK()">Email kit notes to Jay</button>
+              </div>
+              <div class="success" id="successMsg">Email window opened.</div>
+              <div class="note">Tip: choose “Save as PDF” in the print window.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>Base 6 · Chilton Bridge School · Week 5 Project</footer>
+  </div>
+
+  <div class="print-sheet" id="printSheet">
+    <div class="print-title">JTK Football Kit Design</div>
+    <div class="print-sub">Week 5 project design sheet</div>
+    <div class="print-grid">
+      <div class="print-box" id="printSvgWrap"></div>
+      <div>
+        <div class="print-box"><h2>Brief</h2><p id="printBrief"></p></div>
+        <div class="print-box"><h2>Research</h2><p id="printResearch"></p></div>
+        <div class="print-box"><h2>Design choices</h2><p id="printChoices"></p></div>
+        <div class="print-box"><h2>Review</h2><p id="printReview"></p></div>
+      </div>
+    </div>
+  </div>
+
+  <template id="kitTemplate">
+    <svg id="kitSvg" viewBox="0 0 360 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Football shirt preview">
+      <defs>
+        <clipPath id="shirtClip">
+          <path d="M83 88 L128 54 L153 76 L207 76 L232 54 L277 88 L252 151 L228 142 L228 350 L132 350 L132 142 L108 151 Z"/>
+        </clipPath>
+        <linearGradient id="shirtGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop id="gradA" offset="0" stop-color="#1a5276"/>
+          <stop id="gradB" offset="1" stop-color="#ffffff"/>
+        </linearGradient>
+        <pattern id="pinstripePattern" width="18" height="18" patternUnits="userSpaceOnUse">
+          <rect width="18" height="18" fill="transparent"/>
+          <rect x="8" width="2" height="18" fill="var(--secondColour, #ffffff)" opacity="0.75"/>
+        </pattern>
+      </defs>
+      <rect width="360" height="430" rx="24" fill="#f6fbff"/>
+      <ellipse cx="180" cy="372" rx="92" ry="12" fill="#d8e7ef" opacity="0.8"/>
+      <g id="shirtGroup">
+        <path id="shirtBase" d="M83 88 L128 54 L153 76 L207 76 L232 54 L277 88 L252 151 L228 142 L228 350 L132 350 L132 142 L108 151 Z" fill="#1a5276" stroke="#222" stroke-width="4" stroke-linejoin="round"/>
+        <g id="patternLayer" clip-path="url(#shirtClip)"></g>
+        <path id="leftSleeve" d="M83 88 L128 54 L139 88 L108 151 Z" fill="#1a5276" opacity="0.92" stroke="#222" stroke-width="3"/>
+        <path id="rightSleeve" d="M232 54 L277 88 L252 151 L221 88 Z" fill="#1a5276" opacity="0.92" stroke="#222" stroke-width="3"/>
+        <path id="sideLeft" d="M132 144 L150 150 L150 350 L132 350 Z" fill="#ffffff" opacity="0.22"/>
+        <path id="sideRight" d="M228 144 L210 150 L210 350 L228 350 Z" fill="#ffffff" opacity="0.22"/>
+        <path id="collarCrew" d="M153 76 Q180 96 207 76 L198 104 Q180 118 162 104 Z" fill="#ffffff" stroke="#222" stroke-width="3"/>
+        <path id="collarV" d="M153 76 L180 117 L207 76 L197 101 L180 132 L163 101 Z" fill="#ffffff" stroke="#222" stroke-width="3" style="display:none"/>
+        <path id="collarPolo" d="M153 76 L170 112 L180 96 L190 112 L207 76 L198 108 L180 128 L162 108 Z" fill="#ffffff" stroke="#222" stroke-width="3" style="display:none"/>
+        <rect id="cuffLeft" x="93" y="137" width="31" height="10" rx="4" fill="#ffffff" transform="rotate(-21 108 142)"/>
+        <rect id="cuffRight" x="237" y="137" width="31" height="10" rx="4" fill="#ffffff" transform="rotate(21 252 142)"/>
+        <g id="badgeOnShirt" transform="translate(145 132) scale(0.34)"></g>
+        <text id="sponsorTextSvg" x="180" y="213" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="700">BASE 6</text>
+        <text id="numberTextSvg" x="180" y="282" text-anchor="middle" fill="#ffffff" font-size="62" font-weight="700">10</text>
+      </g>
+    </svg>
+  </template>
+
+  <script>
+    const STORE_KEY = 'base6_w5_project_jtk_refined';
+    const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+    const colours = ['#1a5276', '#ffffff', '#111111', '#c0392b', '#ef7724', '#f4c542', '#2e8b57', '#40a9c9', '#7b5ea7', '#c2185b', '#8c6239', '#d9d2cb'];
+    const state = loadState();
+
+    function unlock() {
+      const value = document.getElementById('passwordInput').value.trim().toLowerCase();
+      if (value === 'jtk') {
+        document.getElementById('lockScreen').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        updateKit();
+      } else {
+        document.getElementById('lockError').style.display = 'block';
+        document.getElementById('passwordInput').value = '';
+      }
+    }
+
+    function showTab(id) {
+      document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      const btn = document.querySelector('[data-tab="' + id + '"]');
+      if (btn) btn.classList.add('active');
+      updateKit();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function loadState() {
+      try {
+        return Object.assign({
+          fields: {}, checks: {}, choices: {},
+          main: '#1a5276', second: '#ffffff', trim: '#ef7724',
+          pattern: 'plain', collar: 'crew', badgeShape: 'shield', symbol: '⚽'
+        }, JSON.parse(localStorage.getItem(STORE_KEY)) || {});
+      } catch (e) {
+        return { fields: {}, checks: {}, choices: {}, main: '#1a5276', second: '#ffffff', trim: '#ef7724', pattern: 'plain', collar: 'crew', badgeShape: 'shield', symbol: '⚽' };
+      }
+    }
+
+    function saveState() {
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+      updateProgress();
+    }
+
+    function installPreview(targetId) {
+      const target = document.getElementById(targetId);
+      if (!target) return;
+      target.innerHTML = '';
+      target.appendChild(document.getElementById('kitTemplate').content.firstElementChild.cloneNode(true));
+    }
+
+    function installPreviews() {
+      ['livePreviewA', 'livePreviewB', 'livePreviewC'].forEach(installPreview);
+    }
+
+    function makeSwatches(boxId, key) {
+      const box = document.getElementById(boxId);
+      if (!box) return;
+      box.innerHTML = '';
+      colours.forEach(colour => {
+        const button = document.createElement('button');
+        button.className = 'swatch';
+        button.type = 'button';
+        button.title = colour;
+        button.style.background = colour;
+        if (colour === '#ffffff') button.style.boxShadow = 'inset 0 0 0 1px #ccc';
+        button.addEventListener('click', () => {
+          state[key] = colour;
+          saveState();
+          updateKit();
+        });
+        box.appendChild(button);
+      });
+    }
+
+    function wireFields() {
+      document.querySelectorAll('[data-save]').forEach(el => {
+        if (state.fields[el.id] !== undefined) el.value = state.fields[el.id];
+        el.addEventListener('input', () => {
+          state.fields[el.id] = el.value;
+          saveState();
+        });
+      });
+
+      document.querySelectorAll('.tile').forEach(tile => {
+        const group = tile.parentElement.id || 'tiles';
+        const text = tile.textContent.trim();
+        if (!state.choices[group]) state.choices[group] = [];
+        tile.classList.toggle('sel', state.choices[group].includes(text));
+        tile.addEventListener('click', () => {
+          tile.classList.toggle('sel');
+          if (!state.choices[group]) state.choices[group] = [];
+          if (tile.classList.contains('sel') && !state.choices[group].includes(text)) state.choices[group].push(text);
+          if (!tile.classList.contains('sel')) state.choices[group] = state.choices[group].filter(item => item !== text);
+          saveState();
+          updateKit();
+        });
+      });
+
+      document.querySelectorAll('#kitType .chip').forEach(chip => multiChip(chip, 'kitType'));
+      document.querySelectorAll('#detailGrid .tile').forEach(tile => {});
+      document.querySelectorAll('#patternChips .chip').forEach(chip => singleChip(chip, 'pattern', chip.dataset.pattern));
+      document.querySelectorAll('#collarChips .chip').forEach(chip => singleChip(chip, 'collar', chip.dataset.collar));
+      document.querySelectorAll('#badgeShapeChips .chip').forEach(chip => singleChip(chip, 'badgeShape', chip.dataset.shape));
+      document.querySelectorAll('#symbolChips .chip').forEach(chip => singleChip(chip, 'symbol', chip.dataset.symbol));
+
+      document.querySelectorAll('[data-check]').forEach(cb => {
+        cb.checked = !!state.checks[cb.dataset.check];
+        cb.addEventListener('change', () => {
+          state.checks[cb.dataset.check] = cb.checked;
+          saveState();
+        });
+      });
+    }
+
+    function multiChip(chip, group) {
+      const text = chip.textContent.trim();
+      if (!state.choices[group]) state.choices[group] = [];
+      chip.classList.toggle('sel', state.choices[group].includes(text));
+      chip.addEventListener('click', () => {
+        chip.classList.toggle('sel');
+        if (chip.classList.contains('sel') && !state.choices[group].includes(text)) state.choices[group].push(text);
+        if (!chip.classList.contains('sel')) state.choices[group] = state.choices[group].filter(item => item !== text);
+        saveState();
+        updateKit();
+      });
+    }
+
+    function singleChip(chip, key, value) {
+      chip.classList.toggle('sel', state[key] === value);
+      chip.addEventListener('click', () => {
+        state[key] = value;
+        saveState();
+        updateKit();
+      });
+    }
+
+    function textColour(hex) {
+      const n = parseInt(hex.slice(1), 16);
+      const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+      return (r * 299 + g * 587 + b * 114) / 1000 > 145 ? '#111111' : '#ffffff';
+    }
+
+    function setAttrAll(selector, attr, value) {
+      document.querySelectorAll(selector).forEach(el => el.setAttribute(attr, value));
+    }
+
+    function updatePattern(svg) {
+      const layer = svg.querySelector('#patternLayer');
+      layer.innerHTML = '';
+      const main = state.main, second = state.second, trim = state.trim;
+      const add = markup => { layer.insertAdjacentHTML('beforeend', markup); };
+      if (state.pattern === 'stripes') {
+        for (let x = 75; x < 280; x += 32) add(`<rect x="${x}" y="54" width="16" height="300" fill="${second}" opacity="0.95"/>`);
+      }
+      if (state.pattern === 'hoops') {
+        for (let y = 88; y < 350; y += 42) add(`<rect x="82" y="${y}" width="196" height="21" fill="${second}" opacity="0.95"/>`);
+      }
+      if (state.pattern === 'halves') {
+        add(`<rect x="180" y="54" width="100" height="300" fill="${second}" opacity="0.95"/>`);
+      }
+      if (state.pattern === 'sash') {
+        add(`<polygon points="98,60 132,54 262,350 218,350" fill="${second}" opacity="0.95"/>`);
+        add(`<polygon points="116,60 130,54 260,350 242,350" fill="${trim}" opacity="0.8"/>`);
+      }
+      if (state.pattern === 'chevrons') {
+        for (let y = 128; y < 310; y += 54) add(`<polyline points="105,${y} 180,${y+30} 255,${y}" fill="none" stroke="${second}" stroke-width="18" opacity="0.9"/>`);
+      }
+      if (state.pattern === 'pinstripes') {
+        for (let x = 94; x < 265; x += 18) add(`<rect x="${x}" y="70" width="3" height="280" fill="${second}" opacity="0.75"/>`);
+      }
+      if (state.pattern === 'lightning') {
+        add(`<polygon points="195,72 137,210 177,210 147,342 232,178 190,178" fill="${second}" opacity="0.9"/>`);
+        add(`<polyline points="195,72 137,210 177,210 147,342" fill="none" stroke="${trim}" stroke-width="8" opacity="0.9"/>`);
+      }
+    }
+
+    function badgeMarkup(scaleForShirt) {
+      const shape = state.badgeShape;
+      const text = (document.getElementById('badgeText').value || 'JTK').slice(0, 5).toUpperCase();
+      const motto = (document.getElementById('mottoText').value || '').slice(0, 18);
+      const symbol = state.symbol || '⚽';
+      const stroke = '#111111';
+      let shapeMarkup = '';
+      if (shape === 'circle') shapeMarkup = `<circle cx="110" cy="110" r="86" fill="${state.trim}" stroke="${stroke}" stroke-width="8"/><circle cx="110" cy="110" r="68" fill="${state.second}" stroke="${stroke}" stroke-width="4"/>`;
+      if (shape === 'diamond') shapeMarkup = `<polygon points="110,18 202,110 110,202 18,110" fill="${state.trim}" stroke="${stroke}" stroke-width="8"/><polygon points="110,44 176,110 110,176 44,110" fill="${state.second}" stroke="${stroke}" stroke-width="4"/>`;
+      if (shape === 'shield') shapeMarkup = `<path d="M38 32 H182 V104 C182 152 151 184 110 202 C69 184 38 152 38 104 Z" fill="${state.trim}" stroke="${stroke}" stroke-width="8"/><path d="M60 56 H160 V108 C160 140 139 162 110 176 C81 162 60 140 60 108 Z" fill="${state.second}" stroke="${stroke}" stroke-width="4"/>`;
+      const symbolSize = scaleForShirt ? 46 : 50;
+      return `${shapeMarkup}<text x="110" y="104" text-anchor="middle" font-size="${symbolSize}" dominant-baseline="middle">${symbol}</text><text x="110" y="146" text-anchor="middle" font-size="32" font-weight="700" fill="${textColour(state.second)}">${escapeHtml(text)}</text><text x="110" y="170" text-anchor="middle" font-size="14" font-weight="700" fill="${textColour(state.second)}">${escapeHtml(motto)}</text>`;
+    }
+
+    function updateKit() {
+      document.querySelectorAll('.swatch').forEach(button => {
+        const bg = rgbToHex(getComputedStyle(button).backgroundColor);
+        const parentId = button.parentElement.id;
+        const selected = (parentId === 'mainSwatches' && bg === state.main) || (parentId === 'secondSwatches' && bg === state.second) || (parentId === 'trimSwatches' && bg === state.trim);
+        button.classList.toggle('sel', selected);
+      });
+
+      document.querySelectorAll('#patternChips .chip').forEach(chip => chip.classList.toggle('sel', state.pattern === chip.dataset.pattern));
+      document.querySelectorAll('#collarChips .chip').forEach(chip => chip.classList.toggle('sel', state.collar === chip.dataset.collar));
+      document.querySelectorAll('#badgeShapeChips .chip').forEach(chip => chip.classList.toggle('sel', state.badgeShape === chip.dataset.shape));
+      document.querySelectorAll('#symbolChips .chip').forEach(chip => chip.classList.toggle('sel', state.symbol === chip.dataset.symbol));
+
+      document.querySelectorAll('#kitSvg').forEach(svg => {
+        svg.querySelector('#shirtBase').setAttribute('fill', state.main);
+        svg.querySelector('#leftSleeve').setAttribute('fill', state.main);
+        svg.querySelector('#rightSleeve').setAttribute('fill', state.main);
+        svg.querySelector('#collarCrew').style.display = state.collar === 'crew' ? '' : 'none';
+        svg.querySelector('#collarV').style.display = state.collar === 'vneck' ? '' : 'none';
+        svg.querySelector('#collarPolo').style.display = state.collar === 'polo' ? '' : 'none';
+        ['#collarCrew', '#collarV', '#collarPolo', '#cuffLeft', '#cuffRight'].forEach(sel => svg.querySelector(sel).setAttribute('fill', state.trim));
+        svg.querySelector('#sideLeft').setAttribute('fill', state.second);
+        svg.querySelector('#sideRight').setAttribute('fill', state.second);
+        svg.querySelector('#sponsorTextSvg').textContent = (document.getElementById('sponsorText').value || 'BASE 6').slice(0, 16).toUpperCase();
+        svg.querySelector('#numberTextSvg').textContent = (document.getElementById('shirtNo').value || '10').slice(0, 3);
+        svg.querySelector('#sponsorTextSvg').setAttribute('fill', textColour(state.main));
+        svg.querySelector('#numberTextSvg').setAttribute('fill', textColour(state.main));
+        svg.querySelector('#badgeOnShirt').innerHTML = badgeMarkup(true);
+        updatePattern(svg);
+      });
+
+      document.querySelectorAll('#badgePreview').forEach(svg => { svg.innerHTML = badgeMarkup(false); });
+      document.getElementById('miniIdentity').textContent = 'Identity: ' + selectedList('identityGrid');
+      document.getElementById('miniPattern').textContent = 'Pattern: ' + state.pattern;
+      savePrintSheet();
+      updateProgress();
+    }
+
+    function rgbToHex(rgb) {
+      const m = rgb.match(/\d+/g);
+      if (!m) return rgb;
+      return '#' + m.slice(0, 3).map(x => Number(x).toString(16).padStart(2, '0')).join('');
+    }
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/[&<>"]/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[ch]));
+    }
+
+    function val(id) {
+      const el = document.getElementById(id);
+      return el && el.value.trim() ? el.value.trim() : '(not filled in)';
+    }
+
+    function selectedList(id) {
+      const group = state.choices[id] || [];
+      return group.length ? group.map(x => x.replace(/\s+/g, ' ')).join(', ') : 'not chosen';
+    }
+
+    function checkedList() {
+      const labels = [];
+      document.querySelectorAll('[data-check]').forEach(cb => {
+        if (cb.checked) labels.push(cb.parentElement.textContent.trim());
+      });
+      return labels.length ? labels.join(', ') : '(none ticked yet)';
+    }
+
+    function updateProgress() {
+      let count = 0;
+      ['teamName', 'kitIdea', 'researchColours', 'researchPatterns', 'researchBadges', 'colourWhy', 'goodKit'].forEach(id => { if (val(id) !== '(not filled in)') count++; });
+      ['kitType', 'identityGrid', 'detailGrid'].forEach(id => { if ((state.choices[id] || []).length) count++; });
+      if (state.pattern && state.pattern !== 'plain') count++;
+      if (state.badgeShape) count++;
+      if (state.symbol) count++;
+      Object.values(state.checks).forEach(BooleanVal => { if (BooleanVal) count++; });
+      const max = 18;
+      const pct = Math.min(100, Math.round((count / max) * 100));
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressText').textContent = count + ' choices made';
+    }
+
+    function savePrintSheet() {
+      const printWrap = document.getElementById('printSvgWrap');
+      const svg = document.querySelector('#livePreviewC #kitSvg') || document.querySelector('#livePreviewA #kitSvg');
+      if (svg) printWrap.innerHTML = svg.outerHTML;
+      document.getElementById('printBrief').textContent = 'Team: ' + val('teamName') + ' · Type: ' + selectedList('kitType') + ' · Idea: ' + val('kitIdea');
+      document.getElementById('printResearch').textContent = 'Colours: ' + val('researchColours') + ' · Patterns: ' + val('researchPatterns') + ' · Badges: ' + val('researchBadges');
+      document.getElementById('printChoices').textContent = 'Main: ' + state.main + ' · Second: ' + state.second + ' · Trim: ' + state.trim + ' · Pattern: ' + state.pattern + ' · Badge: ' + state.badgeShape + ' ' + state.symbol + ' · Details: ' + selectedList('detailGrid');
+      document.getElementById('printReview').textContent = 'Why colours: ' + val('colourWhy') + ' · Strong kit: ' + val('goodKit') + ' · Refinement: ' + val('refinement');
+    }
+
+    function exportPDF() {
+      updateKit();
+      setTimeout(() => window.print(), 60);
+    }
+
+    function downloadSVG() {
+      updateKit();
+      const svg = document.querySelector('#livePreviewB #kitSvg') || document.querySelector('#livePreviewA #kitSvg');
+      const blob = new Blob([svg.outerHTML], { type: 'image/svg+xml;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'JTK-football-kit-design.svg';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }
+
+    function sendJTK() {
+      const body = [
+        'JTK — Football Kit Design — Week 5',
+        '',
+        'Team name: ' + val('teamName'),
+        'Kit type: ' + selectedList('kitType'),
+        'Team identity: ' + selectedList('identityGrid'),
+        'Kit idea: ' + val('kitIdea'),
+        '',
+        'Research colours: ' + val('researchColours'),
+        'Research patterns: ' + val('researchPatterns'),
+        'Research badges: ' + val('researchBadges'),
+        'Research details: ' + val('researchDetails'),
+        '',
+        'Main colour: ' + state.main,
+        'Second colour: ' + state.second,
+        'Trim colour: ' + state.trim,
+        'Pattern: ' + state.pattern,
+        'Collar: ' + state.collar,
+        'Badge: ' + state.badgeShape + ' / ' + state.symbol + ' / ' + val('badgeText'),
+        'Sponsor: ' + val('sponsorText'),
+        'Number: ' + val('shirtNo'),
+        '',
+        'Details: ' + selectedList('detailGrid'),
+        'Why colours: ' + val('colourWhy'),
+        '',
+        'Review ticks: ' + checkedList(),
+        'Why it works: ' + val('goodKit'),
+        'Refinement: ' + val('refinement'),
+        '',
+        'PDF note: I used the Print / save PDF sheet button.'
+      ].join('\n');
+      const url = 'https://mail.google.com/mail/?view=cm&to=' + encodeURIComponent(TEACHER_EMAIL) + '&su=' + encodeURIComponent('JTK — Football Kit Design — Week 5') + '&body=' + encodeURIComponent(body);
+      window.open(url, '_blank');
+      document.getElementById('successMsg').style.display = 'block';
+    }
+
+    installPreviews();
+    makeSwatches('mainSwatches', 'main');
+    makeSwatches('secondSwatches', 'second');
+    makeSwatches('trimSwatches', 'trim');
+    wireFields();
+    updateKit();
+  </script>
+
+
+<script>
+(function(){
+  function ready(fn){
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+  ready(function(){
+    var input = document.getElementById('passwordInput');
+    var error = document.getElementById('lockError');
+    if(input){
+      setTimeout(function(){ input.focus(); }, 50);
+      input.addEventListener('input', function(){
+        if(error){ error.classList.remove('show'); error.style.display = 'none'; }
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
