@@ -1263,13 +1263,32 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   let effortRating = 0, confRating = 0, excitedRating = 0, mood = '', sessionTime = '';
 
   function tryUnlock() {
-    if (document.getElementById('passwordInput').value.trim().toLowerCase() === PASSWORD) {
-      document.getElementById('lockScreen').style.display = 'none';
-      document.getElementById('mainContent').style.display = 'block';
-      updateTotal(); loadProgress();
+    const input = document.getElementById('passwordInput');
+    const lock = document.getElementById('lockScreen');
+    const main = document.getElementById('mainContent');
+    const error = document.getElementById('lockError');
+    const value = (input ? input.value : '').trim().toLowerCase();
+
+    if (value === PASSWORD) {
+      if (error) {
+        error.classList.remove('show');
+        error.style.setProperty('display', 'none', 'important');
+      }
+      if (lock) lock.style.setProperty('display', 'none', 'important');
+      if (main) main.style.setProperty('display', 'block', 'important');
+
+      try { updateTotal(); } catch (e) { console.warn('Total update skipped after unlock:', e); }
+      try { loadProgress(); } catch (e) { console.warn('Progress load skipped after unlock:', e); }
     } else {
-      document.getElementById('lockError').style.display = 'block';
-      document.getElementById('passwordInput').value = '';
+      if (error) {
+        error.textContent = "That password doesn't match — try again.";
+        error.classList.add('show');
+        error.style.setProperty('display', 'block', 'important');
+      }
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
     }
   }
 
