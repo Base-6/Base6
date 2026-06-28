@@ -8,40 +8,640 @@
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; --c: #c2185b; }
 
-  .site-header { position: relative; background-color: var(--c); padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
-  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
-  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.12); border-radius: 50%; }
-  .site-header .header-inner { position: relative; z-index: 2; }
-  .week-label { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.85); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
-  .site-header h1 { font-size: 2.4rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
-  .site-header p { font-size: 1.1rem; color: rgba(255,255,255,0.92); margin-top: 0.5rem; }
-  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+  body {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    background-color: #fef8f4;
+    color: #1a1a1a;
+    min-height: 100vh;
+    --c: #c2185b;
+    --soft: #fde7f0;
+    --soft2: #fff3f8;
+    --orange: #ef7724;
+    --orange-dark: #c05a10;
+    --ink: #1a1a1a;
+  }
 
-  .main { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-  .back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 700; color: var(--c); text-decoration: none; }
-  .back-link:hover { text-decoration: underline; }
+  .site-header {
+    position: relative;
+    background-color: var(--c);
+    padding: 2.5rem 2rem 3.25rem;
+    text-align: center;
+    overflow: hidden;
+  }
 
-  .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin-bottom: 2rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
-  .intro h2 { font-size: 1.25rem; color: #c05a10; margin-bottom: 0.5rem; }
-  .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
+  .site-header::before {
+    content: "";
+    position: absolute;
+    top: -60px;
+    left: -40px;
+    width: 180px;
+    height: 180px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
 
-  .card { background: #fff; border: 2px solid var(--c); border-radius: 16px; padding: 1.5rem; }
-  .field { margin-bottom: 1rem; }
-  .field:last-of-type { margin-bottom: 0; }
-  .field label { display: block; font-size: 0.82rem; font-weight: 700; color: #555; margin-bottom: 0.3rem; }
-  .field input[type=text], .field textarea { width: 100%; padding: 0.7rem 0.9rem; font-family: inherit; font-size: 0.98rem; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #fff; color: #1a1a1a; outline: none; }
-  .field textarea { min-height: 220px; resize: vertical; line-height: 1.6; }
-  .field input:focus, .field textarea:focus { border-color: var(--c); }
+  .site-header::after {
+    content: "";
+    position: absolute;
+    bottom: 10px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 50%;
+  }
 
-  .send-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1.1rem; }
-  .send-btn { font-family: inherit; font-size: 0.95rem; font-weight: 700; padding: 0.7rem 1.5rem; background: var(--c); color: #fff; border: none; border-radius: 999px; cursor: pointer; transition: filter 0.15s; }
-  .send-btn:hover { filter: brightness(0.93); }
-  .save-note { font-size: 0.8rem; color: #999; }
+  .site-header .header-inner {
+    position: relative;
+    z-index: 2;
+  }
 
-  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
-  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+  .week-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .site-header h1 {
+    font-size: clamp(2rem, 5vw, 2.7rem);
+    font-weight: 700;
+    color: #fef8f4;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+
+  .site-header p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.92);
+    margin-top: 0.5rem;
+  }
+
+  .header-wave {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    z-index: 1;
+  }
+
+  .main {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--c);
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  .intro,
+  .card,
+  .panel-card,
+  .preview-card,
+  .story-card {
+    background: #fff;
+    border-radius: 18px;
+    margin-bottom: 1.2rem;
+  }
+
+  .intro {
+    border: 2px solid var(--orange);
+    padding: 1.4rem 1.6rem;
+    box-shadow: 0 4px 14px rgba(239,119,36,0.1);
+  }
+
+  .intro h2 {
+    font-size: 1.25rem;
+    color: var(--orange-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .intro p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+  }
+
+  .card,
+  .story-card {
+    border: 2px solid var(--c);
+    padding: 1.4rem 1.5rem;
+  }
+
+  .section-label {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c);
+    margin-bottom: 0.25rem;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--c);
+    margin-bottom: 0.4rem;
+  }
+
+  .section-help {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.55;
+    margin-bottom: 1rem;
+  }
+
+  .field {
+    margin-bottom: 0.9rem;
+  }
+
+  .field:last-child {
+    margin-bottom: 0;
+  }
+
+  .field label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 0.3rem;
+  }
+
+  .field input[type=text],
+  .field textarea {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    font-family: inherit;
+    font-size: 1rem;
+    border: 1.5px solid #e0d8d0;
+    border-radius: 12px;
+    background: #fff;
+    color: #1a1a1a;
+    outline: none;
+  }
+
+  .field textarea {
+    min-height: 88px;
+    resize: vertical;
+    line-height: 1.55;
+  }
+
+  .field input:focus,
+  .field textarea:focus {
+    border-color: var(--c);
+  }
+
+  .row2,
+  .row3 {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .row2 {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .row3 {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .mini-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #333;
+    margin: 1rem 0 0.5rem;
+  }
+
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .chip,
+  .mini-btn {
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 0.55rem 0.8rem;
+    cursor: pointer;
+    border: 1.5px solid #e0c6d4;
+    background: #fff;
+    color: var(--c);
+  }
+
+  .chip:hover,
+  .mini-btn:hover {
+    background: var(--soft);
+  }
+
+  .chip[aria-pressed="true"] {
+    background: var(--c);
+    color: #fff;
+    border-color: var(--c);
+  }
+
+  .mini-btn.primary {
+    background: var(--c);
+    color: #fff;
+    border-color: var(--c);
+  }
+
+  .mini-btn.orange {
+    background: var(--orange);
+    color: #fff;
+    border-color: var(--orange);
+  }
+
+  .mini-btn.light {
+    background: #fff;
+    color: #333;
+    border-color: #e0d8d0;
+  }
+
+  .comic-builder {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .panel-card {
+    border: 2px solid #e0c6d4;
+    padding: 1.2rem;
+    background: linear-gradient(180deg, #fff 0%, #fff7fb 100%);
+  }
+
+  .panel-card h3 {
+    font-size: 1.05rem;
+    color: var(--c);
+    margin-bottom: 0.35rem;
+  }
+
+  .panel-card p {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 0.8rem;
+  }
+
+  .progress-wrap {
+    border: 1.5px solid #ead5df;
+    background: #fff;
+    border-radius: 16px;
+    padding: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-top strong {
+    color: var(--c);
+    font-size: 0.95rem;
+  }
+
+  .progress-top span {
+    color: #666;
+    font-size: 0.85rem;
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 14px;
+    background: #f2e2eb;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--c);
+    border-radius: 999px;
+    transition: width 0.2s ease;
+  }
+
+  .preview-card {
+    border: 2px solid #222;
+    padding: 1.4rem 1.5rem;
+    box-shadow: 0 5px 16px rgba(0,0,0,0.06);
+  }
+
+  .preview-card h2 {
+    font-size: 1.25rem;
+    color: #222;
+    margin-bottom: 0.35rem;
+  }
+
+  .preview-help {
+    font-size: 0.88rem;
+    color: #666;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .comic-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .comic-panel {
+    border: 2px solid #222;
+    border-radius: 14px;
+    min-height: 260px;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .comic-scene {
+    min-height: 120px;
+    padding: 0.75rem;
+    position: relative;
+    border-bottom: 2px solid #222;
+    background: #f7edf4;
+  }
+
+  .scene-classroom { background: linear-gradient(180deg, #fff7d8 0%, #f1e2bf 100%); }
+  .scene-playground { background: linear-gradient(180deg, #dcf2ff 0%, #d6f0d0 100%); }
+  .scene-lunch { background: linear-gradient(180deg, #fff1dc 0%, #f5d3b3 100%); }
+  .scene-bus { background: linear-gradient(180deg, #e9f1ff 0%, #cbd8ef 100%); }
+  .scene-home { background: linear-gradient(180deg, #f4e7d7 0%, #e7d1bb 100%); }
+  .scene-online { background: linear-gradient(180deg, #e9e7ff 0%, #c9c4ef 100%); }
+  .scene-park { background: linear-gradient(180deg, #def7e7 0%, #c7e7cb 100%); }
+  .scene-madeup { background: linear-gradient(180deg, #f7e1ff 0%, #d9e3ff 100%); }
+
+  .scene-label {
+    display: inline-block;
+    background: rgba(255,255,255,0.82);
+    border: 1.5px solid rgba(0,0,0,0.18);
+    border-radius: 999px;
+    padding: 0.25rem 0.55rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #333;
+  }
+
+  .characters {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-end;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .person {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .head {
+    width: 46px;
+    height: 46px;
+    background: #fff;
+    border: 2px solid #222;
+    border-radius: 50%;
+    position: relative;
+  }
+
+  .head::before,
+  .head::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    width: 5px;
+    height: 5px;
+    background: #222;
+    border-radius: 50%;
+  }
+
+  .head::before { left: 13px; }
+  .head::after { right: 13px; }
+
+  .body-shape {
+    width: 58px;
+    height: 44px;
+    border: 2px solid #222;
+    border-radius: 18px 18px 8px 8px;
+    background: #fef8f4;
+    margin-top: -4px;
+  }
+
+  .person-name {
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: #fff;
+    border: 1.5px solid #222;
+    border-radius: 999px;
+    padding: 0.2rem 0.45rem;
+    max-width: 92px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .comic-text {
+    padding: 0.75rem;
+    display: grid;
+    gap: 0.5rem;
+    flex: 1;
+    align-content: start;
+  }
+
+  .panel-num {
+    font-size: 0.75rem;
+    color: #555;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .narration {
+    background: #fff7cf;
+    border: 1.5px solid #222;
+    padding: 0.45rem 0.55rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
+  .bubble,
+  .thought {
+    background: #fff;
+    border: 1.8px solid #222;
+    padding: 0.5rem 0.6rem;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    position: relative;
+  }
+
+  .bubble {
+    border-radius: 16px;
+  }
+
+  .bubble::after {
+    content: "";
+    position: absolute;
+    bottom: -9px;
+    left: 28px;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-right: 1.8px solid #222;
+    border-bottom: 1.8px solid #222;
+    transform: rotate(45deg);
+  }
+
+  .thought {
+    border-radius: 18px;
+    border-style: dashed;
+  }
+
+  .empty-text {
+    color: #777;
+  }
+
+  .story-output {
+    min-height: 220px;
+  }
+
+  .send-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+
+  .send-btn {
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.7rem 1.5rem;
+    background: var(--c);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: filter 0.15s;
+  }
+
+  .send-btn:hover {
+    filter: brightness(0.93);
+  }
+
+  .save-note,
+  .status {
+    font-size: 0.82rem;
+    color: #777;
+  }
+
+  .status {
+    min-height: 1.3rem;
+    margin-top: 0.6rem;
+  }
+
+  .small-note {
+    font-size: 0.86rem;
+    color: #666;
+    line-height: 1.5;
+    margin-top: 0.55rem;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid var(--orange);
+    outline-offset: 2px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.8rem;
+    color: #888;
+    border-top: 1px solid #e0d8d0;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 780px) {
+    .comic-builder,
+    .comic-preview-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .main {
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .site-header {
+      padding: 2rem 1.2rem 3rem;
+    }
+  }
+
+  @media print {
+    body {
+      background: #fff;
+    }
+
+    .site-header,
+    .back-link,
+    .intro,
+    .card,
+    .panel-card,
+    .story-card,
+    .progress-wrap,
+    footer {
+      display: none !important;
+    }
+
+    .main {
+      max-width: none;
+      padding: 0;
+    }
+
+    .preview-card {
+      border: none;
+      box-shadow: none;
+      margin: 0;
+      padding: 1rem;
+    }
+
+    .comic-preview-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .comic-panel {
+      break-inside: avoid;
+    }
+  }
 </style>
 </head>
 <body>
@@ -50,7 +650,7 @@
   <div class="header-inner">
     <p class="week-label">National Writing Day</p>
     <h1>A Story of Kindness</h1>
-    <p>Big or small, every act of kindness has a story.</p>
+    <p>Build a four-panel comic about a small moment that mattered.</p>
   </div>
   <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
@@ -61,29 +661,342 @@
 
   <a class="back-link" href="national-writing-day.html">Back to National Writing Day</a>
 
-  <div class="intro">
-    <h2>Your story</h2>
-    <p>Write a short story about a time someone was kind to you, or a time you were kind to someone else. It can be something that really happened, or you can make it up. Think about what happened and how it felt. Your writing saves on this device, and you can send it to Jay at the end.</p>
-  </div>
+  <section class="intro">
+    <h2>Kindness Comic Maker</h2>
+    <p>
+      Create a short comic about a time someone was kind. It can be real, made up, serious, funny or dramatic.
+      Build the story one panel at a time, then turn it into a written story if you want.
+    </p>
+    <p class="small-note">
+      Short answers are fine. You can use speech bubbles, thought bubbles and narrator boxes instead of writing one long story straight away.
+    </p>
+  </section>
 
-  <div class="card">
-    <div class="field">
-      <label for="initials">Your initials</label>
-      <input type="text" id="initials" data-save placeholder="Type your initials here">
+  <section class="card">
+    <div class="section-label">Set up</div>
+    <div class="section-title">Choose your story details</div>
+    <div class="section-help">Pick a few simple details first. These will appear in your comic preview.</div>
+
+    <div class="row3">
+      <div class="field">
+        <label for="initials">Your initials</label>
+        <input type="text" id="initials" data-save placeholder="Type your initials here">
+      </div>
+
+      <div class="field">
+        <label for="story-title">Comic title</label>
+        <input type="text" id="story-title" data-save placeholder="Give your comic a title">
+      </div>
+
+      <div class="field">
+        <label for="tone">Story tone</label>
+        <input type="text" id="tone" data-save placeholder="Pick a tone below or type one">
+      </div>
     </div>
-    <div class="field">
-      <label for="story-title">A title for your story</label>
-      <input type="text" id="story-title" data-save placeholder="Give your story a title">
+
+    <div class="mini-title">Choose a tone</div>
+    <div class="chip-row" id="toneChoices">
+      <button class="chip" type="button" data-tone="realistic" aria-pressed="false">realistic</button>
+      <button class="chip" type="button" data-tone="funny" aria-pressed="false">funny</button>
+      <button class="chip" type="button" data-tone="dramatic" aria-pressed="false">dramatic</button>
+      <button class="chip" type="button" data-tone="superhero" aria-pressed="false">superhero</button>
+      <button class="chip" type="button" data-tone="quiet and thoughtful" aria-pressed="false">quiet and thoughtful</button>
     </div>
-    <div class="field">
-      <label for="story">Your story</label>
-      <textarea id="story" data-save placeholder="Start your story here..."></textarea>
+
+    <div class="row2">
+      <div class="field">
+        <label for="char1">Character 1</label>
+        <input type="text" id="char1" data-save placeholder="Name, initials or nickname">
+      </div>
+
+      <div class="field">
+        <label for="char2">Character 2</label>
+        <input type="text" id="char2" data-save placeholder="Name, initials or nickname">
+      </div>
     </div>
+
+    <div class="mini-title">Where does the story happen?</div>
+    <div class="chip-row" id="sceneChoices">
+      <button class="chip" type="button" data-scene="classroom" aria-pressed="true">classroom</button>
+      <button class="chip" type="button" data-scene="playground" aria-pressed="false">playground</button>
+      <button class="chip" type="button" data-scene="lunch" aria-pressed="false">lunch hall</button>
+      <button class="chip" type="button" data-scene="bus" aria-pressed="false">bus</button>
+      <button class="chip" type="button" data-scene="home" aria-pressed="false">home</button>
+      <button class="chip" type="button" data-scene="online" aria-pressed="false">online/game chat</button>
+      <button class="chip" type="button" data-scene="park" aria-pressed="false">park</button>
+      <button class="chip" type="button" data-scene="madeup" aria-pressed="false">made-up place</button>
+    </div>
+  </section>
+
+  <section class="progress-wrap" aria-label="Comic progress">
+    <div class="progress-top">
+      <strong>Comic progress</strong>
+      <span id="progressText">0% ready</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </section>
+
+  <section class="comic-builder" aria-label="Comic panels">
+
+    <div class="panel-card">
+      <h3>Panel 1: The situation</h3>
+      <p>Where are they? Who is there? What is happening at the start?</p>
+
+      <div class="mini-title">Main feeling</div>
+      <div class="chip-row feeling-row" data-panel="1">
+        <button class="chip" type="button" data-feeling="calm" aria-pressed="false">calm</button>
+        <button class="chip" type="button" data-feeling="worried" aria-pressed="false">worried</button>
+        <button class="chip" type="button" data-feeling="lonely" aria-pressed="false">lonely</button>
+        <button class="chip" type="button" data-feeling="unsure" aria-pressed="false">unsure</button>
+        <button class="chip" type="button" data-feeling="left out" aria-pressed="false">left out</button>
+      </div>
+
+      <div class="field">
+        <label for="p1-narration">Narrator box</label>
+        <textarea id="p1-narration" data-save placeholder="One day, ..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="p1-speech">Speech bubble</label>
+        <textarea id="p1-speech" data-save placeholder="Someone says..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="p1-thought">Thought bubble</label>
+        <textarea id="p1-thought" data-save placeholder="Someone thinks..."></textarea>
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <h3>Panel 2: The problem</h3>
+      <p>What becomes tricky, awkward, unfair, sad or uncomfortable?</p>
+
+      <div class="mini-title">Problem card</div>
+      <div class="chip-row" id="problemChoices">
+        <button class="chip" type="button" data-problem="someone was left out" aria-pressed="false">left out</button>
+        <button class="chip" type="button" data-problem="someone felt embarrassed" aria-pressed="false">embarrassed</button>
+        <button class="chip" type="button" data-problem="someone lost something" aria-pressed="false">lost something</button>
+        <button class="chip" type="button" data-problem="someone felt worried" aria-pressed="false">worried</button>
+        <button class="chip" type="button" data-problem="something felt unfair" aria-pressed="false">unfair</button>
+        <button class="chip" type="button" data-problem="there was an argument" aria-pressed="false">argument</button>
+      </div>
+
+      <div class="field">
+        <label for="p2-narration">Narrator box</label>
+        <textarea id="p2-narration" data-save placeholder="Then, ..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="p2-speech">Speech bubble</label>
+        <textarea id="p2-speech" data-save placeholder="Someone says..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="p2-thought">Thought bubble</label>
+        <textarea id="p2-thought" data-save placeholder="Someone thinks..."></textarea>
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <h3>Panel 3: The kind action</h3>
+      <p>What does someone do to help? It can be small. Small still counts.</p>
+
+      <div class="mini-title">Kindness action</div>
+      <div class="chip-row" id="kindnessChoices">
+        <button class="chip" type="button" data-kindness="asked if they were okay" aria-pressed="false">checked in</button>
+        <button class="chip" type="button" data-kindness="sat with them" aria-pressed="false">sat with them</button>
+        <button class="chip" type="button" data-kindness="shared something" aria-pressed="false">shared</button>
+        <button class="chip" type="button" data-kindness="included them" aria-pressed="false">included them</button>
+        <button class="chip" type="button" data-kindness="listened without judging" aria-pressed="false">listened</button>
+        <button class="chip" type="button" data-kindness="apologised" aria-pressed="false">apologised</button>
+        <button class="chip" type="button" data-kindness="gave them space" aria-pressed="false">gave space</button>
+        <button class="chip" type="button" data-kindness="told a trusted adult" aria-pressed="false">trusted adult</button>
+      </div>
+
+      <div class="field">
+        <label for="p3-narration">Narrator box</label>
+        <textarea id="p3-narration" data-save placeholder="So, ..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="p3-speech">Speech bubble</label>
+        <textarea id="p3-speech" data-save placeholder="Someone says..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="p3-thought">Thought bubble</label>
+        <textarea id="p3-thought" data-save placeholder="Someone thinks..."></textarea>
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <h3>Panel 4: The ending</h3>
+      <p>What changes afterwards? How does someone feel at the end?</p>
+
+      <div class="mini-title">Ending feeling</div>
+      <div class="chip-row feeling-row" data-panel="4">
+        <button class="chip" type="button" data-feeling="relieved" aria-pressed="false">relieved</button>
+        <button class="chip" type="button" data-feeling="proud" aria-pressed="false">proud</button>
+        <button class="chip" type="button" data-feeling="grateful" aria-pressed="false">grateful</button>
+        <button class="chip" type="button" data-feeling="safe" aria-pressed="false">safe</button>
+        <button class="chip" type="button" data-feeling="understood" aria-pressed="false">understood</button>
+      </div>
+
+      <div class="field">
+        <label for="p4-narration">Narrator box</label>
+        <textarea id="p4-narration" data-save placeholder="After that, ..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="p4-speech">Speech bubble</label>
+        <textarea id="p4-speech" data-save placeholder="Someone says..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="p4-thought">Thought bubble</label>
+        <textarea id="p4-thought" data-save placeholder="Someone thinks..."></textarea>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="preview-card" aria-labelledby="previewTitle">
+    <h2 id="previewTitle">Comic preview</h2>
+    <p class="preview-help">Your comic updates as you write. Empty boxes are fine while you are building it.</p>
+
+    <div class="comic-preview-grid">
+
+      <article class="comic-panel">
+        <div class="comic-scene" id="scene1">
+          <span class="scene-label" id="sceneLabel1">classroom</span>
+          <div class="characters">
+            <div class="person">
+              <div class="head"></div>
+              <div class="body-shape"></div>
+              <div class="person-name" id="char1Preview1">Character 1</div>
+            </div>
+            <div class="person">
+              <div class="head"></div>
+              <div class="body-shape"></div>
+              <div class="person-name" id="char2Preview1">Character 2</div>
+            </div>
+          </div>
+        </div>
+        <div class="comic-text">
+          <div class="panel-num" id="panel1Feeling">Panel 1</div>
+          <div class="narration empty-text" id="p1NarrationPreview">Narrator box...</div>
+          <div class="bubble empty-text" id="p1SpeechPreview">Speech bubble...</div>
+          <div class="thought empty-text" id="p1ThoughtPreview">Thought bubble...</div>
+        </div>
+      </article>
+
+      <article class="comic-panel">
+        <div class="comic-scene" id="scene2">
+          <span class="scene-label" id="sceneLabel2">classroom</span>
+          <div class="characters">
+            <div class="person">
+              <div class="head"></div>
+              <div class="body-shape"></div>
+              <div class="person-name" id="char1Preview2">Character 1</div>
+            </div>
+            <div class="person">
+              <div class="head"></div>
+              <div class="body-shape"></div>
+              <div class="person-name" id="char2Preview2">Character 2</div>
+            </div>
+          </div>
+        </div>
+        <div class="comic-text">
+          <div class="panel-num" id="panel2Feeling">Panel 2</div>
+          <div class="narration empty-text" id="p2NarrationPreview">Narrator box...</div>
+          <div class="bubble empty-text" id="p2SpeechPreview">Speech bubble...</div>
+          <div class="thought empty-text" id="p2ThoughtPreview">Thought bubble...</div>
+        </div>
+      </article>
+
+      <article class="comic-panel">
+        <div class="comic-scene" id="scene3">
+          <span class="scene-label" id="sceneLabel3">classroom</span>
+          <div class="characters">
+            <div class="person">
+              <div class="head"></div>
+              <div class="body-shape"></div>
+              <div class="person-name" id="char1Preview3">Character 1</div>
+            </div>
+            <div class="person">
+              <div class="head"></div>
+              <div class="body-shape"></div>
+              <div class="person-name" id="char2Preview3">Character 2</div>
+            </div>
+          </div>
+        </div>
+        <div class="comic-text">
+          <div class="panel-num" id="panel3Feeling">Panel 3</div>
+          <div class="narration empty-text" id="p3NarrationPreview">Narrator box...</div>
+          <div class="bubble empty-text" id="p3SpeechPreview">Speech bubble...</div>
+          <div class="thought empty-text" id="p3ThoughtPreview">Thought bubble...</div>
+        </div>
+      </article>
+
+      <article class="comic-panel">
+        <div class="comic-scene" id="scene4">
+          <span class="scene-label" id="sceneLabel4">classroom</span>
+          <div class="characters">
+            <div class="person">
+              <div class="head"></div>
+              <div class="body-shape"></div>
+              <div class="person-name" id="char1Preview4">Character 1</div>
+            </div>
+            <div class="person">
+              <div class="head"></div>
+              <div class="body-shape"></div>
+              <div class="person-name" id="char2Preview4">Character 2</div>
+            </div>
+          </div>
+        </div>
+        <div class="comic-text">
+          <div class="panel-num" id="panel4Feeling">Panel 4</div>
+          <div class="narration empty-text" id="p4NarrationPreview">Narrator box...</div>
+          <div class="bubble empty-text" id="p4SpeechPreview">Speech bubble...</div>
+          <div class="thought empty-text" id="p4ThoughtPreview">Thought bubble...</div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="send-row">
+      <button class="mini-btn light" id="printComic" type="button">Print comic</button>
+      <button class="mini-btn light" id="copyComicNotes" type="button">Copy comic notes</button>
+    </div>
+  </section>
+
+  <section class="story-card">
+    <div class="section-label">Optional final version</div>
+    <div class="section-title">Turn your comic into a story</div>
+    <div class="section-help">
+      Press the button to turn your comic notes into a short story. You can edit it afterwards.
+    </div>
+
+    <div class="send-row" style="margin-top:0;margin-bottom:0.9rem;">
+      <button class="mini-btn orange" id="makeStory" type="button">Turn comic into story</button>
+      <button class="mini-btn light" id="copyStory" type="button">Copy story</button>
+      <button class="mini-btn light" id="clearAll" type="button">Clear all</button>
+    </div>
+
+    <div class="field">
+      <label for="story">Written story</label>
+      <textarea id="story" class="story-output" data-save placeholder="Your written story can go here..."></textarea>
+    </div>
+
     <div class="send-row">
       <button class="send-btn" id="send" type="button">Send to Jay</button>
-      <span class="save-note">Your writing is saved on this device.</span>
+      <span class="save-note">Your comic and story are saved on this device.</span>
     </div>
-  </div>
+
+    <div class="status" id="status" aria-live="polite"></div>
+  </section>
 
 </main>
 
@@ -93,37 +1006,480 @@
 
 <script>
 (function () {
-  var KEY = 'base6-week5-nwd-kindness';
+  var KEY = 'base6-week5-nwd-kindness-comic';
   var TEACHER = 'jay.raine@chiltonbridgeschool.co.uk';
+
+  var selectedScene = 'classroom';
+  var selectedTone = '';
+  var selectedProblem = '';
+  var selectedKindness = '';
+  var selectedFeelings = {
+    1: '',
+    4: ''
+  };
+
+  var sceneNames = {
+    classroom: 'classroom',
+    playground: 'playground',
+    lunch: 'lunch hall',
+    bus: 'bus',
+    home: 'home',
+    online: 'online/game chat',
+    park: 'park',
+    madeup: 'made-up place'
+  };
+
   var fields = Array.prototype.slice.call(document.querySelectorAll('[data-save]'));
 
-  function saveAll() {
-    var s = {};
-    fields.forEach(function (f) { s[f.id] = f.value; });
-    try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
+  function el(id) {
+    return document.getElementById(id);
   }
-  function restore() {
-    var s;
-    try { s = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { s = null; }
-    if (s) { fields.forEach(function (f) { if (s[f.id] != null) { f.value = s[f.id]; } }); }
-    try {
-      var p = JSON.parse(localStorage.getItem('base6Profile') || 'null');
-      var ini = document.getElementById('initials');
-      if (p && p.initials && ini && !ini.value) { ini.value = p.initials.toUpperCase(); }
-    } catch (e) {}
-  }
-  fields.forEach(function (f) { f.addEventListener('input', saveAll); });
-  restore();
 
-  function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
-  document.getElementById('send').addEventListener('click', function () {
-    var body = 'National Writing Day: A Story of Kindness\n\n' +
-      'From: ' + (val('initials') || '(no initials)') + '\n\n' +
-      'Title: ' + (val('story-title') || '(none)') + '\n\n' +
+  function val(id) {
+    var node = el(id);
+    return node ? node.value.trim() : '';
+  }
+
+  function setValue(id, value) {
+    var node = el(id);
+    if (node) node.value = value || '';
+  }
+
+  function setStatus(message) {
+    var status = el('status');
+    if (!status) return;
+    status.textContent = message || '';
+    if (message) {
+      window.setTimeout(function () {
+        if (status.textContent === message) status.textContent = '';
+      }, 3000);
+    }
+  }
+
+  function saveAll() {
+    var data = {
+      selectedScene: selectedScene,
+      selectedTone: selectedTone,
+      selectedProblem: selectedProblem,
+      selectedKindness: selectedKindness,
+      selectedFeelings: selectedFeelings
+    };
+
+    fields.forEach(function (field) {
+      data[field.id] = field.value;
+    });
+
+    try {
+      localStorage.setItem(KEY, JSON.stringify(data));
+    } catch (e) {}
+
+    updatePreview();
+    updateProgress();
+  }
+
+  function restore() {
+    var data = null;
+
+    try {
+      data = JSON.parse(localStorage.getItem(KEY) || 'null');
+    } catch (e) {
+      data = null;
+    }
+
+    if (data) {
+      fields.forEach(function (field) {
+        if (data[field.id] != null) {
+          field.value = data[field.id];
+        }
+      });
+
+      selectedScene = data.selectedScene || selectedScene;
+      selectedTone = data.selectedTone || '';
+      selectedProblem = data.selectedProblem || '';
+      selectedKindness = data.selectedKindness || '';
+
+      if (data.selectedFeelings) {
+        selectedFeelings = data.selectedFeelings;
+      }
+    }
+
+    try {
+      var profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+      var initials = el('initials');
+
+      if (profile && profile.initials && initials && !initials.value) {
+        initials.value = profile.initials.toUpperCase();
+      }
+    } catch (e) {}
+
+    applyAllPressedStates();
+    updatePreview();
+    updateProgress();
+  }
+
+  function applyAllPressedStates() {
+    Array.prototype.slice.call(document.querySelectorAll('[data-scene]')).forEach(function (button) {
+      button.setAttribute('aria-pressed', button.getAttribute('data-scene') === selectedScene ? 'true' : 'false');
+    });
+
+    Array.prototype.slice.call(document.querySelectorAll('[data-tone]')).forEach(function (button) {
+      button.setAttribute('aria-pressed', button.getAttribute('data-tone') === selectedTone ? 'true' : 'false');
+    });
+
+    Array.prototype.slice.call(document.querySelectorAll('[data-problem]')).forEach(function (button) {
+      button.setAttribute('aria-pressed', button.getAttribute('data-problem') === selectedProblem ? 'true' : 'false');
+    });
+
+    Array.prototype.slice.call(document.querySelectorAll('[data-kindness]')).forEach(function (button) {
+      button.setAttribute('aria-pressed', button.getAttribute('data-kindness') === selectedKindness ? 'true' : 'false');
+    });
+
+    Array.prototype.slice.call(document.querySelectorAll('.feeling-row')).forEach(function (row) {
+      var panel = row.getAttribute('data-panel');
+
+      Array.prototype.slice.call(row.querySelectorAll('[data-feeling]')).forEach(function (button) {
+        button.setAttribute('aria-pressed', button.getAttribute('data-feeling') === selectedFeelings[panel] ? 'true' : 'false');
+      });
+    });
+  }
+
+  function textOrEmpty(id, fallback) {
+    var text = val(id);
+    return text || fallback;
+  }
+
+  function fillPreview(id, sourceId, fallback) {
+    var preview = el(id);
+    if (!preview) return;
+
+    var text = val(sourceId);
+
+    if (text) {
+      preview.textContent = text;
+      preview.classList.remove('empty-text');
+    } else {
+      preview.textContent = fallback;
+      preview.classList.add('empty-text');
+    }
+  }
+
+  function updatePreview() {
+    var sceneLabel = sceneNames[selectedScene] || 'classroom';
+    var char1 = val('char1') || 'Character 1';
+    var char2 = val('char2') || 'Character 2';
+
+    for (var i = 1; i <= 4; i++) {
+      var scene = el('scene' + i);
+      var label = el('sceneLabel' + i);
+
+      if (scene) {
+        scene.className = 'comic-scene scene-' + selectedScene;
+      }
+
+      if (label) {
+        label.textContent = sceneLabel;
+      }
+
+      var c1 = el('char1Preview' + i);
+      var c2 = el('char2Preview' + i);
+
+      if (c1) c1.textContent = char1;
+      if (c2) c2.textContent = char2;
+    }
+
+    var p1Feeling = selectedFeelings[1] ? 'Panel 1 · feeling: ' + selectedFeelings[1] : 'Panel 1';
+    var p2Feeling = selectedProblem ? 'Panel 2 · problem: ' + selectedProblem : 'Panel 2';
+    var p3Feeling = selectedKindness ? 'Panel 3 · kindness: ' + selectedKindness : 'Panel 3';
+    var p4Feeling = selectedFeelings[4] ? 'Panel 4 · ending: ' + selectedFeelings[4] : 'Panel 4';
+
+    el('panel1Feeling').textContent = p1Feeling;
+    el('panel2Feeling').textContent = p2Feeling;
+    el('panel3Feeling').textContent = p3Feeling;
+    el('panel4Feeling').textContent = p4Feeling;
+
+    fillPreview('p1NarrationPreview', 'p1-narration', 'Narrator box...');
+    fillPreview('p1SpeechPreview', 'p1-speech', 'Speech bubble...');
+    fillPreview('p1ThoughtPreview', 'p1-thought', 'Thought bubble...');
+
+    fillPreview('p2NarrationPreview', 'p2-narration', 'Narrator box...');
+    fillPreview('p2SpeechPreview', 'p2-speech', 'Speech bubble...');
+    fillPreview('p2ThoughtPreview', 'p2-thought', 'Thought bubble...');
+
+    fillPreview('p3NarrationPreview', 'p3-narration', 'Narrator box...');
+    fillPreview('p3SpeechPreview', 'p3-speech', 'Speech bubble...');
+    fillPreview('p3ThoughtPreview', 'p3-thought', 'Thought bubble...');
+
+    fillPreview('p4NarrationPreview', 'p4-narration', 'Narrator box...');
+    fillPreview('p4SpeechPreview', 'p4-speech', 'Speech bubble...');
+    fillPreview('p4ThoughtPreview', 'p4-thought', 'Thought bubble...');
+  }
+
+  function updateProgress() {
+    var checks = [
+      val('initials'),
+      val('story-title'),
+      val('char1'),
+      val('char2'),
+      selectedScene,
+      selectedFeelings[1],
+      selectedProblem,
+      selectedKindness,
+      selectedFeelings[4],
+      val('p1-narration') || val('p1-speech') || val('p1-thought'),
+      val('p2-narration') || val('p2-speech') || val('p2-thought'),
+      val('p3-narration') || val('p3-speech') || val('p3-thought'),
+      val('p4-narration') || val('p4-speech') || val('p4-thought')
+    ];
+
+    var done = checks.filter(function (item) {
+      return !!item;
+    }).length;
+
+    var percent = Math.round((done / checks.length) * 100);
+
+    el('progressFill').style.width = percent + '%';
+    el('progressText').textContent = percent + '% ready';
+  }
+
+  function joinClean(parts) {
+    return parts.filter(function (part) {
+      return part && String(part).trim();
+    }).join(' ');
+  }
+
+  function makeStory() {
+    var title = val('story-title') || 'A Story of Kindness';
+    var char1 = val('char1') || 'one person';
+    var char2 = val('char2') || 'another person';
+    var scene = sceneNames[selectedScene] || 'somewhere';
+    var tone = val('tone') || selectedTone || 'thoughtful';
+
+    var p1 = joinClean([
+      val('p1-narration') || 'One day, ' + char1 + ' and ' + char2 + ' were in the ' + scene + '.',
+      selectedFeelings[1] ? 'At the start, someone felt ' + selectedFeelings[1] + '.' : '',
+      val('p1-speech') ? '"' + val('p1-speech') + '"' : '',
+      val('p1-thought') ? 'Someone thought, "' + val('p1-thought') + '"' : ''
+    ]);
+
+    var p2 = joinClean([
+      val('p2-narration') || (selectedProblem ? 'Then, ' + selectedProblem + '.' : 'Then, something became difficult.'),
+      val('p2-speech') ? '"' + val('p2-speech') + '"' : '',
+      val('p2-thought') ? 'Someone thought, "' + val('p2-thought') + '"' : ''
+    ]);
+
+    var p3 = joinClean([
+      val('p3-narration') || (selectedKindness ? 'So, someone ' + selectedKindness + '.' : 'So, someone chose to be kind.'),
+      val('p3-speech') ? '"' + val('p3-speech') + '"' : '',
+      val('p3-thought') ? 'Someone thought, "' + val('p3-thought') + '"' : ''
+    ]);
+
+    var p4 = joinClean([
+      val('p4-narration') || 'After that, things changed.',
+      selectedFeelings[4] ? 'By the end, someone felt ' + selectedFeelings[4] + '.' : '',
+      val('p4-speech') ? '"' + val('p4-speech') + '"' : '',
+      val('p4-thought') ? 'Someone thought, "' + val('p4-thought') + '"' : '',
+      'It was a small act of kindness, but it mattered.'
+    ]);
+
+    var story =
+      title + '\n\n' +
+      'This is a ' + tone + ' story about kindness.\n\n' +
+      p1 + '\n\n' +
+      p2 + '\n\n' +
+      p3 + '\n\n' +
+      p4;
+
+    setValue('story', story);
+    saveAll();
+    setStatus('Story created. You can edit it now.');
+  }
+
+  function getComicNotes() {
+    return 'National Writing Day: A Story of Kindness\n\n' +
+      'From: ' + (val('initials') || '(no initials)') + '\n' +
+      'Title: ' + (val('story-title') || '(none)') + '\n' +
+      'Tone: ' + (val('tone') || selectedTone || '(not chosen)') + '\n' +
+      'Scene: ' + (sceneNames[selectedScene] || selectedScene) + '\n' +
+      'Character 1: ' + (val('char1') || '(not named)') + '\n' +
+      'Character 2: ' + (val('char2') || '(not named)') + '\n\n' +
+
+      'Panel 1: The situation\n' +
+      'Feeling: ' + (selectedFeelings[1] || '(not chosen)') + '\n' +
+      'Narrator: ' + val('p1-narration') + '\n' +
+      'Speech: ' + val('p1-speech') + '\n' +
+      'Thought: ' + val('p1-thought') + '\n\n' +
+
+      'Panel 2: The problem\n' +
+      'Problem: ' + (selectedProblem || '(not chosen)') + '\n' +
+      'Narrator: ' + val('p2-narration') + '\n' +
+      'Speech: ' + val('p2-speech') + '\n' +
+      'Thought: ' + val('p2-thought') + '\n\n' +
+
+      'Panel 3: The kind action\n' +
+      'Kindness action: ' + (selectedKindness || '(not chosen)') + '\n' +
+      'Narrator: ' + val('p3-narration') + '\n' +
+      'Speech: ' + val('p3-speech') + '\n' +
+      'Thought: ' + val('p3-thought') + '\n\n' +
+
+      'Panel 4: The ending\n' +
+      'Ending feeling: ' + (selectedFeelings[4] || '(not chosen)') + '\n' +
+      'Narrator: ' + val('p4-narration') + '\n' +
+      'Speech: ' + val('p4-speech') + '\n' +
+      'Thought: ' + val('p4-thought') + '\n\n' +
+
+      'Written story:\n' +
       val('story') + '\n';
-    var su = encodeURIComponent('National Writing Day: A Story of Kindness');
-    window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER + '&su=' + su + '&body=' + encodeURIComponent(body), '_blank');
+  }
+
+  function copyText(text, successMessage) {
+    if (!text.trim()) {
+      setStatus('There is nothing to copy yet.');
+      return;
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        setStatus(successMessage || 'Copied.');
+      }).catch(function () {
+        fallbackCopy(text, successMessage);
+      });
+    } else {
+      fallbackCopy(text, successMessage);
+    }
+  }
+
+  function fallbackCopy(text, successMessage) {
+    var temp = document.createElement('textarea');
+    temp.value = text;
+    document.body.appendChild(temp);
+    temp.select();
+
+    try {
+      document.execCommand('copy');
+      setStatus(successMessage || 'Copied.');
+    } catch (e) {
+      setStatus('Copy did not work on this browser.');
+    }
+
+    document.body.removeChild(temp);
+  }
+
+  function clearAll() {
+    var ok = window.confirm('Clear this comic and story? This cannot be undone.');
+    if (!ok) return;
+
+    fields.forEach(function (field) {
+      field.value = '';
+    });
+
+    selectedScene = 'classroom';
+    selectedTone = '';
+    selectedProblem = '';
+    selectedKindness = '';
+    selectedFeelings = { 1: '', 4: '' };
+
+    try {
+      localStorage.removeItem(KEY);
+    } catch (e) {}
+
+    applyAllPressedStates();
+    updatePreview();
+    updateProgress();
+    setStatus('Comic cleared.');
+  }
+
+  fields.forEach(function (field) {
+    field.addEventListener('input', saveAll);
   });
+
+  Array.prototype.slice.call(document.querySelectorAll('[data-scene]')).forEach(function (button) {
+    button.addEventListener('click', function () {
+      selectedScene = button.getAttribute('data-scene');
+      applyAllPressedStates();
+      saveAll();
+    });
+  });
+
+  Array.prototype.slice.call(document.querySelectorAll('[data-tone]')).forEach(function (button) {
+    button.addEventListener('click', function () {
+      selectedTone = button.getAttribute('data-tone');
+      setValue('tone', selectedTone);
+      applyAllPressedStates();
+      saveAll();
+    });
+  });
+
+  Array.prototype.slice.call(document.querySelectorAll('[data-problem]')).forEach(function (button) {
+    button.addEventListener('click', function () {
+      selectedProblem = button.getAttribute('data-problem');
+
+      if (!val('p2-narration')) {
+        setValue('p2-narration', 'Then, ' + selectedProblem + '.');
+      }
+
+      applyAllPressedStates();
+      saveAll();
+    });
+  });
+
+  Array.prototype.slice.call(document.querySelectorAll('[data-kindness]')).forEach(function (button) {
+    button.addEventListener('click', function () {
+      selectedKindness = button.getAttribute('data-kindness');
+
+      if (!val('p3-narration')) {
+        setValue('p3-narration', 'So, someone ' + selectedKindness + '.');
+      }
+
+      applyAllPressedStates();
+      saveAll();
+    });
+  });
+
+  Array.prototype.slice.call(document.querySelectorAll('.feeling-row')).forEach(function (row) {
+    var panel = row.getAttribute('data-panel');
+
+    Array.prototype.slice.call(row.querySelectorAll('[data-feeling]')).forEach(function (button) {
+      button.addEventListener('click', function () {
+        var feeling = button.getAttribute('data-feeling');
+        selectedFeelings[panel] = selectedFeelings[panel] === feeling ? '' : feeling;
+        applyAllPressedStates();
+        saveAll();
+      });
+    });
+  });
+
+  el('makeStory').addEventListener('click', makeStory);
+
+  el('copyStory').addEventListener('click', function () {
+    copyText(val('story'), 'Story copied.');
+  });
+
+  el('copyComicNotes').addEventListener('click', function () {
+    copyText(getComicNotes(), 'Comic notes copied.');
+  });
+
+  el('printComic').addEventListener('click', function () {
+    window.print();
+  });
+
+  el('clearAll').addEventListener('click', clearAll);
+
+  el('send').addEventListener('click', function () {
+    var subject = encodeURIComponent('National Writing Day: A Story of Kindness');
+    var body = encodeURIComponent(getComicNotes());
+
+    window.open(
+      'https://mail.google.com/mail/?view=cm&fs=1&to=' +
+      TEACHER +
+      '&su=' +
+      subject +
+      '&body=' +
+      body,
+      '_blank'
+    );
+  });
+
+  restore();
 })();
 </script>
 
