@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Design a Book Cover | National Writing Day | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; --c: #ef7724; }
+
+  .site-header { position: relative; background-color: var(--c); padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.12); border-radius: 50%; }
+  .site-header .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.85); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2.4rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
+  .site-header p { font-size: 1.1rem; color: rgba(255,255,255,0.92); margin-top: 0.5rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+
+  .main { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 700; color: var(--c); text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+
+  .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin-bottom: 2rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
+  .intro h2 { font-size: 1.25rem; color: #c05a10; margin-bottom: 0.5rem; }
+  .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
+
+  .builder { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+  @media (min-width: 620px) { .builder { grid-template-columns: 1fr 240px; align-items: start; } }
+
+  .controls { display: flex; flex-direction: column; gap: 1.1rem; }
+  .field label, .group-label { display: block; font-size: 0.82rem; font-weight: 700; color: #555; margin-bottom: 0.4rem; }
+  .field input[type=text] { width: 100%; padding: 0.7rem 0.9rem; font-family: inherit; font-size: 0.98rem; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #fff; color: #1a1a1a; outline: none; }
+  .field input:focus { border-color: var(--c); }
+
+  .swatches { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .swatch { width: 38px; height: 38px; border-radius: 10px; border: 3px solid #e0d8d0; cursor: pointer; padding: 0; }
+  .swatch.sel { border-color: #1a1a1a; }
+
+  .emoji-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .emoji-btn { font-size: 1.4rem; line-height: 1; background: #fff; border: 2px solid #e0d8d0; border-radius: 10px; padding: 0.35rem 0.5rem; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+  .emoji-btn:hover { transform: translateY(-2px); }
+  .emoji-btn.sel { border-color: var(--c); background: #fdeee0; }
+  .hint { font-size: 0.8rem; color: #999; margin-top: 0.35rem; }
+
+  .cover-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+  .cover { width: 200px; aspect-ratio: 2 / 3; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 1rem 0.8rem; text-align: center; }
+  .cover-title { font-size: 1.05rem; font-weight: 700; color: #fff; line-height: 1.25; text-shadow: 0 1px 3px rgba(0,0,0,0.45); word-break: break-word; }
+  .cover-art { font-size: 2.8rem; line-height: 1.1; }
+  .cover-author { font-size: 0.8rem; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.45); word-break: break-word; }
+  .cover-caption { font-size: 0.78rem; color: #999; }
+
+  .draw-note { font-size: 0.9rem; color: #555; line-height: 1.55; background: #fff7f0; border: 1.5px solid #fcd8bc; border-radius: 10px; padding: 0.7rem 0.9rem; }
+
+  .send-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 0.5rem; }
+  .send-btn { font-family: inherit; font-size: 0.95rem; font-weight: 700; padding: 0.7rem 1.5rem; background: var(--c); color: #fff; border: none; border-radius: 999px; cursor: pointer; transition: filter 0.15s; }
+  .send-btn:hover { filter: brightness(0.93); }
+  .save-note { font-size: 0.8rem; color: #999; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid #007291; outline-offset: 2px; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+
+  @media (prefers-reduced-motion: reduce) { .emoji-btn { transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <p class="week-label">National Writing Day</p>
+    <h1>Design a Book Cover</h1>
+    <p>Make the cover for a book that does not exist yet.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <a class="back-link" href="national-writing-day.html">Back to National Writing Day</a>
+
+  <div class="intro">
+    <h2>Make a cover</h2>
+    <p>Here is a title to start with, "The Last Light in the Wood". Choose a background, add up to three pictures, and change the title if you want your own. Your cover saves on this device, and you can send it to Jay when you are happy with it.</p>
+  </div>
+
+  <div class="builder">
+    <div class="controls">
+      <div class="field">
+        <label for="title">Title</label>
+        <input type="text" id="title" placeholder="The book's title">
+      </div>
+      <div class="field">
+        <label for="author">Author</label>
+        <input type="text" id="author" placeholder="by your name">
+      </div>
+      <div>
+        <span class="group-label">Background</span>
+        <div class="swatches" id="swatches"></div>
+      </div>
+      <div>
+        <span class="group-label">Pictures</span>
+        <div class="emoji-row" id="emoji-row"></div>
+        <div class="hint">Tap up to three.</div>
+      </div>
+      <div class="field">
+        <label for="initials">Your initials</label>
+        <input type="text" id="initials" placeholder="Type your initials here">
+      </div>
+      <div class="draw-note">You could also draw this cover on paper. The screen is just to plan it.</div>
+    </div>
+
+    <div class="cover-wrap">
+      <div class="cover" id="cover">
+        <div class="cover-title" id="cover-title">The Last Light in the Wood</div>
+        <div class="cover-art" id="cover-art"></div>
+        <div class="cover-author" id="cover-author">by</div>
+      </div>
+      <div class="cover-caption">Your cover</div>
+    </div>
+  </div>
+
+  <div class="send-row">
+    <button class="send-btn" id="send" type="button">Send to Jay</button>
+    <span class="save-note">Your cover is saved on this device.</span>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School
+</footer>
+
+<script>
+(function () {
+  var KEY = 'base6-week5-nwd-cover';
+  var TEACHER = 'jay.raine@chiltonbridgeschool.co.uk';
+  var COLOURS = ['#2e3a59', '#2e8b57', '#c2185b', '#ef7724', '#007291', '#6b4f8a', '#1a1a1a', '#c79a3b'];
+  var EMOJIS = ['🌲', '🌙', '⭐', '🐉', '🏰', '🔦', '🦊', '🌊', '🔥', '🗝️', '👑', '🚀'];
+  var DEFAULT_TITLE = 'The Last Light in the Wood';
+
+  var state = { title: DEFAULT_TITLE, author: '', bg: COLOURS[0], emojis: [], initials: '' };
+
+  var titleEl = document.getElementById('title');
+  var authorEl = document.getElementById('author');
+  var initialsEl = document.getElementById('initials');
+  var coverEl = document.getElementById('cover');
+  var coverTitle = document.getElementById('cover-title');
+  var coverArt = document.getElementById('cover-art');
+  var coverAuthor = document.getElementById('cover-author');
+  var swatchesEl = document.getElementById('swatches');
+  var emojiRow = document.getElementById('emoji-row');
+
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function load() {
+    try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s) { state = s; if (!Array.isArray(state.emojis)) { state.emojis = []; } } } catch (e) {}
+    try { var p = JSON.parse(localStorage.getItem('base6Profile') || 'null'); if (p && p.initials && !state.initials) { state.initials = p.initials.toUpperCase(); } } catch (e) {}
+  }
+
+  function render() {
+    titleEl.value = state.title;
+    authorEl.value = state.author;
+    initialsEl.value = state.initials;
+    coverEl.style.background = state.bg;
+    coverTitle.textContent = state.title || 'Your title';
+    coverArt.textContent = state.emojis.join(' ');
+    coverAuthor.textContent = state.author ? ('by ' + state.author) : 'by';
+    Array.prototype.forEach.call(swatchesEl.children, function (b) {
+      b.classList.toggle('sel', b.getAttribute('data-color') === state.bg);
+    });
+    Array.prototype.forEach.call(emojiRow.children, function (b) {
+      b.classList.toggle('sel', state.emojis.indexOf(b.textContent) !== -1);
+    });
+  }
+
+  COLOURS.forEach(function (col) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'swatch'; b.style.background = col;
+    b.setAttribute('data-color', col); b.setAttribute('aria-label', 'Background colour');
+    b.addEventListener('click', function () { state.bg = col; save(); render(); });
+    swatchesEl.appendChild(b);
+  });
+  EMOJIS.forEach(function (em) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'emoji-btn'; b.textContent = em;
+    b.setAttribute('aria-label', 'Picture');
+    b.addEventListener('click', function () {
+      var i = state.emojis.indexOf(em);
+      if (i !== -1) { state.emojis.splice(i, 1); }
+      else if (state.emojis.length < 3) { state.emojis.push(em); }
+      save(); render();
+    });
+    emojiRow.appendChild(b);
+  });
+
+  titleEl.addEventListener('input', function () { state.title = titleEl.value; save(); render(); });
+  authorEl.addEventListener('input', function () { state.author = authorEl.value; save(); render(); });
+  initialsEl.addEventListener('input', function () { state.initials = initialsEl.value; save(); });
+
+  document.getElementById('send').addEventListener('click', function () {
+    var body = 'National Writing Day: Design a Book Cover\n\n' +
+      'From: ' + (state.initials.trim() || '(no initials)') + '\n\n' +
+      'Title: ' + (state.title.trim() || '(none)') + '\n' +
+      'Author: ' + (state.author.trim() || '(none)') + '\n' +
+      'Pictures: ' + (state.emojis.join(' ') || '(none)') + '\n' +
+      'Background colour: ' + state.bg + '\n';
+    var su = encodeURIComponent('National Writing Day: Book Cover');
+    window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER + '&su=' + su + '&body=' + encodeURIComponent(body), '_blank');
+  });
+
+  load();
+  render();
+})();
+</script>
+
+</body>
+</html>

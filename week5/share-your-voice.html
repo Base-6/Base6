@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Share Your Voice | National Writing Day | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; --c: #7b5ea7; --bg: #efe9f6; }
+
+  .site-header { position: relative; background-color: var(--c); padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.12); border-radius: 50%; }
+  .site-header .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.82); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2.4rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
+  .site-header p { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-top: 0.5rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+
+  .main { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 700; color: var(--c); text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+
+  .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin-bottom: 2rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
+  .intro h2 { font-size: 1.25rem; color: #c05a10; margin-bottom: 0.5rem; }
+  .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
+
+  .step { background: #fff; border: 2px solid var(--c); border-radius: 16px; padding: 1.4rem 1.5rem; margin-bottom: 1.2rem; }
+  .step-num { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c); margin-bottom: 0.25rem; }
+  .step-title { font-size: 1.2rem; font-weight: 700; color: var(--c); margin-bottom: 0.4rem; }
+  .step-help { font-size: 0.93rem; color: #555; line-height: 1.55; margin-bottom: 0.9rem; }
+
+  .field { margin-bottom: 0.9rem; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-size: 0.82rem; font-weight: 700; color: #555; margin-bottom: 0.3rem; }
+  .field input[type=text], .field textarea { width: 100%; padding: 0.7rem 0.9rem; font-family: inherit; font-size: 0.98rem; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #fff; color: #1a1a1a; outline: none; }
+  .field textarea { min-height: 130px; resize: vertical; line-height: 1.55; }
+  .field input:focus, .field textarea:focus { border-color: var(--c); }
+  .row3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.7rem; }
+
+  .send-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 0.5rem; }
+  .send-btn { font-family: inherit; font-size: 0.95rem; font-weight: 700; padding: 0.7rem 1.5rem; background: var(--c); color: #fff; border: none; border-radius: 999px; cursor: pointer; transition: filter 0.15s; }
+  .send-btn:hover { filter: brightness(0.93); }
+  .save-note { font-size: 0.8rem; color: #999; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <p class="week-label">National Writing Day</p>
+    <h1>Share Your Voice</h1>
+    <p>Everyone has a voice that is all their own.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <a class="back-link" href="national-writing-day.html">Back to National Writing Day</a>
+
+  <div class="intro">
+    <h2>How it works</h2>
+    <p>Three small steps to a poem about your voice. Fill in as much or as little as you like. Your writing saves on this device as you go, and you can send it to Jay at the end.</p>
+  </div>
+
+  <div class="field" style="margin-bottom:1.2rem;">
+    <label for="initials">Your initials</label>
+    <input type="text" id="initials" data-save placeholder="Type your initials here">
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 1</div>
+    <div class="step-title">Discover</div>
+    <div class="step-help">Look around the room and out of the window. Notice a few things you can see, hear or touch.</div>
+    <div class="row3">
+      <div class="field"><label for="see">Something I can see</label><input type="text" id="see" data-save></div>
+      <div class="field"><label for="hear">Something I can hear</label><input type="text" id="hear" data-save></div>
+      <div class="field"><label for="touch">Something I can touch</label><input type="text" id="touch" data-save></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 2</div>
+    <div class="step-title">Develop</div>
+    <div class="step-help">Pick one of those things and turn it into a picture of your voice. For example, my voice is like a kettle, because it gets louder when I am excited.</div>
+    <div class="field">
+      <label for="develop">My voice is like...</label>
+      <textarea id="develop" data-save placeholder="My voice is like ... because ..." style="min-height:90px;"></textarea>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 3</div>
+    <div class="step-title">Write</div>
+    <div class="step-help">Turn your idea into a few lines of a poem. It can be as short as you like.</div>
+    <div class="field">
+      <label for="poem">Your poem</label>
+      <textarea id="poem" data-save placeholder="Write your poem here..."></textarea>
+    </div>
+    <div class="send-row">
+      <button class="send-btn" id="send" type="button">Send to Jay</button>
+      <span class="save-note">Your writing is saved on this device.</span>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School
+</footer>
+
+<script>
+(function () {
+  var KEY = 'base6-week5-nwd-voice';
+  var TEACHER = 'jay.raine@chiltonbridgeschool.co.uk';
+  var fields = Array.prototype.slice.call(document.querySelectorAll('[data-save]'));
+
+  function saveAll() {
+    var s = {};
+    fields.forEach(function (f) { s[f.id] = f.value; });
+    try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
+  }
+  function restore() {
+    var s;
+    try { s = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { s = null; }
+    if (s) { fields.forEach(function (f) { if (s[f.id] != null) { f.value = s[f.id]; } }); }
+    try {
+      var p = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+      var ini = document.getElementById('initials');
+      if (p && p.initials && ini && !ini.value) { ini.value = p.initials.toUpperCase(); }
+    } catch (e) {}
+  }
+  fields.forEach(function (f) { f.addEventListener('input', saveAll); });
+  restore();
+
+  function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+  document.getElementById('send').addEventListener('click', function () {
+    var body = 'National Writing Day: Share Your Voice\n\n' +
+      'From: ' + (val('initials') || '(no initials)') + '\n\n' +
+      'Things I noticed:\n' +
+      '- See: ' + val('see') + '\n' +
+      '- Hear: ' + val('hear') + '\n' +
+      '- Touch: ' + val('touch') + '\n\n' +
+      'My voice is like:\n' + val('develop') + '\n\n' +
+      'My poem:\n' + val('poem') + '\n';
+    var su = encodeURIComponent('National Writing Day: Share Your Voice');
+    window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER + '&su=' + su + '&body=' + encodeURIComponent(body), '_blank');
+  });
+})();
+</script>
+
+</body>
+</html>
