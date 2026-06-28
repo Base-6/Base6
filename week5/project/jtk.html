@@ -647,8 +647,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     <h1>JTK's Kit Design Studio</h1>
     <p class="lock-intro">Open your Week 5 football kit design studio.</p>
     <label class="lock-label" for="passwordInput">Password</label>
-    <input type="password" id="passwordInput" placeholder="Password..." autocomplete="off" onkeydown="if(event.key === 'Enter') unlock()">
-    <button id="unlockBtn" class="lock-unlock-btn" type="button" onclick="unlock()">Unlock project →</button>
+    <input type="password" id="passwordInput" placeholder="Password..." autocomplete="off" onkeydown="if(event.key === 'Enter') unlockProject()">
+    <button id="unlockBtn" class="lock-unlock-btn" type="button" onclick="unlockProject()">Unlock project →</button>
     <div id="lockError" class="lock-error" role="alert" aria-live="polite">That password doesn't match — try again.</div>
   </div>
 </div>
@@ -940,18 +940,51 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
     const colours = ['#1a5276', '#ffffff', '#111111', '#c0392b', '#ef7724', '#f4c542', '#2e8b57', '#40a9c9', '#7b5ea7', '#c2185b', '#8c6239', '#d9d2cb'];
     const state = loadState();
+    const PROJECT_PASSWORDS = ['jtk', 'kit', 'football'];
 
-    function unlock() {
-      const value = document.getElementById('passwordInput').value.trim().toLowerCase();
-      if (value === 'jtk') {
-        document.getElementById('lockScreen').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
-        updateKit();
+    function normalisePassword(value) {
+      return (value || '').toString().trim().toLowerCase().replace(/\s+/g, '');
+    }
+
+    function openProjectAfterPassword() {
+      const lock = document.getElementById('lockScreen');
+      const main = document.getElementById('mainContent');
+      const error = document.getElementById('lockError');
+
+      if (error) {
+        error.classList.remove('show');
+        error.style.display = 'none';
+      }
+      if (lock) lock.style.display = 'none';
+      if (main) main.style.display = 'block';
+
+      // The project should still open even if one preview widget has a problem.
+      try { updateKit(); } catch (e) { console.warn('Kit preview update skipped after unlock:', e); }
+    }
+
+    function unlockProject() {
+      const input = document.getElementById('passwordInput');
+      const error = document.getElementById('lockError');
+      const value = normalisePassword(input ? input.value : '');
+
+      if (PROJECT_PASSWORDS.includes(value)) {
+        openProjectAfterPassword();
       } else {
-        document.getElementById('lockError').style.display = 'block';
-        document.getElementById('passwordInput').value = '';
+        if (error) {
+          error.textContent = "That password doesn't match — try again.";
+          error.classList.add('show');
+          error.style.display = 'block';
+        }
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
       }
     }
+
+    // Backwards-compatible aliases for older inline handlers and preview environments.
+    function unlock() { unlockProject(); }
+    function tryUnlock() { unlockProject(); }
 
     function showTab(id) {
       document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
@@ -1292,6 +1325,44 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
       setTimeout(function(){ input.focus(); }, 50);
       input.addEventListener('input', function(){
         if(error){ error.classList.remove('show'); error.style.display = 'none'; }
+      });
+    }
+  });
+})();
+</script>
+
+
+<script id="week5-jtk-password-fix">
+(function(){
+  function ready(fn){
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+  ready(function(){
+    var input = document.getElementById('passwordInput');
+    var button = document.getElementById('unlockBtn');
+    var error = document.getElementById('lockError');
+
+    // Make sure clicks and Enter presses work even if inline handlers are blocked by a preview sandbox.
+    if(button) {
+      button.addEventListener('click', function(event){
+        event.preventDefault();
+        if(window.unlockProject) window.unlockProject();
+      });
+    }
+    if(input) {
+      setTimeout(function(){ try { input.focus(); } catch(e) {} }, 60);
+      input.addEventListener('keydown', function(event){
+        if(event.key === 'Enter') {
+          event.preventDefault();
+          if(window.unlockProject) window.unlockProject();
+        }
+      });
+      input.addEventListener('input', function(){
+        if(error){
+          error.classList.remove('show');
+          error.style.display = 'none';
+        }
       });
     }
   });
