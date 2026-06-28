@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>National Writing Day | Week 5 | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: #005a72; padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(239,119,36,0.18); border-radius: 50%; }
+  .site-header .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.82); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2.5rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
+  .site-header p { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-top: 0.5rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+
+  .main { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 700; color: #005a72; text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+
+  .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin-bottom: 2.25rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
+  .intro h2 { font-size: 1.3rem; color: #c05a10; margin-bottom: 0.5rem; }
+  .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #005a72; margin-bottom: 1.25rem; }
+
+  .tiles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem; }
+  .tile { position: relative; background: #ffffff; border: 2px solid var(--c); border-radius: 16px; padding: 1.5rem 1.5rem 1.25rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.45rem; transition: transform 0.18s ease, box-shadow 0.18s ease; overflow: hidden; }
+  .tile::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--c); }
+  .tile:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 10px 26px var(--shadow); }
+  .tile-badge { width: 56px; height: 56px; border-radius: 50%; background: var(--bg); border: 2px solid var(--c); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; line-height: 1; margin-bottom: 0.4rem; }
+  .tile-subject { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c); }
+  .tile-title { font-size: 1.25rem; font-weight: 700; color: var(--c); line-height: 1.3; }
+  .tile-desc { font-size: 0.92rem; color: #444; line-height: 1.55; flex-grow: 1; }
+  .tile-go { margin-top: 0.7rem; font-size: 0.85rem; font-weight: 700; color: var(--c); display: inline-flex; align-items: center; gap: 0.3rem; }
+  .tile-go .arrow { transition: transform 0.18s ease; }
+  .tile:hover .tile-go .arrow { transform: translateX(4px); }
+
+  .cheer { text-align: center; margin-top: 2.5rem; font-size: 1.05rem; font-weight: 700; color: #005a72; line-height: 1.5; }
+
+  a:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile, .tile-go .arrow { transition: none; }
+    .tile:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <p class="week-label">Cultural Calendar</p>
+    <h1>National Writing Day</h1>
+    <p>Everyone has a voice. This week, share yours.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <a class="back-link" href="index.html">Back to Week 5</a>
+
+  <div class="intro">
+    <h2>Let's get writing</h2>
+    <p>National Writing Day is a celebration of writing just for the joy of it. The theme is Share Your Voice. Here are four ways to get started. Pick whichever one you fancy, take your time, and remember there are no marks and no wrong answers.</p>
+  </div>
+
+  <p class="section-label">Four ways to write</p>
+  <div class="tiles-grid">
+
+    <a class="tile" style="--c:#7b5ea7; --bg:#efe9f6; --shadow:rgba(123,94,167,0.22);" href="share-your-voice.html">
+      <span class="tile-badge">🗣️</span>
+      <span class="tile-subject">Poetry</span>
+      <span class="tile-title">Share Your Voice</span>
+      <span class="tile-desc">Turn the things around you into a short poem about your own voice.</span>
+      <span class="tile-go">Let's go <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#ef7724; --bg:#fdeee0; --shadow:rgba(239,119,36,0.24);" href="design-a-book-cover.html">
+      <span class="tile-badge">📚</span>
+      <span class="tile-subject">Create</span>
+      <span class="tile-title">Design a Book Cover</span>
+      <span class="tile-desc">Take a title and design the front cover, the picture, the colours and the lettering.</span>
+      <span class="tile-go">Let's go <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#c2185b; --bg:#fbe7ee; --shadow:rgba(194,24,91,0.22);" href="story-of-kindness.html">
+      <span class="tile-badge">💛</span>
+      <span class="tile-subject">Story</span>
+      <span class="tile-title">A Story of Kindness</span>
+      <span class="tile-desc">Write a short story about a time someone was kind. True, or make it up.</span>
+      <span class="tile-go">Let's go <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#2e8b57; --bg:#e6f3ec; --shadow:rgba(46,139,87,0.22);" href="tales-from-around-the-world.html">
+      <span class="tile-badge">🌍</span>
+      <span class="tile-subject">World Tales</span>
+      <span class="tile-title">Tales from Around the World</span>
+      <span class="tile-desc">Pick a country, find a traditional tale, and retell it in your own way.</span>
+      <span class="tile-go">Let's go <span class="arrow">&#8594;</span></span>
+    </a>
+
+  </div>
+
+  <p class="cheer">Whatever you write, it counts. Jay loves seeing what you make.</p>
+
+</main>
+
+<footer>
+  Base 6 · Chilton Bridge School
+</footer>
+
+</body>
+</html>
