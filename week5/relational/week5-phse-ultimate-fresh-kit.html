@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Ultimate Fresh Kit · Week 5 · Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+:root{
+  --cream:#fef8f4; --ink:#1a1a1a; --muted:#555; --card:#fff;
+  --teal:#007291; --teal-dark:#005a72; --teal-soft:#e6f5f8;
+  --orange:#ef7724; --orange-dark:#c05a10; --orange-soft:#fff3e8; --orange-line:#f7c9a8;
+  --green:#2e8b57; --green-soft:#eaf7f0; --green-line:#a9dfbf;
+  --blue:#1a5276; --blue-soft:#eaf4fb; --purple:#7b5ea7; --purple-soft:#efe9f6;
+  --line:#e0d8d0; --shadow:0 10px 26px rgba(0,0,0,.08);
+}
+body{ font-family:'Atkinson Hyperlegible',Arial,sans-serif; background:var(--cream); color:var(--ink); min-height:100vh; }
+button,input,textarea,select{ font-family:inherit; }
+.site-header{ position:relative; overflow:hidden; background:var(--teal); color:#fff; text-align:center; padding:1rem 1rem 3.2rem; }
+.back-link{ position:absolute; top:1rem; left:1rem; color:#fff; text-decoration:none; font-weight:700; font-size:.9rem; opacity:.92; z-index:2; }
+.back-link:hover{ opacity:1; }
+.hero-inner{ max-width:820px; margin:2.1rem auto 0; position:relative; z-index:1; }
+.label{ text-transform:uppercase; letter-spacing:.12em; font-weight:700; font-size:.76rem; color:#ffe8c2; margin-bottom:.4rem; }
+h1{ font-size:clamp(2rem,5vw,3.05rem); line-height:1.08; }
+.subtitle{ max-width:720px; margin:.7rem auto 0; line-height:1.55; color:#fff7ef; font-size:1.02rem; }
+.header-wave{ position:absolute; left:0; bottom:-1px; width:100%; height:42px; }
+.main{ width:min(1060px, calc(100% - 1.4rem)); margin:0 auto; padding:1.6rem 0 4rem; }
+.intro-card,.card,.summary-card{ background:var(--card); border:2px solid var(--line); border-radius:18px; padding:1.05rem 1.15rem; box-shadow:var(--shadow); margin-bottom:1rem; }
+.intro-card{ border-color:var(--orange); background:#fffaf6; box-shadow:0 8px 20px rgba(239,119,36,.08); }
+.eyebrow{ color:var(--orange); font-weight:700; text-transform:uppercase; letter-spacing:.1em; font-size:.74rem; margin-bottom:.35rem; }
+h2{ color:var(--teal-dark); font-size:1.32rem; line-height:1.22; margin-bottom:.45rem; }
+h3{ color:var(--ink); font-size:1rem; line-height:1.25; margin-bottom:.3rem; }
+p{ color:var(--muted); line-height:1.6; }
+.small{ color:#666; font-size:.86rem; line-height:1.45; }
+.layout{ display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:1rem; align-items:start; }
+.choice-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:.75rem; margin-top:.8rem; }
+.choice-card{ min-height:92px; text-align:left; background:#fff; border:2px solid var(--line); border-radius:16px; padding:.85rem; cursor:pointer; color:var(--ink); display:flex; flex-direction:column; gap:.28rem; }
+.choice-card:hover{ border-color:var(--teal); background:var(--teal-soft); transform:translateY(-1px); }
+.choice-card.selected{ border-color:var(--green); background:var(--green-soft); box-shadow:0 0 0 3px rgba(46,139,87,.13); }
+.choice-card[disabled]{ opacity:.46; cursor:not-allowed; transform:none; }
+.icon{ font-size:2rem; line-height:1; display:block; }
+.tag-row{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.5rem; }
+.tag,.mini-tag{ display:inline-flex; align-items:center; gap:.25rem; border-radius:999px; font-weight:700; }
+.tag{ border:1.5px solid var(--line); background:#fffaf6; color:#555; padding:.22rem .58rem; font-size:.76rem; }
+.mini-tag{ background:var(--teal-soft); color:var(--teal-dark); border:1px solid #b8dfe8; padding:.15rem .45rem; font-size:.72rem; margin:.15rem .15rem 0 0; }
+.panel{ background:#faf6f1; border:2px solid #eadfd4; border-radius:16px; padding:.9rem; margin-top:.9rem; }
+.notice{ background:var(--orange-soft); border:2px solid var(--orange-line); border-radius:14px; padding:.8rem .9rem; color:#683807; font-weight:700; line-height:1.5; }
+.input-group{ margin-top:.8rem; }
+label{ display:block; font-weight:700; color:var(--teal-dark); margin-bottom:.35rem; }
+textarea,input,select{ width:100%; background:#fff; border:2px solid #d8d0c8; border-radius:12px; padding:.75rem; font-size:.95rem; color:var(--ink); }
+textarea{ min-height:86px; resize:vertical; line-height:1.45; }
+textarea:focus,input:focus,select:focus{ outline:3px solid rgba(239,119,36,.22); border-color:var(--orange); }
+.button-row{ display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; margin-top:1rem; }
+.btn{ border:none; background:var(--teal); color:#fff; font-weight:700; border-radius:12px; min-height:46px; padding:.72rem 1rem; cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,.12); }
+.btn:hover{ background:var(--teal-dark); transform:translateY(-1px); }
+.btn.orange{ background:var(--orange); }
+.btn.orange:hover{ background:var(--orange-dark); }
+.btn.ghost{ background:#fff; color:var(--teal); border:2px solid var(--teal); box-shadow:none; }
+.summary-card{ position:sticky; top:.7rem; border-color:var(--teal); box-shadow:0 8px 20px rgba(0,114,145,.09); }
+.summary-list{ list-style:none; display:grid; gap:.5rem; margin-top:.65rem; }
+.summary-list li{ border:1.5px solid #d8edf2; background:#f7fcfd; border-radius:12px; padding:.6rem; color:#345; line-height:1.45; }
+.summary-list strong{ color:var(--teal-dark); }
+.empty{ color:#777; }
+.score{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; margin-top:.7rem; }
+.score-box{ text-align:center; border:1.5px solid #b8dfe8; background:var(--teal-soft); border-radius:14px; padding:.7rem; }
+.score-box b{ display:block; font-size:1.5rem; color:var(--teal-dark); }
+.notice-line{ display:none; margin-top:.75rem; background:var(--green-soft); border:2px solid var(--green-line); color:#1c6d3d; font-weight:700; border-radius:12px; padding:.7rem .85rem; line-height:1.45; }
+.notice-line.show{ display:block; }
+footer{ text-align:center; color:#777; font-size:.82rem; padding:1.5rem; border-top:1px solid var(--line); }
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{ outline:3px solid var(--orange); outline-offset:3px; }
+@media(max-width:880px){ .layout{ grid-template-columns:1fr; } .summary-card{ position:static; } .back-link{ position:static; display:inline-block; margin-bottom:.6rem; } .hero-inner{ margin-top:.6rem; } }
+@media(max-width:560px){ .main{ width:min(100% - .8rem,1060px); } .choice-grid{ grid-template-columns:1fr; } .score{ grid-template-columns:1fr; } .button-row .btn{ width:100%; } }
+@media(prefers-reduced-motion:reduce){ *,*::before,*::after{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+@media print{ body{ background:#fff; } .site-header,.button-row,.no-print,footer{ display:none !important; } .main{ width:100%; padding:.5rem; } .layout{ display:block; } .card,.intro-card,.summary-card{ box-shadow:none; break-inside:avoid; } }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="back-link" href="index.html">Back to Week 5</a>
+  <div class="hero-inner">
+    <p class="label">Week 5 · Personal Hygiene · Taskmaster Tuesday</p>
+    <h1>The Ultimate Fresh Kit</h1>
+    <p class="subtitle">Design a budget-friendly kit for a school day.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path></svg>
+</header>
+<main class="main">
+
+<section class="intro-card"><p class="eyebrow">Taskmaster Tuesday</p><h2>The Ultimate Fresh Kit</h2><p>Build a small kit that could help someone feel fresher during a school day. You can keep it practical, private and budget-friendly.</p></section>
+<div class="layout">
+  <section class="card">
+    <p class="eyebrow">Build the kit</p><h2>Choose useful items</h2>
+    <p>Tap an item to add or remove it. The budget updates as you go.</p>
+    <div class="panel"><label for="budget">Budget</label><select id="budget"><option value="5">£5 budget</option><option value="8">£8 budget</option><option value="10">£10 budget</option></select></div>
+    <div class="choice-grid" id="itemGrid" aria-label="Fresh kit item choices"></div>
+    <div class="input-group"><label for="kitName">Optional kit name</label><input id="kitName" type="text" placeholder="e.g. Fresh Start Kit"></div>
+    <div class="input-group"><label for="kitReason">Optional reason</label><textarea id="kitReason" placeholder="My kit would help because..."></textarea></div>
+    <div class="button-row no-print"><button class="btn ghost" onclick="clearKit()" type="button">Start again</button><button class="btn orange" onclick="addReasonStarter()" type="button">Add sentence starter</button></div>
+    <div class="notice-line" id="noticeLine"></div>
+  </section>
+  <aside class="summary-card" aria-live="polite" aria-label="Fresh kit summary">
+    <p class="eyebrow">Evidence</p><h2>My fresh kit</h2>
+    <div class="score"><div class="score-box"><b id="totalCost">£0.00</b><span>total cost</span></div><div class="score-box"><b id="leftCost">£5.00</b><span>left</span></div></div>
+    <ul class="summary-list" id="kitSummary"></ul>
+    <div class="button-row no-print"><button class="btn" type="button" onclick="sendWork()">Send to Jay</button><button class="btn ghost" type="button" onclick="printPage()">Print or save PDF</button></div>
+  </aside>
+</div>
+
+</main>
+<footer>Base 6 · Chilton Bridge School</footer>
+<script>
+
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+function $(id){ return document.getElementById(id); }
+function esc(value){ return String(value || '').replace(/[&<>"']/g, function(ch){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]; }); }
+function getStore(key, fallback){ try{ const data = JSON.parse(localStorage.getItem(key) || 'null'); return data || fallback; }catch(e){ return fallback; } }
+function setStore(key, value){ try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){} }
+function showNotice(msg){ const n = $('noticeLine'); if(!n) return; n.textContent = msg; n.classList.add('show'); setTimeout(function(){ n.classList.remove('show'); }, 3200); }
+function gmail(subject, body){ const url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(TEACHER_EMAIL) + '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body); window.open(url, '_blank'); }
+function printPage(){ window.print(); }
+function setSelected(groupSelector, id){ document.querySelectorAll(groupSelector).forEach(function(btn){ btn.classList.toggle('selected', btn.dataset.id === id); btn.setAttribute('aria-pressed', btn.dataset.id === id ? 'true' : 'false'); }); }
+function chipsFrom(items){ if(!items || !items.length) return '<span class="empty">Nothing chosen yet.</span>'; return items.map(function(x){ return '<span class="mini-tag">' + esc(x) + '</span>'; }).join(''); }
+
+
+const STORE_KEY = 'base6-week5-phse-fresh-kit';
+const items = [
+  {id:'deodorant', icon:'🧴', name:'Deodorant', price:1.50, type:'essential'},
+  {id:'toothbrush', icon:'🪥', name:'Travel toothbrush', price:1.00, type:'essential'},
+  {id:'paste', icon:'🦷', name:'Small toothpaste', price:1.25, type:'essential'},
+  {id:'wipes', icon:'🧻', name:'Fresh wipes', price:1.00, type:'useful'},
+  {id:'tissues', icon:'🤧', name:'Tissues', price:.75, type:'useful'},
+  {id:'comb', icon:'🪮', name:'Comb', price:1.00, type:'useful'},
+  {id:'socks', icon:'🧦', name:'Spare socks', price:2.00, type:'comfort'},
+  {id:'bag', icon:'🎒', name:'Small pouch', price:1.50, type:'privacy'},
+  {id:'gel', icon:'🫧', name:'Hand gel', price:1.00, type:'useful'},
+  {id:'balm', icon:'💄', name:'Lip balm', price:1.25, type:'comfort'}
+];
+let state = getStore(STORE_KEY, {budget:5, chosen:[], kitName:'', kitReason:''});
+function total(){ return state.chosen.reduce(function(sum,id){ const it = items.find(function(x){ return x.id === id; }); return sum + (it ? it.price : 0); },0); }
+function money(n){ return '£' + (Number(n) || 0).toFixed(2); }
+function render(){
+  $('budget').value = String(state.budget);
+  $('itemGrid').innerHTML = items.map(function(it){
+    const on = state.chosen.includes(it.id);
+    const disabled = !on && (total() + it.price > Number(state.budget));
+    return '<button type="button" class="choice-card item-card '+(on?'selected':'')+'" data-id="'+it.id+'" aria-pressed="'+(on?'true':'false')+'" '+(disabled?'disabled':'')+' onclick="toggleItem(\''+it.id+'\')"><span class="icon" aria-hidden="true">'+it.icon+'</span><h3>'+esc(it.name)+'</h3><p class="small">'+money(it.price)+' · '+esc(it.type)+'</p></button>';
+  }).join('');
+  const t = total();
+  $('totalCost').textContent = money(t); $('leftCost').textContent = money(Number(state.budget)-t);
+  const chosenNames = state.chosen.map(function(id){ const it = items.find(function(x){ return x.id === id; }); return it ? it.name+' ('+money(it.price)+')' : id; });
+  $('kitSummary').innerHTML = '<li><strong>Kit name:</strong><br>'+esc(state.kitName || 'Not named yet')+'</li><li><strong>Items:</strong><br>'+chipsFrom(chosenNames)+'</li><li><strong>Reason:</strong><br>'+esc(state.kitReason || 'Not written yet')+'</li>';
+  $('kitName').value = state.kitName || ''; $('kitReason').value = state.kitReason || '';
+}
+function toggleItem(id){
+  if(state.chosen.includes(id)){ state.chosen = state.chosen.filter(function(x){ return x !== id; }); }
+  else { const it = items.find(function(x){ return x.id === id; }); if(total()+it.price > Number(state.budget)){ showNotice('That would go over the budget. You could remove something first.'); return; } state.chosen.push(id); }
+  setStore(STORE_KEY, state); render();
+}
+function clearKit(){ state.chosen=[]; state.kitName=''; state.kitReason=''; setStore(STORE_KEY,state); render(); }
+function addReasonStarter(){ const t=$('kitReason'); if(!t.value.trim()) t.value='My kit would help because '; t.focus(); t.dispatchEvent(new Event('input')); }
+$('budget').addEventListener('change', function(){ state.budget=Number(this.value)||5; while(total()>state.budget){ state.chosen.pop(); } setStore(STORE_KEY,state); render(); });
+$('kitName').addEventListener('input', function(){ state.kitName=this.value; setStore(STORE_KEY,state); render(); });
+$('kitReason').addEventListener('input', function(){ state.kitReason=this.value; setStore(STORE_KEY,state); render(); });
+function sendWork(){
+  const chosen = state.chosen.map(function(id){ const it=items.find(function(x){return x.id===id;}); return it ? it.name+' '+money(it.price) : id; });
+  const body = ['WEEK 5 PHSE: THE ULTIMATE FRESH KIT','', 'Budget: '+money(state.budget), 'Total: '+money(total()), 'Kit name: '+(state.kitName || '(not named)'), 'Items: '+(chosen.join(', ') || '(none chosen)'), 'Reason: '+(state.kitReason || '(not written)')].join('\n');
+  gmail('Base 6 · The Ultimate Fresh Kit', body);
+}
+render();
+
+</script>
+</body>
+</html>
