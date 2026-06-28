@@ -201,32 +201,19 @@
     align-items: center;
   }
 
-  .use-btn,
-  .read-link {
+  .use-btn {
     font-family: inherit;
     font-size: 0.9rem;
     font-weight: 700;
     border-radius: 999px;
     padding: 0.55rem 1rem;
-  }
-
-  .use-btn {
     color: #fff;
     background: var(--c);
     border: none;
     cursor: pointer;
   }
 
-  .read-link {
-    display: inline-block;
-    color: var(--c);
-    background: #fff;
-    border: 2px solid var(--c);
-    text-decoration: none;
-  }
-
-  .use-btn:hover,
-  .read-link:hover {
+  .use-btn:hover {
     filter: brightness(0.93);
   }
 
@@ -372,7 +359,7 @@
 
   <div class="intro">
     <h2>Retell a tale</h2>
-    <p>Lots of countries have old stories that have been passed down for hundreds of years. Pick a country and one of its tales, then retell it in your own way. You can change the ending if you like. Open a story summary below for an idea, read the full story, or write in your own. Your writing saves on this device.</p>
+    <p>Lots of countries have old stories that have been passed down for hundreds of years. Pick a country and one of its tales, then retell it in your own way. You can change the ending if you like. Open a story summary below for an idea, or write in your own. Your writing saves on this device.</p>
   </div>
 
   <div class="starters">
@@ -424,28 +411,24 @@
     {
       country: 'Ghana',
       tale: 'Anansi the clever spider',
-      url: 'https://worldstories.org.uk/reader/why-anansi-has-eight-skinny-legs/english/255',
       summary: 'Anansi is a small spider who uses clever thinking to solve problems, trick bigger animals, and get what he wants. In many Anansi stories, he is not the strongest character, but he survives because he is quick, funny and inventive.',
       retellIdea: 'You could retell it as a story where a small character outsmarts someone powerful.'
     },
     {
       country: 'Mexico',
       tale: 'The Rabbit on the Moon',
-      url: 'https://www.pocoyo.com/read/the-rabbit-on-the-moon',
       summary: 'A kind rabbit meets a tired traveller and offers the only thing it has: itself as food. The traveller is really a powerful figure in disguise. To honour the rabbit’s kindness, the rabbit’s shape is placed on the Moon forever.',
       retellIdea: 'You could retell it as a story about kindness being remembered in a magical way.'
     },
     {
       country: 'Japan',
       tale: 'Momotaro, the Peach Boy',
-      url: 'https://www.japansociety.org.uk/usercontent/62c3175aa622b916988a662232305dca/Momotaro-Print-Version.pdf',
       summary: 'An elderly couple find a giant peach floating down a river. Inside is a boy called Momotaro. When he grows up, he travels to fight troublesome ogres. Along the way, he is joined by animal companions who help him complete his quest.',
       retellIdea: 'You could retell it as an adventure story with a team, a journey and a final challenge.'
     },
     {
       country: 'Norway',
       tale: 'The Three Billy Goats Gruff',
-      url: 'https://worldstories.org.uk/reader/the-three-billy-goats-gruff/english/254',
       summary: 'Three goats want to cross a bridge to reach better grass, but a troll waits underneath. The first two goats persuade the troll to wait for the biggest goat. When the biggest goat arrives, he faces the troll and clears the way.',
       retellIdea: 'You could retell it as a bridge story where each character has a different plan.'
     }
@@ -532,16 +515,7 @@
       useStarter(st);
     });
 
-    var link = document.createElement('a');
-    link.className = 'read-link';
-    link.href = st.url;
-    link.target = '_blank';
-    link.rel = 'noopener';
-    link.textContent = 'Read full story';
-    link.setAttribute('aria-label', 'Read the full story: ' + st.tale);
-
     actions.appendChild(btn);
-    actions.appendChild(link);
 
     panel.appendChild(p);
     panel.appendChild(note);
