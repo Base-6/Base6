@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/Base6/favicon.ico">
 <title>Design a Book Cover | National Writing Day | Base 6</title>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:wght@700&family=Anton&family=Caveat:wght@700&family=Fredoka:wght@600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; --c: #ef7724; }
@@ -19,7 +19,7 @@
   .site-header p { font-size: 1.1rem; color: rgba(255,255,255,0.92); margin-top: 0.5rem; }
   .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
 
-  .main { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .main { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
   .back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 700; color: var(--c); text-decoration: none; }
   .back-link:hover { text-decoration: underline; }
 
@@ -27,8 +27,8 @@
   .intro h2 { font-size: 1.25rem; color: #c05a10; margin-bottom: 0.5rem; }
   .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
 
-  .builder { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-  @media (min-width: 620px) { .builder { grid-template-columns: 1fr 240px; align-items: start; } }
+  .builder { display: grid; grid-template-columns: 1fr; gap: 1.6rem; }
+  @media (min-width: 680px) { .builder { grid-template-columns: 1fr 300px; align-items: start; } }
 
   .controls { display: flex; flex-direction: column; gap: 1.1rem; }
   .field label, .group-label { display: block; font-size: 0.82rem; font-weight: 700; color: #555; margin-bottom: 0.4rem; }
@@ -36,33 +36,53 @@
   .field input:focus { border-color: var(--c); }
 
   .swatches { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .swatch { width: 38px; height: 38px; border-radius: 10px; border: 3px solid #e0d8d0; cursor: pointer; padding: 0; }
+  .swatch { width: 36px; height: 36px; border-radius: 10px; border: 3px solid #e0d8d0; cursor: pointer; padding: 0; }
   .swatch.sel { border-color: #1a1a1a; }
 
-  .emoji-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-  .emoji-btn { font-size: 1.4rem; line-height: 1; background: #fff; border: 2px solid #e0d8d0; border-radius: 10px; padding: 0.35rem 0.5rem; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
-  .emoji-btn:hover { transform: translateY(-2px); }
+  .emoji-row, .font-row, .brush-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .emoji-btn { font-size: 1.4rem; line-height: 1; background: #fff; border: 2px solid #e0d8d0; border-radius: 10px; padding: 0.35rem 0.5rem; cursor: pointer; }
   .emoji-btn.sel { border-color: var(--c); background: #fdeee0; }
+  .font-btn { font-size: 1rem; background: #fff; border: 2px solid #e0d8d0; border-radius: 10px; padding: 0.4rem 0.8rem; cursor: pointer; color: #1a1a1a; }
+  .font-btn.sel { border-color: var(--c); background: #fdeee0; }
   .hint { font-size: 0.8rem; color: #999; margin-top: 0.35rem; }
 
-  .cover-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
-  .cover { width: 200px; aspect-ratio: 2 / 3; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 1rem 0.8rem; text-align: center; }
-  .cover-title { font-size: 1.05rem; font-weight: 700; color: #fff; line-height: 1.25; text-shadow: 0 1px 3px rgba(0,0,0,0.45); word-break: break-word; }
-  .cover-art { font-size: 2.8rem; line-height: 1.1; }
-  .cover-author { font-size: 0.8rem; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.45); word-break: break-word; }
+  .cover-panel { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
+  .cover { position: relative; width: 100%; max-width: 280px; aspect-ratio: 2 / 3; border-radius: 8px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.2); container-type: inline-size; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .doodle { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; touch-action: none; cursor: crosshair; }
+  .cover-overlay { position: absolute; inset: 0; z-index: 2; pointer-events: none; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 6cqw; text-align: center; }
+  .cover-title { font-size: 9cqw; font-weight: 700; color: #fff; line-height: 1.2; text-shadow: 0 1px 4px rgba(0,0,0,0.5); word-break: break-word; }
+  .cover-art { font-size: 30cqw; line-height: 1; }
+  .cover-author { font-size: 5cqw; font-weight: 700; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.5); word-break: break-word; }
   .cover-caption { font-size: 0.78rem; color: #999; }
+
+  .doodle-tools { width: 100%; max-width: 280px; background: #fff; border: 1.5px solid #e0d8d0; border-radius: 12px; padding: 0.8rem; display: flex; flex-direction: column; gap: 0.6rem; }
+  .tools-label { font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .brush-col { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #e0d8d0; cursor: pointer; padding: 0; }
+  .brush-col.sel { border-color: #1a1a1a; transform: scale(1.12); }
+  .tool-btn { font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #555; background: #fff; border: 2px solid #e0d8d0; border-radius: 999px; padding: 0.3rem 0.8rem; cursor: pointer; }
+  .tool-btn.sel { border-color: var(--c); background: #fdeee0; color: #1a1a1a; }
+  .size-dot { display: inline-block; border-radius: 50%; background: #555; }
 
   .draw-note { font-size: 0.9rem; color: #555; line-height: 1.55; background: #fff7f0; border: 1.5px solid #fcd8bc; border-radius: 10px; padding: 0.7rem 0.9rem; }
 
-  .send-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 0.5rem; }
-  .send-btn { font-family: inherit; font-size: 0.95rem; font-weight: 700; padding: 0.7rem 1.5rem; background: var(--c); color: #fff; border: none; border-radius: 999px; cursor: pointer; transition: filter 0.15s; }
-  .send-btn:hover { filter: brightness(0.93); }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; margin-top: 1.6rem; }
+  .btn { font-family: inherit; font-size: 0.95rem; font-weight: 700; padding: 0.7rem 1.4rem; border: none; border-radius: 999px; cursor: pointer; transition: filter 0.15s; }
+  .btn-primary { background: var(--c); color: #fff; }
+  .btn-secondary { background: #fff; color: var(--c); border: 2px solid var(--c); }
+  .btn:hover { filter: brightness(0.95); }
   .save-note { font-size: 0.8rem; color: #999; }
 
   a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid #007291; outline-offset: 2px; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
 
-  @media (prefers-reduced-motion: reduce) { .emoji-btn { transition: none; } }
+  @media print {
+    .site-header, .back-link, .intro, .controls, .doodle-tools, .cover-caption, .actions, footer { display: none !important; }
+    .main { padding: 0; max-width: none; }
+    .builder { display: block; }
+    .cover-panel { display: block; }
+    .cover { width: 13cm; max-width: none; margin: 0 auto; box-shadow: none; }
+    @page { margin: 1.5cm; }
+  }
 </style>
 </head>
 <body>
@@ -84,7 +104,7 @@
 
   <div class="intro">
     <h2>Make a cover</h2>
-    <p>Here is a title to start with, "The Last Light in the Wood". Choose a background, add up to three pictures, and change the title if you want your own. Your cover saves on this device, and you can send it to Jay when you are happy with it.</p>
+    <p>Here is a title to start with, "The Last Light in the Wood". Draw your own picture, add stickers, choose a background and a title font, and change the title if you want your own. Your cover saves on this device. You can save it as a PDF, or send the details to Jay.</p>
   </div>
 
   <div class="builder">
@@ -92,6 +112,10 @@
       <div class="field">
         <label for="title">Title</label>
         <input type="text" id="title" placeholder="The book's title">
+      </div>
+      <div>
+        <span class="group-label">Title font</span>
+        <div class="font-row" id="font-row"></div>
       </div>
       <div class="field">
         <label for="author">Author</label>
@@ -102,7 +126,7 @@
         <div class="swatches" id="swatches"></div>
       </div>
       <div>
-        <span class="group-label">Pictures</span>
+        <span class="group-label">Stickers</span>
         <div class="emoji-row" id="emoji-row"></div>
         <div class="hint">Tap up to three.</div>
       </div>
@@ -110,21 +134,35 @@
         <label for="initials">Your initials</label>
         <input type="text" id="initials" placeholder="Type your initials here">
       </div>
-      <div class="draw-note">You could also draw this cover on paper. The screen is just to plan it.</div>
+      <div class="draw-note">Draw straight onto the cover with the brush tools. You can also save it as a PDF to print or keep.</div>
     </div>
 
-    <div class="cover-wrap">
+    <div class="cover-panel">
       <div class="cover" id="cover">
-        <div class="cover-title" id="cover-title">The Last Light in the Wood</div>
-        <div class="cover-art" id="cover-art"></div>
-        <div class="cover-author" id="cover-author">by</div>
+        <canvas class="doodle" id="doodle" width="600" height="900"></canvas>
+        <div class="cover-overlay">
+          <div class="cover-title" id="cover-title">The Last Light in the Wood</div>
+          <div class="cover-art" id="cover-art"></div>
+          <div class="cover-author" id="cover-author">by</div>
+        </div>
       </div>
       <div class="cover-caption">Your cover</div>
+
+      <div class="doodle-tools">
+        <span class="tools-label">Draw</span>
+        <div class="brush-row" id="brush-colours"></div>
+        <div class="brush-row" id="brush-sizes"></div>
+        <div class="brush-row">
+          <button class="tool-btn" id="eraser" type="button">Eraser</button>
+          <button class="tool-btn" id="clear" type="button">Clear</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="send-row">
-    <button class="send-btn" id="send" type="button">Send to Jay</button>
+  <div class="actions">
+    <button class="btn btn-primary" id="pdf" type="button">Save as PDF</button>
+    <button class="btn btn-secondary" id="send" type="button">Send to Jay</button>
     <span class="save-note">Your cover is saved on this device.</span>
   </div>
 
@@ -140,9 +178,18 @@
   var TEACHER = 'jay.raine@chiltonbridgeschool.co.uk';
   var COLOURS = ['#2e3a59', '#2e8b57', '#c2185b', '#ef7724', '#007291', '#6b4f8a', '#1a1a1a', '#c79a3b'];
   var EMOJIS = ['🌲', '🌙', '⭐', '🐉', '🏰', '🔦', '🦊', '🌊', '🔥', '🗝️', '👑', '🚀'];
+  var FONTS = [
+    { name: 'Clear', css: "'Atkinson Hyperlegible', sans-serif" },
+    { name: 'Classic', css: "'Playfair Display', serif" },
+    { name: 'Bold', css: "'Anton', sans-serif" },
+    { name: 'Handwritten', css: "'Caveat', cursive" },
+    { name: 'Round', css: "'Fredoka', sans-serif" }
+  ];
+  var PAINTS = ['#1a1a1a', '#ffffff', '#e63946', '#f4a261', '#ffd166', '#2a9d8f', '#277da1', '#9b5de5'];
+  var SIZES = [6, 16, 30];
   var DEFAULT_TITLE = 'The Last Light in the Wood';
 
-  var state = { title: DEFAULT_TITLE, author: '', bg: COLOURS[0], emojis: [], initials: '' };
+  var state = { title: DEFAULT_TITLE, author: '', bg: COLOURS[0], emojis: [], font: FONTS[0].css, initials: '', doodle: '' };
 
   var titleEl = document.getElementById('title');
   var authorEl = document.getElementById('author');
@@ -153,12 +200,16 @@
   var coverAuthor = document.getElementById('cover-author');
   var swatchesEl = document.getElementById('swatches');
   var emojiRow = document.getElementById('emoji-row');
+  var fontRow = document.getElementById('font-row');
 
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
-  function load() {
-    try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s) { state = s; if (!Array.isArray(state.emojis)) { state.emojis = []; } } } catch (e) {}
-    try { var p = JSON.parse(localStorage.getItem('base6Profile') || 'null'); if (p && p.initials && !state.initials) { state.initials = p.initials.toUpperCase(); } } catch (e) {}
-  }
+  var canvas = document.getElementById('doodle');
+  var ctx = canvas.getContext('2d');
+  var brushColour = PAINTS[0];
+  var brushSize = SIZES[1];
+  var eraser = false;
+
+  function saveMeta() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function saveDoodle() { try { state.doodle = canvas.toDataURL('image/png'); } catch (e) {} saveMeta(); }
 
   function render() {
     titleEl.value = state.title;
@@ -166,53 +217,131 @@
     initialsEl.value = state.initials;
     coverEl.style.background = state.bg;
     coverTitle.textContent = state.title || 'Your title';
+    coverTitle.style.fontFamily = state.font;
     coverArt.textContent = state.emojis.join(' ');
     coverAuthor.textContent = state.author ? ('by ' + state.author) : 'by';
-    Array.prototype.forEach.call(swatchesEl.children, function (b) {
-      b.classList.toggle('sel', b.getAttribute('data-color') === state.bg);
-    });
-    Array.prototype.forEach.call(emojiRow.children, function (b) {
-      b.classList.toggle('sel', state.emojis.indexOf(b.textContent) !== -1);
-    });
+    Array.prototype.forEach.call(swatchesEl.children, function (b) { b.classList.toggle('sel', b.getAttribute('data-color') === state.bg); });
+    Array.prototype.forEach.call(emojiRow.children, function (b) { b.classList.toggle('sel', state.emojis.indexOf(b.textContent) !== -1); });
+    Array.prototype.forEach.call(fontRow.children, function (b) { b.classList.toggle('sel', b.getAttribute('data-css') === state.font); });
   }
 
   COLOURS.forEach(function (col) {
     var b = document.createElement('button');
-    b.type = 'button'; b.className = 'swatch'; b.style.background = col;
-    b.setAttribute('data-color', col); b.setAttribute('aria-label', 'Background colour');
-    b.addEventListener('click', function () { state.bg = col; save(); render(); });
+    b.type = 'button'; b.className = 'swatch'; b.style.background = col; b.setAttribute('data-color', col); b.setAttribute('aria-label', 'Background colour');
+    b.addEventListener('click', function () { state.bg = col; saveMeta(); render(); });
     swatchesEl.appendChild(b);
   });
   EMOJIS.forEach(function (em) {
     var b = document.createElement('button');
-    b.type = 'button'; b.className = 'emoji-btn'; b.textContent = em;
-    b.setAttribute('aria-label', 'Picture');
+    b.type = 'button'; b.className = 'emoji-btn'; b.textContent = em; b.setAttribute('aria-label', 'Sticker');
     b.addEventListener('click', function () {
       var i = state.emojis.indexOf(em);
-      if (i !== -1) { state.emojis.splice(i, 1); }
-      else if (state.emojis.length < 3) { state.emojis.push(em); }
-      save(); render();
+      if (i !== -1) { state.emojis.splice(i, 1); } else if (state.emojis.length < 3) { state.emojis.push(em); }
+      saveMeta(); render();
     });
     emojiRow.appendChild(b);
   });
+  FONTS.forEach(function (f) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'font-btn'; b.textContent = f.name; b.style.fontFamily = f.css; b.setAttribute('data-css', f.css);
+    b.addEventListener('click', function () { state.font = f.css; saveMeta(); render(); });
+    fontRow.appendChild(b);
+  });
 
-  titleEl.addEventListener('input', function () { state.title = titleEl.value; save(); render(); });
-  authorEl.addEventListener('input', function () { state.author = authorEl.value; save(); render(); });
-  initialsEl.addEventListener('input', function () { state.initials = initialsEl.value; save(); });
+  // Brush colours
+  var bc = document.getElementById('brush-colours');
+  PAINTS.forEach(function (col) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'brush-col' + (col === brushColour ? ' sel' : ''); b.style.background = col; b.setAttribute('aria-label', 'Brush colour');
+    if (col === '#ffffff') { b.style.borderColor = '#bbb'; }
+    b.addEventListener('click', function () {
+      brushColour = col; eraser = false;
+      Array.prototype.forEach.call(bc.children, function (x) { x.classList.remove('sel'); });
+      b.classList.add('sel');
+      document.getElementById('eraser').classList.remove('sel');
+    });
+    bc.appendChild(b);
+  });
+  // Brush sizes
+  var bs = document.getElementById('brush-sizes');
+  SIZES.forEach(function (sz, idx) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'tool-btn' + (sz === brushSize ? ' sel' : '');
+    var d = Math.max(6, Math.round(sz / 2.2));
+    b.innerHTML = '<span class="size-dot" style="width:' + d + 'px;height:' + d + 'px;"></span>';
+    b.setAttribute('aria-label', ['Small brush', 'Medium brush', 'Large brush'][idx]);
+    b.addEventListener('click', function () {
+      brushSize = sz; eraser = false;
+      Array.prototype.forEach.call(bs.children, function (x) { x.classList.remove('sel'); });
+      b.classList.add('sel');
+      document.getElementById('eraser').classList.remove('sel');
+    });
+    bs.appendChild(b);
+  });
+  var eraserBtn = document.getElementById('eraser');
+  eraserBtn.addEventListener('click', function () { eraser = !eraser; eraserBtn.classList.toggle('sel', eraser); });
+  document.getElementById('clear').addEventListener('click', function () {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); saveDoodle();
+  });
+
+  // Drawing
+  var drawing = false, last = null;
+  function pos(e) {
+    var r = canvas.getBoundingClientRect();
+    return { x: (e.clientX - r.left) / r.width * canvas.width, y: (e.clientY - r.top) / r.height * canvas.height };
+  }
+  function applyBrush() {
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    if (eraser) { ctx.globalCompositeOperation = 'destination-out'; ctx.strokeStyle = 'rgba(0,0,0,1)'; ctx.lineWidth = 38; }
+    else { ctx.globalCompositeOperation = 'source-over'; ctx.strokeStyle = brushColour; ctx.lineWidth = brushSize; }
+  }
+  function line(a, b) { applyBrush(); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+  canvas.addEventListener('pointerdown', function (e) {
+    drawing = true; last = pos(e);
+    try { canvas.setPointerCapture(e.pointerId); } catch (er) {}
+    line(last, { x: last.x + 0.01, y: last.y + 0.01 });
+    e.preventDefault();
+  });
+  canvas.addEventListener('pointermove', function (e) {
+    if (!drawing) return; var p = pos(e); line(last, p); last = p; e.preventDefault();
+  });
+  function endStroke() { if (!drawing) return; drawing = false; saveDoodle(); }
+  canvas.addEventListener('pointerup', endStroke);
+  canvas.addEventListener('pointercancel', endStroke);
+  canvas.addEventListener('pointerleave', endStroke);
+
+  titleEl.addEventListener('input', function () { state.title = titleEl.value; saveMeta(); render(); });
+  authorEl.addEventListener('input', function () { state.author = authorEl.value; saveMeta(); render(); });
+  initialsEl.addEventListener('input', function () { state.initials = initialsEl.value; saveMeta(); });
+
+  document.getElementById('pdf').addEventListener('click', function () { window.print(); });
 
   document.getElementById('send').addEventListener('click', function () {
+    var fontName = 'Clear';
+    FONTS.forEach(function (f) { if (f.css === state.font) { fontName = f.name; } });
     var body = 'National Writing Day: Design a Book Cover\n\n' +
       'From: ' + (state.initials.trim() || '(no initials)') + '\n\n' +
       'Title: ' + (state.title.trim() || '(none)') + '\n' +
+      'Title font: ' + fontName + '\n' +
       'Author: ' + (state.author.trim() || '(none)') + '\n' +
-      'Pictures: ' + (state.emojis.join(' ') || '(none)') + '\n' +
-      'Background colour: ' + state.bg + '\n';
+      'Stickers: ' + (state.emojis.join(' ') || '(none)') + '\n' +
+      'Background colour: ' + state.bg + '\n' +
+      '(The drawing is on the cover. Save it as a PDF to keep the picture.)\n';
     var su = encodeURIComponent('National Writing Day: Book Cover');
     window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER + '&su=' + su + '&body=' + encodeURIComponent(body), '_blank');
   });
 
-  load();
-  render();
+  // Load
+  (function load() {
+    try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s) { state = s; if (!Array.isArray(state.emojis)) { state.emojis = []; } if (!state.font) { state.font = FONTS[0].css; } } } catch (e) {}
+    try { var p = JSON.parse(localStorage.getItem('base6Profile') || 'null'); if (p && p.initials && !state.initials) { state.initials = p.initials.toUpperCase(); } } catch (e) {}
+    render();
+    if (state.doodle) {
+      var img = new Image();
+      img.onload = function () { ctx.drawImage(img, 0, 0, canvas.width, canvas.height); };
+      img.src = state.doodle;
+    }
+  })();
 })();
 </script>
 
