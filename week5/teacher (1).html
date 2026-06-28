@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Teacher Dashboard | Week 5 | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  /* Lock screen */
+  #lockScreen { position: fixed; inset: 0; background: #007291; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; padding: 2rem; text-align: center; }
+  #lockScreen h1 { font-size: 1.8rem; font-weight: 700; color: white; margin-bottom: 0.5rem; }
+  #lockScreen p { font-size: 0.95rem; color: rgba(255,255,255,0.85); margin-bottom: 1.75rem; line-height: 1.5; }
+  #lockScreen .lock-icon { font-size: 3rem; margin-bottom: 1rem; }
+  #passwordInput { padding: 0.75rem 1.25rem; border-radius: 12px; border: 3px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.2); color: white; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 1.1rem; font-weight: 700; text-align: center; width: 100%; max-width: 280px; margin-bottom: 1rem; }
+  #passwordInput::placeholder { color: rgba(255,255,255,0.5); }
+  #passwordInput:focus { outline: none; border-color: white; }
+  #unlockBtn { padding: 0.7rem 2rem; background: white; color: #007291; border: none; border-radius: 12px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
+  #lockError { color: white; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 700; margin-top: 0.75rem; display: none; }
+  #mainContent { display: none; }
+
+  .site-header { background-color: #007291; padding: 1.25rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .back-link { color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .back-link:hover { opacity: 1; }
+  .header-title { color: #fef8f4; font-size: 1rem; font-weight: 700; }
+
+  .main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .device-note { background: #fff8e1; border: 2px solid #f0d080; border-radius: 12px; padding: 0.9rem 1.2rem; font-size: 0.85rem; line-height: 1.6; color: #5a4000; margin-bottom: 1.5rem; }
+
+  .toolbar { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
+  .tool-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; border: 2px solid #007291; background: #fff; color: #007291; }
+  .tool-btn:hover { background: #e6f5f8; }
+  .tool-btn.primary { background: #ef7724; border-color: #ef7724; color: #fff; }
+  .tool-btn.primary:hover { background: #c05a10; border-color: #c05a10; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin: 2rem 0 0.9rem; }
+  .section-label:first-of-type { margin-top: 0; }
+
+  /* Summary */
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.75rem; }
+  .summary-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 1rem; text-align: center; }
+  .summary-card .s-num { font-size: 1.7rem; font-weight: 700; color: #007291; line-height: 1.1; }
+  .summary-card .s-label { font-size: 0.75rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.3rem; }
+  .summary-card.total { border-color: #ef7724; }
+  .summary-card.total .s-num { color: #ef7724; }
+
+  /* Subject tables */
+  .subject-block { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.4rem; margin-bottom: 1rem; border-top: 5px solid var(--c, #007291); }
+  .subject-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+  .subject-title { font-size: 1rem; font-weight: 700; color: var(--c, #007291); }
+  .subject-open { font-size: 0.78rem; font-weight: 700; color: #888; text-decoration: none; }
+  .subject-open:hover { color: var(--c, #007291); }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 460px; }
+  th { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #888; padding: 0.45rem 0.5rem; text-align: center; border-bottom: 2px solid #f0e8e0; }
+  th:first-child { text-align: left; }
+  td { padding: 0.55rem 0.5rem; font-size: 0.86rem; border-bottom: 1px solid #f5efe8; text-align: center; }
+  td:first-child { text-align: left; font-weight: 700; }
+  tr:last-child td { border-bottom: none; }
+  .tick { display: inline-block; width: 26px; height: 26px; line-height: 24px; border-radius: 50%; font-size: 0.85rem; font-weight: 700; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; padding: 0; }
+  .tick.yes { background: #e6f5e6; border: 1.5px solid #2e8b57; color: #1a5e1a; }
+  .tick.no { background: #faf6f1; border: 1.5px solid #e8ddd0; color: #ccc; }
+  .tick:hover { transform: scale(1.12); }
+  .row-count { font-size: 0.78rem; color: #888; font-weight: 700; }
+
+  /* Challenge */
+  .challenge-box { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 14px; padding: 1.25rem 1.4rem; }
+  .challenge-box .c-q { font-size: 0.88rem; font-weight: 700; color: #c05a10; margin-bottom: 0.75rem; line-height: 1.5; }
+  .challenge-entry { background: #fff; border: 1.5px solid #fcd8bc; border-radius: 10px; padding: 0.85rem 1rem; font-size: 0.88rem; line-height: 1.6; }
+  .challenge-entry .ce-name { font-weight: 700; color: #1a1a1a; }
+  .challenge-entry .ce-date { font-size: 0.75rem; color: #999; font-weight: 700; }
+  .challenge-empty { font-size: 0.88rem; color: #999; }
+
+  /* Lock button */
+  .lock-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 1rem; border-radius: 8px; cursor: pointer; border: 2px solid rgba(255,255,255,0.5); background: transparent; color: #fef8f4; }
+  .lock-btn:hover { background: rgba(255,255,255,0.15); }
+
+  /* Reading record */
+  .reading-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.4rem; margin-bottom: 1rem; border-top: 5px solid #007291; }
+  .reading-student { font-size: 0.95rem; font-weight: 700; color: #007291; margin-bottom: 0.6rem; }
+  .reading-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.45rem; }
+  .reading-day { width: 44px; flex-shrink: 0; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
+  .reading-row input { flex: 1; padding: 0.5rem 0.75rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #fdfaf7; color: #1a1a1a; outline: none; }
+  .reading-row input:focus { border-color: #007291; }
+  .reading-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.5rem; align-items: center; }
+  .save-confirm { font-size: 0.8rem; font-weight: 700; color: #2e8b57; display: none; }
+
+  /* Student notes */
+  .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.9rem; }
+  .note-box { background: #fff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 1rem 1.1rem; }
+  .note-box label { font-size: 0.78rem; font-weight: 700; color: #888; display: block; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .note-box textarea { width: 100%; border: 1.5px solid #e0d8d0; border-radius: 8px; padding: 0.55rem 0.75rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.84rem; color: #1a1a1a; background: #fdfaf7; resize: vertical; min-height: 70px; outline: none; line-height: 1.5; }
+  .note-box textarea:focus { border-color: #007291; }
+
+  /* Teacher tools */
+  .tools-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.4rem; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+  .tools-card .tools-intro { font-size: 0.85rem; color: #555; line-height: 1.5; flex-basis: 100%; margin-bottom: 0.25rem; }
+  .tool-link { display: inline-block; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.2rem; border-radius: 8px; background: #ef7724; color: #fff; text-decoration: none; }
+  .tool-link:hover { background: #c05a10; }
+  .tool-link.teal { background: #007291; }
+  .tool-link.teal:hover { background: #005a73; }
+
+  /* Danger zone */
+  .danger-zone { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 2px dashed #e0d8d0; text-align: center; }
+  .reset-all-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.82rem; font-weight: 700; padding: 0.6rem 1.3rem; border-radius: 8px; cursor: pointer; border: 2px solid #c0392b; background: #fff; color: #c0392b; }
+  .reset-all-btn:hover { background: #fdecea; }
+
+  /* Evidence generator */
+  .evidence-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1.25rem 1.4rem; }
+  .evidence-intro { font-size: 0.85rem; color: #555; line-height: 1.6; margin-bottom: 0.9rem; }
+  .evidence-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+  .ev-chip { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.88rem; font-weight: 700; padding: 0.55rem 1.2rem; border-radius: 20px; cursor: pointer; border: 2px solid #e0d8d0; background: #fff; color: #555; }
+  .ev-chip:hover { border-color: #b8d8e0; }
+  .ev-chip.on { border-color: #007291; background: #e6f5f8; color: #00516a; }
+  .ev-block { border: 2px solid #e8e0d8; border-radius: 12px; padding: 1rem 1.1rem; margin-bottom: 0.9rem; border-left: 5px solid var(--c, #007291); background: #fdfaf7; }
+  .ev-block-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+  .ev-block-title { font-size: 0.92rem; font-weight: 700; color: var(--c, #007291); }
+  .ev-copy-btn { font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.78rem; font-weight: 700; padding: 0.45rem 1rem; border-radius: 8px; cursor: pointer; border: 2px solid #007291; background: #fff; color: #007291; }
+  .ev-copy-btn:hover { background: #e6f5f8; }
+  .ev-copy-btn.copied { border-color: #2e8b57; color: #2e8b57; background: #e6f5e6; }
+  .ev-block textarea { width: 100%; min-height: 100px; padding: 0.7rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.86rem; line-height: 1.65; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #fff; color: #1a1a1a; resize: vertical; outline: none; }
+  .ev-block textarea:focus { border-color: #007291; }
+  .ev-empty { font-size: 0.88rem; color: #999; line-height: 1.6; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+</style>
+</head>
+<body>
+
+<div id="lockScreen">
+  <div class="lock-icon">&#128273;</div>
+  <h1>Teacher Dashboard</h1>
+  <p>Week 5 &middot; Staff access only</p>
+  <input type="password" id="passwordInput" placeholder="Password..." autocomplete="off" onkeydown="if(event.key==='Enter') tryUnlock()" />
+  <button id="unlockBtn" onclick="tryUnlock()">Unlock &rarr;</button>
+  <div id="lockError">That password does not match.</div>
+</div>
+
+<div id="mainContent">
+  <header class="site-header">
+    <a class="back-link" href="index.html">&larr; Week 5</a>
+    <span class="header-title">&#128273; Teacher Dashboard &middot; Plan, Make and Explore</span>
+    <button class="lock-btn" onclick="lockDashboard()">&#128274; Lock</button>
+  </header>
+
+  <main class="main">
+
+    <div class="device-note">
+      &#128161; <strong>Reminder:</strong> tracker ticks live in this browser's storage, so this dashboard shows the data from the device the class used. Open it on the classroom device for the full picture. You can tick activities right here, or on each subject page if you add the completed-by strip.
+    </div>
+
+    <div class="toolbar">
+      <button class="tool-btn" onclick="renderAll()">&#128260; Refresh</button>
+      <button class="tool-btn" onclick="copySummary()">&#128203; Copy summary</button>
+      <button class="tool-btn primary" onclick="emailSummary()">&#128231; Email me the summary</button>
+    </div>
+
+    <p class="section-label">At a glance</p>
+    <div class="summary-grid" id="summary-grid"></div>
+
+    <p class="section-label">Subject trackers</p>
+    <div id="subjects"></div>
+
+    <p class="section-label">Week 5 challenge &middot; Strategise &#128161;</p>
+    <div class="challenge-box">
+      <div class="c-q" id="challenge-q"></div>
+      <div id="challenge-list"></div>
+    </div>
+
+    <p class="section-label">&#128214; Reading record</p>
+    <div id="reading-records"></div>
+    <div class="reading-actions" style="margin-bottom:0.5rem;">
+      <button class="tool-btn" onclick="saveReading(true)">&#128190; Save reading record</button>
+      <button class="tool-btn" onclick="emailReading()">&#128231; Email reading record</button>
+      <button class="tool-btn" onclick="printReading()">&#128424; Print / PDF</button>
+      <span class="save-confirm" id="reading-saved">&#10003; Saved</span>
+    </div>
+
+    <p class="section-label">&#128221; Student notes</p>
+    <div class="notes-grid" id="notes-grid"></div>
+    <div class="reading-actions">
+      <button class="tool-btn" onclick="saveNotes(true)">&#128190; Save notes</button>
+      <span class="save-confirm" id="notes-saved">&#10003; Saved</span>
+    </div>
+
+    <p class="section-label">&#129534; Evidence generator</p>
+    <div class="evidence-card">
+      <p class="evidence-intro">Pick a student and the dashboard builds a separate evidence entry for each pillar they have worked in, describing the actual learning rather than just the activity names, plus their reading record. Each box is editable, with its own copy button, ready to paste into the matching pillar on BridgeLink.</p>
+      <div class="evidence-chips" id="evidence-chips"></div>
+      <div id="evidence-blocks"></div>
+    </div>
+
+    <p class="section-label">&#129520; Teacher tools</p>
+    <div class="tools-card">
+      <p class="tools-intro">Quick links to your tools. They open in this tab, so use the back button to return.</p>
+      <a class="tool-link teal" href="../tools/slide-link-maker.html">&#128279; Slide Link Maker</a>
+    </div>
+
+    <p class="section-label">&#128190; Backup</p>
+    <div class="tools-card">
+      <p class="tools-intro">Tracker data lives in this browser. Export a backup at the end of the day to keep it safe, or to move it between the classroom device and your laptop. Import restores everything (trackers, reading record, notes and stamps).</p>
+      <button class="tool-btn" onclick="exportBackup()">&#11015; Export backup</button>
+      <button class="tool-btn" onclick="document.getElementById('import-file').click()">&#11014; Import backup</button>
+      <input type="file" id="import-file" accept=".json,application/json" style="display:none" onchange="importBackup(this)">
+    </div>
+
+    <div class="danger-zone">
+      <button class="reset-all-btn" onclick="confirmResetAll()">Reset ALL Week 5 tracker data on this device</button>
+    </div>
+
+  </main>
+
+  <footer>Base 6 &middot; Chilton Bridge School &middot; Week 5 Teacher Dashboard</footer>
+</div>
+
+<script>
+const PASSWORD = 'teacher2026';
+const STUDENTS = ['LW', 'AP', 'LS', 'LC', 'HK', 'JTK'];
+
+const CHALLENGE_QUESTION = 'If you had something tricky to get done this week, what would your plan be, and what would you try first?';
+
+const SUBJECTS = [
+  { name: '&#128221; English', colour: '#ef7724', key: 'base6_w5_english_tracker', page: 'english/index.html',
+    activities: [
+      { id: 'text-type-sorter', label: 'Text Type Sorter',
+        ev: 'sorted different pieces of writing into their text types, telling apart recounts, instructions and other forms by their features' },
+      { id: 'tone-detective', label: 'Tone Detective',
+        ev: 'read texts closely to work out the writer\'s tone, deciding whether a piece was serious, playful or persuasive from the language used' },
+      { id: 'standard-english-repair-shop', label: 'Standard English Repair Shop',
+        ev: 'spotted non-Standard English in sentences and repaired it into clear Standard English, explaining what needed to change' } ] },
+  { name: '&#128290; Maths', colour: '#007291', key: 'base6_w5_maths_tracker', page: 'maths/index.html',
+    activities: [
+      { id: 'gameshow-quiz', label: 'Gameshow Quiz',
+        ev: 'took part in a quick-fire mixed maths quiz, recalling number facts at pace and tracking their own score' },
+      { id: 'pet-habitat-builder', label: 'Pet Habitat Builder',
+        ev: 'used measurement, area and money to design a pet habitat, working out what would fit in the space and keeping to a budget' },
+      { id: 'probability-theme-park', label: 'Probability Theme Park',
+        ev: 'described how likely events were using the language of chance, placing outcomes on a scale from impossible to certain' } ] },
+  { name: '&#128187; Digital Media', colour: '#4a6fa5', key: 'base6_w5_digital_tracker', page: 'digital-media/index.html',
+    activities: [
+      { id: 'ai-or-not', label: 'AI or Not AI',
+        ev: 'compared things made by AI with things made by people, sorting examples and explaining the clues that gave each one away' },
+      { id: 'train-a-tiny-robot', label: 'Train a Tiny Robot',
+        ev: 'explored how a simple AI learns from examples, training a model step by step and seeing its accuracy improve with more data' } ] },
+  { name: '&#129514; Scientific and Environmental', colour: '#2e8b57', key: 'base6_w5_science_tracker', page: 'science/index.html',
+    activities: [
+      { id: 'understanding-forces', label: 'Understanding Forces',
+        ev: 'identified the forces at work when objects move and fly, including push, pull, lift and drag' },
+      { id: 'force-launch-lab', label: 'Force Launch Lab',
+        ev: 'investigated how changing a force changes motion, adjusting the launch force and predicting and measuring how far objects travelled' } ] },
+  { name: '&#129517; Physical World and Exploration', colour: '#6b8e23', key: 'base6_w5_physical_tracker', page: 'physical-world/index.html',
+    activities: [
+      { id: 'conservation-quiz', label: 'Conservation Quiz',
+        ev: 'answered questions about caring for the environment, showing what they know about conservation and looking after the planet' },
+      { id: 'mini-conservation-builder', label: 'Mini-Conservation Builder',
+        ev: 'designed a small nature reserve, choosing habitat features such as ponds, hedges and log piles and predicting which wildlife each would attract' } ] },
+  { name: '&#127859; Preparation for Adulthood', colour: '#0e8a9e', key: 'base6_w5_adulthood_tracker', page: 'adulthood/index.html',
+    activities: [
+      { id: 'pound5-enterprise', label: 'Pound 5 Enterprise Challenge',
+        ev: 'planned a small enterprise starting from five pounds, choosing a safe idea, working out costs and explaining how it could grow into more money' },
+      { id: 'yoga-wellbeing', label: 'Yoga Pose Studio',
+        ev: 'practised simple yoga poses and matched each to its wellbeing benefit, building a calm movement routine' },
+      { id: 'community-enterprise', label: 'Community Enterprise Builder',
+        ev: 'identified a need in the community and shaped a small business idea around it, explaining who it would help' } ] },
+  { name: '&#128172; Relational (PSHE and RSE)', colour: '#7b5ea7', key: 'base6_w5_relational_tracker', page: 'relational/index.html',
+    activities: [
+      { id: 'daily-routine', label: 'The Daily Routine',
+        ev: 'sorted everyday hygiene habits into essential, helpful and not needed today, and chose one routine priority to keep' },
+      { id: 'ultimate-fresh-kit', label: 'The Ultimate Fresh Kit',
+        ev: 'planned a budget-friendly personal hygiene kit, choosing useful items and giving a reason for each' },
+      { id: 'self-respect-hygiene', label: 'Self-Respect and Hygiene',
+        ev: 'explored how personal hygiene links to comfort and confidence, discussing it in a way that did not put pressure on being perfect' },
+      { id: 'scent-journey', label: 'The Scent Journey',
+        ev: 'linked scent to mood and tried a gentle breathing pause as a way to settle and self-regulate' },
+      { id: 'tiny-habit-tracker', label: 'Tiny Habit Tracker',
+        ev: 'chose one small change to a morning or evening routine and planned what might make it easier to keep up' } ] },
+  { name: '&#127912; Aesthetic and Creative', colour: '#c2185b', key: 'base6_w5_creative_tracker', page: 'creative/index.html',
+    activities: [
+      { id: 'memory-game', label: 'Memory Game',
+        ev: 'played a pairs memory game, using recall and concentration to find the matching cards' },
+      { id: 'fashion-designer-studio', label: 'Fashion Designer Studio',
+        ev: 'designed an outfit in a studio tool, making deliberate choices of shape, colour and pattern and explaining the reasons behind them' } ] },
+];
+
+function tryUnlock() {
+  if (document.getElementById('passwordInput').value.trim() === PASSWORD) {
+    try { sessionStorage.setItem('base6_w5_teacher', '1'); } catch(e) {}
+    showDashboard();
+  } else {
+    document.getElementById('lockError').style.display = 'block';
+    document.getElementById('passwordInput').value = '';
+  }
+}
+function showDashboard() {
+  document.getElementById('lockScreen').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'block';
+  document.getElementById('challenge-q').textContent = '"' + CHALLENGE_QUESTION + '"';
+  renderAll();
+}
+
+function loadTracker(key) {
+  try { return JSON.parse(localStorage.getItem(key)) || {}; } catch(e) { return {}; }
+}
+
+function getMatrix() {
+  const rows = [];
+  SUBJECTS.forEach(sub => {
+    const data = loadTracker(sub.key);
+    sub.activities.forEach(act => {
+      const done = {};
+      STUDENTS.forEach(st => { done[st] = !!(data[act.id] && data[act.id][st]); });
+      rows.push({ subject: sub, activity: act, done });
+    });
+  });
+  return rows;
+}
+
+function toggleTick(key, actId, st) {
+  const data = loadTracker(key);
+  if (!data[actId]) data[actId] = {};
+  data[actId][st] = !data[actId][st];
+  try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
+  renderAll();
+}
+
+function renderAll() {
+  const rows = getMatrix();
+
+  const perStudent = {};
+  STUDENTS.forEach(st => perStudent[st] = 0);
+  let total = 0;
+  rows.forEach(r => STUDENTS.forEach(st => { if (r.done[st]) { perStudent[st]++; total++; } }));
+  const totalPossible = rows.length;
+
+  const sg = document.getElementById('summary-grid');
+  sg.innerHTML = '<div class="summary-card total"><div class="s-num">' + total + '</div><div class="s-label">Total ticks</div></div>';
+  STUDENTS.forEach(st => {
+    sg.innerHTML += '<div class="summary-card"><div class="s-num">' + perStudent[st] + '<span style="font-size:0.85rem;color:#bbb;">/' + totalPossible + '</span></div><div class="s-label">' + st + '</div></div>';
+  });
+
+  const c = document.getElementById('subjects');
+  c.innerHTML = '';
+  SUBJECTS.forEach(sub => {
+    const subRows = rows.filter(r => r.subject === sub);
+    let html = '<div class="subject-block" style="--c:' + sub.colour + ';">';
+    html += '<div class="subject-head"><span class="subject-title">' + sub.name + '</span><a class="subject-open" href="' + sub.page + '">open page &rarr;</a></div>';
+    html += '<div class="table-scroll"><table><thead><tr><th>Activity</th>';
+    STUDENTS.forEach(st => { html += '<th>' + st + '</th>'; });
+    html += '<th></th></tr></thead><tbody>';
+    subRows.forEach(r => {
+      const count = STUDENTS.filter(st => r.done[st]).length;
+      html += '<tr><td>' + r.activity.label + '</td>';
+      STUDENTS.forEach(st => {
+        const mark = r.done[st] ? '&#10003;' : '&middot;';
+        const title = st + ' &middot; ' + (r.done[st] ? 'completed (tap to undo)' : 'not yet done (tap to mark done)');
+        html += '<td><button class="tick ' + (r.done[st] ? 'yes' : 'no') + '" onclick="toggleTick(\'' + sub.key + '\',\'' + r.activity.id + '\',\'' + st + '\')" title="' + title + '">' + mark + '</button></td>';
+      });
+      html += '<td class="row-count">' + count + '/' + STUDENTS.length + '</td></tr>';
+    });
+    html += '</tbody></table></div></div>';
+    c.innerHTML += html;
+  });
+
+  renderChallenge();
+  renderReading();
+  renderNotes();
+  renderEvidenceChips();
+}
+
+function renderChallenge() {
+  const list = document.getElementById('challenge-list');
+  let stamps = {};
+  try { stamps = JSON.parse(localStorage.getItem('base6_stamps')) || {}; } catch(e) {}
+  const s = stamps[5];
+  if (s) {
+    list.innerHTML = '<div class="challenge-entry"><span class="ce-name">' + s.name + '</span> <span class="ce-date">&middot; ' + (s.date || '') + '</span><br>"' + s.answer + '"</div>';
+  } else {
+    list.innerHTML = '<p class="challenge-empty">No Week 5 challenge response saved on this device yet. (Each device stores its own. Responses are also emailed to you when submitted.)</p>';
+  }
+}
+
+const READING_KEY = 'base6_w5_reading';
+const NOTES_KEY = 'base6_w5_teacher_notes';
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+let readingRendered = false, notesRendered = false;
+
+function loadJSON(key) {
+  try { return JSON.parse(localStorage.getItem(key)) || {}; } catch(e) { return {}; }
+}
+
+function renderReading() {
+  if (readingRendered) return;
+  readingRendered = true;
+  const data = loadJSON(READING_KEY);
+  const c = document.getElementById('reading-records');
+  c.innerHTML = '';
+  STUDENTS.forEach(st => {
+    let rows = '';
+    DAYS.forEach(d => {
+      const v = (data[st] && data[st][d]) ? data[st][d].replace(/"/g, '&quot;') : '';
+      rows += '<div class="reading-row"><span class="reading-day">' + d + '</span><input type="text" id="read-' + st + '-' + d + '" value="' + v + '" placeholder="Book, pages, comments..." oninput="saveReading(false)"></div>';
+    });
+    c.innerHTML += '<div class="reading-card"><div class="reading-student">' + st + '</div>' + rows + '</div>';
+  });
+}
+
+function saveReading(showConfirm) {
+  const data = {};
+  STUDENTS.forEach(st => {
+    data[st] = {};
+    DAYS.forEach(d => {
+      const el = document.getElementById('read-' + st + '-' + d);
+      if (el) data[st][d] = el.value;
+    });
+  });
+  try { localStorage.setItem(READING_KEY, JSON.stringify(data)); } catch(e) {}
+  if (showConfirm) {
+    const s = document.getElementById('reading-saved');
+    s.style.display = 'inline';
+    setTimeout(() => s.style.display = 'none', 2500);
+  }
+}
+
+function buildReadingText() {
+  const data = loadJSON(READING_KEY);
+  const now = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  let out = 'BASE 6 - WEEK 5 READING RECORD (' + now + ')\n\n';
+  STUDENTS.forEach(st => {
+    out += st + '\n';
+    DAYS.forEach(d => {
+      out += '  ' + d + ': ' + ((data[st] && data[st][d]) ? data[st][d] : '-') + '\n';
+    });
+    out += '\n';
+  });
+  return out;
+}
+
+function emailReading() {
+  saveReading(false);
+  const now = new Date().toLocaleDateString('en-GB');
+  const gmail = 'https://mail.google.com/mail/?view=cm&fs=1&to=jay.raine@chiltonbridgeschool.co.uk&su=' + encodeURIComponent('Base 6 - Week 5 reading record - ' + now) + '&body=' + encodeURIComponent(buildReadingText());
+  window.open(gmail, '_blank');
+}
+
+function printReading() {
+  saveReading(false);
+  const data = loadJSON(READING_KEY);
+  const now = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  let html = '<!DOCTYPE html><html><head><title>Week 5 Reading Record</title><style>' +
+    'body{font-family:Arial,sans-serif;color:#1a1a1a;padding:2rem;}h1{font-size:1.3rem;color:#007291;}h2{font-size:1rem;color:#007291;margin:1.25rem 0 0.4rem;border-bottom:2px solid #e0d8d0;padding-bottom:0.2rem;}' +
+    'table{width:100%;border-collapse:collapse;margin-bottom:0.5rem;}td{padding:0.4rem 0.6rem;border:1px solid #ddd;font-size:0.85rem;}td:first-child{width:60px;font-weight:bold;background:#f5f5f5;}' +
+    '</style></head><body><h1>Base 6 - Week 5 Reading Record</h1><p style="font-size:0.85rem;color:#888;">' + now + '</p>';
+  STUDENTS.forEach(st => {
+    html += '<h2>' + st + '</h2><table>';
+    DAYS.forEach(d => {
+      html += '<tr><td>' + d + '</td><td>' + ((data[st] && data[st][d]) ? data[st][d] : '') + '</td></tr>';
+    });
+    html += '</table>';
+  });
+  html += '<scr' + 'ipt>window.onload=function(){window.print();}<\/scr' + 'ipt></body></html>';
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+}
+
+function renderNotes() {
+  if (notesRendered) return;
+  notesRendered = true;
+  const data = loadJSON(NOTES_KEY);
+  const c = document.getElementById('notes-grid');
+  c.innerHTML = '';
+  STUDENTS.forEach(st => {
+    const v = data[st] || '';
+    const div = document.createElement('div');
+    div.className = 'note-box';
+    div.innerHTML = '<label for="note-' + st + '">' + st + '</label><textarea id="note-' + st + '" placeholder="Notes for ' + st + ' this week..." oninput="saveNotes(false)"></textarea>';
+    c.appendChild(div);
+    div.querySelector('textarea').value = v;
+  });
+}
+
+function saveNotes(showConfirm) {
+  const data = {};
+  STUDENTS.forEach(st => {
+    const el = document.getElementById('note-' + st);
+    if (el) data[st] = el.value;
+  });
+  try { localStorage.setItem(NOTES_KEY, JSON.stringify(data)); } catch(e) {}
+  if (showConfirm) {
+    const s = document.getElementById('notes-saved');
+    s.style.display = 'inline';
+    setTimeout(() => s.style.display = 'none', 2500);
+  }
+}
+
+function lockDashboard() {
+  try { sessionStorage.removeItem('base6_w5_teacher'); } catch(e) {}
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('lockScreen').style.display = 'flex';
+  document.getElementById('passwordInput').value = '';
+  document.getElementById('lockError').style.display = 'none';
+}
+
+function confirmResetAll() {
+  if (!confirm('Reset ALL Week 5 tracker data on this device? This clears every subject\'s completion ticks. (Reading record and notes are kept.)')) return;
+  SUBJECTS.forEach(sub => { try { localStorage.removeItem(sub.key); } catch(e) {} });
+  renderAll();
+}
+
+const BACKUP_KEYS = SUBJECTS.map(s => s.key).concat([READING_KEY, NOTES_KEY, 'base6_stamps']);
+
+function exportBackup() {
+  saveReading(false); saveNotes(false);
+  const data = { _base6: 'week5-backup', _exported: new Date().toISOString(), keys: {} };
+  BACKUP_KEYS.forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v !== null) data.keys[k] = v;
+  });
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'base6-week5-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+function importBackup(input) {
+  const file = input.files && input.files[0];
+  input.value = '';
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    let data;
+    try { data = JSON.parse(reader.result); } catch(e) {
+      alert('That file is not a valid Base 6 backup (could not read it as JSON).');
+      return;
+    }
+    if (!data || data._base6 !== 'week5-backup' || !data.keys) {
+      alert('That file is not a Base 6 Week 5 backup.');
+      return;
+    }
+    const count = Object.keys(data.keys).length;
+    const when = data._exported ? new Date(data._exported).toLocaleString('en-GB') : 'unknown date';
+    if (!confirm('Import backup from ' + when + '?\n\nThis restores ' + count + ' data set(s), trackers, reading record, notes and stamps, and OVERWRITES what is currently on this device.')) return;
+    Object.keys(data.keys).forEach(k => {
+      if (BACKUP_KEYS.includes(k)) {
+        try { localStorage.setItem(k, data.keys[k]); } catch(e) {}
+      }
+    });
+    readingRendered = false; notesRendered = false;
+    renderAll();
+    alert('Backup restored.');
+  };
+  reader.readAsText(file);
+}
+
+let evidenceStudent = null;
+
+function renderEvidenceChips() {
+  const c = document.getElementById('evidence-chips');
+  c.innerHTML = '';
+  STUDENTS.forEach(st => {
+    const b = document.createElement('button');
+    b.className = 'ev-chip' + (evidenceStudent === st ? ' on' : '');
+    b.textContent = st;
+    b.onclick = () => { evidenceStudent = st; renderEvidenceChips(); generateEvidence(st); };
+    c.appendChild(b);
+  });
+}
+
+function generateEvidence(st) {
+  saveReading(false); saveNotes(false);
+  const rows = getMatrix();
+  const blocks = [];
+
+  SUBJECTS.forEach(sub => {
+    const done = rows.filter(r => r.subject === sub && r.done[st]).map(r => r.activity);
+    if (!done.length) return;
+    const pillarName = sub.name.replace(/^\S+\s/, '');
+    let text = 'Base 6 - Week 5 (Plan, Make and Explore) - ' + pillarName + '\n\n';
+    done.forEach(act => {
+      text += 'In ' + act.label + ', ' + st + ' ' + act.ev + '.\n\n';
+    });
+    blocks.push({ title: sub.name, colour: sub.colour, text: text.trim() });
+  });
+
+  const reading = loadJSON(READING_KEY);
+  const entries = DAYS.filter(d => reading[st] && reading[st][d] && reading[st][d].trim());
+  if (entries.length > 0) {
+    let text = 'Base 6 - Week 5 (Plan, Make and Explore) - Reading\n\n';
+    text += st + ' read on ' + entries.length + ' of 5 days this week:\n';
+    entries.forEach(d => { text += d + ': ' + reading[st][d].trim() + '\n'; });
+    blocks.push({ title: '&#128214; Reading', colour: '#007291', text: text.trim() });
+  }
+
+  const notes = loadJSON(NOTES_KEY);
+  if (notes[st] && notes[st].trim()) {
+    blocks.push({ title: '&#128221; Teacher notes', colour: '#888888', text: 'Teacher observations - ' + st + ' (Week 5):\n\n' + notes[st].trim() });
+  }
+
+  const c = document.getElementById('evidence-blocks');
+  c.innerHTML = '';
+  if (!blocks.length) {
+    c.innerHTML = '<p class="ev-empty">Nothing to generate for ' + st + ' yet. No activity ticks, reading entries or notes are saved on this device. Tick activities above (or import a backup) and try again.</p>';
+    return;
+  }
+  blocks.forEach((b, i) => {
+    const div = document.createElement('div');
+    div.className = 'ev-block';
+    div.style.setProperty('--c', b.colour);
+    div.innerHTML = '<div class="ev-block-head"><span class="ev-block-title">' + b.title + '</span>' +
+      '<button class="ev-copy-btn" id="ev-copy-' + i + '" onclick="copyEvidenceBlock(' + i + ')">&#128203; Copy</button></div>' +
+      '<textarea id="ev-text-' + i + '"></textarea>';
+    c.appendChild(div);
+    const ta = div.querySelector('textarea');
+    ta.value = b.text;
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(ta.scrollHeight + 6, 400) + 'px';
+  });
+}
+
+function copyEvidenceBlock(i) {
+  const ta = document.getElementById('ev-text-' + i);
+  const btn = document.getElementById('ev-copy-' + i);
+  if (!ta) return;
+  const confirmCopied = () => {
+    btn.innerHTML = '&#10003; Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = '&#128203; Copy'; btn.classList.remove('copied'); }, 2500);
+  };
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(ta.value.trim()).then(confirmCopied);
+  } else {
+    ta.select();
+    document.execCommand('copy');
+    confirmCopied();
+  }
+}
+
+function buildSummaryText() {
+  const rows = getMatrix();
+  const now = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  let out = 'BASE 6 - WEEK 5 TRACKER SUMMARY (' + now + ')\nStudents: ' + STUDENTS.join('  ') + '\n\n';
+  SUBJECTS.forEach(sub => {
+    out += sub.name.replace(/^\S+\s/, '').toUpperCase() + '\n';
+    rows.filter(r => r.subject === sub).forEach(r => {
+      const marks = STUDENTS.map(st => r.done[st] ? st + ':yes' : st + ':-').join('  ');
+      out += '  ' + r.activity.label + ' - ' + marks + '\n';
+    });
+    out += '\n';
+  });
+  let stamps = {};
+  try { stamps = JSON.parse(localStorage.getItem('base6_stamps')) || {}; } catch(e) {}
+  out += 'WEEK 5 CHALLENGE (this device): ' + (stamps[5] ? stamps[5].name + ' - "' + stamps[5].answer + '"' : 'none saved') + '\n\n';
+  const notes = loadJSON(NOTES_KEY);
+  out += 'STUDENT NOTES\n';
+  STUDENTS.forEach(st => { out += '  ' + st + ': ' + (notes[st] || '-') + '\n'; });
+  return out;
+}
+
+function copySummary() {
+  const text = buildSummaryText();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => alert('Summary copied to clipboard.'));
+  } else {
+    prompt('Copy the summary below:', text);
+  }
+}
+
+function emailSummary() {
+  saveNotes(false);
+  const now = new Date().toLocaleDateString('en-GB');
+  const gmail = 'https://mail.google.com/mail/?view=cm&fs=1&to=jay.raine@chiltonbridgeschool.co.uk&su=' + encodeURIComponent('Base 6 - Week 5 tracker summary - ' + now) + '&body=' + encodeURIComponent(buildSummaryText());
+  window.open(gmail, '_blank');
+}
+
+try { if (sessionStorage.getItem('base6_w5_teacher') === '1') showDashboard(); } catch(e) {}
+</script>
+
+</body>
+</html>
