@@ -8,32 +8,145 @@
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; --c: #2e8b57; }
 
-  .site-header { position: relative; background-color: var(--c); padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
-  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
-  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.12); border-radius: 50%; }
-  .site-header .header-inner { position: relative; z-index: 2; }
-  .week-label { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.85); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
-  .site-header h1 { font-size: 2.3rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
-  .site-header p { font-size: 1.1rem; color: rgba(255,255,255,0.92); margin-top: 0.5rem; }
-  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+  body {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    background-color: #fef8f4;
+    color: #1a1a1a;
+    min-height: 100vh;
+    --c: #2e8b57;
+  }
 
-  .main { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-  .back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 700; color: var(--c); text-decoration: none; }
-  .back-link:hover { text-decoration: underline; }
+  .site-header {
+    position: relative;
+    background-color: var(--c);
+    padding: 2.5rem 2rem 3.25rem;
+    text-align: center;
+    overflow: hidden;
+  }
 
-  .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin-bottom: 2rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
-  .intro h2 { font-size: 1.25rem; color: #c05a10; margin-bottom: 0.5rem; }
-  .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
+  .site-header::before {
+    content: "";
+    position: absolute;
+    top: -60px;
+    left: -40px;
+    width: 180px;
+    height: 180px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
 
-  .starters { margin-bottom: 1.5rem; }
-  .starters-label { font-size: 0.95rem; font-weight: 700; color: #555; margin-bottom: 0.65rem; }
+  .site-header::after {
+    content: "";
+    position: absolute;
+    bottom: 10px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 50%;
+  }
+
+  .site-header .header-inner {
+    position: relative;
+    z-index: 2;
+  }
+
+  .week-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .site-header h1 {
+    font-size: 2.3rem;
+    font-weight: 700;
+    color: #fef8f4;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+
+  .site-header p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.92);
+    margin-top: 0.5rem;
+  }
+
+  .header-wave {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    z-index: 1;
+  }
+
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--c);
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  .intro {
+    background: #ffffff;
+    border: 2px solid #ef7724;
+    border-radius: 16px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 14px rgba(239,119,36,0.1);
+  }
+
+  .intro h2 {
+    font-size: 1.25rem;
+    color: #c05a10;
+    margin-bottom: 0.5rem;
+  }
+
+  .intro p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+  }
+
+  .starters {
+    margin-bottom: 1.5rem;
+  }
+
+  .starters-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 0.65rem;
+  }
 
   .starter-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .starter-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    min-width: 0;
   }
 
   .starter-card {
@@ -41,6 +154,7 @@
     border: 2px solid var(--c);
     border-radius: 16px;
     overflow: hidden;
+    align-self: stretch;
   }
 
   .starter-card summary {
@@ -69,55 +183,172 @@
     margin-bottom: 0.75rem;
   }
 
-  .starter-panel .story-note {
+  .story-note {
     background: #fef8f4;
     border-left: 4px solid #ef7724;
     border-radius: 10px;
     padding: 0.75rem;
     margin-bottom: 0.8rem;
     font-size: 0.9rem;
+    line-height: 1.45;
     color: #333;
   }
 
-  .use-btn {
+  .story-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+  }
+
+  .use-btn,
+  .read-link {
     font-family: inherit;
     font-size: 0.9rem;
     font-weight: 700;
+    border-radius: 999px;
+    padding: 0.55rem 1rem;
+  }
+
+  .use-btn {
     color: #fff;
     background: var(--c);
     border: none;
-    border-radius: 999px;
-    padding: 0.55rem 1rem;
     cursor: pointer;
   }
 
-  .use-btn:hover {
+  .read-link {
+    display: inline-block;
+    color: var(--c);
+    background: #fff;
+    border: 2px solid var(--c);
+    text-decoration: none;
+  }
+
+  .use-btn:hover,
+  .read-link:hover {
     filter: brightness(0.93);
   }
 
-  .card { background: #fff; border: 2px solid var(--c); border-radius: 16px; padding: 1.5rem; }
-  .field { margin-bottom: 1rem; }
-  .field:last-of-type { margin-bottom: 0; }
-  .field label { display: block; font-size: 0.82rem; font-weight: 700; color: #555; margin-bottom: 0.3rem; }
-  .field input[type=text], .field textarea { width: 100%; padding: 0.7rem 0.9rem; font-family: inherit; font-size: 0.98rem; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #fff; color: #1a1a1a; outline: none; }
-  .field textarea { min-height: 200px; resize: vertical; line-height: 1.6; }
-  .field input:focus, .field textarea:focus { border-color: var(--c); }
-  .row2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.7rem; }
+  .card {
+    background: #fff;
+    border: 2px solid var(--c);
+    border-radius: 16px;
+    padding: 1.5rem;
+  }
 
-  .send-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1.1rem; }
-  .send-btn { font-family: inherit; font-size: 0.95rem; font-weight: 700; padding: 0.7rem 1.5rem; background: var(--c); color: #fff; border: none; border-radius: 999px; cursor: pointer; transition: filter 0.15s; }
-  .send-btn:hover { filter: brightness(0.93); }
-  .save-note { font-size: 0.8rem; color: #777; }
+  .field {
+    margin-bottom: 1rem;
+  }
 
-  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus-visible {
+  .field:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .field label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 0.3rem;
+  }
+
+  .field input[type=text],
+  .field textarea {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    font-family: inherit;
+    font-size: 0.98rem;
+    border: 1.5px solid #e0d8d0;
+    border-radius: 10px;
+    background: #fff;
+    color: #1a1a1a;
+    outline: none;
+  }
+
+  .field textarea {
+    min-height: 220px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  .field input:focus,
+  .field textarea:focus {
+    border-color: var(--c);
+  }
+
+  .row2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.7rem;
+  }
+
+  .send-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.1rem;
+  }
+
+  .send-btn {
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.7rem 1.5rem;
+    background: var(--c);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: filter 0.15s;
+  }
+
+  .send-btn:hover {
+    filter: brightness(0.93);
+  }
+
+  .save-note {
+    font-size: 0.8rem;
+    color: #777;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  summary:focus-visible {
     outline: 3px solid #ef7724;
     outline-offset: 2px;
   }
 
-  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.8rem;
+    color: #888;
+    border-top: 1px solid #e0d8d0;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 720px) {
+    .starter-list {
+      grid-template-columns: 1fr;
+    }
+
+    .site-header h1 {
+      font-size: 1.9rem;
+    }
+
+    .main {
+      padding-inline: 1rem;
+    }
+  }
 
   @media (prefers-reduced-motion: reduce) {
-    .send-btn { transition: none; }
+    .send-btn {
+      transition: none;
+    }
   }
 </style>
 </head>
@@ -129,6 +360,7 @@
     <h1>Tales from Around the World</h1>
     <p>Old stories from far away, retold by you.</p>
   </div>
+
   <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
   </svg>
@@ -140,7 +372,7 @@
 
   <div class="intro">
     <h2>Retell a tale</h2>
-    <p>Lots of countries have old stories that have been passed down for hundreds of years. Pick a country and one of its tales, then retell it in your own way. You can change the ending if you like. Open a story summary below for an idea, or write in your own. Your writing saves on this device.</p>
+    <p>Lots of countries have old stories that have been passed down for hundreds of years. Pick a country and one of its tales, then retell it in your own way. You can change the ending if you like. Open a story summary below for an idea, read the full story, or write in your own. Your writing saves on this device.</p>
   </div>
 
   <div class="starters">
@@ -153,14 +385,24 @@
       <label for="initials">Your initials</label>
       <input type="text" id="initials" data-save placeholder="Type your initials here">
     </div>
+
     <div class="row2">
-      <div class="field"><label for="country">Country</label><input type="text" id="country" data-save placeholder="Which country?"></div>
-      <div class="field"><label for="tale">Tale</label><input type="text" id="tale" data-save placeholder="Which tale?"></div>
+      <div class="field">
+        <label for="country">Country</label>
+        <input type="text" id="country" data-save placeholder="Which country?">
+      </div>
+
+      <div class="field">
+        <label for="tale">Tale</label>
+        <input type="text" id="tale" data-save placeholder="Which tale?">
+      </div>
     </div>
+
     <div class="field">
       <label for="retell">Your retelling</label>
       <textarea id="retell" data-save placeholder="Tell the story your way..."></textarea>
     </div>
+
     <div class="send-row">
       <button class="send-btn" id="send" type="button">Send to Jay</button>
       <span class="save-note">Your writing is saved on this device.</span>
@@ -182,24 +424,28 @@
     {
       country: 'Ghana',
       tale: 'Anansi the clever spider',
+      url: 'https://worldstories.org.uk/reader/why-anansi-has-eight-skinny-legs/english/255',
       summary: 'Anansi is a small spider who uses clever thinking to solve problems, trick bigger animals, and get what he wants. In many Anansi stories, he is not the strongest character, but he survives because he is quick, funny and inventive.',
       retellIdea: 'You could retell it as a story where a small character outsmarts someone powerful.'
     },
     {
       country: 'Mexico',
       tale: 'The Rabbit on the Moon',
+      url: 'https://www.pocoyo.com/read/the-rabbit-on-the-moon',
       summary: 'A kind rabbit meets a tired traveller and offers the only thing it has: itself as food. The traveller is really a powerful figure in disguise. To honour the rabbit’s kindness, the rabbit’s shape is placed on the Moon forever.',
       retellIdea: 'You could retell it as a story about kindness being remembered in a magical way.'
     },
     {
       country: 'Japan',
       tale: 'Momotaro, the Peach Boy',
+      url: 'https://www.japansociety.org.uk/usercontent/62c3175aa622b916988a662232305dca/Momotaro-Print-Version.pdf',
       summary: 'An elderly couple find a giant peach floating down a river. Inside is a boy called Momotaro. When he grows up, he travels to fight troublesome ogres. Along the way, he is joined by animal companions who help him complete his quest.',
       retellIdea: 'You could retell it as an adventure story with a team, a journey and a final challenge.'
     },
     {
       country: 'Norway',
       tale: 'The Three Billy Goats Gruff',
+      url: 'https://worldstories.org.uk/reader/the-three-billy-goats-gruff/english/254',
       summary: 'Three goats want to cross a bridge to reach better grass, but a troll waits underneath. The first two goats persuade the troll to wait for the biggest goat. When the biggest goat arrives, he faces the troll and clears the way.',
       retellIdea: 'You could retell it as a bridge story where each character has a different plan.'
     }
@@ -209,30 +455,56 @@
 
   function saveAll() {
     var s = {};
-    fields.forEach(function (f) { s[f.id] = f.value; });
-    try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
+    fields.forEach(function (f) {
+      s[f.id] = f.value;
+    });
+
+    try {
+      localStorage.setItem(KEY, JSON.stringify(s));
+    } catch (e) {}
   }
 
   function restore() {
     var s;
-    try { s = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { s = null; }
+
+    try {
+      s = JSON.parse(localStorage.getItem(KEY) || 'null');
+    } catch (e) {
+      s = null;
+    }
+
     if (s) {
       fields.forEach(function (f) {
-        if (s[f.id] != null) { f.value = s[f.id]; }
+        if (s[f.id] != null) {
+          f.value = s[f.id];
+        }
       });
     }
+
     try {
       var p = JSON.parse(localStorage.getItem('base6Profile') || 'null');
       var ini = document.getElementById('initials');
-      if (p && p.initials && ini && !ini.value) { ini.value = p.initials.toUpperCase(); }
+
+      if (p && p.initials && ini && !ini.value) {
+        ini.value = p.initials.toUpperCase();
+      }
     } catch (e) {}
   }
 
-  fields.forEach(function (f) { f.addEventListener('input', saveAll); });
+  fields.forEach(function (f) {
+    f.addEventListener('input', saveAll);
+  });
 
   var starterList = document.getElementById('starter-list');
 
-  STARTERS.forEach(function (st) {
+  function useStarter(st) {
+    document.getElementById('country').value = st.country;
+    document.getElementById('tale').value = st.tale;
+    saveAll();
+    document.getElementById('retell').focus();
+  }
+
+  function makeStarterCard(st) {
     var details = document.createElement('details');
     details.className = 'starter-card';
 
@@ -249,27 +521,62 @@
     note.className = 'story-note';
     note.textContent = st.retellIdea;
 
+    var actions = document.createElement('div');
+    actions.className = 'story-actions';
+
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'use-btn';
     btn.textContent = 'Use this tale';
     btn.addEventListener('click', function () {
-      document.getElementById('country').value = st.country;
-      document.getElementById('tale').value = st.tale;
-      saveAll();
-      document.getElementById('retell').focus();
+      useStarter(st);
     });
+
+    var link = document.createElement('a');
+    link.className = 'read-link';
+    link.href = st.url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = 'Read full story';
+    link.setAttribute('aria-label', 'Read the full story: ' + st.tale);
+
+    actions.appendChild(btn);
+    actions.appendChild(link);
 
     panel.appendChild(p);
     panel.appendChild(note);
-    panel.appendChild(btn);
+    panel.appendChild(actions);
 
     details.appendChild(summary);
     details.appendChild(panel);
 
-    starterList.appendChild(details);
-  });
+    return details;
+  }
 
+  function renderStarterCards() {
+    starterList.innerHTML = '';
+
+    var leftCol = document.createElement('div');
+    var rightCol = document.createElement('div');
+
+    leftCol.className = 'starter-col';
+    rightCol.className = 'starter-col';
+
+    STARTERS.forEach(function (st, index) {
+      var card = makeStarterCard(st);
+
+      if (index % 2 === 0) {
+        leftCol.appendChild(card);
+      } else {
+        rightCol.appendChild(card);
+      }
+    });
+
+    starterList.appendChild(leftCol);
+    starterList.appendChild(rightCol);
+  }
+
+  renderStarterCards();
   restore();
 
   function val(id) {
@@ -285,7 +592,16 @@
       'My retelling:\n' + val('retell') + '\n';
 
     var su = encodeURIComponent('National Writing Day: Tales from Around the World');
-    window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER + '&su=' + su + '&body=' + encodeURIComponent(body), '_blank');
+
+    window.open(
+      'https://mail.google.com/mail/?view=cm&fs=1&to=' +
+      TEACHER +
+      '&su=' +
+      su +
+      '&body=' +
+      encodeURIComponent(body),
+      '_blank'
+    );
   });
 })();
 </script>
