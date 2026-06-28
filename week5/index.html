@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/Base6/favicon.ico">
-<title>Week 5 · Base 6</title>
+<title>Week 5 &middot; Base 6</title>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
 
-  /* ── CURVED BANNER ── */
+  /* -- CURVED BANNER -- */
   .site-header { position: relative; background-color: #007291; padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
   .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
   .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(239,119,36,0.18); border-radius: 50%; }
@@ -24,20 +24,20 @@
 
   .main { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
 
-  /* ── WORD OF THE WEEK / CULTURAL RIBBONS ── */
+  /* -- WORD OF THE WEEK / CULTURAL RIBBONS -- */
   .ribbon { display: block; border-radius: 14px; padding: 0.85rem 1.4rem; text-align: center; text-decoration: none; font-size: 0.98rem; font-weight: 700; margin-bottom: 1rem; transition: transform 0.12s ease, box-shadow 0.12s ease; }
   .ribbon:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
   .ribbon.wotw { background: #ef7724; color: #fef8f4; }
   .ribbon.cultural { background: #005a72; color: #fef8f4; }
 
-  /* ── INTRO CARD ── */
+  /* -- INTRO CARD -- */
   .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin: 1.25rem 0 2.25rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
   .intro h2 { font-size: 1.3rem; color: #c05a10; margin-bottom: 0.5rem; }
   .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
 
   .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
 
-  /* ── DAY BY DAY TILES ── */
+  /* -- DAY BY DAY TILES -- */
   .b6-day-section { margin-bottom: 2.5rem; }
   .b6-day-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 1rem; }
   .b6-day-tile {
@@ -60,8 +60,10 @@
   .b6-dot { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--tile); background: transparent; }
   .b6-dot.filled { background: var(--tile); }
   .b6-day-note { font-size: 0.85rem; color: #555; line-height: 1.55; margin-top: 1rem; }
+  .b6-day-tile.is-inset { cursor: default; }
+  .b6-day-tile.is-inset:hover { transform: none; box-shadow: none; }
 
-  /* ── SUBJECT TILES (home-learning look) ── */
+  /* -- SUBJECT TILES (home-learning look) -- */
   .tiles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem; margin-bottom: 2.5rem; }
   .tile { position: relative; background: #ffffff; border: 2px solid var(--c); border-radius: 16px; padding: 1.5rem 1.5rem 1.25rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.45rem; transition: transform 0.18s ease, box-shadow 0.18s ease; overflow: hidden; }
   .tile::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--c); }
@@ -74,7 +76,7 @@
   .tile-go .arrow { transition: transform 0.18s ease; }
   .tile:hover .tile-go .arrow { transform: translateX(4px); }
 
-  /* ── STAMP CARD ── */
+  /* -- STAMP CARD -- */
   .stamp-card-section { margin-bottom: 2.5rem; }
   .stamp-card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 1.25rem 1.5rem; }
   .stamp-card-title { font-size: 0.9rem; font-weight: 700; color: #1a1a1a; margin-bottom: 0.25rem; }
@@ -86,7 +88,7 @@
   .stamp-slot .slot-label { font-size: 0.65rem; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.06em; }
   .stamp-slot .slot-label.filled { color: #ef7724; }
 
-  /* ── WEEKLY CHALLENGE ── */
+  /* -- WEEKLY CHALLENGE -- */
   .challenge-section { margin-bottom: 2.5rem; }
   .challenge-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ef7724; margin-bottom: 1.25rem; }
   .challenge-card { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 16px; padding: 1.5rem; }
@@ -245,12 +247,13 @@
   <!-- EDIT (draft): warm welcome to the week -->
   <div class="intro">
     <h2>Welcome to Week 5</h2>
-    <p>There is a trip to look forward to, plus cooking, digital art, a bit of building, and some science. Pick a day or a subject below whenever you are ready. There is no rush, and you can come back to anything later. Jay loves seeing what you make.</p>
+    <p>There is a trip to look forward to, plus cooking, digital art and a bit of building this week. There is no school on Friday, as the staff have a training day (BridgeFest). Pick a day or a subject below whenever you are ready. There is no rush, and you can come back to anything later. Jay loves seeing what you make.</p>
   </div>
 
-  <!-- ── DAY BY DAY ──
+  <!-- -- DAY BY DAY --
        data-total = number of activity cards on each day page. These are estimates from the
-       timetable. Adjust each one when you build day1 to day5. -->
+       timetable. Adjust each one when you build day1 to day5.
+       Friday is BridgeFest, a staff inset day, so it is a non-linking note with no activities. -->
   <div class="b6-day-section">
     <p class="section-label">This week, day by day</p>
     <div class="b6-day-grid">
@@ -286,16 +289,15 @@
         <span class="b6-tile-dots" data-day="4" data-total="4" aria-hidden="true"></span>
         <span class="b6-tile-today">Today</span>
       </a>
-      <a class="b6-day-tile" href="day5.html" data-date="2026-07-03" style="--tile:#c2185b; --tile-soft:#fbe4ed; --tile-shadow:rgba(194,24,91,0.22);">
-        <span class="b6-day-badge" aria-hidden="true">&#128300;</span>
+      <div class="b6-day-tile is-inset" data-date="2026-07-03" style="--tile:#c2185b; --tile-soft:#fbe4ed; --tile-shadow:rgba(194,24,91,0.22);">
+        <span class="b6-day-badge" aria-hidden="true">&#127881;</span>
         <span class="b6-tile-day">Friday</span>
         <span class="b6-tile-date">Fri 3 July</span>
-        <span class="b6-tile-tag">Science</span>
-        <span class="b6-tile-dots" data-day="5" data-total="4" aria-hidden="true"></span>
+        <span class="b6-tile-tag">BridgeFest</span>
         <span class="b6-tile-today">Today</span>
-      </a>
+      </div>
     </div>
-    <p class="b6-day-note">If choosing feels like a lot, you could start with today's tile. It lights up on the day.</p>
+    <p class="b6-day-note">If choosing feels like a lot, you could start with today's tile. It lights up on the day. There is no school on Friday this week.</p>
   </div>
 
   <script>
@@ -322,9 +324,9 @@
   })();
   </script>
 
-  <!-- ── SUBJECTS ──
+  <!-- -- SUBJECTS --
        Descriptions are drafts from the timetable. History (Human and Social) is not on this
-       week's timetable, the same as Week 4. -->
+       week's timetable, the same as Week 4. Friday is BridgeFest (inset), so no Friday sessions. -->
   <p class="section-label">This week's subjects</p>
   <div class="tiles-grid">
 
@@ -340,7 +342,7 @@
       <span class="tile-badge">&#128290;</span>
       <span class="tile-subject">Maths</span>
       <span class="tile-title">Maths</span>
-      <span class="tile-desc">Number, measure and a bit of problem solving. Monday, Wednesday and Friday.</span>
+      <span class="tile-desc">Number, measure and a bit of problem solving. Monday and Wednesday this week.</span>
       <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
     </a>
 
@@ -356,7 +358,7 @@
       <span class="tile-badge">&#129514;</span>
       <span class="tile-subject">Science and Environmental</span>
       <span class="tile-title">Science</span>
-      <span class="tile-desc">Scientific and environmental thinking, with a hands-on enquiry. Friday this week.</span>
+      <span class="tile-desc">Scientific and environmental thinking, with a hands-on enquiry to dip into this week.</span>
       <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
     </a>
 
@@ -402,7 +404,7 @@
 
   </div>
 
-  <!-- ── ASSESSMENT ACTIVITY ──
+  <!-- -- ASSESSMENT ACTIVITY --
        EDIT: add this week's assessment file, then uncomment.
   <p class="section-label">Assessment activity</p>
   <div class="tiles-grid">
@@ -416,7 +418,7 @@
   </div>
   -->
 
-  <!-- ── STAMP CARD ── -->
+  <!-- -- STAMP CARD -- -->
   <div class="stamp-card-section">
     <p class="section-label">My stamp card</p>
     <div class="stamp-card">
@@ -426,7 +428,7 @@
     </div>
   </div>
 
-  <!-- ── WEEKLY CHALLENGE ── -->
+  <!-- -- WEEKLY CHALLENGE -- -->
   <div class="challenge-section">
     <p class="challenge-label">This week's challenge</p>
     <div class="challenge-card">
@@ -578,15 +580,15 @@ function submitChallenge() {
   renderStampRow();
   showDoneState(answer, name);
 
-  const subject = encodeURIComponent('Base 6 · Week ' + THIS_WEEK + ' Challenge — ' + name);
+  const subject = encodeURIComponent('Base 6 - Week ' + THIS_WEEK + ' Challenge - ' + name);
   const body = encodeURIComponent(
-    'BASE 6 · WEEKLY CHALLENGE RESPONSE\n\n' +
+    'BASE 6 - WEEKLY CHALLENGE RESPONSE\n\n' +
     'Student: ' + name + '\n' +
-    'Week: ' + THIS_WEEK + ' — ' + WEEK_THEME_NAME + '\n' +
+    'Week: ' + THIS_WEEK + ' - ' + WEEK_THEME_NAME + '\n' +
     'Date: ' + new Date().toLocaleDateString('en-GB') + '\n\n' +
     'Challenge: ' + CHALLENGE_QUESTION + '\n\n' +
     'Response:\n' + answer + '\n\n' +
-    '—\nSent automatically from Base 6'
+    '-\nSent automatically from Base 6'
   );
   window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + subject + '&body=' + body, '_blank');
 }
