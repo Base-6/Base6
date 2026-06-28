@@ -932,14 +932,28 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
     function tryUnlock() {
       const input = document.getElementById('passwordInput');
-      const value = (input.value || '').trim().toLowerCase().replace(/\s+/g, '');
+      const error = document.getElementById('lockError');
+      const lock = document.getElementById('lockScreen');
+      const main = document.getElementById('mainContent');
+      const value = (input?.value || '').trim().toLowerCase().replace(/\s+/g, '');
+
       if (value === PASSWORD) {
-        document.getElementById('lockScreen').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
+        if (error) {
+          error.classList.remove('show');
+          error.style.setProperty('display', 'none', 'important');
+        }
+        if (lock) lock.style.setProperty('display', 'none', 'important');
+        if (main) main.style.setProperty('display', 'block', 'important');
       } else {
-        document.getElementById('lockError').style.display = 'block';
-        input.value = '';
-        input.focus();
+        if (error) {
+          error.textContent = "That password doesn't match — try again.";
+          error.classList.add('show');
+          error.style.setProperty('display', 'block', 'important');
+        }
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
       }
     }
 
