@@ -698,7 +698,7 @@
     </div>
 
     <div class="rhyme-results" id="rhymeResults">
-      <p>Try a word like light, voice, day, rain, room, loud or see.</p>
+      <p>Try a word like light, voice, kind, brave, worried, proud, shadow, storm, whisper, crash, room, loud, rain, day or see.</p>
     </div>
   </section>
 
@@ -783,28 +783,130 @@
   };
 
   var baseWords = [
-    'voice', 'quiet', 'loud', 'soft', 'sharp', 'brave', 'hidden', 'bright',
-    'storm', 'echo', 'window', 'room', 'light', 'shadow', 'paper', 'breath',
-    'truth', 'listen', 'speak', 'rise', 'glow', 'crack', 'hum', 'whisper'
+    'voice', 'choice', 'noise', 'quiet', 'loud', 'soft', 'sharp', 'brave', 'bold',
+    'hidden', 'bright', 'dark', 'storm', 'echo', 'window', 'room', 'light', 'shadow',
+    'paper', 'breath', 'truth', 'listen', 'speak', 'rise', 'glow', 'crack', 'hum',
+    'whisper', 'buzz', 'bang', 'hush', 'snap', 'thud', 'drip', 'crash', 'spark',
+    'cloud', 'rain', 'sun', 'moon', 'sky', 'street', 'door', 'floor', 'chair',
+    'table', 'desk', 'wall', 'heart', 'mind', 'kind', 'safe', 'hope', 'free',
+    'calm', 'wild', 'strange', 'gentle', 'angry', 'happy', 'sad', 'proud',
+    'scared', 'worried', 'anxious', 'lonely', 'tired', 'strong', 'still'
   ];
 
   var rhymeGroups = {
-    light: ['bright', 'night', 'sight', 'fight', 'right', 'kite', 'inside', 'quiet'],
-    day: ['say', 'play', 'stay', 'way', 'grey', 'today', 'away'],
-    voice: ['choice', 'noise', 'rejoice', 'boys', 'joins'],
-    rain: ['again', 'train', 'plain', 'brain', 'pain', 'windowpane'],
-    room: ['bloom', 'boom', 'zoom', 'gloom', 'moon', 'tune'],
-    loud: ['cloud', 'proud', 'crowd', 'allowed', 'sound'],
-    see: ['free', 'tree', 'be', 'me', 'sea', 'key'],
-    hear: ['near', 'clear', 'fear', 'dear', 'appear'],
-    touch: ['much', 'such', 'clutch', 'rush', 'hush'],
-    speak: ['weak', 'week', 'peak', 'seek', 'creak'],
-    sound: ['found', 'round', 'ground', 'bound', 'around'],
-    small: ['tall', 'wall', 'call', 'fall', 'all'],
-    brave: ['wave', 'save', 'cave', 'gave', 'pavement'],
-    storm: ['warm', 'form', 'swarm', 'normal'],
-    line: ['shine', 'fine', 'mine', 'sign', 'time'],
-    heart: ['start', 'part', 'art', 'apart', 'smart']
+    "air": ['care', 'fair', 'hair', 'chair', 'stare', 'share', 'there', 'where', 'bare', 'dare', 'glare', 'prepare', 'aware', 'repair', 'somewhere'],
+    "all": ['call', 'fall', 'tall', 'wall', 'small', 'ball', 'hall', 'stall', 'crawl', 'overall'],
+    "alone": ['stone', 'phone', 'known', 'shown', 'grown', 'thrown', 'own', 'tone', 'zone', 'home', 'roam'],
+    "away": ['day', 'say', 'play', 'stay', 'way', 'grey', 'today', 'okay', 'display', 'delay', 'stray', 'spray', 'sway'],
+    "brave": ['save', 'wave', 'gave', 'cave', 'pave', 'crave', 'behave', 'safe', 'place'],
+    "bright": ['light', 'night', 'sight', 'fight', 'right', 'kite', 'quite', 'white', 'write', 'tight', 'height', 'inside', 'alight'],
+    "calm": ['palm', 'balm', 'harm', 'charm', 'warm', 'arm', 'alarm', 'farm'],
+    "clear": ['near', 'hear', 'fear', 'dear', 'year', 'appear', 'disappear', 'cheer', 'sincere', 'engineer'],
+    "cold": ['old', 'hold', 'gold', 'fold', 'told', 'bold', 'sold', 'rolled'],
+    "dark": ['spark', 'mark', 'park', 'shark', 'bark', 'stark', 'remark'],
+    "deep": ['keep', 'sleep', 'creep', 'steep', 'leap', 'weep', 'heap', 'sweep'],
+    "dream": ['team', 'seem', 'beam', 'stream', 'cream', 'gleam', 'theme', 'scheme'],
+    "face": ['place', 'space', 'grace', 'trace', 'case', 'race', 'pace', 'base', 'embrace'],
+    "fire": ['higher', 'wire', 'tire', 'desire', 'inspire', 'choir', 'flyer'],
+    "free": ['see', 'tree', 'be', 'me', 'sea', 'key', 'agree', 'three', 'flee', 'degree', 'memory'],
+    "good": ['stood', 'wood', 'could', 'would', 'should', 'understood', 'childhood'],
+    "ground": ['sound', 'found', 'round', 'bound', 'around', 'pound', 'crowned', 'surround'],
+    "grow": ['show', 'know', 'go', 'slow', 'glow', 'flow', 'throw', 'below', 'snow', 'although'],
+    "heart": ['start', 'part', 'art', 'apart', 'smart', 'cart', 'chart', 'restart'],
+    "high": ['sky', 'try', 'fly', 'why', 'cry', 'dry', 'reply', 'nearby', 'goodbye'],
+    "home": ['roam', 'foam', 'dome', 'known', 'shown', 'alone', 'stone'],
+    "inside": ['hide', 'ride', 'side', 'wide', 'tried', 'pride', 'guide', 'decide', 'beside'],
+    "kind": ['mind', 'find', 'behind', 'blind', 'signed', 'lined', 'remind', 'designed'],
+    "laugh": ['half', 'graph', 'path', 'staff', 'draft', 'craft', 'after'],
+    "light": ['bright', 'night', 'sight', 'fight', 'right', 'kite', 'quite', 'white', 'write', 'tight', 'height', 'inside', 'quiet'],
+    "line": ['shine', 'fine', 'mine', 'sign', 'time', 'climb', 'rhyme', 'design', 'combine'],
+    "listen": ['glisten', 'missing', 'whispering', 'mission', 'position', 'condition'],
+    "lonely": ['only', 'slowly', 'closely', 'boldly', 'wholly'],
+    "loud": ['cloud', 'proud', 'crowd', 'allowed', 'sound', 'around', 'ground', 'found'],
+    "me": ['see', 'tree', 'free', 'be', 'sea', 'key', 'agree', 'three', 'memory'],
+    "more": ['door', 'floor', 'shore', 'before', 'score', 'roar', 'explore', 'ignore', 'restore'],
+    "night": ['light', 'bright', 'sight', 'fight', 'right', 'kite', 'quite', 'white', 'write', 'tight'],
+    "no": ['go', 'show', 'know', 'slow', 'glow', 'flow', 'snow', 'below'],
+    "open": ['spoken', 'broken', 'token', 'chosen', 'frozen', 'hoping', 'noticing'],
+    "pain": ['rain', 'again', 'train', 'plain', 'brain', 'chain', 'gain', 'remain', 'explain'],
+    "proud": ['loud', 'cloud', 'crowd', 'allowed', 'sound', 'around'],
+    "quiet": ['private', 'silent', 'giant', 'riot', 'inside', 'kindness'],
+    "rain": ['again', 'train', 'plain', 'brain', 'pain', 'chain', 'gain', 'remain', 'explain', 'windowpane'],
+    "room": ['bloom', 'boom', 'zoom', 'gloom', 'moon', 'tune', 'soon', 'spoon', 'cartoon'],
+    "safe": ['place', 'space', 'face', 'grace', 'trace', 'base', 'brave', 'save', 'wave'],
+    "school": ['cool', 'rule', 'pool', 'tool', 'fool', 'fuel', 'useful'],
+    "sea": ['see', 'tree', 'free', 'be', 'me', 'key', 'agree', 'three'],
+    "shadow": ['window', 'meadow', 'yellow', 'below', 'follow', 'tomorrow'],
+    "small": ['tall', 'wall', 'call', 'fall', 'all', 'ball', 'hall', 'stall'],
+    "soft": ['loft', 'coughed', 'off', 'often', 'lost', 'crossed'],
+    "speak": ['weak', 'week', 'peak', 'seek', 'creak', 'leak', 'unique'],
+    "still": ['will', 'hill', 'fill', 'chill', 'skill', 'until', 'spill'],
+    "storm": ['warm', 'form', 'swarm', 'normal', 'perform', 'transform'],
+    "strange": ['change', 'range', 'stage', 'page', 'cage', 'arrange', 'exchange'],
+    "street": ['meet', 'feet', 'beat', 'seat', 'sweet', 'complete', 'repeat'],
+    "strong": ['long', 'song', 'wrong', 'belong', 'along', 'gong'],
+    "sun": ['one', 'run', 'fun', 'done', 'begun', 'someone', 'everyone'],
+    "time": ['rhyme', 'climb', 'line', 'shine', 'mine', 'sign', 'fine', 'design'],
+    "touch": ['much', 'such', 'clutch', 'rush', 'hush', 'blush', 'crush'],
+    "truth": ['youth', 'smooth', 'proof', 'roof', 'move', 'improve'],
+    "voice": ['choice', 'noise', 'rejoice', 'boys', 'joins', 'poise'],
+    "warm": ['storm', 'form', 'swarm', 'perform', 'transform', 'arm', 'charm'],
+    "window": ['shadow', 'meadow', 'yellow', 'below', 'follow', 'tomorrow'],
+    "word": ['heard', 'bird', 'third', 'stirred', 'blurred', 'preferred'],
+    "world": ['curled', 'hurled', 'twirled', 'whirled', 'unfurled'],
+    "worried": ['hurried', 'buried', 'carried', 'married', 'varied'],
+    "angry": ['rangy', 'jagged', 'cranky', 'sparky', 'stormy', 'hungry'],
+    "anxious": ['restless', 'breathless', 'endless', 'defenceless'],
+    "bold": ['old', 'hold', 'gold', 'fold', 'told', 'rolled'],
+    "broken": ['spoken', 'open', 'token', 'chosen', 'hoping'],
+    "careful": ['thoughtful', 'mindful', 'helpful', 'grateful', 'peaceful'],
+    "gentle": ['mental', 'central', 'sentimental', 'instrumental'],
+    "happy": ['snappy', 'scrappy', 'clappy', 'tappy'],
+    "hidden": ['ridden', 'forbidden', 'written', 'bitten', 'smitten'],
+    "honest": ['promise', 'modest', 'strongest', 'softest'],
+    "hopeful": ['open', 'spoken', 'golden', 'chosen', 'growing'],
+    "nervous": ['purpose', 'surface', 'service', 'courageous'],
+    "sad": ['bad', 'glad', 'mad', 'had', 'pad', 'add'],
+    "scared": ['shared', 'cared', 'dared', 'prepared', 'stared'],
+    "shy": ['sky', 'try', 'fly', 'why', 'cry', 'reply'],
+    "tired": ['wired', 'fired', 'inspired', 'desired', 'required'],
+    "wild": ['child', 'mild', 'smiled', 'piled'],
+    "chair": ['air', 'care', 'fair', 'share', 'there', 'where', 'stare'],
+    "cloud": ['loud', 'proud', 'crowd', 'allowed', 'sound'],
+    "desk": ['best', 'test', 'rest', 'chest', 'quest'],
+    "door": ['floor', 'more', 'before', 'score', 'shore', 'explore'],
+    "fan": ['can', 'man', 'plan', 'ran', 'began', 'than'],
+    "floor": ['door', 'more', 'shore', 'before', 'score', 'explore'],
+    "paper": ['safer', 'later', 'greater', 'creator', 'shaper'],
+    "pen": ['then', 'again', 'when', 'ten', 'men'],
+    "table": ['stable', 'able', 'cable', 'label', 'fable'],
+    "wall": ['all', 'call', 'fall', 'tall', 'small', 'ball'],
+    "bang": ['clang', 'rang', 'sang', 'hang', 'sprang'],
+    "buzz": ['because', 'does', 'was', 'fuzz'],
+    "crack": ['back', 'track', 'stack', 'black', 'attack'],
+    "crash": ['flash', 'dash', 'splash', 'smash', 'clash'],
+    "drip": ['slip', 'grip', 'trip', 'ship', 'tip'],
+    "hum": ['drum', 'come', 'some', 'from', 'become'],
+    "hush": ['rush', 'brush', 'crush', 'blush', 'touch'],
+    "snap": ['clap', 'tap', 'map', 'wrap', 'trap'],
+    "thud": ['mud', 'flood', 'blood', 'bud'],
+    "whisper": ['sister', 'mister', 'twister', 'glister'],
+    "blue": ['true', 'through', 'you', 'too', 'new', 'knew', 'flew', 'grew'],
+    "red": ['said', 'head', 'bed', 'led', 'spread', 'instead'],
+    "green": ['seen', 'been', 'mean', 'clean', 'between', 'machine'],
+    "gold": ['old', 'hold', 'cold', 'bold', 'told', 'fold'],
+    "black": ['back', 'track', 'crack', 'stack', 'attack'],
+    "white": ['light', 'night', 'right', 'sight', 'write', 'quite'],
+    "begin": ['win', 'thin', 'within', 'skin', 'spin', 'grin'],
+    "end": ['friend', 'send', 'bend', 'mend', 'pretend', 'extend'],
+    "falling": ['calling', 'stalling', 'drawing', 'morning', 'warning'],
+    "rise": ['eyes', 'skies', 'wise', 'surprise', 'realise'],
+    "name": ['same', 'game', 'flame', 'frame', 'claim', 'aim'],
+    "story": ['glory', 'morning', 'worry', 'memory', 'ordinary'],
+    "better": ['letter', 'weather', 'together', 'whatever'],
+    "space": ['face', 'place', 'grace', 'trace', 'case', 'base'],
+    "silence": ['guidance', 'science', 'defiance', 'alliance'],
+    "enough": ['rough', 'tough', 'stuff', 'puff', 'bluff']
   };
 
   var challenges = [
@@ -889,7 +991,7 @@
     updateWordBank();
   }
 
-  function uniqueWords(words) {
+  function uniqueWords(words, limit) {
     var seen = {};
     var clean = [];
 
@@ -910,7 +1012,7 @@
       });
     });
 
-    return clean.slice(0, 34);
+    return clean.slice(0, limit || 34);
   }
 
   function getWordBankWords() {
@@ -923,7 +1025,7 @@
     ]);
 
     var moodExtra = selectedMood && moodWords[selectedMood] ? moodWords[selectedMood] : [];
-    return uniqueWords(studentWords.concat(moodExtra).concat(baseWords));
+    return uniqueWords(studentWords.concat(moodExtra).concat(baseWords), 60);
   }
 
   function addTextToPoem(text) {
@@ -1083,7 +1185,7 @@
   }
 
   function findSoundMatches() {
-    var input = val('rhymeWord').toLowerCase();
+    var input = val('rhymeWord').toLowerCase().replace(/[^a-z0-9'\- ]/gi, '').trim();
     var results = el('rhymeResults');
     if (!results) return;
 
@@ -1096,21 +1198,50 @@
       return;
     }
 
-    var matches = rhymeGroups[input];
+    var matches = [];
+    var keys = Object.keys(rhymeGroups);
 
-    if (!matches) {
-      var endings = Object.keys(rhymeGroups).filter(function (key) {
-        return key.slice(-2) === input.slice(-2) || key.slice(-3) === input.slice(-3);
+    function addMatches(list) {
+      list.forEach(function (word) {
+        if (word && word !== input && matches.indexOf(word) === -1) {
+          matches.push(word);
+        }
       });
-
-      matches = [];
-
-      endings.forEach(function (key) {
-        matches = matches.concat(rhymeGroups[key]);
-      });
-
-      matches = uniqueWords(matches).slice(0, 10);
     }
+
+    if (rhymeGroups[input]) {
+      addMatches(rhymeGroups[input]);
+    }
+
+    keys.forEach(function (key) {
+      var list = rhymeGroups[key] || [];
+      if (key === input || list.indexOf(input) !== -1) {
+        addMatches([key].concat(list));
+      }
+    });
+
+    if (matches.length < 6) {
+      [5, 4, 3, 2].forEach(function (size) {
+        if (input.length < size) return;
+        var ending = input.slice(-size);
+
+        keys.forEach(function (key) {
+          var list = rhymeGroups[key] || [];
+          var keyHit = key.slice(-size) === ending;
+          var listHit = list.some(function (word) {
+            return word.slice(-size) === ending;
+          });
+
+          if (keyHit || listHit) {
+            addMatches([key].concat(list));
+          }
+        });
+      });
+    }
+
+    matches = uniqueWords(matches, 44).filter(function (word) {
+      return word !== input;
+    });
 
     if (!matches || !matches.length) {
       var none = document.createElement('p');
