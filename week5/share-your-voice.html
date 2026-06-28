@@ -8,45 +8,533 @@
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; --c: #7b5ea7; --bg: #efe9f6; }
 
-  .site-header { position: relative; background-color: var(--c); padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
-  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
-  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.12); border-radius: 50%; }
-  .site-header .header-inner { position: relative; z-index: 2; }
-  .week-label { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.82); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
-  .site-header h1 { font-size: 2.4rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
-  .site-header p { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-top: 0.5rem; }
-  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+  body {
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    background-color: #fef8f4;
+    color: #1a1a1a;
+    min-height: 100vh;
+    --c: #7b5ea7;
+    --bg: #efe9f6;
+    --orange: #ef7724;
+    --orange-dark: #c05a10;
+  }
 
-  .main { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-  .back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 700; color: var(--c); text-decoration: none; }
-  .back-link:hover { text-decoration: underline; }
+  .site-header {
+    position: relative;
+    background-color: var(--c);
+    padding: 2.5rem 2rem 3.25rem;
+    text-align: center;
+    overflow: hidden;
+  }
 
-  .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin-bottom: 2rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
-  .intro h2 { font-size: 1.25rem; color: #c05a10; margin-bottom: 0.5rem; }
-  .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
+  .site-header::before {
+    content: "";
+    position: absolute;
+    top: -60px;
+    left: -40px;
+    width: 180px;
+    height: 180px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
 
-  .step { background: #fff; border: 2px solid var(--c); border-radius: 16px; padding: 1.4rem 1.5rem; margin-bottom: 1.2rem; }
-  .step-num { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c); margin-bottom: 0.25rem; }
-  .step-title { font-size: 1.2rem; font-weight: 700; color: var(--c); margin-bottom: 0.4rem; }
-  .step-help { font-size: 0.93rem; color: #555; line-height: 1.55; margin-bottom: 0.9rem; }
+  .site-header::after {
+    content: "";
+    position: absolute;
+    bottom: 10px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 50%;
+  }
 
-  .field { margin-bottom: 0.9rem; }
-  .field:last-child { margin-bottom: 0; }
-  .field label { display: block; font-size: 0.82rem; font-weight: 700; color: #555; margin-bottom: 0.3rem; }
-  .field input[type=text], .field textarea { width: 100%; padding: 0.7rem 0.9rem; font-family: inherit; font-size: 0.98rem; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #fff; color: #1a1a1a; outline: none; }
-  .field textarea { min-height: 130px; resize: vertical; line-height: 1.55; }
-  .field input:focus, .field textarea:focus { border-color: var(--c); }
-  .row3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.7rem; }
+  .site-header .header-inner {
+    position: relative;
+    z-index: 2;
+  }
 
-  .send-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 0.5rem; }
-  .send-btn { font-family: inherit; font-size: 0.95rem; font-weight: 700; padding: 0.7rem 1.5rem; background: var(--c); color: #fff; border: none; border-radius: 999px; cursor: pointer; transition: filter 0.15s; }
-  .send-btn:hover { filter: brightness(0.93); }
-  .save-note { font-size: 0.8rem; color: #999; }
+  .week-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.82);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
 
-  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
-  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+  .site-header h1 {
+    font-size: clamp(2rem, 5vw, 2.7rem);
+    font-weight: 700;
+    color: #fef8f4;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+
+  .site-header p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.9);
+    margin-top: 0.5rem;
+  }
+
+  .header-wave {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    z-index: 1;
+  }
+
+  .main {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--c);
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  .intro,
+  .step,
+  .toolbox,
+  .preview-card {
+    background: #fff;
+    border-radius: 18px;
+    margin-bottom: 1.2rem;
+  }
+
+  .intro {
+    border: 2px solid var(--orange);
+    padding: 1.4rem 1.6rem;
+    box-shadow: 0 4px 14px rgba(239,119,36,0.1);
+  }
+
+  .intro h2 {
+    font-size: 1.25rem;
+    color: var(--orange-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .intro p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+  }
+
+  .small-note {
+    font-size: 0.86rem;
+    color: #666;
+    line-height: 1.55;
+    margin-top: 0.65rem;
+  }
+
+  .step {
+    border: 2px solid var(--c);
+    padding: 1.4rem 1.5rem;
+  }
+
+  .toolbox {
+    border: 2px solid #d6c7ea;
+    padding: 1.4rem 1.5rem;
+    background: linear-gradient(180deg, #fff 0%, #fbf8ff 100%);
+  }
+
+  .step-num {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c);
+    margin-bottom: 0.25rem;
+  }
+
+  .step-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--c);
+    margin-bottom: 0.4rem;
+  }
+
+  .step-help {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.55;
+    margin-bottom: 0.9rem;
+  }
+
+  .field {
+    margin-bottom: 0.9rem;
+  }
+
+  .field:last-child {
+    margin-bottom: 0;
+  }
+
+  .field label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 0.3rem;
+  }
+
+  .field input[type=text],
+  .field textarea {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    font-family: inherit;
+    font-size: 1rem;
+    border: 1.5px solid #e0d8d0;
+    border-radius: 12px;
+    background: #fff;
+    color: #1a1a1a;
+    outline: none;
+  }
+
+  .field textarea {
+    min-height: 130px;
+    resize: vertical;
+    line-height: 1.55;
+  }
+
+  .field input:focus,
+  .field textarea:focus {
+    border-color: var(--c);
+  }
+
+  .row3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .section-mini-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #333;
+    margin: 1rem 0 0.5rem;
+  }
+
+  .choice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.8rem;
+  }
+
+  .choice-card {
+    text-align: left;
+    font-family: inherit;
+    background: #fff;
+    border: 2px solid #e6ddef;
+    border-radius: 14px;
+    padding: 0.9rem;
+    cursor: pointer;
+    min-height: 92px;
+  }
+
+  .choice-card:hover {
+    border-color: var(--c);
+  }
+
+  .choice-card[aria-pressed="true"] {
+    border-color: var(--c);
+    background: var(--bg);
+    box-shadow: 0 4px 12px rgba(123,94,167,0.14);
+  }
+
+  .choice-card strong {
+    display: block;
+    color: var(--c);
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .choice-card span {
+    display: block;
+    color: #555;
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
+  .assistant-panel {
+    border: 1.5px solid #e5d9f2;
+    border-radius: 14px;
+    background: #fff;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .assistant-panel h3 {
+    font-size: 1rem;
+    color: var(--c);
+    margin-bottom: 0.35rem;
+  }
+
+  .assistant-panel p {
+    font-size: 0.92rem;
+    color: #555;
+    line-height: 1.55;
+  }
+
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.6rem;
+  }
+
+  .chip,
+  .mini-btn {
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 0.55rem 0.8rem;
+    cursor: pointer;
+    border: 1.5px solid #d9cce8;
+    background: #fff;
+    color: var(--c);
+  }
+
+  .chip:hover,
+  .mini-btn:hover {
+    background: var(--bg);
+  }
+
+  .chip[aria-pressed="true"] {
+    background: var(--c);
+    color: #fff;
+    border-color: var(--c);
+  }
+
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 0.75rem;
+  }
+
+  .mini-btn.primary {
+    background: var(--c);
+    color: #fff;
+    border-color: var(--c);
+  }
+
+  .mini-btn.orange {
+    background: var(--orange);
+    color: #fff;
+    border-color: var(--orange);
+  }
+
+  .mini-btn.light {
+    background: #fff;
+    color: #333;
+    border-color: #e0d8d0;
+  }
+
+  .word-bank {
+    min-height: 44px;
+    border: 1.5px dashed #d8c9e8;
+    border-radius: 14px;
+    padding: 0.75rem;
+    background: #fff;
+  }
+
+  .word-bank-empty {
+    color: #777;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .rhyme-box {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.55rem;
+    margin-top: 0.5rem;
+  }
+
+  .rhyme-results {
+    border: 1.5px solid #e5d9f2;
+    border-radius: 14px;
+    padding: 0.75rem;
+    margin-top: 0.6rem;
+    min-height: 48px;
+    background: #fff;
+  }
+
+  .rhyme-results p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .challenge-card {
+    border-left: 5px solid var(--orange);
+    background: #fff8f1;
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    margin-top: 0.8rem;
+    color: #333;
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+
+  .preview-card {
+    border: 2px solid #222;
+    padding: 1.3rem 1.5rem;
+    box-shadow: 0 5px 16px rgba(0,0,0,0.06);
+  }
+
+  .preview-card h2 {
+    font-size: 1.2rem;
+    color: #222;
+    margin-bottom: 0.5rem;
+  }
+
+  .preview-meta {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.9rem;
+  }
+
+  .poem-preview {
+    white-space: pre-wrap;
+    line-height: 1.75;
+    font-size: 1.08rem;
+    color: #1a1a1a;
+    background: #fdfaf7;
+    border: 1.5px solid #eadfd7;
+    border-radius: 14px;
+    padding: 1rem;
+    min-height: 120px;
+  }
+
+  .empty-preview {
+    color: #777;
+  }
+
+  .send-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 0.8rem;
+  }
+
+  .send-btn {
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.7rem 1.5rem;
+    background: var(--c);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: filter 0.15s;
+  }
+
+  .send-btn:hover {
+    filter: brightness(0.93);
+  }
+
+  .save-note {
+    font-size: 0.82rem;
+    color: #777;
+  }
+
+  .status {
+    min-height: 1.3rem;
+    margin-top: 0.5rem;
+    font-size: 0.86rem;
+    color: #555;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid var(--orange);
+    outline-offset: 2px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.8rem;
+    color: #888;
+    border-top: 1px solid #e0d8d0;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 560px) {
+    .main {
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .site-header {
+      padding: 2rem 1.2rem 3rem;
+    }
+
+    .rhyme-box {
+      grid-template-columns: 1fr;
+    }
+
+    .send-btn,
+    .mini-btn,
+    .chip {
+      width: auto;
+    }
+  }
+
+  @media print {
+    body {
+      background: #fff;
+    }
+
+    .site-header,
+    .back-link,
+    .intro,
+    .step,
+    .toolbox,
+    footer,
+    .send-row,
+    .status {
+      display: none !important;
+    }
+
+    .main {
+      max-width: none;
+      padding: 0;
+    }
+
+    .preview-card {
+      border: none;
+      box-shadow: none;
+      margin: 0;
+      padding: 1.5rem;
+    }
+
+    .poem-preview {
+      border: none;
+      background: #fff;
+      padding: 0;
+      font-size: 1.2rem;
+    }
+  }
 </style>
 </head>
 <body>
@@ -55,7 +543,7 @@
   <div class="header-inner">
     <p class="week-label">National Writing Day</p>
     <h1>Share Your Voice</h1>
-    <p>Everyone has a voice that is all their own.</p>
+    <p>Build a poem from what you notice, feel and imagine.</p>
   </div>
   <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
@@ -66,50 +554,182 @@
 
   <a class="back-link" href="national-writing-day.html">Back to National Writing Day</a>
 
-  <div class="intro">
+  <section class="intro">
     <h2>How it works</h2>
-    <p>Three small steps to a poem about your voice. Fill in as much or as little as you like. Your writing saves on this device as you go, and you can send it to Jay at the end.</p>
-  </div>
+    <p>
+      Use the three steps to build a poem about your voice. You can type your own ideas, use the poem assistant,
+      or mix both together. Your writing saves on this device as you go.
+    </p>
+    <p class="small-note">
+      There is no single correct poem. Short is fine. Strange is fine. Honest is fine.
+    </p>
+  </section>
 
   <div class="field" style="margin-bottom:1.2rem;">
     <label for="initials">Your initials</label>
     <input type="text" id="initials" data-save placeholder="Type your initials here">
   </div>
 
-  <div class="step">
+  <section class="step">
     <div class="step-num">Step 1</div>
     <div class="step-title">Discover</div>
-    <div class="step-help">Look around the room and out of the window. Notice a few things you can see, hear or touch.</div>
-    <div class="row3">
-      <div class="field"><label for="see">Something I can see</label><input type="text" id="see" data-save></div>
-      <div class="field"><label for="hear">Something I can hear</label><input type="text" id="hear" data-save></div>
-      <div class="field"><label for="touch">Something I can touch</label><input type="text" id="touch" data-save></div>
+    <div class="step-help">
+      Look around the room and out of the window. Notice a few things you can see, hear or touch.
     </div>
-  </div>
 
-  <div class="step">
+    <div class="row3">
+      <div class="field">
+        <label for="see">Something I can see</label>
+        <input type="text" id="see" data-save placeholder="window, chair, cloud...">
+      </div>
+
+      <div class="field">
+        <label for="hear">Something I can hear</label>
+        <input type="text" id="hear" data-save placeholder="fan, footsteps, voices...">
+      </div>
+
+      <div class="field">
+        <label for="touch">Something I can touch</label>
+        <input type="text" id="touch" data-save placeholder="table, jumper, paper...">
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
     <div class="step-num">Step 2</div>
     <div class="step-title">Develop</div>
-    <div class="step-help">Pick one of those things and turn it into a picture of your voice. For example, my voice is like a kettle, because it gets louder when I am excited.</div>
+    <div class="step-help">
+      Pick one of your ideas and turn it into a picture of your voice.
+      For example: my voice is like a kettle, because it gets louder when I am excited.
+    </div>
+
     <div class="field">
       <label for="develop">My voice is like...</label>
-      <textarea id="develop" data-save placeholder="My voice is like ... because ..." style="min-height:90px;"></textarea>
+      <textarea id="develop" data-save placeholder="My voice is like ... because ..." style="min-height:95px;"></textarea>
     </div>
-  </div>
+  </section>
 
-  <div class="step">
+  <section class="toolbox" aria-labelledby="assistantTitle">
+    <div class="step-num">Optional support</div>
+    <div class="step-title" id="assistantTitle">Poem Assistant</div>
+    <div class="step-help">
+      Choose one style, then use any helper buttons that are useful. You can ignore anything you do not need.
+    </div>
+
+    <div class="section-mini-title">Choose a poem style</div>
+
+    <div class="choice-grid" id="styleChoices">
+      <button class="choice-card" type="button" data-style="free" aria-pressed="true">
+        <strong>Free verse</strong>
+        <span>No strict rules. Write it how it sounds in your head.</span>
+      </button>
+
+      <button class="choice-card" type="button" data-style="list" aria-pressed="false">
+        <strong>List poem</strong>
+        <span>Each line starts in a similar way. Useful when starting feels hard.</span>
+      </button>
+
+      <button class="choice-card" type="button" data-style="sensory" aria-pressed="false">
+        <strong>Sensory poem</strong>
+        <span>Build from things you can see, hear and touch.</span>
+      </button>
+
+      <button class="choice-card" type="button" data-style="simile" aria-pressed="false">
+        <strong>Simile poem</strong>
+        <span>Use “like” or “as” to compare your voice to something else.</span>
+      </button>
+
+      <button class="choice-card" type="button" data-style="spoken" aria-pressed="false">
+        <strong>Spoken word</strong>
+        <span>Rhythm, repetition and words that sound good out loud.</span>
+      </button>
+
+      <button class="choice-card" type="button" data-style="acrostic" aria-pressed="false">
+        <strong>Acrostic</strong>
+        <span>Use the letters from VOICE or your initials to start each line.</span>
+      </button>
+    </div>
+
+    <div class="assistant-panel">
+      <h3 id="styleGuideTitle">Free verse guide</h3>
+      <p id="styleGuideText">
+        Try writing three short lines. One line can be a thing you noticed, one can be a feeling, and one can be what your voice wants to say.
+      </p>
+
+      <div class="button-row">
+        <button class="mini-btn primary" type="button" id="makeStarter">Build starter lines</button>
+        <button class="mini-btn" type="button" id="addLine">Add one line from my answers</button>
+        <button class="mini-btn" type="button" id="newChallenge">Give me a tiny edit challenge</button>
+      </div>
+
+      <div class="challenge-card" id="challengeBox">
+        Tiny challenge: add one word that shows how your voice feels.
+      </div>
+    </div>
+
+    <div class="section-mini-title">Choose a mood</div>
+
+    <div class="chip-row" id="moodChoices">
+      <button class="chip" type="button" data-mood="calm" aria-pressed="false">calm</button>
+      <button class="chip" type="button" data-mood="brave" aria-pressed="false">brave</button>
+      <button class="chip" type="button" data-mood="quiet" aria-pressed="false">quiet</button>
+      <button class="chip" type="button" data-mood="angry" aria-pressed="false">angry</button>
+      <button class="chip" type="button" data-mood="excited" aria-pressed="false">excited</button>
+      <button class="chip" type="button" data-mood="strange" aria-pressed="false">strange</button>
+    </div>
+
+    <div class="section-mini-title">Word bank</div>
+    <div class="word-bank" id="wordBank">
+      <p class="word-bank-empty">Type in Step 1 or Step 2 to create word chips here.</p>
+    </div>
+    <p class="small-note">Click a word chip to add it to your poem.</p>
+
+    <div class="section-mini-title">Sound finder</div>
+    <p class="step-help" style="margin-bottom:0.35rem;">
+      Type a word to find rhymes or near-rhymes. Near-rhymes are allowed.
+    </p>
+
+    <div class="rhyme-box">
+      <div class="field" style="margin:0;">
+        <label for="rhymeWord">Word to match</label>
+        <input type="text" id="rhymeWord" placeholder="light, voice, day...">
+      </div>
+      <button class="mini-btn orange" type="button" id="findRhymes" style="align-self:end;">Find sounds</button>
+    </div>
+
+    <div class="rhyme-results" id="rhymeResults">
+      <p>Try a word like light, voice, day, rain, room, loud or see.</p>
+    </div>
+  </section>
+
+  <section class="step">
     <div class="step-num">Step 3</div>
     <div class="step-title">Write</div>
-    <div class="step-help">Turn your idea into a few lines of a poem. It can be as short as you like.</div>
+    <div class="step-help">
+      Write your poem here. You can use the assistant, write from scratch, or edit the starter lines.
+    </div>
+
     <div class="field">
       <label for="poem">Your poem</label>
       <textarea id="poem" data-save placeholder="Write your poem here..."></textarea>
     </div>
+
     <div class="send-row">
       <button class="send-btn" id="send" type="button">Send to Jay</button>
-      <span class="save-note">Your writing is saved on this device.</span>
+      <button class="mini-btn light" id="copyPoem" type="button">Copy poem</button>
+      <button class="mini-btn light" id="printPoem" type="button">Print poem</button>
+      <button class="mini-btn light" id="clearPoem" type="button">Clear poem</button>
+      <span class="save-note">Saved on this device.</span>
     </div>
-  </div>
+
+    <div class="status" id="status" aria-live="polite"></div>
+  </section>
+
+  <section class="preview-card" aria-labelledby="previewTitle">
+    <h2 id="previewTitle">Your poem preview</h2>
+    <div class="preview-meta" id="previewMeta">National Writing Day · Base 6</div>
+    <div class="poem-preview empty-preview" id="poemPreview">Your poem will appear here as you write.</div>
+  </section>
 
 </main>
 
@@ -119,41 +739,536 @@
 
 <script>
 (function () {
-  var KEY = 'base6-week5-nwd-voice';
+  var KEY = 'base6-week5-nwd-voice-v2';
   var TEACHER = 'jay.raine@chiltonbridgeschool.co.uk';
+
   var fields = Array.prototype.slice.call(document.querySelectorAll('[data-save]'));
+  var selectedStyle = 'free';
+  var selectedMood = '';
+
+  var styleGuides = {
+    free: {
+      title: 'Free verse guide',
+      text: 'Try writing three short lines. One line can be a thing you noticed, one can be a feeling, and one can be what your voice wants to say.'
+    },
+    list: {
+      title: 'List poem guide',
+      text: 'Start each line in a similar way. This gives the poem a strong shape without needing strict rules.'
+    },
+    sensory: {
+      title: 'Sensory poem guide',
+      text: 'Use what you can see, hear and touch. Then connect those details to your voice.'
+    },
+    simile: {
+      title: 'Simile poem guide',
+      text: 'Compare your voice to something else. Use “like” or “as” to create a clear picture.'
+    },
+    spoken: {
+      title: 'Spoken word guide',
+      text: 'Use rhythm and repetition. Try repeating one important phrase so the poem sounds strong out loud.'
+    },
+    acrostic: {
+      title: 'Acrostic guide',
+      text: 'Use the letters in VOICE or your initials to begin each line. Each line can be short.'
+    }
+  };
+
+  var moodWords = {
+    calm: ['soft', 'steady', 'gentle', 'slow', 'safe', 'clear'],
+    brave: ['bold', 'ready', 'strong', 'standing', 'truth', 'forward'],
+    quiet: ['small', 'hidden', 'still', 'careful', 'low', 'listening'],
+    angry: ['sharp', 'storm', 'crack', 'heat', 'loud', 'burning'],
+    excited: ['bright', 'quick', 'spark', 'rising', 'electric', 'alive'],
+    strange: ['crooked', 'glowing', 'odd', 'echo', 'wild', 'unusual']
+  };
+
+  var baseWords = [
+    'voice', 'quiet', 'loud', 'soft', 'sharp', 'brave', 'hidden', 'bright',
+    'storm', 'echo', 'window', 'room', 'light', 'shadow', 'paper', 'breath',
+    'truth', 'listen', 'speak', 'rise', 'glow', 'crack', 'hum', 'whisper'
+  ];
+
+  var rhymeGroups = {
+    light: ['bright', 'night', 'sight', 'fight', 'right', 'kite', 'inside', 'quiet'],
+    day: ['say', 'play', 'stay', 'way', 'grey', 'today', 'away'],
+    voice: ['choice', 'noise', 'rejoice', 'boys', 'joins'],
+    rain: ['again', 'train', 'plain', 'brain', 'pain', 'windowpane'],
+    room: ['bloom', 'boom', 'zoom', 'gloom', 'moon', 'tune'],
+    loud: ['cloud', 'proud', 'crowd', 'allowed', 'sound'],
+    see: ['free', 'tree', 'be', 'me', 'sea', 'key'],
+    hear: ['near', 'clear', 'fear', 'dear', 'appear'],
+    touch: ['much', 'such', 'clutch', 'rush', 'hush'],
+    speak: ['weak', 'week', 'peak', 'seek', 'creak'],
+    sound: ['found', 'round', 'ground', 'bound', 'around'],
+    small: ['tall', 'wall', 'call', 'fall', 'all'],
+    brave: ['wave', 'save', 'cave', 'gave', 'pavement'],
+    storm: ['warm', 'form', 'swarm', 'normal'],
+    line: ['shine', 'fine', 'mine', 'sign', 'time'],
+    heart: ['start', 'part', 'art', 'apart', 'smart']
+  };
+
+  var challenges = [
+    'Tiny challenge: add one word that shows how your voice feels.',
+    'Tiny challenge: make one line shorter and stronger.',
+    'Tiny challenge: add one sound word, like hum, crack, whisper or buzz.',
+    'Tiny challenge: repeat one important phrase.',
+    'Tiny challenge: add one colour.',
+    'Tiny challenge: add one thing your voice wants people to understand.',
+    'Tiny challenge: change one ordinary word into a more powerful word.',
+    'Tiny challenge: read one line out loud and change it if it sounds clunky.'
+  ];
+
+  function el(id) {
+    return document.getElementById(id);
+  }
+
+  function val(id) {
+    var element = el(id);
+    return element ? element.value.trim() : '';
+  }
+
+  function setStatus(message) {
+    var status = el('status');
+    if (!status) return;
+    status.textContent = message || '';
+    if (message) {
+      window.setTimeout(function () {
+        if (status.textContent === message) status.textContent = '';
+      }, 2800);
+    }
+  }
 
   function saveAll() {
-    var s = {};
-    fields.forEach(function (f) { s[f.id] = f.value; });
-    try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
+    var s = {
+      selectedStyle: selectedStyle,
+      selectedMood: selectedMood
+    };
+
+    fields.forEach(function (f) {
+      s[f.id] = f.value;
+    });
+
+    try {
+      localStorage.setItem(KEY, JSON.stringify(s));
+    } catch (e) {}
+
+    updatePreview();
+    updateWordBank();
   }
+
   function restore() {
     var s;
-    try { s = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { s = null; }
-    if (s) { fields.forEach(function (f) { if (s[f.id] != null) { f.value = s[f.id]; } }); }
+
+    try {
+      s = JSON.parse(localStorage.getItem(KEY) || 'null');
+    } catch (e) {
+      s = null;
+    }
+
+    if (s) {
+      fields.forEach(function (f) {
+        if (s[f.id] != null) f.value = s[f.id];
+      });
+
+      if (s.selectedStyle) selectedStyle = s.selectedStyle;
+      if (s.selectedMood) selectedMood = s.selectedMood;
+    }
+
     try {
       var p = JSON.parse(localStorage.getItem('base6Profile') || 'null');
-      var ini = document.getElementById('initials');
-      if (p && p.initials && ini && !ini.value) { ini.value = p.initials.toUpperCase(); }
+      var ini = el('initials');
+      if (p && p.initials && ini && !ini.value) {
+        ini.value = p.initials.toUpperCase();
+      }
     } catch (e) {}
-  }
-  fields.forEach(function (f) { f.addEventListener('input', saveAll); });
-  restore();
 
-  function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
-  document.getElementById('send').addEventListener('click', function () {
-    var body = 'National Writing Day: Share Your Voice\n\n' +
+    applyStyleChoice();
+    applyMoodChoice();
+    updateGuide();
+    updatePreview();
+    updateWordBank();
+  }
+
+  function uniqueWords(words) {
+    var seen = {};
+    var clean = [];
+
+    words.forEach(function (word) {
+      var w = String(word || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9'\- ]/gi, '')
+        .trim();
+
+      if (!w) return;
+
+      w.split(/\s+/).forEach(function (part) {
+        if (part.length < 3) return;
+        if (!seen[part]) {
+          seen[part] = true;
+          clean.push(part);
+        }
+      });
+    });
+
+    return clean.slice(0, 34);
+  }
+
+  function getWordBankWords() {
+    var studentWords = uniqueWords([
+      val('see'),
+      val('hear'),
+      val('touch'),
+      val('develop'),
+      val('poem')
+    ]);
+
+    var moodExtra = selectedMood && moodWords[selectedMood] ? moodWords[selectedMood] : [];
+    return uniqueWords(studentWords.concat(moodExtra).concat(baseWords));
+  }
+
+  function addTextToPoem(text) {
+    var poem = el('poem');
+    if (!poem || !text) return;
+
+    var current = poem.value;
+    var joiner = '';
+
+    if (current.trim().length > 0 && !current.endsWith('\n')) {
+      joiner = '\n';
+    }
+
+    poem.value = current + joiner + text;
+    poem.focus();
+    saveAll();
+  }
+
+  function updateWordBank() {
+    var bank = el('wordBank');
+    if (!bank) return;
+
+    var words = getWordBankWords();
+    bank.innerHTML = '';
+
+    if (!words.length) {
+      var empty = document.createElement('p');
+      empty.className = 'word-bank-empty';
+      empty.textContent = 'Type in Step 1 or Step 2 to create word chips here.';
+      bank.appendChild(empty);
+      return;
+    }
+
+    var row = document.createElement('div');
+    row.className = 'chip-row';
+
+    words.forEach(function (word) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.textContent = word;
+      b.addEventListener('click', function () {
+        addTextToPoem(word);
+      });
+      row.appendChild(b);
+    });
+
+    bank.appendChild(row);
+  }
+
+  function updatePreview() {
+    var preview = el('poemPreview');
+    var meta = el('previewMeta');
+    if (!preview || !meta) return;
+
+    var initials = val('initials');
+    var poem = val('poem');
+
+    meta.textContent = 'National Writing Day · Base 6' + (initials ? ' · ' + initials.toUpperCase() : '');
+
+    if (!poem) {
+      preview.textContent = 'Your poem will appear here as you write.';
+      preview.classList.add('empty-preview');
+    } else {
+      preview.textContent = poem;
+      preview.classList.remove('empty-preview');
+    }
+  }
+
+  function applyStyleChoice() {
+    var cards = Array.prototype.slice.call(document.querySelectorAll('[data-style]'));
+    cards.forEach(function (card) {
+      card.setAttribute('aria-pressed', card.getAttribute('data-style') === selectedStyle ? 'true' : 'false');
+    });
+  }
+
+  function applyMoodChoice() {
+    var chips = Array.prototype.slice.call(document.querySelectorAll('[data-mood]'));
+    chips.forEach(function (chip) {
+      chip.setAttribute('aria-pressed', chip.getAttribute('data-mood') === selectedMood ? 'true' : 'false');
+    });
+  }
+
+  function updateGuide() {
+    var guide = styleGuides[selectedStyle] || styleGuides.free;
+    el('styleGuideTitle').textContent = guide.title;
+    el('styleGuideText').textContent = guide.text;
+  }
+
+  function lineFromAnswers() {
+    var see = val('see') || 'the room';
+    var hear = val('hear') || 'a small sound';
+    var touch = val('touch') || 'something steady';
+    var mood = selectedMood || 'real';
+
+    var lines = [
+      'My voice notices ' + see + ' and keeps going.',
+      'My voice hears ' + hear + ' and answers in its own way.',
+      'My voice holds ' + touch + ' and feels ' + mood + '.',
+      'My voice is not perfect. It is mine.',
+      'When I speak, something small becomes stronger.'
+    ];
+
+    return lines[Math.floor(Math.random() * lines.length)];
+  }
+
+  function buildStarter() {
+    var see = val('see') || 'the window';
+    var hear = val('hear') || 'a quiet sound';
+    var touch = val('touch') || 'the table';
+    var develop = val('develop');
+    var mood = selectedMood || 'honest';
+
+    var starter = '';
+
+    if (selectedStyle === 'list') {
+      starter =
+        'My voice is ' + mood + '.\n' +
+        'My voice can notice ' + see + '.\n' +
+        'My voice can hear ' + hear + '.\n' +
+        'My voice can keep going.';
+    } else if (selectedStyle === 'sensory') {
+      starter =
+        'I see ' + see + '.\n' +
+        'I hear ' + hear + '.\n' +
+        'I touch ' + touch + '.\n' +
+        'My voice begins there.';
+    } else if (selectedStyle === 'simile') {
+      starter =
+        (develop || 'My voice is like ' + see + ', because it changes when people listen.') + '\n' +
+        'It can be ' + mood + '.\n' +
+        'It can still be mine.';
+    } else if (selectedStyle === 'spoken') {
+      starter =
+        'Listen.\n' +
+        'My voice is here.\n' +
+        'Not too much. Not too little.\n' +
+        'Here.\n' +
+        'Still here.';
+    } else if (selectedStyle === 'acrostic') {
+      starter =
+        'V - Voice that belongs to me\n' +
+        'O - Open when I am ready\n' +
+        'I - Inside, there is more than people see\n' +
+        'C - Clear, even when it is quiet\n' +
+        'E - Enough';
+    } else {
+      starter =
+        'My voice is ' + mood + '.\n' +
+        'It notices ' + see + '.\n' +
+        'It hears ' + hear + '.\n' +
+        'It says what only I can say.';
+    }
+
+    addTextToPoem(starter);
+    setStatus('Starter lines added. You can change any of them.');
+  }
+
+  function findSoundMatches() {
+    var input = val('rhymeWord').toLowerCase();
+    var results = el('rhymeResults');
+    if (!results) return;
+
+    results.innerHTML = '';
+
+    if (!input) {
+      var p = document.createElement('p');
+      p.textContent = 'Type a word first.';
+      results.appendChild(p);
+      return;
+    }
+
+    var matches = rhymeGroups[input];
+
+    if (!matches) {
+      var endings = Object.keys(rhymeGroups).filter(function (key) {
+        return key.slice(-2) === input.slice(-2) || key.slice(-3) === input.slice(-3);
+      });
+
+      matches = [];
+
+      endings.forEach(function (key) {
+        matches = matches.concat(rhymeGroups[key]);
+      });
+
+      matches = uniqueWords(matches).slice(0, 10);
+    }
+
+    if (!matches || !matches.length) {
+      var none = document.createElement('p');
+      none.textContent = 'No match found yet. Try a simpler word, or use a near-rhyme.';
+      results.appendChild(none);
+      return;
+    }
+
+    var row = document.createElement('div');
+    row.className = 'chip-row';
+
+    matches.forEach(function (word) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.textContent = word;
+      b.addEventListener('click', function () {
+        addTextToPoem(word);
+      });
+      row.appendChild(b);
+    });
+
+    results.appendChild(row);
+  }
+
+  function newChallenge() {
+    var box = el('challengeBox');
+    if (!box) return;
+
+    var current = box.textContent;
+    var next = current;
+
+    while (next === current && challenges.length > 1) {
+      next = challenges[Math.floor(Math.random() * challenges.length)];
+    }
+
+    box.textContent = next;
+  }
+
+  function sendToJay() {
+    var body =
+      'National Writing Day: Share Your Voice\n\n' +
       'From: ' + (val('initials') || '(no initials)') + '\n\n' +
+      'Poem style: ' + selectedStyle + '\n' +
+      'Mood: ' + (selectedMood || '(not chosen)') + '\n\n' +
       'Things I noticed:\n' +
       '- See: ' + val('see') + '\n' +
       '- Hear: ' + val('hear') + '\n' +
       '- Touch: ' + val('touch') + '\n\n' +
       'My voice is like:\n' + val('develop') + '\n\n' +
       'My poem:\n' + val('poem') + '\n';
+
     var su = encodeURIComponent('National Writing Day: Share Your Voice');
-    window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER + '&su=' + su + '&body=' + encodeURIComponent(body), '_blank');
+
+    window.open(
+      'https://mail.google.com/mail/?view=cm&fs=1&to=' +
+      TEACHER +
+      '&su=' +
+      su +
+      '&body=' +
+      encodeURIComponent(body),
+      '_blank'
+    );
+  }
+
+  function copyPoem() {
+    var poem = val('poem');
+
+    if (!poem) {
+      setStatus('There is no poem to copy yet.');
+      return;
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(poem).then(function () {
+        setStatus('Poem copied.');
+      }).catch(function () {
+        fallbackCopy(poem);
+      });
+    } else {
+      fallbackCopy(poem);
+    }
+  }
+
+  function fallbackCopy(text) {
+    var temp = document.createElement('textarea');
+    temp.value = text;
+    document.body.appendChild(temp);
+    temp.select();
+
+    try {
+      document.execCommand('copy');
+      setStatus('Poem copied.');
+    } catch (e) {
+      setStatus('Copy did not work on this browser.');
+    }
+
+    document.body.removeChild(temp);
+  }
+
+  function clearPoem() {
+    var poem = el('poem');
+    if (!poem) return;
+
+    var ok = window.confirm('Clear the poem box? Your Step 1 and Step 2 ideas will stay.');
+    if (!ok) return;
+
+    poem.value = '';
+    saveAll();
+    setStatus('Poem cleared.');
+  }
+
+  fields.forEach(function (f) {
+    f.addEventListener('input', saveAll);
   });
+
+  Array.prototype.slice.call(document.querySelectorAll('[data-style]')).forEach(function (card) {
+    card.addEventListener('click', function () {
+      selectedStyle = card.getAttribute('data-style');
+      applyStyleChoice();
+      updateGuide();
+      saveAll();
+    });
+  });
+
+  Array.prototype.slice.call(document.querySelectorAll('[data-mood]')).forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      var mood = chip.getAttribute('data-mood');
+      selectedMood = selectedMood === mood ? '' : mood;
+      applyMoodChoice();
+      saveAll();
+    });
+  });
+
+  el('makeStarter').addEventListener('click', buildStarter);
+
+  el('addLine').addEventListener('click', function () {
+    addTextToPoem(lineFromAnswers());
+    setStatus('One line added. You can edit it.');
+  });
+
+  el('newChallenge').addEventListener('click', newChallenge);
+
+  el('findRhymes').addEventListener('click', findSoundMatches);
+
+  el('rhymeWord').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      findSoundMatches();
+    }
+  });
+
+  el('send').addEventListener('click', sendToJay);
+  el('copyPoem').addEventListener('click', copyPoem);
+  el('printPoem').addEventListener('click', function () { window.print(); });
+  el('clearPoem').addEventListener('click', clearPoem);
+
+  restore();
 })();
 </script>
 
