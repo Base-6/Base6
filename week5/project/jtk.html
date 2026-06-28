@@ -636,6 +636,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   #lockScreen.week5-lock button:hover,
   .lock.week5-lock button:hover { transform: none !important; }
 }
+
+/* Password unlock fix: override the forced Week 5 lock display */
+#lockScreen.week5-lock.unlocked,
+.lock.week5-lock.unlocked {
+  display: none !important;
+}
+
 </style>
 
 </head>
@@ -955,8 +962,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
         error.classList.remove('show');
         error.style.display = 'none';
       }
-      if (lock) lock.style.display = 'none';
-      if (main) main.style.display = 'block';
+      if (lock) {
+        lock.classList.add('unlocked');
+        lock.setAttribute('aria-hidden', 'true');
+        lock.style.setProperty('display', 'none', 'important');
+      }
+      if (main) {
+        main.removeAttribute('aria-hidden');
+        main.style.setProperty('display', 'block', 'important');
+      }
 
       // The project should still open even if one preview widget has a problem.
       try { updateKit(); } catch (e) { console.warn('Kit preview update skipped after unlock:', e); }
