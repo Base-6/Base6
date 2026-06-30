@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Biodiversity &middot; Hardcore Mode &middot; Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: 'Atkinson Hyperlegible', sans-serif; background: #fef8f4; color: #1a1a1a; line-height: 1.5; }
+  .site-header { position: relative; background: #007291; padding: 2.25rem 1.25rem 3.1rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -70px; left: -50px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.08); }
+  .site-header::after { content: ""; position: absolute; right: -55px; bottom: 5px; width: 210px; height: 210px; border-radius: 50%; background: rgba(239,119,36,0.18); }
+  .header-inner { position: relative; z-index: 2; max-width: 920px; margin: 0 auto; }
+  .header-back { position: absolute; top: 1rem; left: 1rem; z-index: 3; color: #fef8f4; font-weight: 700; text-decoration: none; opacity: .9; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .week-label { margin: 0 0 .35rem; color: #d7eef4; font-size: .85rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  h1 { margin: 0; color: #fef8f4; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; }
+  .header-sub { margin: .55rem auto 0; color: #d7eef4; font-size: 1.05rem; max-width: 760px; }
+  .header-wave { position: absolute; left: 0; bottom: -1px; width: 100%; height: 40px; z-index: 1; }
+  main { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+  .student-card, .intro, .section, .evidence-panel { background: #fff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 1.1rem; box-shadow: 0 4px 14px rgba(0,0,0,0.05); margin-bottom: 1.1rem; }
+  .intro { border-color: #ef7724; background: #fffaf6; }
+  .intro h2, .section h2, .evidence-panel h2 { margin: 0 0 .6rem; color: #007291; font-size: 1.25rem; }
+  .intro p, .section p { margin: .35rem 0; }
+  .student-card { display: grid; grid-template-columns: 1fr; gap: .75rem; border-color: #007291; }
+  label, .question-title { font-weight: 700; color: #1a1a1a; }
+  input[type="text"], textarea, select { width: 100%; font: inherit; padding: .75rem .85rem; border: 2px solid #d8d0c8; border-radius: 10px; background: #fff; color: #1a1a1a; }
+  textarea { min-height: 96px; resize: vertical; }
+  input:focus, textarea:focus, select:focus { outline: 3px solid #ef7724; outline-offset: 2px; border-color: #007291; }
+  .top-actions, .section-nav, .button-row { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; }
+  .section-nav { margin: 1rem 0 1.2rem; }
+  .nav-chip { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: .45rem .8rem; border: 2px solid #007291; border-radius: 999px; background: #fff; color: #007291; font-weight: 700; text-decoration: none; }
+  .nav-chip:hover { background: #e6f5f8; }
+  .progress-wrap { margin: .6rem 0 .2rem; background: #e6f5f8; border-radius: 999px; overflow: hidden; height: 14px; border: 1px solid #b7dce5; }
+  .progress-bar { width: 0%; height: 100%; background: #ef7724; transition: width .2s ease; }
+  .progress-text { color: #555; font-size: .9rem; font-weight: 700; }
+  .section { padding: 0; overflow: hidden; }
+  .section-header { background: #f0fafc; border-bottom: 2px solid #d8edf3; padding: 1rem 1.1rem; }
+  .section-header h2 { margin: 0; }
+  .section-body { padding: 1.1rem; }
+  .question { border: 2px solid #efe6df; border-radius: 14px; padding: 1rem; margin: 1rem 0; background: #fff; }
+  .question-title { display: block; margin-bottom: .65rem; }
+  .question small { display: block; color: #555; margin-top: .4rem; }
+  .option-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .55rem; }
+  .option-grid label, .match-row label, .choice-row label { display: flex; align-items: flex-start; gap: .5rem; border: 2px solid #e0d8d0; border-radius: 12px; padding: .75rem; background: #fffaf6; cursor: pointer; font-weight: 700; color: #333; }
+  .option-grid input, .choice-row input { margin-top: .22rem; flex-shrink: 0; }
+  .choice-row { display: flex; gap: .5rem; flex-wrap: wrap; }
+  .choice-row label { min-width: 150px; }
+  .source-box { background: #f4f8f9; border: 2px solid #b8d7dc; border-radius: 12px; padding: 1rem; margin: 1rem 0; }
+  .source-box p { margin: .4rem 0; }
+  .visual-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; align-items: start; }
+  .visual-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: .65rem; }
+  .visual-card img { width: 100%; height: auto; display: block; border-radius: 10px; }
+  .caption { font-size: .85rem; color: #555; margin-top: .4rem; font-weight: 700; }
+  .mini-teach { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 14px; padding: .95rem; margin: .75rem 0 1rem; }
+  .mini-teach strong { color: #c05a10; }
+  .match-table { display: grid; gap: .7rem; }
+  .match-row { display: grid; grid-template-columns: 1fr minmax(105px, 140px); gap: .65rem; align-items: center; background: #fffaf6; border: 2px solid #efe6df; border-radius: 12px; padding: .75rem; }
+  .term-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: .5rem; margin: .8rem 0; }
+  .term-pill { border: 2px solid #e0d8d0; background: #fff; border-radius: 999px; padding: .45rem .75rem; font-weight: 700; color: #333; }
+  .evidence-panel { border-color: #ef7724; background: #fffaf6; }
+  .evidence-output { min-height: 180px; white-space: pre-wrap; background: #fff; }
+  button { font: inherit; font-weight: 700; border: none; border-radius: 10px; padding: .75rem 1rem; min-height: 44px; cursor: pointer; }
+  .btn-primary { background: #ef7724; color: white; }
+  .btn-primary:hover { background: #c05a10; }
+  .btn-secondary { background: #007291; color: #fef8f4; }
+  .btn-secondary:hover { background: #005a72; }
+  .btn-light { background: #fff; color: #007291; border: 2px solid #007291; }
+  .btn-light:hover { background: #e6f5f8; }
+  .status { border-radius: 12px; padding: .75rem; margin: .75rem 0; font-weight: 700; display: none; }
+  .status.show { display: block; }
+  .status.ok { background: #e6f3ec; border: 2px solid #2e8b57; color: #1f5f3d; }
+  .status.warn { background: #fff3e8; border: 2px solid #ef7724; color: #8a470b; }
+  footer { text-align: center; color: #888; font-size: .82rem; border-top: 1px solid #e0d8d0; padding: 1.2rem; }
+  @media (min-width: 780px) { .student-card { grid-template-columns: 1fr auto; align-items: end; } .visual-grid { grid-template-columns: 0.75fr 1.25fr; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .progress-bar { transition: none; } }
+
+  .site-header { background: #2e8b57; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Hardcore Mode</a>
+  <div class="header-inner">
+    <p class="week-label">Base 6 &middot; Hardcore Mode</p>
+    <h1>Biodiversity</h1>
+    <p class="header-sub">Food webs, pollination, bioaccumulation and a final extended answer.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+<main>
+
+  <div class="student-card">
+    <div>
+      <label for="studentName">Name or initials</label>
+      <input id="studentName" type="text" placeholder="Type name or initials here">
+    </div>
+    <div class="top-actions">
+      <button class="btn-light" type="button" onclick="saveDraft(true)">Save draft</button>
+      <button class="btn-light" type="button" onclick="resetActivity()">Reset</button>
+    </div>
+    <div style="grid-column:1/-1;">
+      <div class="progress-wrap" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-text" id="progressText">0% complete</div>
+    </div>
+  </div>
+
+  <div class="intro">
+    <h2>Mission</h2>
+    <p>This activity is based on the Biodiversity end-of-topic test. It keeps the original challenge, but turns the task into sections you can complete on screen.</p>
+    <p>At the end, use the evidence button to create a results summary and open an email to Jay.</p>
+  </div>
+
+  <nav class="section-nav" aria-label="Activity sections">
+    <a class="nav-chip" href="#keyterms">1. Key terms</a>
+    <a class="nav-chip" href="#foodwebs">2. Food webs</a>
+    <a class="nav-chip" href="#pollination">3. Pollination</a>
+    <a class="nav-chip" href="#toxins">4. Toxic materials</a>
+    <a class="nav-chip" href="#extended">5. Extended answer</a>
+    <a class="nav-chip" href="#evidence">Finish</a>
+  </nav>
+
+  <section class="section" id="keyterms">
+    <div class="section-header"><h2>Section 1: Key Terms and Concepts</h2></div>
+    <div class="section-body">
+      <div class="mini-teach"><strong>Quick reminder:</strong> Biodiversity means the variety of living things. Interdependence means living things rely on each other.</div>
+      <div class="question" data-q="q1">
+        <span class="question-title">1. Which statement best describes 'biodiversity'?</span>
+        <div class="option-grid">
+          <label><input type="radio" name="q1" value="A"> A) The number of animals in a zoo</label>
+          <label><input type="radio" name="q1" value="B"> B) The variety of all living things in an ecosystem</label>
+          <label><input type="radio" name="q1" value="C"> C) The study of plant cells</label>
+          <label><input type="radio" name="q1" value="D"> D) A food chain with three levels</label>
+        </div>
+      </div>
+      <div class="question" data-q="q2">
+        <span class="question-title">2. What does a food web show?</span>
+        <div class="option-grid">
+          <label><input type="radio" name="q2" value="A"> A) How animals build their homes</label>
+          <label><input type="radio" name="q2" value="B"> B) Only the plants in an area</label>
+          <label><input type="radio" name="q2" value="C"> C) How different food chains link together</label>
+          <label><input type="radio" name="q2" value="D"> D) The amount of water in an ecosystem</label>
+        </div>
+      </div>
+      <div class="question" data-q="q3">
+        <span class="question-title">3. Which of these organisms is a common pollinator for crops?</span>
+        <div class="option-grid">
+          <label><input type="radio" name="q3" value="A"> A) Bee</label>
+          <label><input type="radio" name="q3" value="B"> B) Fox</label>
+          <label><input type="radio" name="q3" value="C"> C) Oak tree</label>
+          <label><input type="radio" name="q3" value="D"> D) Earthworm</label>
+        </div>
+      </div>
+      <div class="question" data-q="q4">
+        <span class="question-title">4. What happens to toxic materials (like pesticides) as they move up a food chain?</span>
+        <div class="option-grid">
+          <label><input type="radio" name="q4" value="A"> A) They disappear</label>
+          <label><input type="radio" name="q4" value="B"> B) They become less harmful</label>
+          <label><input type="radio" name="q4" value="C"> C) They turn into food</label>
+          <label><input type="radio" name="q4" value="D"> D) They build up in the bodies of predators</label>
+        </div>
+      </div>
+      <div class="question" data-q="q5">
+        <span class="question-title">5. 'Interdependence' means that organisms in an ecosystem:</span>
+        <div class="option-grid">
+          <label><input type="radio" name="q5" value="A"> A) Do not need each other</label>
+          <label><input type="radio" name="q5" value="B"> B) Rely on each other to survive</label>
+          <label><input type="radio" name="q5" value="C"> C) Only eat plants</label>
+          <label><input type="radio" name="q5" value="D"> D) Live in different countries</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="foodwebs">
+    <div class="section-header"><h2>Section 2: Food Webs and Interdependence</h2></div>
+    <div class="section-body">
+      <div class="visual-grid">
+        <div class="visual-card"><img src="assets/biodiversity-food-web.png" alt="Food web showing cabbage, caterpillar, slug, thrush and sparrowhawk with arrows"><div class="caption">Food web: cabbage, caterpillar, slug, thrush and sparrowhawk.</div></div>
+        <div>
+          <div class="question" data-q="q6"><label for="q6">6. Name the producer in this food web.</label><input id="q6" type="text"></div>
+          <div class="question" data-q="q7"><label for="q7">7. Name one primary consumer.</label><input id="q7" type="text"></div>
+          <div class="question" data-q="q8"><label for="q8">8. Name the top predator.</label><input id="q8" type="text"></div>
+        </div>
+      </div>
+      <div class="question" data-q="q9"><label for="q9">9. What do the arrows in a food web represent?</label><textarea id="q9"></textarea></div>
+      <div class="question" data-q="q10"><label for="q10">10. A disease kills most of the thrushes in this woodland. Explain what might happen to the number of caterpillars.</label><textarea id="q10"></textarea></div>
+      <div class="question" data-q="q11"><label for="q11">11. Explain what might happen to the number of sparrowhawks if the thrushes die out.</label><textarea id="q11"></textarea></div>
+      <div class="question" data-q="q12"><label for="q12">12. Describe one other way, apart from food, that animals might rely on plants in this woodland.</label><textarea id="q12"></textarea></div>
+    </div>
+  </section>
+
+  <section class="section" id="pollination">
+    <div class="section-header"><h2>Section 3: Insect Pollination</h2></div>
+    <div class="section-body">
+      <div class="visual-grid">
+        <div class="visual-card"><img src="assets/biodiversity-orchard-pollination.png" alt="Farmer checking apple blossom in an orchard"><div class="caption">Apple trees have flowers that are pollinated by insects.</div></div>
+        <div>
+          <p>A farmer grows apples. Apple trees have flowers that are pollinated by insects.</p>
+          <div class="question" data-q="q13"><label for="q13">13. Name one insect that commonly pollinates apple trees.</label><input id="q13" type="text"></div>
+          <div class="question" data-q="q14"><label for="q14">14. Explain how the insect helps the apple tree to reproduce.</label><textarea id="q14"></textarea></div>
+        </div>
+      </div>
+      <div class="question" data-q="q15"><label for="q15">15. The farmer notices that there are fewer insects this year. Explain how a drop in insect numbers will affect the apple crop.</label><textarea id="q15"></textarea></div>
+      <div class="question" data-q="q16"><label for="q16">16. Suggest one action the farmer could take to increase the number of pollinating insects on the farm.</label><textarea id="q16"></textarea></div>
+      <div class="question" data-q="q17"><label for="q17">17. Explain why relying on just one type of crop (a monoculture) can reduce biodiversity.</label><textarea id="q17"></textarea></div>
+    </div>
+  </section>
+
+  <section class="section" id="toxins">
+    <div class="section-header"><h2>Section 4: Accumulation of Toxic Materials</h2></div>
+    <div class="section-body">
+      <p>A factory leaks a small amount of a toxic chemical into a nearby lake. The chemical is absorbed by tiny plants in the water (algae).</p>
+      <div class="visual-card"><img src="assets/biodiversity-bioaccumulation-chain.png" alt="Food chain showing algae to water flea to small fish to heron"><div class="caption">Food chain: algae - water flea - small fish - heron.</div></div>
+      <div class="question" data-q="q18"><label for="q18">18. Which organism in this food chain will have the highest concentration of the toxic chemical?</label><input id="q18" type="text"></div>
+      <div class="question" data-q="q19"><label for="q19">19. This process is called bioaccumulation. Explain why the chemical builds up in the top predator, rather than staying at a low level.</label><textarea id="q19"></textarea></div>
+      <div class="question" data-q="q20"><label for="q20">20. The toxic chemical causes the heron's eggshells to become very thin. Explain how this will affect the heron population over time.</label><textarea id="q20"></textarea></div>
+      <div class="question" data-q="q21"><label for="q21">21. Suggest one way humans can reduce the amount of toxic chemicals entering food webs.</label><textarea id="q21"></textarea></div>
+    </div>
+  </section>
+
+  <section class="section" id="extended">
+    <div class="section-header"><h2>Section 5: Extended Answer</h2></div>
+    <div class="section-body">
+      <div class="question" data-q="q22">
+        <label for="q22">22. A local council is planning to cut down a large forest to build a new shopping centre. Local scientists are arguing that the forest should be saved because it has high biodiversity.</label>
+        <small>Explain why maintaining high biodiversity is important for both the ecosystem and for humans. Use examples from this topic in your answer.</small>
+        <textarea id="q22" style="min-height:180px;"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <section class="evidence-panel" id="evidence">
+    <h2>Finish: evidence for Jay</h2>
+    <p>Prepare the evidence summary, then open an email to Jay. The auto-check is a guide; Jay can check the written answers properly.</p>
+    <div class="button-row">
+      <button class="btn-primary" type="button" onclick="prepareEvidence()">Prepare evidence</button>
+      <button class="btn-secondary" type="button" onclick="emailEvidence()">Email results to Jay</button>
+      <button class="btn-light" type="button" onclick="copyEvidence()">Copy evidence</button>
+    </div>
+    <div id="status" class="status"></div>
+    <label for="evidenceOutput">Evidence summary</label>
+    <textarea id="evidenceOutput" class="evidence-output" readonly></textarea>
+  </section>
+
+</main>
+<footer>Base 6 &middot; Chilton Bridge School</footer>
+<script>
+
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+const ACTIVITY_TITLE = 'Biodiversity - Hardcore Mode';
+const STORE_KEY = 'base6-hardcore-biodiversity-v1';
+const ALL_QS = Array.from({length:22}, (_,i) => 'q' + (i+1));
+const RADIO_QS = ['q1','q2','q3','q4','q5'];
+const TEXT_QS = ALL_QS.filter(q => !RADIO_QS.includes(q));
+const EXACT = { q1:'B', q2:'C', q3:'A', q4:'D', q5:'B' };
+const TEXT_EXACT = {
+  q6: ['cabbage'],
+  q7: ['caterpillar','slug'],
+  q8: ['sparrowhawk'],
+  q13: ['bee','butterfly','moth'],
+  q18: ['heron']
+};
+const KEYWORDS = {
+  q9: [['energy','flow'], ['eaten'], ['organism']],
+  q10: [['increase','more','rise'], ['fewer','less','no'], ['thrush']],
+  q11: [['decrease','less','decline','starve','leave'], ['food','thrush']],
+  q12: [['shelter','nest','nesting','habitat','oxygen','shade']],
+  q14: [['pollen'], ['another','other'], ['flower'], ['seed','fruit','reproduce']],
+  q15: [['fewer','less','drop'], ['pollinated','pollination'], ['fewer','less','reduced'], ['apple','crop','yield']],
+  q16: [['wildflower','flower','hedge','habitat','bee','pesticide','hive']],
+  q17: [['one','single'], ['habitat','food'], ['fewer','less'], ['species','animals','insects','biodiversity']],
+  q19: [['not broken','not excreted','stay'], ['eats','many'], ['accumulates','builds','bioaccumulation'], ['top','predator','heron']],
+  q20: [['egg','eggshell'], ['break','thin'], ['chick','baby','hatch'], ['decrease','less','population']],
+  q21: [['pesticide','biological','factory','waste','treat','natural','fertilizer','chemical']],
+  q22: [['stable','stability','recover'], ['interdependence','food web','species'], ['pollination','pollinated','crops','food'], ['oxygen','carbon dioxide','erosion'], ['habitat','die out','migrate']]
+};
+function norm(s){ return (s || '').toString().toLowerCase().replace(/[\u2018\u2019]/g,"'").trim(); }
+function getRadio(name){ const el = document.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : ''; }
+function setRadio(name, value){ const el = document.querySelector('input[name="' + name + '"][value="' + value + '"]'); if(el) el.checked = true; }
+function getValue(q){ return RADIO_QS.includes(q) ? getRadio(q) : (document.getElementById(q)?.value || ''); }
+function setValue(q, value){ if(RADIO_QS.includes(q)) setRadio(q, value); else if(document.getElementById(q)) document.getElementById(q).value = value || ''; }
+function answered(q){ return norm(getValue(q)).length > 0; }
+function saveDraft(show){
+  const data = { studentName: document.getElementById('studentName').value || '', updated: new Date().toISOString(), answers: {} };
+  ALL_QS.forEach(q => data.answers[q] = getValue(q));
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+  updateProgress();
+  if(show) showStatus('Draft saved on this device.', 'ok');
+}
+function loadDraft(){
+  try {
+    const data = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+    if(data.studentName) document.getElementById('studentName').value = data.studentName;
+    if(data.answers) Object.keys(data.answers).forEach(q => setValue(q, data.answers[q]));
+  } catch(e) {}
+  updateProgress();
+}
+function updateProgress(){
+  const total = ALL_QS.length;
+  const done = ALL_QS.filter(answered).length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressText').textContent = pct + '% complete - ' + done + ' of ' + total + ' questions answered';
+}
+function checkExact(){
+  let score = 0, total = 0;
+  Object.keys(EXACT).forEach(q => { total++; if(getValue(q) === EXACT[q]) score++; });
+  Object.keys(TEXT_EXACT).forEach(q => {
+    total++;
+    const v = norm(getValue(q));
+    if(TEXT_EXACT[q].some(a => v.includes(a))) score++;
+  });
+  return {score,total};
+}
+function checkKeywords(){
+  let hits = 0, total = 0, byQ = [];
+  Object.keys(KEYWORDS).forEach(q => {
+    const v = norm(getValue(q));
+    let qHits = 0;
+    KEYWORDS[q].forEach(group => {
+      total++;
+      if(group.some(k => v.includes(k))) { hits++; qHits++; }
+    });
+    byQ.push(q.toUpperCase() + ': ' + qHits + '/' + KEYWORDS[q].length);
+  });
+  return {hits,total,byQ};
+}
+function buildEvidence(){
+  const name = document.getElementById('studentName').value.trim() || 'Not entered';
+  const exact = checkExact();
+  const kw = checkKeywords();
+  const answeredCount = ALL_QS.filter(answered).length;
+  const lines = [];
+  lines.push('BASE 6 - HARDCORE MODE EVIDENCE');
+  lines.push('Activity: ' + ACTIVITY_TITLE);
+  lines.push('Student: ' + name);
+  lines.push('Date: ' + new Date().toLocaleString('en-GB'));
+  lines.push('');
+  lines.push('RESULTS SUMMARY');
+  lines.push('Questions answered: ' + answeredCount + '/' + ALL_QS.length);
+  lines.push('Auto-check answers: ' + exact.score + '/' + exact.total);
+  lines.push('Written keyword evidence: ' + kw.hits + '/' + kw.total + ' flags found');
+  lines.push('Note: written answers need Jay to check for full accuracy.');
+  lines.push('');
+  lines.push('WRITTEN KEYWORD BREAKDOWN');
+  lines.push(kw.byQ.join(', '));
+  lines.push('');
+  lines.push('STUDENT RESPONSES');
+  ALL_QS.forEach(q => lines.push(q.toUpperCase() + ': ' + (getValue(q) || '[blank]')));
+  return lines.join('\n');
+}
+function prepareEvidence(){
+  saveDraft(false);
+  const evidence = buildEvidence();
+  document.getElementById('evidenceOutput').value = evidence;
+  showStatus('Evidence prepared. You can now email it to Jay.', 'ok');
+}
+function emailEvidence(){
+  const out = document.getElementById('evidenceOutput');
+  if(!out.value.trim()) prepareEvidence();
+  const name = document.getElementById('studentName').value.trim() || 'Student';
+  const subject = encodeURIComponent('Base 6 Evidence - Biodiversity - ' + name);
+  const body = encodeURIComponent(document.getElementById('evidenceOutput').value);
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(TEACHER_EMAIL) + '&su=' + subject + '&body=' + body, '_blank');
+}
+function copyEvidence(){
+  const out = document.getElementById('evidenceOutput');
+  if(!out.value.trim()) prepareEvidence();
+  out.select();
+  navigator.clipboard?.writeText(out.value).then(() => showStatus('Evidence copied.', 'ok')).catch(() => showStatus('Select the evidence box and copy it manually.', 'warn'));
+}
+function resetActivity(){
+  if(confirm('Reset this activity on this device?')) {
+    localStorage.removeItem(STORE_KEY);
+    document.getElementById('studentName').value = '';
+    ALL_QS.forEach(q => setValue(q, ''));
+    document.getElementById('evidenceOutput').value = '';
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    updateProgress();
+    showStatus('Activity reset on this device.', 'warn');
+  }
+}
+function showStatus(msg, kind){
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status show ' + (kind || 'ok');
+}
+document.addEventListener('input', () => saveDraft(false));
+document.addEventListener('change', () => saveDraft(false));
+loadDraft();
+
+</script>
+</body>
+</html>

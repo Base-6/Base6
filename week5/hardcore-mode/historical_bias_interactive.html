@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Historical Bias &middot; Hardcore Mode &middot; Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: 'Atkinson Hyperlegible', sans-serif; background: #fef8f4; color: #1a1a1a; line-height: 1.5; }
+  .site-header { position: relative; background: #007291; padding: 2.25rem 1.25rem 3.1rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -70px; left: -50px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.08); }
+  .site-header::after { content: ""; position: absolute; right: -55px; bottom: 5px; width: 210px; height: 210px; border-radius: 50%; background: rgba(239,119,36,0.18); }
+  .header-inner { position: relative; z-index: 2; max-width: 920px; margin: 0 auto; }
+  .header-back { position: absolute; top: 1rem; left: 1rem; z-index: 3; color: #fef8f4; font-weight: 700; text-decoration: none; opacity: .9; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .week-label { margin: 0 0 .35rem; color: #d7eef4; font-size: .85rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  h1 { margin: 0; color: #fef8f4; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; }
+  .header-sub { margin: .55rem auto 0; color: #d7eef4; font-size: 1.05rem; max-width: 760px; }
+  .header-wave { position: absolute; left: 0; bottom: -1px; width: 100%; height: 40px; z-index: 1; }
+  main { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+  .student-card, .intro, .section, .evidence-panel { background: #fff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 1.1rem; box-shadow: 0 4px 14px rgba(0,0,0,0.05); margin-bottom: 1.1rem; }
+  .intro { border-color: #ef7724; background: #fffaf6; }
+  .intro h2, .section h2, .evidence-panel h2 { margin: 0 0 .6rem; color: #007291; font-size: 1.25rem; }
+  .intro p, .section p { margin: .35rem 0; }
+  .student-card { display: grid; grid-template-columns: 1fr; gap: .75rem; border-color: #007291; }
+  label, .question-title { font-weight: 700; color: #1a1a1a; }
+  input[type="text"], textarea, select { width: 100%; font: inherit; padding: .75rem .85rem; border: 2px solid #d8d0c8; border-radius: 10px; background: #fff; color: #1a1a1a; }
+  textarea { min-height: 96px; resize: vertical; }
+  input:focus, textarea:focus, select:focus { outline: 3px solid #ef7724; outline-offset: 2px; border-color: #007291; }
+  .top-actions, .section-nav, .button-row { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; }
+  .section-nav { margin: 1rem 0 1.2rem; }
+  .nav-chip { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: .45rem .8rem; border: 2px solid #007291; border-radius: 999px; background: #fff; color: #007291; font-weight: 700; text-decoration: none; }
+  .nav-chip:hover { background: #e6f5f8; }
+  .progress-wrap { margin: .6rem 0 .2rem; background: #e6f5f8; border-radius: 999px; overflow: hidden; height: 14px; border: 1px solid #b7dce5; }
+  .progress-bar { width: 0%; height: 100%; background: #ef7724; transition: width .2s ease; }
+  .progress-text { color: #555; font-size: .9rem; font-weight: 700; }
+  .section { padding: 0; overflow: hidden; }
+  .section-header { background: #f0fafc; border-bottom: 2px solid #d8edf3; padding: 1rem 1.1rem; }
+  .section-header h2 { margin: 0; }
+  .section-body { padding: 1.1rem; }
+  .question { border: 2px solid #efe6df; border-radius: 14px; padding: 1rem; margin: 1rem 0; background: #fff; }
+  .question-title { display: block; margin-bottom: .65rem; }
+  .question small { display: block; color: #555; margin-top: .4rem; }
+  .option-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .55rem; }
+  .option-grid label, .match-row label, .choice-row label { display: flex; align-items: flex-start; gap: .5rem; border: 2px solid #e0d8d0; border-radius: 12px; padding: .75rem; background: #fffaf6; cursor: pointer; font-weight: 700; color: #333; }
+  .option-grid input, .choice-row input { margin-top: .22rem; flex-shrink: 0; }
+  .choice-row { display: flex; gap: .5rem; flex-wrap: wrap; }
+  .choice-row label { min-width: 150px; }
+  .source-box { background: #f4f8f9; border: 2px solid #b8d7dc; border-radius: 12px; padding: 1rem; margin: 1rem 0; }
+  .source-box p { margin: .4rem 0; }
+  .visual-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; align-items: start; }
+  .visual-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: .65rem; }
+  .visual-card img { width: 100%; height: auto; display: block; border-radius: 10px; }
+  .caption { font-size: .85rem; color: #555; margin-top: .4rem; font-weight: 700; }
+  .mini-teach { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 14px; padding: .95rem; margin: .75rem 0 1rem; }
+  .mini-teach strong { color: #c05a10; }
+  .match-table { display: grid; gap: .7rem; }
+  .match-row { display: grid; grid-template-columns: 1fr minmax(105px, 140px); gap: .65rem; align-items: center; background: #fffaf6; border: 2px solid #efe6df; border-radius: 12px; padding: .75rem; }
+  .term-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: .5rem; margin: .8rem 0; }
+  .term-pill { border: 2px solid #e0d8d0; background: #fff; border-radius: 999px; padding: .45rem .75rem; font-weight: 700; color: #333; }
+  .evidence-panel { border-color: #ef7724; background: #fffaf6; }
+  .evidence-output { min-height: 180px; white-space: pre-wrap; background: #fff; }
+  button { font: inherit; font-weight: 700; border: none; border-radius: 10px; padding: .75rem 1rem; min-height: 44px; cursor: pointer; }
+  .btn-primary { background: #ef7724; color: white; }
+  .btn-primary:hover { background: #c05a10; }
+  .btn-secondary { background: #007291; color: #fef8f4; }
+  .btn-secondary:hover { background: #005a72; }
+  .btn-light { background: #fff; color: #007291; border: 2px solid #007291; }
+  .btn-light:hover { background: #e6f5f8; }
+  .status { border-radius: 12px; padding: .75rem; margin: .75rem 0; font-weight: 700; display: none; }
+  .status.show { display: block; }
+  .status.ok { background: #e6f3ec; border: 2px solid #2e8b57; color: #1f5f3d; }
+  .status.warn { background: #fff3e8; border: 2px solid #ef7724; color: #8a470b; }
+  footer { text-align: center; color: #888; font-size: .82rem; border-top: 1px solid #e0d8d0; padding: 1.2rem; }
+  @media (min-width: 780px) { .student-card { grid-template-columns: 1fr auto; align-items: end; } .visual-grid { grid-template-columns: 0.75fr 1.25fr; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .progress-bar { transition: none; } }
+
+  .site-header { background: #7b5ea7; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Hardcore Mode</a>
+  <div class="header-inner">
+    <p class="week-label">Base 6 &middot; Hardcore Mode</p>
+    <h1>Historical Bias</h1>
+    <p class="header-sub">Primary and secondary sources, propaganda, fact vs opinion and comparing interpretations.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+<main>
+
+  <div class="student-card">
+    <div>
+      <label for="studentName">Name or initials</label>
+      <input id="studentName" type="text" placeholder="Type name or initials here">
+    </div>
+    <div class="top-actions">
+      <button class="btn-light" type="button" onclick="saveDraft(true)">Save draft</button>
+      <button class="btn-light" type="button" onclick="resetActivity()">Reset</button>
+    </div>
+    <div style="grid-column:1/-1;">
+      <div class="progress-wrap" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-text" id="progressText">0% complete</div>
+    </div>
+  </div>
+
+  <div class="intro">
+    <h2>Mission</h2>
+    <p>This activity is based on the Historical Bias and Interpretations test. It keeps the original sources and questions, but turns the task into an interactive challenge.</p>
+    <p>At the end, use the evidence button to create a results summary and open an email to Jay.</p>
+  </div>
+
+  <nav class="section-nav" aria-label="Activity sections">
+    <a class="nav-chip" href="#terms">1. Terms</a>
+    <a class="nav-chip" href="#factopinion">2. Fact or opinion</a>
+    <a class="nav-chip" href="#visualsources">3. Visual sources</a>
+    <a class="nav-chip" href="#interpretations">4. Interpretations</a>
+    <a class="nav-chip" href="#evaluation">5. Evaluation</a>
+    <a class="nav-chip" href="#evidence">Finish</a>
+  </nav>
+
+  <section class="section" id="terms">
+    <div class="section-header"><h2>Section 1: Historical Terms</h2></div>
+    <div class="section-body">
+      <div class="mini-teach"><strong>Quick reminder:</strong> Historians ask who made a source, when it was made, why it was made and what point of view it shows.</div>
+      <p>Match each definition to the correct historical term.</p>
+      <div class="term-list">
+        <span class="term-pill">A. Propaganda</span>
+        <span class="term-pill">B. Secondary Source</span>
+        <span class="term-pill">C. Bias</span>
+        <span class="term-pill">D. Interpretation</span>
+        <span class="term-pill">E. Primary Source</span>
+      </div>
+      <div class="match-table">
+        <div class="match-row"><label for="q1">1. A source created at the time of the event by someone who was there.</label><select id="q1"><option value="">Choose</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+        <div class="match-row"><label for="q2">2. A strong feeling for or against someone or something, often without good reason.</label><select id="q2"><option value="">Choose</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+        <div class="match-row"><label for="q3">3. Information, especially misleading information, used to promote a political cause or point of view.</label><select id="q3"><option value="">Choose</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+        <div class="match-row"><label for="q4">4. The way a historian explains or understands a past event.</label><select id="q4"><option value="">Choose</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+        <div class="match-row"><label for="q5">5. A source created after the event by someone who was not there, often using other sources.</label><select id="q5"><option value="">Choose</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="factopinion">
+    <div class="section-header"><h2>Section 2: Fact or Opinion?</h2></div>
+    <div class="section-body">
+      <p>Read the statements below. Decide if each one is a historical fact or an opinion.</p>
+      <div class="question" data-q="q6"><span class="question-title">6. The Battle of Hastings took place in the year 1066.</span><div class="choice-row"><label><input type="radio" name="q6" value="Fact"> Fact</label><label><input type="radio" name="q6" value="Opinion"> Opinion</label></div></div>
+      <div class="question" data-q="q7"><span class="question-title">7. Oliver Cromwell was the most evil ruler in British history.</span><div class="choice-row"><label><input type="radio" name="q7" value="Fact"> Fact</label><label><input type="radio" name="q7" value="Opinion"> Opinion</label></div></div>
+      <div class="question" data-q="q8"><span class="question-title">8. Women over the age of 30 were given the right to vote in 1918.</span><div class="choice-row"><label><input type="radio" name="q8" value="Fact"> Fact</label><label><input type="radio" name="q8" value="Opinion"> Opinion</label></div></div>
+      <div class="question" data-q="q9"><span class="question-title">9. The British Empire brought civilisation and peace to the world.</span><div class="choice-row"><label><input type="radio" name="q9" value="Fact"> Fact</label><label><input type="radio" name="q9" value="Opinion"> Opinion</label></div></div>
+      <div class="question" data-q="q10"><span class="question-title">10. Henry VIII had six wives during his reign.</span><div class="choice-row"><label><input type="radio" name="q10" value="Fact"> Fact</label><label><input type="radio" name="q10" value="Opinion"> Opinion</label></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="visualsources">
+    <div class="section-header"><h2>Section 3: Analysing Visual Sources</h2></div>
+    <div class="section-body">
+      <div class="visual-grid">
+        <div class="visual-card"><img src="assets/historical-bias-ww1-poster.png" alt="British First World War recruitment poster saying Britons wants you join your country's army"><div class="caption">Source A: A poster printed by the British government in 1914.</div></div>
+        <div>
+          <div class="question" data-q="q11"><label for="q11">11. Is Source A a primary or secondary source for studying the First World War?</label><textarea id="q11"></textarea></div>
+          <div class="question" data-q="q12"><label for="q12">12. Who is the intended audience for this poster?</label><textarea id="q12"></textarea></div>
+          <div class="question" data-q="q13"><label for="q13">13. What is the purpose of this poster? (What did the creator want the audience to do?)</label><textarea id="q13"></textarea></div>
+        </div>
+      </div>
+      <div class="visual-grid">
+        <div class="visual-card"><img src="assets/historical-bias-bayeux-tapestry.png" alt="Scene from the Bayeux Tapestry showing mounted Norman soldiers"><div class="caption">Source B: A scene from the Bayeux Tapestry, created in the 1070s.</div></div>
+        <div>
+          <p>Source B was ordered by Odo, the half-brother of William the Conqueror, leader of the Normans.</p>
+          <div class="question" data-q="q14"><label for="q14">14. Why might Source B show the Normans as brave and heroic heroes? Explain your answer using the background information.</label><textarea id="q14"></textarea></div>
+          <div class="question" data-q="q15"><label for="q15">15. Does the fact that the tapestry is one-sided mean it is completely useless to a historian? Give a reason for your answer.</label><textarea id="q15"></textarea></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="interpretations">
+    <div class="section-header"><h2>Section 4: Comparing Interpretations</h2></div>
+    <div class="section-body">
+      <p>Read the two sources below about working conditions in factories during the Industrial Revolution (around 1840).</p>
+      <div class="source-box">
+        <p><strong>Source C:</strong> Written by a factory owner in 1841.</p>
+        <p>"The factories are clean, warm, and safe. The children who work here are healthy and happy to be earning good money to support their poor families. The machines are not difficult to use."</p>
+        <p><strong>Source D:</strong> Written by a government inspector investigating factories in 1842.</p>
+        <p>"The machines are highly dangerous and have no safety guards. Children work for up to 14 hours a day in terrible heat. They are exhausted, and those who fall asleep are often beaten by the managers."</p>
+      </div>
+      <div class="question" data-q="q16"><label for="q16">16. What is Source C's interpretation of factory work?</label><textarea id="q16"></textarea></div>
+      <div class="question" data-q="q17"><label for="q17">17. What is Source D's interpretation of factory work?</label><textarea id="q17"></textarea></div>
+      <div class="question" data-q="q18"><label for="q18">18. Explain why the authors of Source C and Source D have such different views of the same factories. Think about who they are and their reasons for writing.</label><textarea id="q18"></textarea></div>
+      <div class="question" data-q="q19"><label for="q19">19. Which source (C or D) is likely to be more reliable for a historian trying to find out the truth about factory conditions? Explain your choice.</label><textarea id="q19"></textarea></div>
+    </div>
+  </section>
+
+  <section class="section" id="evaluation">
+    <div class="section-header"><h2>Section 5: Extended Evaluation</h2></div>
+    <div class="section-body">
+      <div class="question" data-q="q20"><label for="q20">20. "A biased source is completely useless to a historian." To what extent do you agree with this statement? Write a paragraph explaining your answer. You should include at least one example to support your point.</label><textarea id="q20" style="min-height:180px;"></textarea></div>
+    </div>
+  </section>
+
+  <section class="evidence-panel" id="evidence">
+    <h2>Finish: evidence for Jay</h2>
+    <p>Prepare the evidence summary, then open an email to Jay. The auto-check is a guide; Jay can check the written answers properly.</p>
+    <div class="button-row">
+      <button class="btn-primary" type="button" onclick="prepareEvidence()">Prepare evidence</button>
+      <button class="btn-secondary" type="button" onclick="emailEvidence()">Email results to Jay</button>
+      <button class="btn-light" type="button" onclick="copyEvidence()">Copy evidence</button>
+    </div>
+    <div id="status" class="status"></div>
+    <label for="evidenceOutput">Evidence summary</label>
+    <textarea id="evidenceOutput" class="evidence-output" readonly></textarea>
+  </section>
+
+</main>
+<footer>Base 6 &middot; Chilton Bridge School</footer>
+<script>
+
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+const ACTIVITY_TITLE = 'Historical Bias - Hardcore Mode';
+const STORE_KEY = 'base6-hardcore-historical-bias-v1';
+const ALL_QS = Array.from({length:20}, (_,i) => 'q' + (i+1));
+const SELECT_QS = ['q1','q2','q3','q4','q5'];
+const RADIO_QS = ['q6','q7','q8','q9','q10'];
+const TEXT_QS = ALL_QS.filter(q => !SELECT_QS.includes(q) && !RADIO_QS.includes(q));
+const EXACT = { q1:'E', q2:'C', q3:'A', q4:'D', q5:'B', q6:'Fact', q7:'Opinion', q8:'Fact', q9:'Opinion', q10:'Fact' };
+const KEYWORDS = {
+  q11: [['primary'], ['1914','time','during']],
+  q12: [['british'], ['men','civilians','soldiers','fight']],
+  q13: [['persuade','pressure','encourage'], ['join','recruit','army']],
+  q14: [['odo','norman','william'], ['praise','justify','hero','victorious','brave']],
+  q15: [['no','not'], ['useful'], ['weapons','armour','tactics','point of view','norman']],
+  q16: [['positive','good','safe','clean','healthy','happy']],
+  q17: [['cruel','dangerous','unsafe','bad'], ['long','14','beaten','exhausted','heat']],
+  q18: [['owner'], ['protect','business','money','profit','reputation'], ['inspector','government'], ['truth','protect workers','dangers']],
+  q19: [['source d','d'], ['reliable'], ['inspector'], ['motive','reason','truth','owner','profit']],
+  q20: [['disagree','partly','extent'], ['biased'], ['useful'], ['propaganda','poster','tapestry','source'], ['motive','belief','persuasion','point of view']]
+};
+function norm(s){ return (s || '').toString().toLowerCase().replace(/[\u2018\u2019]/g,"'").trim(); }
+function getRadio(name){ const el = document.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : ''; }
+function setRadio(name, value){ const el = document.querySelector('input[name="' + name + '"][value="' + value + '"]'); if(el) el.checked = true; }
+function getValue(q){ if(RADIO_QS.includes(q)) return getRadio(q); const el = document.getElementById(q); return el ? el.value : ''; }
+function setValue(q, value){ if(RADIO_QS.includes(q)) setRadio(q, value); else if(document.getElementById(q)) document.getElementById(q).value = value || ''; }
+function answered(q){ return norm(getValue(q)).length > 0; }
+function saveDraft(show){
+  const data = { studentName: document.getElementById('studentName').value || '', updated: new Date().toISOString(), answers: {} };
+  ALL_QS.forEach(q => data.answers[q] = getValue(q));
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+  updateProgress();
+  if(show) showStatus('Draft saved on this device.', 'ok');
+}
+function loadDraft(){
+  try {
+    const data = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+    if(data.studentName) document.getElementById('studentName').value = data.studentName;
+    if(data.answers) Object.keys(data.answers).forEach(q => setValue(q, data.answers[q]));
+  } catch(e) {}
+  updateProgress();
+}
+function updateProgress(){
+  const total = ALL_QS.length;
+  const done = ALL_QS.filter(answered).length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressText').textContent = pct + '% complete - ' + done + ' of ' + total + ' questions answered';
+}
+function checkExact(){
+  let score = 0, total = 0;
+  Object.keys(EXACT).forEach(q => { total++; if(getValue(q) === EXACT[q]) score++; });
+  return {score,total};
+}
+function checkKeywords(){
+  let hits = 0, total = 0, byQ = [];
+  Object.keys(KEYWORDS).forEach(q => {
+    const v = norm(getValue(q));
+    let qHits = 0;
+    KEYWORDS[q].forEach(group => {
+      total++;
+      if(group.some(k => v.includes(k))) { hits++; qHits++; }
+    });
+    byQ.push(q.toUpperCase() + ': ' + qHits + '/' + KEYWORDS[q].length);
+  });
+  return {hits,total,byQ};
+}
+function buildEvidence(){
+  const name = document.getElementById('studentName').value.trim() || 'Not entered';
+  const exact = checkExact();
+  const kw = checkKeywords();
+  const answeredCount = ALL_QS.filter(answered).length;
+  const lines = [];
+  lines.push('BASE 6 - HARDCORE MODE EVIDENCE');
+  lines.push('Activity: ' + ACTIVITY_TITLE);
+  lines.push('Student: ' + name);
+  lines.push('Date: ' + new Date().toLocaleString('en-GB'));
+  lines.push('');
+  lines.push('RESULTS SUMMARY');
+  lines.push('Questions answered: ' + answeredCount + '/' + ALL_QS.length);
+  lines.push('Auto-check answers: ' + exact.score + '/' + exact.total);
+  lines.push('Written keyword evidence: ' + kw.hits + '/' + kw.total + ' flags found');
+  lines.push('Note: written answers need Jay to check for full accuracy.');
+  lines.push('');
+  lines.push('WRITTEN KEYWORD BREAKDOWN');
+  lines.push(kw.byQ.join(', '));
+  lines.push('');
+  lines.push('STUDENT RESPONSES');
+  ALL_QS.forEach(q => lines.push(q.toUpperCase() + ': ' + (getValue(q) || '[blank]')));
+  return lines.join('\n');
+}
+function prepareEvidence(){
+  saveDraft(false);
+  const evidence = buildEvidence();
+  document.getElementById('evidenceOutput').value = evidence;
+  showStatus('Evidence prepared. You can now email it to Jay.', 'ok');
+}
+function emailEvidence(){
+  const out = document.getElementById('evidenceOutput');
+  if(!out.value.trim()) prepareEvidence();
+  const name = document.getElementById('studentName').value.trim() || 'Student';
+  const subject = encodeURIComponent('Base 6 Evidence - Historical Bias - ' + name);
+  const body = encodeURIComponent(document.getElementById('evidenceOutput').value);
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(TEACHER_EMAIL) + '&su=' + subject + '&body=' + body, '_blank');
+}
+function copyEvidence(){
+  const out = document.getElementById('evidenceOutput');
+  if(!out.value.trim()) prepareEvidence();
+  out.select();
+  navigator.clipboard?.writeText(out.value).then(() => showStatus('Evidence copied.', 'ok')).catch(() => showStatus('Select the evidence box and copy it manually.', 'warn'));
+}
+function resetActivity(){
+  if(confirm('Reset this activity on this device?')) {
+    localStorage.removeItem(STORE_KEY);
+    document.getElementById('studentName').value = '';
+    ALL_QS.forEach(q => setValue(q, ''));
+    document.getElementById('evidenceOutput').value = '';
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    updateProgress();
+    showStatus('Activity reset on this device.', 'warn');
+  }
+}
+function showStatus(msg, kind){
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status show ' + (kind || 'ok');
+}
+document.addEventListener('input', () => saveDraft(false));
+document.addEventListener('change', () => saveDraft(false));
+loadDraft();
+
+</script>
+</body>
+</html>
