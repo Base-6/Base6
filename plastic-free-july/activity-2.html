@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity 2: Spot and swap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #06243d; --ink-soft: #2b4a63; --panel: #ffffff;
+    --plastic: #ff1e9c; --plastic-deep: #c40d74;
+    --coral: #ff7a3d; --sun: #ffce2e; --urchin: #7b4fc4; --turq: #15c2c2; --kelp: #2fa84f;
+    --accent: #1e7fd0; --accent-deep: #145a96; --good: #2fa84f;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Atkinson Hyperlegible", Verdana, sans-serif; color: var(--ink);
+    line-height: 1.5; text-align: left; min-height: 100vh;
+    background: linear-gradient(180deg, #6fd0ee 0%, #2a9fd0 24%, #127aa8 52%, #0a5a86 80%, #073f5e 100%) fixed;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 18px; }
+
+  .scene { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+  .ray { position: absolute; top: -12%; width: 130px; height: 130%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.18), rgba(255,255,255,0)); transform: rotate(14deg); filter: blur(7px); }
+  .bub { position: absolute; bottom: -50px; border-radius: 50%;
+    background: radial-gradient(circle at 32% 30%, rgba(255,255,255,0.85), rgba(255,255,255,0.10));
+    border: 1px solid rgba(255,255,255,0.4); animation: rise linear infinite; }
+  @keyframes rise { from { transform: translateY(0); opacity: 0.8; } to { transform: translateY(-112vh); opacity: 0; } }
+  .seabed { position: fixed; left: 0; right: 0; bottom: 0; width: 100%; height: 150px; }
+  .seabed svg { width: 100%; height: 100%; display: block; }
+  .kelp { transform-origin: bottom center; animation: sway 9s ease-in-out infinite alternate; }
+  .kelp.b { animation-duration: 11s; }
+  @keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+  .float-bottle { position: absolute; bottom: 56px; left: 5%; width: clamp(70px, 10vw, 112px); height: auto;
+    filter: drop-shadow(0 8px 12px rgba(3,30,50,0.32)); animation: floatb 7s ease-in-out infinite; }
+  @keyframes floatb { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-15px) rotate(3deg); } }
+
+  .topbar { background: linear-gradient(135deg, var(--accent), var(--accent-deep)); color: #ffffff; padding: 12px 0; }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .topbar a.back { color: #ffffff; text-decoration: none; font-weight: 700; background: rgba(255,255,255,0.22); padding: 8px 14px; border-radius: 999px; font-size: 1rem; }
+  .topbar a.back:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; }
+  .topbar .label { font-weight: 700; font-size: 1.05rem; }
+
+  .dots { display: flex; gap: 10px; justify-content: center; padding: 16px 0 2px; }
+  .dots span { width: 16px; height: 16px; border-radius: 50%;
+    background: radial-gradient(circle at 32% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.25)); border: 2px solid rgba(255,255,255,0.7); }
+  .dots span.on { background: radial-gradient(circle at 32% 30%, #ffffff, var(--sun)); border-color: #ffffff; box-shadow: 0 0 0 4px rgba(255,206,46,0.4); }
+
+  .sheet { background: rgba(255,255,255,0.96); border-radius: 22px; margin: 14px auto 0; box-shadow: 0 12px 30px rgba(3,30,50,0.3); padding: 22px; }
+  .step { display: none; }
+  .step.active { display: block; }
+
+  .intro-row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+  .intro-row img { width: 130px; height: 130px; object-fit: contain; flex: 0 0 auto; filter: drop-shadow(0 6px 10px rgba(3,30,50,0.25)); animation: bob 6s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  h1 { font-size: clamp(1.8rem, 5vw, 2.5rem); margin: 0 0 6px; }
+  h1 .pf { color: var(--accent-deep); }
+  h2 { font-size: 1.45rem; margin: 0 0 6px; }
+  p.lead { font-size: 1.18rem; margin: 0; }
+  p { font-size: 1.08rem; }
+  .hint { color: var(--ink-soft); font-size: 1.02rem; }
+
+  .nav { display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
+  button { font-family: inherit; font-size: 1.08rem; font-weight: 700; cursor: pointer; border: none; border-radius: 999px; padding: 12px 22px; }
+  button:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
+  .btn-next { background: var(--accent); color: #ffffff; box-shadow: 0 4px 0 var(--accent-deep); }
+  .btn-back { background: #d4e8f0; color: var(--ink); }
+  .btn-ghost { background: #ffffff; color: var(--ink); border: 3px solid var(--accent); }
+
+  .item svg, .swapcard svg, .judge svg, .pledge svg { background: radial-gradient(circle at 35% 28%, #ffffff, #e2f2f7); border-radius: 50%; padding: 6px; box-shadow: inset 0 -3px 6px rgba(3,30,50,0.12); }
+
+  /* Stage 1 spot */
+  .counter { display: inline-flex; align-items: center; gap: 10px; background: #ffe3f3; border: 3px solid var(--plastic); color: var(--plastic-deep); font-weight: 700; font-size: 1.15rem; padding: 8px 16px; border-radius: 999px; margin: 6px 0 12px; }
+  .table { background: linear-gradient(180deg, #f3fafc 0%, #f3fafc 64%, #e6cf90 64%, #d9bd72 100%); border: 3px solid #cfe6f0; border-radius: 18px; padding: 16px 16px 22px; }
+  .shelf { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .item { width: 96px; border: 3px solid transparent; border-radius: 16px; background: #ffffff; padding: 10px 6px 6px; text-align: center; cursor: pointer; box-shadow: 0 3px 8px rgba(3,30,50,0.12); }
+  .item svg { width: 56px; height: 56px; display: block; margin: 0 auto 6px; }
+  .item .name { font-size: 0.94rem; font-weight: 700; }
+  .item.found { background: #ffe3f3; border-color: var(--plastic); }
+  .item.found .ink-fill { fill: var(--plastic); }
+  .item.found .ink-stroke { stroke: var(--plastic-deep); }
+  .item.nope { animation: wob 0.4s; }
+  @keyframes wob { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+  /* Stage 2 micro */
+  .microbox { position: relative; height: 280px; background: linear-gradient(180deg, #d8f0fa, #bfe6f6); border: 3px solid #cfe6f0; border-radius: 18px; overflow: hidden; margin: 12px 0; }
+  .microbox .bit { position: absolute; background: var(--plastic); border: 2px solid var(--plastic-deep); border-radius: 4px; }
+  .microbox .fish { position: absolute; right: 16px; bottom: 16px; width: 70px; height: 70px; opacity: 0; transition: opacity 0.5s; }
+  .microbox.final .fish { opacity: 1; }
+  .microbox .phantom { position: absolute; left: 14px; top: 12px; width: 58px; height: 58px; opacity: 0.92; filter: drop-shadow(0 4px 6px rgba(3,30,50,0.3)); }
+  .micro-cap { font-weight: 700; font-size: 1.1rem; min-height: 2.6em; }
+
+  /* Stage 3 swaps */
+  .swaprow { display: flex; gap: 18px; flex-wrap: wrap; }
+  .col { flex: 1 1 240px; }
+  .col h3 { font-size: 1.1rem; margin: 0 0 8px; }
+  .col.plastic h3 { color: var(--plastic-deep); }
+  .col.swap h3 { color: #1c7a36; }
+  .swapcard { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: #ffffff; border: 3px solid #cfe6f0; border-radius: 14px; padding: 8px 12px; margin-bottom: 10px; cursor: pointer; box-shadow: 0 3px 8px rgba(3,30,50,0.1); }
+  .swapcard svg { width: 46px; height: 46px; flex: 0 0 auto; }
+  .swapcard .lab { font-weight: 700; font-size: 1.02rem; }
+  .col.plastic .swapcard .ink-fill { fill: var(--plastic); }
+  .col.plastic .swapcard .ink-stroke { stroke: var(--plastic-deep); }
+  .swapcard.sel { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(30,127,208,0.25); }
+  .swapcard.matched { border-color: var(--good); background: #e3f6e8; cursor: default; }
+  .judge-wrap { margin-top: 14px; display: none; }
+  .judge-wrap.show { display: block; }
+  .judge { display: flex; align-items: center; gap: 12px; background: #fff8ef; border: 3px solid var(--coral); border-radius: 14px; padding: 10px 12px; margin: 10px 0; flex-wrap: wrap; }
+  .judge svg { width: 50px; height: 50px; }
+  .judge .q { font-weight: 700; flex: 1 1 160px; }
+  .judge .opts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .judge .opts button { font-size: 0.98rem; padding: 8px 14px; background: #ffffff; border: 2px solid var(--coral); color: var(--ink); }
+  .judge .fb { width: 100%; font-weight: 700; color: var(--ink-soft); min-height: 1.4em; }
+
+  /* Stage 4 pledge */
+  .pledge { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: #ffffff; border: 3px solid #cfe6f0; border-radius: 16px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; box-shadow: 0 3px 8px rgba(3,30,50,0.1); }
+  .pledge svg { width: 50px; height: 50px; flex: 0 0 auto; }
+  .pledge .lab { font-weight: 700; font-size: 1.06rem; flex: 1 1 auto; }
+  .pledge .box { width: 30px; height: 30px; border-radius: 8px; border: 3px solid #bcdded; flex: 0 0 auto; position: relative; }
+  .pledge.chosen { border-color: var(--good); background: #e3f6e8; }
+  .pledge.chosen .box { background: var(--good); border-color: var(--good); }
+  .pledge.chosen .box::after { content: ""; position: absolute; left: 9px; top: 3px; width: 8px; height: 16px; border: solid #ffffff; border-width: 0 4px 4px 0; transform: rotate(45deg); }
+
+  .send { margin-top: 22px; background: #eef5fd; border: 3px solid var(--accent); border-radius: 18px; padding: 16px; }
+  .send h3 { margin: 0 0 8px; }
+  select { font-family: inherit; font-size: 1.08rem; padding: 12px; border-radius: 12px; border: 3px solid #bcdded; width: 100%; max-width: 420px; background: #ffffff; }
+  select:focus-visible { outline: 4px solid var(--ink); outline-offset: 2px; }
+  .send button { margin-top: 12px; background: var(--accent); color: #ffffff; box-shadow: 0 4px 0 var(--accent-deep); }
+  .send .note { color: var(--ink-soft); font-size: 1rem; margin: 10px 0 0; }
+  .msg { min-height: 1.6em; font-weight: 700; margin: 8px 0 0; }
+  .msg.good { color: #1c7a36; }
+  .msg.try { color: var(--plastic-deep); }
+
+  .boss { margin-top: 24px; border-radius: 18px; overflow: hidden; border: 3px solid var(--ink); }
+  .boss-head { width: 100%; text-align: left; background: var(--ink); color: #ffffff; padding: 13px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; border: none; font-family: inherit; font-size: 1.05rem; font-weight: 700; }
+  .boss-head .badge { background: var(--sun); color: var(--ink); padding: 4px 10px; border-radius: 8px; letter-spacing: 1px; flex: 0 0 auto; }
+  .boss-head .sub { font-weight: 400; font-size: 0.92rem; opacity: 0.85; }
+  .boss-head .chev { margin-left: auto; transition: transform 0.2s ease; }
+  .boss.open .boss-head .chev { transform: rotate(90deg); }
+  .boss-body { display: none; padding: 16px 18px; background: #0e2f49; color: #eaf6fb; }
+  .boss.open .boss-body { display: block; }
+  .boss-body p { font-size: 1.06rem; }
+  .boss-body strong { color: var(--sun); }
+  .boss-body .task { background: rgba(255,255,255,0.08); border-left: 5px solid var(--sun); padding: 11px 14px; border-radius: 8px; margin-top: 12px; }
+  .boss-body textarea { width: 100%; min-height: 80px; margin-top: 10px; font-family: inherit; font-size: 1.05rem; padding: 10px; border-radius: 10px; border: 3px solid #2b4a63; background: #ffffff; color: var(--ink); }
+  .reward { position: fixed; left: 50%; top: 76px; transform: translateX(-50%) translateY(-16px); background: #ffffff; border: 4px solid var(--sun); border-radius: 18px; padding: 12px 18px; box-shadow: 0 10px 26px rgba(3,30,50,0.3); display: flex; align-items: center; gap: 12px; opacity: 0; pointer-events: none; z-index: 60; transition: opacity 0.35s ease, transform 0.35s ease; max-width: 88%; }
+  .reward.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .reward svg { width: 42px; height: 42px; flex: 0 0 auto; }
+  .reward p { margin: 0; font-weight: 700; font-size: 1.08rem; }
+  .spacer { height: 170px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bub { display: none; }
+    .kelp, .intro-row img, .float-bottle { animation: none; }
+    .item.nope { animation: none; }
+    .reward, .microbox .fish { transition: none; }
+    .boss-head .chev { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene" aria-hidden="true">
+  <span class="ray" style="left:14%;"></span>
+  <span class="ray" style="left:48%; width:90px;"></span>
+  <span class="ray" style="left:78%; width:150px;"></span>
+  <span class="bub" style="left:10%; width:16px; height:16px; animation-duration:17s;"></span>
+  <span class="bub" style="left:30%; width:10px; height:10px; animation-duration:14s; animation-delay:4s;"></span>
+  <span class="bub" style="left:62%; width:14px; height:14px; animation-duration:20s; animation-delay:7s;"></span>
+  <span class="bub" style="left:84%; width:20px; height:20px; animation-duration:22s; animation-delay:2s;"></span>
+  <div class="seabed">
+    <svg viewBox="0 0 1200 200" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 100 C 180 64 360 124 560 96 C 760 68 980 124 1200 90 L1200 200 L0 200 Z" fill="#e6cf90"/>
+      <path d="M0 124 C 200 104 420 144 640 120 C 880 96 1040 144 1200 120 L1200 200 L0 200 Z" fill="#d9bd72"/>
+      <g class="kelp"><path d="M120 200 C 100 150 140 120 116 70 C 104 44 128 40 124 16" fill="none" stroke="#2f9e44" stroke-width="11" stroke-linecap="round"/></g>
+      <g class="kelp b"><path d="M150 200 C 168 156 134 128 158 84" fill="none" stroke="#3fb45a" stroke-width="9" stroke-linecap="round"/></g>
+      <g class="kelp"><path d="M1050 200 C 1030 150 1070 124 1046 74" fill="none" stroke="#2f9e44" stroke-width="11" stroke-linecap="round"/></g>
+      <g><ellipse cx="470" cy="178" rx="32" ry="18" fill="#ff7a3d"/><circle cx="452" cy="172" r="7" fill="#ffce2e"/></g>
+      <g><path d="M720 196 C 716 172 700 162 706 140 M740 196 C 744 170 762 162 754 138" stroke="#7b4fc4" stroke-width="9" fill="none" stroke-linecap="round"/></g>
+    </svg>
+  </div>
+  <img class="float-bottle" src="bottle.png" alt="">
+</div>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="back" href="index.html">Back to all activities</a>
+    <span class="label">Activity 2</span>
+  </div>
+</div>
+
+<div class="dots" id="dots" aria-hidden="true"></div>
+
+<div class="reward" id="reward" role="status" aria-live="polite">
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/></svg>
+  <p id="reward-text">Well done!</p>
+</div>
+
+<main class="wrap">
+  <div class="sheet">
+
+  <section class="step active" id="s-intro">
+    <div class="intro-row">
+      <img src="octopus.png" alt="Captain Inky, a friendly blue octopus wearing a sailor hat">
+      <div>
+        <h1>Spot and <span class="pf">swap</span></h1>
+        <p class="lead">How much plastic do you get through in a day? Let's spot it, see where it ends up, and find some swaps worth making.</p>
+      </div>
+    </div>
+    <div class="nav"><button class="btn-next" data-go="1">Start</button></div>
+  </section>
+
+  <section class="step" id="s-spot">
+    <h2>Spot the plastic</h2>
+    <p>Here is a lunch table. Tap everything made of plastic and watch it turn pink.</p>
+    <div class="counter">Plastic found: <span id="count">0</span></div>
+    <div class="table"><div class="shelf" id="shelf"></div></div>
+    <p class="msg" id="spot-msg" role="status"></p>
+    <div class="nav"><button class="btn-back" data-go="0">Back</button><button class="btn-next" data-go="2">Next</button></div>
+  </section>
+
+  <section class="step" id="s-micro">
+    <h2>Where does it go?</h2>
+    <p>One plastic bottle. Tap "Break it" and watch what happens. Does plastic ever actually go away?</p>
+    <div class="microbox" id="microbox">
+      <img class="phantom" src="villain.png" alt="">
+      <svg class="fish" id="microfish" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="26" cy="32" rx="20" ry="13" fill="#1e7fd0" stroke="#06243d" stroke-width="3"/><path d="M44 32 L60 22 L60 42 Z" fill="#1e7fd0" stroke="#06243d" stroke-width="3"/><circle cx="18" cy="29" r="3.5" fill="#06243d"/></svg>
+    </div>
+    <p class="micro-cap" id="micro-cap">This bottle is plastic. Tap to break it.</p>
+    <div class="nav">
+      <button class="btn-back" data-go="1">Back</button>
+      <button class="btn-ghost" id="break-btn">Break it</button>
+      <button class="btn-next" data-go="3">Next</button>
+    </div>
+  </section>
+
+  <section class="step" id="s-swap">
+    <h2>Swap it</h2>
+    <p>Tap a pink plastic item, then tap what we could use instead.</p>
+    <div class="swaprow">
+      <div class="col plastic"><h3>Plastic now</h3><div id="col-plastic"></div></div>
+      <div class="col swap"><h3>We could use</h3><div id="col-swap"></div></div>
+    </div>
+    <p class="msg" id="swap-msg" role="status"></p>
+    <div class="judge-wrap" id="judge-wrap">
+      <h3>One more thing to think about</h3>
+      <p>Some plastic is harder to swap. There is no wrong answer here. What do you think?</p>
+      <div id="judges"></div>
+    </div>
+    <div class="nav"><button class="btn-back" data-go="2">Back</button><button class="btn-next" data-go="4">Next</button></div>
+  </section>
+
+  <section class="step" id="s-pledge">
+    <h2>My swaps to try</h2>
+    <p>Pick as many as you like, or none. No pressure. Even one swap you actually stick with beats ten you do not.</p>
+    <div id="pledges"></div>
+    <div class="send">
+      <h3>Send your swaps to a teacher</h3>
+      <p style="margin:0 0 10px;">Pick a teacher, then tap send. It opens an email with your swaps in it.</p>
+      <label for="teacher" style="display:block;font-weight:700;margin-bottom:6px;">Choose your teacher</label>
+      <select id="teacher"><option value="">Pick a teacher...</option></select>
+      <div><button id="send-btn">Send to your teacher</button></div>
+      <p class="note">Then press send in the email that opens.</p>
+      <p class="msg" id="send-msg" role="status"></p>
+    </div>
+    <section class="boss" id="boss">
+      <button class="boss-head" id="boss-toggle" aria-expanded="false" aria-controls="boss-body">
+        <span class="badge">BOSS LEVEL</span>
+        <span class="sub">optional, for anyone who wants the awkward truth</span>
+        <span class="chev" aria-hidden="true">&rarr;</span>
+      </button>
+      <div class="boss-body" id="boss-body">
+        <p><strong>Reusable only counts if you reuse it.</strong> A cotton tote bag has to be used about 131 times before it beats a single-use plastic bag for its effect on the climate (that is from a UK government study). So the planet points come from the 131st trip to the shop, not from owning fourteen tote bags in fourteen colours. We see you.</p>
+        <p><strong>Spot the marketing.</strong> Loads of "eco" products are just normal products with a green leaf printed on them. "Recyclable" does not mean it will be recycled. "Plant based" can still be plastic. Read the small print, not the big leaf.</p>
+        <div class="task"><strong>Your challenge.</strong> Two jobs. One: name the single swap you would genuinely keep doing, not the one that looks good in a photo. Two: find one "eco" thing that is mostly marketing. Bonus point if you can explain what is wrong with paper straws.</div>
+        <textarea id="boss-text" placeholder="Type your answer here, if you like."></textarea>
+      </div>
+    </section>
+    <div class="nav"><button class="btn-back" data-go="3">Back</button><a class="btn-next" href="index.html" style="text-decoration:none;display:inline-block;text-align:center;">All done</a></div>
+  </section>
+
+  </div>
+</main>
+<div class="spacer"></div>
+
+<script>
+"use strict";
+
+var NS = "pfj.a2.";
+function save(key, value) { try { localStorage.setItem(NS + key, value); } catch (e) {} }
+function load(key) { try { return localStorage.getItem(NS + key); } catch (e) { return null; } }
+
+function svg(inner) { return '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + inner + '</svg>'; }
+var HI = '<ellipse cx="26" cy="20" rx="9" ry="5" fill="#ffffff" opacity="0.45"/>';
+var ICON = {
+  bottle: svg('<rect class="ink-fill ink-stroke" x="24" y="6" width="16" height="9" rx="2" fill="#8fd0e6" stroke="#06243d" stroke-width="3"/><path class="ink-fill ink-stroke" d="M25 15h14v6c4 2 4 6 4 11v18a4 4 0 0 1-4 4H25a4 4 0 0 1-4-4V32c0-5 0-9 4-11z" fill="#bfe6f2" stroke="#06243d" stroke-width="3"/>' + HI),
+  yoghurt: svg('<path class="ink-fill ink-stroke" d="M20 22h24l-3 30a4 4 0 0 1-4 3H27a4 4 0 0 1-4-3z" fill="#eef2f4" stroke="#06243d" stroke-width="3"/><rect class="ink-fill ink-stroke" x="18" y="16" width="28" height="8" rx="2" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/>' + HI),
+  crisps: svg('<path class="ink-fill ink-stroke" d="M18 12l28 0 4 6-4 6 4 6-4 6 4 6-4 6 4 6-28 0 4-6-4-6 4-6-4-6 4-6-4-6z" fill="#d9c24f" stroke="#06243d" stroke-width="3"/>' + HI),
+  fork: svg('<path class="ink-fill ink-stroke" d="M24 8v14m6-14v14m6-14v14M24 8c0 0 0 0 0 0M21 22h18c0 6-4 8-6 9v25h-6V31c-2-1-6-3-6-9z" fill="#7fbfe0" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/>' + HI),
+  straw: svg('<path class="ink-fill ink-stroke" d="M26 7l10 0-7 50-6 0z" fill="#e57ab0" stroke="#06243d" stroke-width="3"/>' + HI),
+  apple: svg('<path d="M32 21c-8-6-21 0-19 15 2 13 13 21 19 21s17-8 19-21c2-15-11-21-19-15z" fill="#d83b3b" stroke="#06243d" stroke-width="3"/><rect x="30" y="10" width="4" height="12" rx="2" fill="#7c5022"/><path d="M34 13c4-4 9-3 9-3s-1 6-6 6z" fill="#3fa05a" stroke="#06243d" stroke-width="2"/>' + HI),
+  banana: svg('<path d="M14 20c2 18 16 30 34 26 4-1 4-5 1-5C34 43 24 33 22 18c-1-3-8-2-8 2z" fill="#f4cf3f" stroke="#06243d" stroke-width="3"/><path d="M44 41c2 0 3 1 3 3" stroke="#06243d" stroke-width="3" fill="none"/>' + HI),
+  spoonm: svg('<ellipse cx="32" cy="16" rx="10" ry="12" fill="#c9ced2" stroke="#06243d" stroke-width="3"/><rect x="29" y="26" width="6" height="30" rx="3" fill="#c9ced2" stroke="#06243d" stroke-width="3"/>' + HI),
+  glass: svg('<path d="M22 12h20l-3 42a3 3 0 0 1-3 3H28a3 3 0 0 1-3-3z" fill="#cfeefb" stroke="#06243d" stroke-width="3" opacity="0.9"/>' + HI),
+  flask: svg('<rect x="26" y="6" width="12" height="7" rx="2" fill="#15c2c2" stroke="#06243d" stroke-width="3"/><rect x="22" y="13" width="20" height="45" rx="8" fill="#2fa84f" stroke="#06243d" stroke-width="3"/><rect x="26" y="24" width="12" height="10" rx="2" fill="#ffffff" opacity="0.8"/>'),
+  tote: svg('<path d="M16 24h32l-3 32a3 3 0 0 1-3 3H22a3 3 0 0 1-3-3z" fill="#caa46a" stroke="#06243d" stroke-width="3"/><path d="M25 24c0-9 4-13 7-13s7 4 7 13" fill="none" stroke="#06243d" stroke-width="3"/>'),
+  metalstraw: svg('<path d="M27 7l9 0-6 50-5 0z" fill="#bfc6cc" stroke="#06243d" stroke-width="3"/>'),
+  tub: svg('<rect x="16" y="26" width="32" height="28" rx="4" fill="#bfe6f2" stroke="#06243d" stroke-width="3" opacity="0.9"/><rect x="13" y="20" width="38" height="9" rx="3" fill="#15c2c2" stroke="#06243d" stroke-width="3"/>'),
+  carrot: svg('<path d="M30 22l8 0 4 0-14 34-8-20z" fill="#ff7a3d" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/><path d="M30 22c-3-8 0-12 0-12m6 12c2-7 7-8 7-8m-7 8c0-9 4-10 4-10" stroke="#2f9e44" stroke-width="3" fill="none" stroke-linecap="round"/>'),
+  wrapveg: svg('<path d="M30 24l8 0 4 0-14 32-8-18z" fill="#ff7a3d" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/><rect class="ink-fill ink-stroke" x="12" y="16" width="40" height="44" rx="6" fill="#ff7ec8" stroke="#c40d74" stroke-width="3" opacity="0.45"/>'),
+  medicine: svg('<rect x="22" y="6" width="20" height="12" rx="3" fill="#ffffff" stroke="#06243d" stroke-width="3"/><rect x="19" y="18" width="26" height="40" rx="5" fill="#e0564f" stroke="#06243d" stroke-width="3"/><path d="M32 30v16M24 38h16" stroke="#ffffff" stroke-width="5"/>'),
+  cup: svg('<path d="M20 18h22l-2 8H22z" fill="#2fa84f" stroke="#06243d" stroke-width="3"/><path d="M22 26h20l-3 28a4 4 0 0 1-4 3H29a4 4 0 0 1-4-3z" fill="#caa46a" stroke="#06243d" stroke-width="3"/>')
+};
+
+function showReward(text) {
+  var r = document.getElementById("reward");
+  document.getElementById("reward-text").textContent = text;
+  r.classList.add("show");
+  clearTimeout(r._t);
+  r._t = setTimeout(function () { r.classList.remove("show"); }, 3500);
+}
+function setMsg(id, text, kind) { var m = document.getElementById(id); m.textContent = text; m.className = "msg" + (kind ? " " + kind : ""); }
+
+/* Stage 1 spot */
+var SPOT = [
+  { id: "bottle", name: "Water bottle", plastic: true },
+  { id: "yoghurt", name: "Yoghurt pot", plastic: true },
+  { id: "crisps", name: "Crisp packet", plastic: true },
+  { id: "fork", name: "Plastic fork", plastic: true },
+  { id: "straw", name: "Straw", plastic: true },
+  { id: "apple", name: "Apple", plastic: false },
+  { id: "banana", name: "Banana", plastic: false },
+  { id: "spoonm", name: "Metal spoon", plastic: false },
+  { id: "glass", name: "Glass cup", plastic: false }
+];
+var totalPlastic = SPOT.filter(function (s) { return s.plastic; }).length;
+var found = 0;
+function buildShelf() {
+  var shelf = document.getElementById("shelf");
+  shelf.innerHTML = "";
+  SPOT.forEach(function (s) {
+    var el = document.createElement("button");
+    el.className = "item";
+    el.setAttribute("aria-label", s.name);
+    el.innerHTML = ICON[s.id] + '<span class="name">' + s.name + '</span>';
+    el.addEventListener("click", function () { tapItem(s, el); });
+    shelf.appendChild(el);
+  });
+}
+function tapItem(s, el) {
+  if (el.classList.contains("found")) { return; }
+  if (!s.plastic) {
+    el.classList.add("nope");
+    setMsg("spot-msg", s.name + " is not plastic. Look for plastic.", "try");
+    setTimeout(function () { el.classList.remove("nope"); }, 400);
+    return;
+  }
+  el.classList.add("found");
+  found += 1;
+  document.getElementById("count").textContent = String(found);
+  if (found >= totalPlastic) {
+    setMsg("spot-msg", "You found all the plastic. That is " + totalPlastic + " plastic things, just at one lunch.", "good");
+    showReward("You found all the plastic!");
+  } else {
+    setMsg("spot-msg", "Found one. Keep looking.", "good");
+  }
+}
+
+/* Stage 2 micro */
+var microStage = 0;
+var MICRO_CAPS = [
+  "This bottle is plastic. Tap to break it.",
+  "It breaks into pieces. But it is still here.",
+  "Smaller and smaller pieces. Still here.",
+  "Now it is tiny bits called microplastics. They never go away. They float in the sea, and fish can eat them by mistake."
+];
+function renderBits(box, count, size) {
+  Array.prototype.slice.call(box.querySelectorAll(".bit")).forEach(function (b) { b.remove(); });
+  var w = box.clientWidth || 600;
+  var h = box.clientHeight || 280;
+  for (var i = 0; i < count; i++) {
+    var b = document.createElement("span");
+    b.className = "bit";
+    b.style.width = size + "px";
+    b.style.height = size + "px";
+    var gx = (i * 97 + 23) % (w - size - 20) + 10;
+    var gy = (i * 53 + 31) % (h - size - 60) + 20;
+    b.style.left = gx + "px";
+    b.style.top = gy + "px";
+    box.appendChild(b);
+  }
+}
+function setupMicro() {
+  var box = document.getElementById("microbox");
+  renderBits(box, 1, 90);
+  document.getElementById("micro-cap").textContent = MICRO_CAPS[0];
+  document.getElementById("break-btn").addEventListener("click", function () {
+    if (microStage >= 3) { return; }
+    microStage += 1;
+    if (microStage === 1) { renderBits(box, 6, 40); }
+    else if (microStage === 2) { renderBits(box, 24, 16); }
+    else { renderBits(box, 70, 7); box.classList.add("final"); }
+    document.getElementById("micro-cap").textContent = MICRO_CAPS[microStage];
+    if (microStage >= 3) {
+      document.getElementById("break-btn").textContent = "It will not go away";
+      document.getElementById("break-btn").disabled = true;
+      showReward("Plastic never really goes away.");
+    } else {
+      document.getElementById("break-btn").textContent = "Break it again";
+    }
+  });
+}
+
+/* Stage 3 swaps */
+var PAIRS = [
+  { id: "p1", plastic: "bottle", plab: "Plastic bottle", swap: "flask", slab: "Bottle I refill" },
+  { id: "p2", plastic: "straw", plab: "Plastic straw", swap: "metalstraw", slab: "Straw I wash" },
+  { id: "p3", plastic: "wrapveg", plab: "Veg in plastic", swap: "carrot", slab: "Loose veg" },
+  { id: "p4", plastic: "bottle2", plab: "Plastic bag", swap: "tote", slab: "Cloth bag" }
+];
+/* note: use a bag glyph for p4 plastic side */
+ICON.bottle2 = svg('<path class="ink-fill ink-stroke" d="M17 23h30l-4 31a4 4 0 0 1-4 3H25a4 4 0 0 1-4-3z" fill="#cfd6da" stroke="#06243d" stroke-width="3"/><path class="ink-stroke" d="M25 23c0-8 3-12 7-12s7 4 7 12" fill="none" stroke="#06243d" stroke-width="3"/>' + HI);
+var selPlastic = null;
+var matched = 0;
+function shuffle(a) { var r = a.slice(); for (var i = r.length - 1; i > 0; i--) { var j = (i * 7 + 3) % (i + 1); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; }
+function buildSwaps() {
+  var cp = document.getElementById("col-plastic");
+  var cs = document.getElementById("col-swap");
+  cp.innerHTML = ""; cs.innerHTML = "";
+  PAIRS.forEach(function (pr) {
+    var el = document.createElement("button");
+    el.className = "swapcard";
+    el.setAttribute("data-id", pr.id);
+    el.setAttribute("aria-label", pr.plab);
+    el.innerHTML = ICON[pr.plastic] + '<span class="lab">' + pr.plab + '</span>';
+    el.addEventListener("click", function () { pickPlastic(pr.id, el); });
+    cp.appendChild(el);
+  });
+  shuffle(PAIRS).forEach(function (pr) {
+    var el = document.createElement("button");
+    el.className = "swapcard";
+    el.setAttribute("data-id", pr.id);
+    el.setAttribute("aria-label", pr.slab);
+    el.innerHTML = ICON[pr.swap] + '<span class="lab">' + pr.slab + '</span>';
+    el.addEventListener("click", function () { pickSwap(pr.id, el); });
+    cs.appendChild(el);
+  });
+}
+function pickPlastic(id, el) {
+  if (el.classList.contains("matched")) { return; }
+  if (selPlastic && selPlastic.el) { selPlastic.el.classList.remove("sel"); }
+  selPlastic = { id: id, el: el };
+  el.classList.add("sel");
+  setMsg("swap-msg", "Now tap what we could use instead.", "");
+}
+function pickSwap(id, el) {
+  if (el.classList.contains("matched")) { return; }
+  if (!selPlastic) { setMsg("swap-msg", "Tap a pink plastic thing first.", "try"); return; }
+  if (selPlastic.id !== id) { setMsg("swap-msg", "Not a match. Have another go.", "try"); selPlastic.el.classList.remove("sel"); selPlastic = null; return; }
+  el.classList.add("matched");
+  selPlastic.el.classList.remove("sel");
+  selPlastic.el.classList.add("matched");
+  selPlastic = null;
+  matched += 1;
+  if (matched >= PAIRS.length) {
+    setMsg("swap-msg", "Every one has a swap. Now the tricky part.", "good");
+    document.getElementById("judge-wrap").classList.add("show");
+    showReward("You found every swap!");
+  } else {
+    setMsg("swap-msg", "Good match.", "good");
+  }
+}
+
+var JUDGES = [
+  { id: "crisps", q: "A crisp packet. Could we swap it easily?", note: "True. Crisp packets are hard to swap right now. That is not your fault." },
+  { id: "medicine", q: "Medicine in plastic. Should we always swap it?", note: "Some plastic keeps us safe and well. That kind is worth keeping." }
+];
+function buildJudges() {
+  var box = document.getElementById("judges");
+  JUDGES.forEach(function (j) {
+    var el = document.createElement("div");
+    el.className = "judge";
+    el.innerHTML = ICON[j.id] + '<span class="q">' + j.q + '</span>' +
+      '<span class="opts"><button data-v="easy">Easy swap</button><button data-v="tricky">Tricky</button><button data-v="keep">Keep it</button></span>' +
+      '<span class="fb"></span>';
+    el.querySelectorAll(".opts button").forEach(function (b) {
+      b.addEventListener("click", function () { el.querySelector(".fb").textContent = j.note; });
+    });
+    box.appendChild(el);
+  });
+}
+
+/* Stage 4 pledge */
+var PLEDGES = [
+  { id: "pl1", icon: "flask", lab: "Use a bottle I can refill" },
+  { id: "pl2", icon: "tote", lab: "Bring a cloth bag for shopping" },
+  { id: "pl3", icon: "carrot", lab: "Choose loose fruit and veg" },
+  { id: "pl4", icon: "cup", lab: "Use a cup I can wash" },
+  { id: "pl5", icon: "metalstraw", lab: "Say no thank you to plastic straws" }
+];
+var chosen = {};
+function buildPledges() {
+  var box = document.getElementById("pledges");
+  var saved = load("pledges");
+  if (saved) { try { chosen = JSON.parse(saved); } catch (e) { chosen = {}; } }
+  PLEDGES.forEach(function (p) {
+    var el = document.createElement("button");
+    el.className = "pledge" + (chosen[p.id] ? " chosen" : "");
+    el.setAttribute("aria-pressed", chosen[p.id] ? "true" : "false");
+    el.innerHTML = ICON[p.icon] + '<span class="lab">' + p.lab + '</span><span class="box"></span>';
+    el.addEventListener("click", function () {
+      var now = !chosen[p.id];
+      chosen[p.id] = now;
+      el.classList.toggle("chosen", now);
+      el.setAttribute("aria-pressed", now ? "true" : "false");
+      save("pledges", JSON.stringify(chosen));
+    });
+    box.appendChild(el);
+  });
+}
+
+/* staff + send */
+var STAFF = [
+  { name: "Alex Ireland", email: "alex.ireland@chiltonbridgeschool.co.uk" },
+  { name: "Alice Ruckert", email: "alice.ruckert@chiltonbridgeschool.co.uk" },
+  { name: "Aliesha Tucker", email: "aliesha.tucker@chiltonbridgeschool.co.uk" },
+  { name: "Andrew Holmes", email: "andrew.holmes@chiltonbridgeschool.co.uk" },
+  { name: "Andrew Murphy", email: "andy.murphy@chiltonbridgeschool.co.uk" },
+  { name: "Angela Poole", email: "angela.poole@chiltonbridgeschool.co.uk" },
+  { name: "Anika Beard", email: "anika.beard@chiltonbridgeschool.co.uk" },
+  { name: "Anne-Marie Lock", email: "anne-marie.lock@chiltonbridgeschool.co.uk" },
+  { name: "Ashleigh Leeke-Coleman", email: "ashleigh.leeke-coleman@chiltonbridgeschool.co.uk" },
+  { name: "Daniel Smith", email: "dan.smith@chiltonbridgeschool.co.uk" },
+  { name: "David Wrathall", email: "david.wrathall@chiltonbridgeschool.co.uk" },
+  { name: "Hamish Kemp-Harington", email: "hamish.kemp-harington@chiltonbridgeschool.co.uk" },
+  { name: "Holly Jones", email: "holly.jones@chiltonbridgeschool.co.uk" },
+  { name: "James Rich", email: "james.rich@chiltonbridgeschool.co.uk" },
+  { name: "Jasmine Mann", email: "jasmine.mann@chiltonbridgeschool.co.uk" },
+  { name: "Jason Deelchand-Bee", email: "jason.deelchand-bee@chiltonbridgeschool.co.uk" },
+  { name: "Jay Raine", email: "jay.raine@chiltonbridgeschool.co.uk" },
+  { name: "Jennifer Wilson", email: "jennifer.wilson@chiltonbridgeschool.co.uk" },
+  { name: "Joanna Messenger", email: "joanna.messenger@chiltonbridgeschool.co.uk" },
+  { name: "Katie Duckworth", email: "katie.duckworth@chiltonbridgeschool.co.uk" },
+  { name: "Lewis Walls", email: "lewis.walls@chiltonbridgeschool.co.uk" },
+  { name: "Louise Hann", email: "louise.hann@chiltonbridgeschool.co.uk" },
+  { name: "Madeleine Stokes", email: "madeleine.stokes@chiltonbridgeschool.co.uk" },
+  { name: "Rebecca Divall", email: "rebecca.divall@chiltonbridgeschool.co.uk" },
+  { name: "Sally Layzell", email: "sally.layzell@chiltonbridgeschool.co.uk" },
+  { name: "Sarah Semyanik", email: "sarah.semyanik@chiltonbridgeschool.co.uk" },
+  { name: "Tara Russell", email: "tara.russell@chiltonbridgeschool.co.uk" },
+  { name: "Thomas Jackson", email: "thomas.jackson@chiltonbridgeschool.co.uk" },
+  { name: "William Pearse", email: "william.pearse@chiltonbridgeschool.co.uk" },
+  { name: "Willow White", email: "willow.white@chiltonbridgeschool.co.uk" }
+];
+function buildTeachers() {
+  var sel = document.getElementById("teacher");
+  STAFF.forEach(function (s) { var o = document.createElement("option"); o.value = s.email; o.textContent = s.name; sel.appendChild(o); });
+}
+function sendWork() {
+  var sel = document.getElementById("teacher");
+  var email = sel.value;
+  if (!email) { setMsg("send-msg", "Pick a teacher first.", "try"); return; }
+  var picks = PLEDGES.filter(function (p) { return chosen[p.id]; }).map(function (p) { return "- " + p.lab; });
+  var body = "Hello,\n\nHere is my Plastic Free July work for Activity 2: Spot and swap.\n\n";
+  body += "I spotted " + found + " plastic things we use at one lunch.\n\n";
+  body += "Swaps I want to try:\n" + (picks.length ? picks.join("\n") : "(I have not picked a swap yet.)") + "\n\n";
+  var bossEl = document.getElementById("boss-text");
+  var bossVal = bossEl ? bossEl.value.trim() : "";
+  if (bossVal) { body += "Boss Level: " + bossVal + "\n\n"; }
+  body += "From a student in Plastic Free July.";
+  var url = "https://mail.google.com/mail/?view=cm&fs=1"
+    + "&to=" + encodeURIComponent(email)
+    + "&su=" + encodeURIComponent("Plastic Free July - Activity 2")
+    + "&body=" + encodeURIComponent(body);
+  window.open(url, "_blank");
+  setMsg("send-msg", "Email opened. Press send in the email.", "good");
+}
+
+/* navigation */
+var STEPS = ["s-intro", "s-spot", "s-micro", "s-swap", "s-pledge"];
+function buildDots() { var d = document.getElementById("dots"); STEPS.forEach(function () { d.appendChild(document.createElement("span")); }); }
+function goStep(i) {
+  STEPS.forEach(function (id, n) {
+    document.getElementById(id).classList.toggle("active", n === i);
+    document.getElementById("dots").children[n].classList.toggle("on", n === i);
+  });
+  save("step", String(i));
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+function wireNav() {
+  document.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () { goStep(parseInt(b.getAttribute("data-go"), 10)); }); });
+}
+
+function wireBoss() {
+  var b = document.getElementById("boss");
+  var head = document.getElementById("boss-toggle");
+  head.addEventListener("click", function () { var open = b.classList.toggle("open"); head.setAttribute("aria-expanded", open ? "true" : "false"); });
+  var t = document.getElementById("boss-text");
+  if (t) { var ex = load("boss"); if (ex) { t.value = ex; } t.addEventListener("input", function () { save("boss", t.value); }); }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  buildDots(); buildShelf(); setupMicro(); buildSwaps(); buildJudges(); buildPledges(); buildTeachers(); wireNav(); wireBoss();
+  document.getElementById("send-btn").addEventListener("click", sendWork);
+  goStep(0);
+});
+</script>
+
+</body>
+</html>
