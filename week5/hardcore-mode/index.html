@@ -39,8 +39,6 @@
   .tile-go { margin-top: 0.7rem; font-size: 0.85rem; font-weight: 700; color: var(--c); display: inline-flex; align-items: center; gap: 0.3rem; }
   .tile-go .arrow { transition: transform 0.18s ease; }
   .tile:hover .tile-go .arrow { transform: translateX(4px); }
-  .tile.is-waiting { cursor: default; opacity: 0.95; }
-  .tile.is-waiting:hover { transform: none; box-shadow: none; }
 
   .evidence-card { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 16px; padding: 1.5rem; margin-bottom: 2.5rem; }
   .evidence-top { display: flex; align-items: flex-start; gap: 1rem; }
@@ -50,7 +48,6 @@
   .evidence-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.85rem; }
   .evidence-tag { font-size: 0.72rem; padding: 2px 8px; border-radius: 20px; border: 1px solid #e0d8d0; color: #666; background: #fff; font-weight: 700; }
 
-  .quiet-note { font-size: 0.9rem; color: #555; line-height: 1.6; margin-top: -1.4rem; margin-bottom: 2.4rem; }
   .cheer { text-align: center; margin-top: 2rem; font-size: 1.05rem; font-weight: 700; color: #007291; }
   a:focus-visible, button:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
   .header-back:focus-visible { outline: 3px solid #fef8f4; }
@@ -84,40 +81,22 @@
 
   <p class="section-label">Challenge activity hub</p>
   <div class="tiles-grid">
-    <div class="tile is-waiting" style="--c:#ef7724; --bg:#fdeee0; --shadow:rgba(239,119,36,0.24);">
-      <span class="tile-badge" aria-hidden="true">&#9889;</span>
-      <span class="tile-subject">Ready for PDF build</span>
-      <span class="tile-title">Worksheet Challenge Set</span>
-      <span class="tile-desc">Add the first harder worksheet activity here once the PDF has been converted.</span>
-      <span class="tile-go">Waiting for worksheet PDF</span>
-    </div>
+    <a class="tile" style="--c:#2e8b57; --bg:#e6f3ec; --shadow:rgba(46,139,87,0.22);" href="resources/biodiversity.pdf">
+      <span class="tile-badge" aria-hidden="true">&#127807;</span>
+      <span class="tile-subject">Science &middot; Challenge</span>
+      <span class="tile-title">Biodiversity</span>
+      <span class="tile-desc">Food webs, pollination, bioaccumulation and an extended forest decision question.</span>
+      <span class="tile-go">Open task <span class="arrow">&#8594;</span></span>
+    </a>
 
-    <div class="tile is-waiting" style="--c:#007291; --bg:#e6f5f8; --shadow:rgba(0,114,145,0.22);">
-      <span class="tile-badge" aria-hidden="true">&#128290;</span>
-      <span class="tile-subject">Maths</span>
-      <span class="tile-title">Harder Maths</span>
-      <span class="tile-desc">A space for tougher number, measure, problem solving or Functional Skills activities.</span>
-      <span class="tile-go">Ready to add activity</span>
-    </div>
-
-    <div class="tile is-waiting" style="--c:#ef7724; --bg:#fdeee0; --shadow:rgba(239,119,36,0.24);">
-      <span class="tile-badge" aria-hidden="true">&#128221;</span>
-      <span class="tile-subject">English</span>
-      <span class="tile-title">Harder English</span>
-      <span class="tile-desc">A space for reading, inference, writing, vocabulary and Standard English challenges.</span>
-      <span class="tile-go">Ready to add activity</span>
-    </div>
-
-    <div class="tile is-waiting" style="--c:#2e8b57; --bg:#e6f3ec; --shadow:rgba(46,139,87,0.22);">
-      <span class="tile-badge" aria-hidden="true">&#129514;</span>
-      <span class="tile-subject">Challenge</span>
-      <span class="tile-title">Mixed Skills</span>
-      <span class="tile-desc">A space for longer tasks that mix reading, reasoning, maths, research and explanation.</span>
-      <span class="tile-go">Ready to add activity</span>
-    </div>
+    <a class="tile" style="--c:#7b5ea7; --bg:#efe9f6; --shadow:rgba(123,94,167,0.22);" href="resources/historical-bias.pdf">
+      <span class="tile-badge" aria-hidden="true">&#128269;</span>
+      <span class="tile-subject">Human &amp; Social &middot; Challenge</span>
+      <span class="tile-title">Historical Bias</span>
+      <span class="tile-desc">Primary and secondary sources, propaganda, fact vs opinion and comparing interpretations.</span>
+      <span class="tile-go">Open task <span class="arrow">&#8594;</span></span>
+    </a>
   </div>
-
-  <p class="quiet-note">When an activity is added, replace a waiting card with a normal link card using the same tile style.</p>
 
   <div class="evidence-card">
     <div class="evidence-top">
