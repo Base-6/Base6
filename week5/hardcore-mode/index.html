@@ -9,7 +9,6 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
-
   .site-header { position: relative; background-color: #007291; padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
   .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
   .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(239,119,36,0.18); border-radius: 50%; }
@@ -21,12 +20,10 @@
   .site-header .header-sub { font-size: 1.1rem; color: #d7eef4; margin-top: 0.5rem; line-height: 1.5; }
   .hero-ball { display: inline-flex; width: 58px; height: 58px; border-radius: 50%; align-items: center; justify-content: center; background: #fef8f4; border: 3px solid #ef7724; font-size: 2rem; margin: 0.85rem auto 0; box-shadow: 0 8px 20px rgba(0,0,0,0.16); }
   .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
-
   .main { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
   .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin: 0 0 2.25rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
   .intro h2 { font-size: 1.3rem; color: #c05a10; margin-bottom: 0.5rem; }
   .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
-
   .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
   .tiles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem; margin-bottom: 2.5rem; }
   .tile { position: relative; background: #ffffff; border: 2px solid var(--c); border-radius: 16px; padding: 1.5rem 1.5rem 1.25rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.45rem; transition: transform 0.18s ease, box-shadow 0.18s ease; overflow: hidden; min-height: 225px; }
@@ -39,7 +36,6 @@
   .tile-go { margin-top: 0.7rem; font-size: 0.85rem; font-weight: 700; color: var(--c); display: inline-flex; align-items: center; gap: 0.3rem; }
   .tile-go .arrow { transition: transform 0.18s ease; }
   .tile:hover .tile-go .arrow { transform: translateX(4px); }
-
   .evidence-card { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 16px; padding: 1.5rem; margin-bottom: 2.5rem; }
   .evidence-top { display: flex; align-items: flex-start; gap: 1rem; }
   .evidence-icon { width: 44px; height: 44px; border-radius: 50%; background: #fff3e8; border: 1.5px solid #fcd8bc; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
@@ -47,16 +43,11 @@
   .evidence-text { font-size: 0.9rem; color: #555; line-height: 1.6; }
   .evidence-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.85rem; }
   .evidence-tag { font-size: 0.72rem; padding: 2px 8px; border-radius: 20px; border: 1px solid #e0d8d0; color: #666; background: #fff; font-weight: 700; }
-
   .cheer { text-align: center; margin-top: 2rem; font-size: 1.05rem; font-weight: 700; color: #007291; }
   a:focus-visible, button:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
   .header-back:focus-visible { outline: 3px solid #fef8f4; }
   footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .tile, .tile-go .arrow { transition: none; }
-    .tile:hover { transform: none; }
-  }
+  @media (prefers-reduced-motion: reduce) { .tile, .tile-go .arrow { transition: none; } .tile:hover { transform: none; } }
 </style>
 </head>
 <body>
@@ -81,20 +72,20 @@
 
   <p class="section-label">Challenge activity hub</p>
   <div class="tiles-grid">
-    <a class="tile" style="--c:#2e8b57; --bg:#e6f3ec; --shadow:rgba(46,139,87,0.22);" href="resources/biodiversity.pdf">
+    <a class="tile" style="--c:#2e8b57; --bg:#e6f3ec; --shadow:rgba(46,139,87,0.22);" href="biodiversity.html">
       <span class="tile-badge" aria-hidden="true">&#127807;</span>
       <span class="tile-subject">Science &middot; Challenge</span>
       <span class="tile-title">Biodiversity</span>
       <span class="tile-desc">Food webs, pollination, bioaccumulation and an extended forest decision question.</span>
-      <span class="tile-go">Open task <span class="arrow">&#8594;</span></span>
+      <span class="tile-go">Open activity <span class="arrow">&#8594;</span></span>
     </a>
 
-    <a class="tile" style="--c:#7b5ea7; --bg:#efe9f6; --shadow:rgba(123,94,167,0.22);" href="resources/historical-bias.pdf">
+    <a class="tile" style="--c:#7b5ea7; --bg:#efe9f6; --shadow:rgba(123,94,167,0.22);" href="historical-bias.html">
       <span class="tile-badge" aria-hidden="true">&#128269;</span>
       <span class="tile-subject">Human &amp; Social &middot; Challenge</span>
       <span class="tile-title">Historical Bias</span>
       <span class="tile-desc">Primary and secondary sources, propaganda, fact vs opinion and comparing interpretations.</span>
-      <span class="tile-go">Open task <span class="arrow">&#8594;</span></span>
+      <span class="tile-go">Open activity <span class="arrow">&#8594;</span></span>
     </a>
   </div>
 
@@ -103,7 +94,7 @@
       <div class="evidence-icon" aria-hidden="true">&#128193;</div>
       <div>
         <div class="evidence-title">Evidence procedure</div>
-        <div class="evidence-text">Each Hardcore Mode activity should finish with a clear evidence section: name or initials, answers or completed choices, score or progress summary, reflection where useful, and a button to send or export the evidence for Jay.</div>
+        <div class="evidence-text">Each activity has a finish section that gathers answers, creates a results summary and opens an email to Jay.</div>
         <div class="evidence-tags">
           <span class="evidence-tag">Teach</span>
           <span class="evidence-tag">Practise</span>
