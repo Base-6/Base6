@@ -160,6 +160,18 @@
   .send .note { color: var(--ink-soft); font-size: 1rem; margin: 10px 0 0; }
 
   /* reward toast */
+  .boss { margin-top: 24px; border-radius: 18px; overflow: hidden; border: 3px solid var(--ink); }
+  .boss-head { width: 100%; text-align: left; background: var(--ink); color: #ffffff; padding: 13px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; border: none; font-family: inherit; font-size: 1.05rem; font-weight: 700; }
+  .boss-head .badge { background: var(--sun); color: var(--ink); padding: 4px 10px; border-radius: 8px; letter-spacing: 1px; flex: 0 0 auto; }
+  .boss-head .sub { font-weight: 400; font-size: 0.92rem; opacity: 0.85; }
+  .boss-head .chev { margin-left: auto; transition: transform 0.2s ease; }
+  .boss.open .boss-head .chev { transform: rotate(90deg); }
+  .boss-body { display: none; padding: 16px 18px; background: #0e2f49; color: #eaf6fb; }
+  .boss.open .boss-body { display: block; }
+  .boss-body p { font-size: 1.06rem; }
+  .boss-body strong { color: var(--sun); }
+  .boss-body .task { background: rgba(255,255,255,0.08); border-left: 5px solid var(--sun); padding: 11px 14px; border-radius: 8px; margin-top: 12px; }
+  .boss-body textarea { width: 100%; min-height: 80px; margin-top: 10px; font-family: inherit; font-size: 1.05rem; padding: 10px; border-radius: 10px; border: 3px solid #2b4a63; background: #ffffff; color: var(--ink); }
   .reward { position: fixed; left: 50%; top: 76px; transform: translateX(-50%) translateY(-16px);
     background: #ffffff; border: 4px solid var(--sun); border-radius: 18px; padding: 12px 18px;
     box-shadow: 0 10px 26px rgba(3,30,50,0.3); display: flex; align-items: center; gap: 12px;
@@ -175,6 +187,7 @@
     .kelp, .intro-row img { animation: none; }
     .float-bottle { animation: none; }
     .reward { transition: none; }
+    .boss-head .chev { transition: none; }
   }
 </style>
 </head>
@@ -224,16 +237,15 @@
       <img src="octopus.png" alt="Captain Inky, a friendly blue octopus wearing a sailor hat">
       <div>
         <h1>What is <span class="pf">plastic</span>?</h1>
-        <p class="lead">Hello, I am Captain Inky. Let us find out what plastic really is. Three quick games, then a think.</p>
+        <p class="lead">I'm Captain Inky. Let's work out what plastic actually is. Three quick rounds, then your verdict.</p>
       </div>
     </div>
-    <p class="hint">Tip for grown ups: this works on a big screen for the class, or on a tablet for one person. You can read the words out loud.</p>
     <div class="nav"><button class="btn-next" data-go="1">Start</button></div>
   </section>
 
   <section class="step" id="s-sort">
     <h2>Game 1: Sort it</h2>
-    <p>Tap a thing. Then tap the bin it belongs in. Plastic, or not plastic?</p>
+    <p>Tap an item, then tap the bin it belongs in: plastic, or not plastic?</p>
     <div class="tray" id="tray" aria-label="Things to sort"></div>
     <div class="bins">
       <div class="bin plastic"><h3>Plastic</h3><div class="holds" id="hold-plastic"></div><button class="binbtn" data-bin="plastic">Put it here: Plastic</button></div>
@@ -245,7 +257,7 @@
 
   <section class="step" id="s-made">
     <h2>Game 2: What is it made of?</h2>
-    <p>Tap each card to turn it over and see. The plastic ones go pink.</p>
+    <p>Tap each card to flip it. The plastic ones turn pink.</p>
     <div class="cards" id="cards"></div>
     <p class="msg" id="made-msg" role="status"></p>
     <div class="nav"><button class="btn-back" data-go="1">Back</button><button class="btn-next" data-go="3">Next</button></div>
@@ -261,7 +273,7 @@
 
   <section class="step" id="s-both">
     <h2>The big idea</h2>
-    <p>Tap both boxes. Plastic is not all bad and not all good.</p>
+    <p>Open both boxes. Plastic isn't all bad, and it isn't all good either.</p>
     <div class="panels">
       <div class="pan help" id="pan-help" tabindex="0" role="button" aria-expanded="false">
         <h3>Plastic helps us</h3><span class="tap">Tap to see how</span>
@@ -277,8 +289,8 @@
   </section>
 
   <section class="step" id="s-reflect">
-    <h2>Your turn to think</h2>
-    <p>What do you think about plastic now? You can write, or draw, or both.</p>
+    <h2>Your verdict</h2>
+    <p>What do you make of plastic now? Write it, draw it, or both.</p>
     <label class="field" for="reflect-text">Write your idea</label>
     <textarea id="reflect-text" placeholder="Plastic is..."></textarea>
     <label class="field">Or draw it</label>
@@ -294,6 +306,19 @@
       <p class="note">Your drawing stays on this screen. Show it to your teacher, or they can take a photo of it.</p>
       <p class="msg" id="send-msg" role="status"></p>
     </div>
+    <section class="boss" id="boss">
+      <button class="boss-head" id="boss-toggle" aria-expanded="false" aria-controls="boss-body">
+        <span class="badge">BOSS LEVEL</span>
+        <span class="sub">optional, for anyone who fancies a proper think</span>
+        <span class="chev" aria-hidden="true">&rarr;</span>
+      </button>
+      <div class="boss-body" id="boss-body">
+        <p><strong>The science bit.</strong> Plastic is a polymer: long chains of molecules, made mostly from crude oil, which is basically ancient squashed dead stuff pumped out of the ground. It was built to be cheap and to last. It nailed it. That is also the problem.</p>
+        <p><strong>Question the famous number.</strong> You will see "a plastic bottle takes 450 years to break down" all over the internet. Plot twist: nobody actually measured that. The famous figure was never backed by solid science, and the people linked to it have quietly walked away from it. What is true: it lasts a very long time, and it never truly vanishes, it just crumbles into microplastics. Lesson: be suspicious of a number that looks a bit too tidy.</p>
+        <div class="task"><strong>Your challenge.</strong> Make the case FOR plastic in three lines. Then make the case against it in three lines. If you get to the end and still cannot pick a side, congratulations, that is the actual answer.</div>
+        <textarea id="boss-text" placeholder="Type your case here, if you like."></textarea>
+      </div>
+    </section>
     <div class="nav"><button class="btn-back" data-go="4">Back</button><a class="btn-next" href="index.html" style="text-decoration:none;display:inline-block;text-align:center;">All done</a></div>
   </section>
 
@@ -529,6 +554,9 @@ function sendWork() {
   var text = document.getElementById("reflect-text").value.trim();
   var body = "Hello,\n\nHere is my Plastic Free July work for Activity 1: What is plastic?\n\n";
   body += "My idea: " + (text ? text : "(I drew a picture, please look at my screen.)") + "\n\n";
+  var bossEl = document.getElementById("boss-text");
+  var bossVal = bossEl ? bossEl.value.trim() : "";
+  if (bossVal) { body += "Boss Level: " + bossVal + "\n\n"; }
   body += "From a student in Plastic Free July.";
   var url = "https://mail.google.com/mail/?view=cm&fs=1"
     + "&to=" + encodeURIComponent(email)
@@ -559,10 +587,18 @@ function wireText() {
   t.addEventListener("input", function () { save("text", t.value); });
 }
 
+function wireBoss() {
+  var b = document.getElementById("boss");
+  var head = document.getElementById("boss-toggle");
+  head.addEventListener("click", function () { var open = b.classList.toggle("open"); head.setAttribute("aria-expanded", open ? "true" : "false"); });
+  var t = document.getElementById("boss-text");
+  if (t) { var ex = load("boss"); if (ex) { t.value = ex; } t.addEventListener("input", function () { save("boss", t.value); }); }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   buildDots(); buildTray(); buildCards(); buildJourney();
   wirePanel("pan-help"); wirePanel("pan-prob");
-  buildSwatches(); setupPad(); buildTeachers(); wireText(); wireNav();
+  buildSwatches(); setupPad(); buildTeachers(); wireText(); wireNav(); wireBoss();
   document.getElementById("send-btn").addEventListener("click", sendWork);
   goStep(0);
 });
