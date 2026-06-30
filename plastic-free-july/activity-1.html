@@ -103,18 +103,39 @@
   .msg.good { color: #1c7a36; }
   .msg.try { color: var(--plastic-deep); }
 
-  /* Stage 2 made of */
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 14px; margin: 14px 0; }
-  .flip { border-radius: 18px; background: #ffffff; border: 3px solid #cfe6f0; padding: 14px 10px; text-align: center; cursor: pointer; min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 3px 8px rgba(3,30,50,0.1); }
-  .flip svg { width: 70px; height: 70px; }
-  .flip .q { font-weight: 700; font-size: 1rem; }
-  .flip .ans { font-weight: 700; font-size: 1.15rem; display: none; }
-  .flip.open .q { display: none; }
-  .flip.open .ans { display: block; }
-  .flip.open.plastic { background: #ffe3f3; border-color: var(--plastic); }
-  .flip.open.plastic .ans { color: var(--plastic-deep); }
-  .flip.open.plastic .ink-fill { fill: var(--plastic); }
-  .flip.open.plastic .ink-stroke { stroke: var(--plastic-deep); }
+  /* Stage 2 made of (quiz) */
+  .cards { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
+  .qcard { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; background: #ffffff; border: 3px solid #cfe6f0; border-radius: 18px; padding: 14px; box-shadow: 0 3px 8px rgba(3,30,50,0.1); }
+  .qcard > svg { width: 64px; height: 64px; flex: 0 0 auto; background: radial-gradient(circle at 35% 28%, #ffffff, #e2f2f7); border-radius: 50%; padding: 6px; box-shadow: inset 0 -3px 6px rgba(3,30,50,0.12); }
+  .qcard .qmid { flex: 1 1 220px; }
+  .qcard .qq { font-weight: 700; font-size: 1.05rem; margin-bottom: 8px; }
+  .qcard .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .qcard .opts button { background: #eef7fb; border: 2px solid #bcdded; color: var(--ink); font-size: 1rem; padding: 8px 14px; border-radius: 999px; font-weight: 700; }
+  .qcard .opts button.right { background: #e3f6e8; border-color: var(--good); color: #1c7a36; }
+  .qcard .opts button.wrong { background: #ffe3ef; border-color: var(--plastic); color: var(--plastic-deep); }
+  .qcard .qfb { width: 100%; font-weight: 700; min-height: 1.3em; color: var(--ink-soft); }
+  .qcard.solved.plastic { background: #ffe3f3; border-color: var(--plastic); }
+  .qcard.solved.plastic .ink-fill { fill: var(--plastic); }
+  .qcard.solved.plastic .ink-stroke { stroke: var(--plastic-deep); }
+  /* predict */
+  .predict { background: #eef7fb; border: 3px solid #bcdded; border-radius: 16px; padding: 14px; margin: 6px 0 14px; }
+  .predict .opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .predict .opts button { background: #ffffff; border: 2px solid var(--accent); color: var(--ink); font-weight: 700; padding: 8px 16px; border-radius: 999px; font-size: 1rem; }
+  .predict .opts button.picked { background: var(--accent); color: #ffffff; }
+  .predict .pfb { font-weight: 700; min-height: 1.3em; margin-top: 8px; }
+  /* boss rank */
+  .rank { margin: 12px 0; }
+  .rank .pool { display: flex; flex-wrap: wrap; gap: 8px; }
+  .rank .chip { background: #ffffff; color: var(--ink); border: 2px solid #2b4a63; border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 1rem; cursor: pointer; }
+  .rank .chip .badge2 { display: none; }
+  .rank .chip.picked { background: var(--sun); border-color: var(--sun); }
+  .rank .chip.picked .badge2 { display: inline; margin-right: 6px; background: var(--ink); color: #ffffff; border-radius: 6px; padding: 0 7px; }
+  .rank .rbtn { margin: 10px 8px 0 0; background: var(--sun); color: var(--ink); font-weight: 700; border: none; border-radius: 999px; padding: 10px 18px; cursor: pointer; font-family: inherit; font-size: 1rem; }
+  .rank .reveal { margin-top: 12px; display: none; }
+  .rank .reveal.show { display: block; }
+  .rank .reveal .row { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.18); }
+  .rank .reveal .row .n { color: var(--sun); font-weight: 700; }
+  .rank .note2 { background: rgba(255,255,255,0.08); border-left: 5px solid var(--sun); padding: 10px 14px; border-radius: 8px; margin-top: 10px; }
 
   /* Stage 3 journey */
   .journey { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; margin: 14px 0; }
@@ -245,7 +266,7 @@
 
   <section class="step" id="s-sort">
     <h2>Game 1: Sort it</h2>
-    <p>Tap an item, then tap the bin it belongs in: plastic, or not plastic?</p>
+    <p>Look closely at each one. Is it plastic, or not? Go by what it is, not just its name. Tap an item, then tap a bin.</p>
     <div class="tray" id="tray" aria-label="Things to sort"></div>
     <div class="bins">
       <div class="bin plastic"><h3>Plastic</h3><div class="holds" id="hold-plastic"></div><button class="binbtn" data-bin="plastic">Put it here: Plastic</button></div>
@@ -257,7 +278,7 @@
 
   <section class="step" id="s-made">
     <h2>Game 2: What is it made of?</h2>
-    <p>Tap each card to flip it. The plastic ones turn pink.</p>
+    <p>Look at each picture. What do you think it is made of? Tap your answer.</p>
     <div class="cards" id="cards"></div>
     <p class="msg" id="made-msg" role="status"></p>
     <div class="nav"><button class="btn-back" data-go="1">Back</button><button class="btn-next" data-go="3">Next</button></div>
@@ -265,7 +286,12 @@
 
   <section class="step" id="s-journey">
     <h2>Game 3: Where does plastic come from?</h2>
-    <p>Tap each step to follow the journey.</p>
+    <div class="predict" id="predict">
+      <strong>Guess first.</strong> What do you think plastic is made from?
+      <div class="opts" id="predict-opts"></div>
+      <div class="pfb" id="predict-fb"></div>
+    </div>
+    <p>Now tap each step to follow the journey.</p>
     <div class="journey" id="journey"></div>
     <p class="hint" id="journey-cap"></p>
     <div class="nav"><button class="btn-back" data-go="2">Back</button><button class="btn-next" data-go="4">Next</button></div>
@@ -314,8 +340,15 @@
       </button>
       <div class="boss-body" id="boss-body">
         <p><strong>The science bit.</strong> Plastic is a polymer: long chains of molecules, made mostly from crude oil, which is basically ancient squashed dead stuff pumped out of the ground. It was built to be cheap and to last. It nailed it. That is also the problem.</p>
-        <p><strong>Question the famous number.</strong> You will see "a plastic bottle takes 450 years to break down" all over the internet. Plot twist: nobody actually measured that. The famous figure was never backed by solid science, and the people linked to it have quietly walked away from it. What is true: it lasts a very long time, and it never truly vanishes, it just crumbles into microplastics. Lesson: be suspicious of a number that looks a bit too tidy.</p>
-        <div class="task"><strong>Your challenge.</strong> Make the case FOR plastic in three lines. Then make the case against it in three lines. If you get to the end and still cannot pick a side, congratulations, that is the actual answer.</div>
+        <p><strong>Rank them.</strong> Tap these in the order you reckon they last out in the world, from gone quickest to lasts longest. Then reveal what people usually claim.</p>
+        <div class="rank" id="rank">
+          <div class="pool" id="rank-pool"></div>
+          <button class="rbtn" id="rank-reveal">Reveal the usual numbers</button>
+          <button class="rbtn" id="rank-reset" style="background:#ffffff;border:2px solid var(--sun);">Start again</button>
+          <div class="reveal" id="rank-show"></div>
+        </div>
+        <p><strong>Now question the famous number.</strong> You will see "a plastic bottle takes 450 years to break down" all over the internet. Plot twist: nobody actually measured that. The figure was never backed by solid science, and the people linked to it have quietly walked away from it. Lesson: be suspicious of a number that looks a bit too tidy.</p>
+        <div class="task"><strong>Final challenge.</strong> Make the case FOR plastic in three lines, then against it in three lines. If you still cannot pick a side, congratulations, that is the honest answer.</div>
         <textarea id="boss-text" placeholder="Type your case here, if you like."></textarea>
       </div>
     </section>
@@ -338,7 +371,7 @@ var HI = '<ellipse cx="26" cy="20" rx="9" ry="5" fill="#ffffff" opacity="0.45"/>
 var ICON = {
   bottle: svg('<rect class="ink-fill ink-stroke" x="24" y="6" width="16" height="9" rx="2" fill="#8fd0e6" stroke="#06243d" stroke-width="3"/><path class="ink-fill ink-stroke" d="M25 15h14v6c4 2 4 6 4 11v18a4 4 0 0 1-4 4H25a4 4 0 0 1-4-4V32c0-5 0-9 4-11z" fill="#bfe6f2" stroke="#06243d" stroke-width="3"/>' + HI),
   bag: svg('<path class="ink-fill ink-stroke" d="M17 23h30l-4 31a4 4 0 0 1-4 3H25a4 4 0 0 1-4-3z" fill="#cfd6da" stroke="#06243d" stroke-width="3"/><path class="ink-stroke" d="M25 23c0-8 3-12 7-12s7 4 7 12" fill="none" stroke="#06243d" stroke-width="3"/>' + HI),
-  straw: svg('<path class="ink-fill ink-stroke" d="M26 7l10 0-7 50-6 0z" fill="#e57ab0" stroke="#06243d" stroke-width="3"/>' + HI),
+  straw: svg('<path class="ink-fill ink-stroke" d="M26 7l10 0-7 50-6 0z" fill="#e0563f" stroke="#06243d" stroke-width="3"/>' + HI),
   brick: svg('<rect class="ink-fill ink-stroke" x="14" y="26" width="36" height="22" rx="3" fill="#e8a13b" stroke="#06243d" stroke-width="3"/><circle class="ink-fill ink-stroke" cx="24" cy="24" r="5" fill="#e8a13b" stroke="#06243d" stroke-width="3"/><circle class="ink-fill ink-stroke" cx="40" cy="24" r="5" fill="#e8a13b" stroke="#06243d" stroke-width="3"/>' + HI),
   spoon: svg('<ellipse cx="32" cy="17" rx="11" ry="13" fill="#b9803f" stroke="#06243d" stroke-width="3"/><rect x="29" y="27" width="6" height="30" rx="3" fill="#b9803f" stroke="#06243d" stroke-width="3"/>' + HI),
   jar: svg('<rect x="23" y="8" width="18" height="7" rx="2" fill="#9fd8c5" stroke="#06243d" stroke-width="3"/><path d="M21 16h22v36a4 4 0 0 1-4 4H25a4 4 0 0 1-4-4z" fill="#cdeee6" stroke="#06243d" stroke-width="3"/>' + HI),
@@ -364,10 +397,10 @@ var THINGS = [
   { id: "bottle", name: "Bottle", plastic: true },
   { id: "bag", name: "Bag", plastic: true },
   { id: "straw", name: "Straw", plastic: true },
-  { id: "brick", name: "Toy brick", plastic: true },
-  { id: "spoon", name: "Wooden spoon", plastic: false },
-  { id: "jar", name: "Glass jar", plastic: false },
-  { id: "can", name: "Metal can", plastic: false },
+  { id: "brick", name: "Building block", plastic: true },
+  { id: "spoon", name: "Spoon", plastic: false },
+  { id: "jar", name: "Jar", plastic: false },
+  { id: "can", name: "Can", plastic: false },
   { id: "apple", name: "Apple", plastic: false }
 ];
 var selected = null;
@@ -408,30 +441,61 @@ function placeInBin(bin) {
 }
 function setMsg(id, text, kind) { var m = document.getElementById(id); m.textContent = text; m.className = "msg" + (kind ? " " + kind : ""); }
 
+function shuffle(a) { var r = a.slice(); for (var i = r.length - 1; i > 0; i--) { var j = (i * 7 + 3) % (i + 1); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; }
 var MADE = [
-  { id: "bottle", q: "Bottle", ans: "Plastic", plastic: true },
-  { id: "spoon", q: "Spoon", ans: "Wood", plastic: false },
-  { id: "jar", q: "Jar", ans: "Glass", plastic: false },
-  { id: "can", q: "Can", ans: "Metal", plastic: false },
-  { id: "book", q: "Book", ans: "Paper", plastic: false },
-  { id: "ball", q: "Ball", ans: "Rubber", plastic: false }
+  { id: "bottle", ans: "Plastic", plastic: true, opts: ["Plastic", "Glass", "Metal", "Paper"] },
+  { id: "spoon", ans: "Wood", plastic: false, opts: ["Wood", "Plastic", "Metal", "Paper"] },
+  { id: "jar", ans: "Glass", plastic: false, opts: ["Glass", "Plastic", "Metal", "Wood"] },
+  { id: "can", ans: "Metal", plastic: false, opts: ["Metal", "Plastic", "Glass", "Paper"] },
+  { id: "book", ans: "Paper", plastic: false, opts: ["Paper", "Plastic", "Wood", "Glass"] },
+  { id: "ball", ans: "Rubber", plastic: false, opts: ["Rubber", "Plastic", "Metal", "Wood"] }
 ];
-var opened = 0;
+var solvedCount = 0;
 function buildCards() {
   var box = document.getElementById("cards");
   box.innerHTML = "";
   MADE.forEach(function (c) {
-    var el = document.createElement("button");
-    el.className = "flip " + (c.plastic ? "plastic" : "");
-    el.setAttribute("aria-label", c.q + ". Tap to reveal what it is made of.");
-    el.innerHTML = ICON[c.id] + '<span class="q">' + c.q + '<br>What is it made of?</span><span class="ans">' + c.ans + '</span>';
-    el.addEventListener("click", function () {
-      if (el.classList.contains("open")) { return; }
-      el.classList.add("open");
-      opened += 1;
-      if (opened >= MADE.length) { setMsg("made-msg", "You found them all. Only the bottle is plastic here.", "good"); showReward("You turned them all over!"); }
+    var card = document.createElement("div");
+    card.className = "qcard " + (c.plastic ? "plastic" : "");
+    card.innerHTML = ICON[c.id] + '<div class="qmid"><div class="qq">What is this made of?</div><div class="opts"></div><div class="qfb"></div></div>';
+    var optbox = card.querySelector(".opts");
+    var fb = card.querySelector(".qfb");
+    shuffle(c.opts).forEach(function (o) {
+      var b = document.createElement("button");
+      b.textContent = o;
+      b.addEventListener("click", function () {
+        if (card.classList.contains("solved")) { return; }
+        if (o === c.ans) {
+          b.classList.add("right");
+          card.classList.add("solved");
+          optbox.querySelectorAll("button").forEach(function (x) { x.disabled = true; });
+          fb.textContent = c.plastic ? "Yes. It is plastic. Watch it turn pink." : "Correct. That one is " + c.ans.toLowerCase() + ".";
+          solvedCount += 1;
+          if (solvedCount >= MADE.length) { setMsg("made-msg", "All worked out. Notice only one of these is plastic.", "good"); showReward("You worked them all out!"); }
+        } else {
+          b.classList.add("wrong");
+          fb.textContent = "Not that one. Look again.";
+          setTimeout(function () { b.classList.remove("wrong"); }, 600);
+        }
+      });
+      optbox.appendChild(b);
     });
-    box.appendChild(el);
+    box.appendChild(card);
+  });
+}
+var PRED = ["Trees", "Oil", "Sand", "Rocks"];
+function buildPredict() {
+  var box = document.getElementById("predict-opts");
+  PRED.forEach(function (o) {
+    var b = document.createElement("button");
+    b.textContent = o;
+    b.addEventListener("click", function () {
+      box.querySelectorAll("button").forEach(function (x) { x.classList.remove("picked"); });
+      b.classList.add("picked");
+      var fb = document.getElementById("predict-fb");
+      fb.textContent = (o === "Oil") ? "Spot on. Plastic is made from oil. Follow it below." : "Good guess, but no. It is actually oil. Follow it below.";
+    });
+    box.appendChild(b);
   });
 }
 
@@ -587,16 +651,58 @@ function wireText() {
   t.addEventListener("input", function () { save("text", t.value); });
 }
 
+var BOSS1 = [
+  { id: "banana", lab: "Banana peel", say: "a few weeks" },
+  { id: "paper", lab: "Paper bag", say: "about a month" },
+  { id: "tshirt", lab: "Cotton T-shirt", say: "a few months" },
+  { id: "can", lab: "Drinks can", say: "80 to 200 years" },
+  { id: "bottle", lab: "Plastic bottle", say: "often quoted as 450 years" },
+  { id: "line", lab: "Fishing line", say: "often quoted as 600 years" }
+];
+var TRUTH_ORDER = ["banana", "paper", "tshirt", "can", "bottle", "line"];
+var rankPicks = [];
+function buildRank() {
+  var pool = document.getElementById("rank-pool");
+  pool.innerHTML = "";
+  rankPicks = [];
+  shuffle(BOSS1).forEach(function (it) {
+    var c = document.createElement("button");
+    c.className = "chip";
+    c.innerHTML = '<span class="badge2"></span>' + it.lab;
+    c.addEventListener("click", function () {
+      if (c.classList.contains("picked")) { return; }
+      c.classList.add("picked");
+      rankPicks.push(it.id);
+      c.querySelector(".badge2").textContent = rankPicks.length;
+    });
+    pool.appendChild(c);
+  });
+  var show = document.getElementById("rank-show");
+  show.classList.remove("show");
+  show.innerHTML = "";
+}
+function revealRank() {
+  var rows = TRUTH_ORDER.map(function (id, i) {
+    var it = BOSS1.filter(function (x) { return x.id === id; })[0];
+    return '<div class="row"><span><span class="n">' + (i + 1) + '.</span> ' + it.lab + '</span><span>' + it.say + '</span></div>';
+  }).join("");
+  var show = document.getElementById("rank-show");
+  show.innerHTML = rows + '<div class="note2">See the pattern? The natural things really do rot in weeks. The plastic and metal really do last lifetimes, so the <strong>order</strong> is solid. But the big year numbers, 450 and 600, are best guesses that got repeated until they sounded like facts. Trust the order. Doubt the exact number.</div>';
+  show.classList.add("show");
+}
 function wireBoss() {
   var b = document.getElementById("boss");
   var head = document.getElementById("boss-toggle");
   head.addEventListener("click", function () { var open = b.classList.toggle("open"); head.setAttribute("aria-expanded", open ? "true" : "false"); });
   var t = document.getElementById("boss-text");
   if (t) { var ex = load("boss"); if (ex) { t.value = ex; } t.addEventListener("input", function () { save("boss", t.value); }); }
+  buildRank();
+  var rv = document.getElementById("rank-reveal"); if (rv) { rv.addEventListener("click", revealRank); }
+  var rs = document.getElementById("rank-reset"); if (rs) { rs.addEventListener("click", buildRank); }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  buildDots(); buildTray(); buildCards(); buildJourney();
+  buildDots(); buildTray(); buildCards(); buildPredict(); buildJourney();
   wirePanel("pan-help"); wirePanel("pan-prob");
   buildSwatches(); setupPad(); buildTeachers(); wireText(); wireNav(); wireBoss();
   document.getElementById("send-btn").addEventListener("click", sendWork);
