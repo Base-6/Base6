@@ -35,6 +35,9 @@
   .kelp { transform-origin: bottom center; animation: sway 9s ease-in-out infinite alternate; }
   .kelp.b { animation-duration: 11s; }
   @keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+  .float-bottle { position: absolute; bottom: 56px; left: 5%; width: clamp(70px, 10vw, 112px); height: auto;
+    filter: drop-shadow(0 8px 12px rgba(3,30,50,0.32)); animation: floatb 7s ease-in-out infinite; }
+  @keyframes floatb { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-15px) rotate(3deg); } }
 
   .topbar { background: linear-gradient(135deg, var(--accent), var(--accent-deep)); color: #ffffff; padding: 12px 0; position: relative; }
   .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -170,6 +173,7 @@
   @media (prefers-reduced-motion: reduce) {
     .bub { display: none; }
     .kelp, .intro-row img { animation: none; }
+    .float-bottle { animation: none; }
     .reward { transition: none; }
   }
 </style>
@@ -195,6 +199,7 @@
       <g><path d="M720 196 C 716 172 700 162 706 140 M740 196 C 744 170 762 162 754 138" stroke="#7b4fc4" stroke-width="9" fill="none" stroke-linecap="round"/></g>
     </svg>
   </div>
+  <img class="float-bottle" src="bottle.png" alt="">
 </div>
 
 <div class="topbar">
