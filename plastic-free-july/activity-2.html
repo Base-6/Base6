@@ -147,6 +147,16 @@
   .boss-body strong { color: var(--sun); }
   .boss-body .task { background: rgba(255,255,255,0.08); border-left: 5px solid var(--sun); padding: 11px 14px; border-radius: 8px; margin-top: 12px; }
   .boss-body textarea { width: 100%; min-height: 80px; margin-top: 10px; font-family: inherit; font-size: 1.05rem; padding: 10px; border-radius: 10px; border: 3px solid #2b4a63; background: #ffffff; color: var(--ink); }
+  /* boss greenwash */
+  .gw { margin: 12px 0; }
+  .gwcard { background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.25); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; }
+  .gwcard .claim { font-weight: 700; font-size: 1.08rem; }
+  .gwcard .gwopts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .gwcard .gwopts button { background: #ffffff; color: var(--ink); border: 2px solid #2b4a63; border-radius: 999px; padding: 8px 14px; font-weight: 700; font-family: inherit; font-size: 0.98rem; cursor: pointer; }
+  .gwcard .gwfb { margin-top: 8px; font-weight: 700; min-height: 1.3em; display: none; }
+  .gwcard.done .gwfb { display: block; }
+  .gwcard.real .gwfb { color: #8be0a0; }
+  .gwcard.catch .gwfb { color: #ff8fc6; }
   .reward { position: fixed; left: 50%; top: 76px; transform: translateX(-50%) translateY(-16px); background: #ffffff; border: 4px solid var(--sun); border-radius: 18px; padding: 12px 18px; box-shadow: 0 10px 26px rgba(3,30,50,0.3); display: flex; align-items: center; gap: 12px; opacity: 0; pointer-events: none; z-index: 60; transition: opacity 0.35s ease, transform 0.35s ease; max-width: 88%; }
   .reward.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .reward svg { width: 42px; height: 42px; flex: 0 0 auto; }
@@ -216,7 +226,7 @@
 
   <section class="step" id="s-spot">
     <h2>Spot the plastic</h2>
-    <p>Here is a lunch table. Tap everything made of plastic and watch it turn pink.</p>
+    <p>Here is a lunch table. Tap everything you think is plastic, and watch it turn pink. Look at each one, do not just go by its name.</p>
     <div class="counter">Plastic found: <span id="count">0</span></div>
     <div class="table"><div class="shelf" id="shelf"></div></div>
     <p class="msg" id="spot-msg" role="status"></p>
@@ -275,8 +285,9 @@
       </button>
       <div class="boss-body" id="boss-body">
         <p><strong>Reusable only counts if you reuse it.</strong> A cotton tote bag has to be used about 131 times before it beats a single-use plastic bag for its effect on the climate (that is from a UK government study). So the planet points come from the 131st trip to the shop, not from owning fourteen tote bags in fourteen colours. We see you.</p>
-        <p><strong>Spot the marketing.</strong> Loads of "eco" products are just normal products with a green leaf printed on them. "Recyclable" does not mean it will be recycled. "Plant based" can still be plastic. Read the small print, not the big leaf.</p>
-        <div class="task"><strong>Your challenge.</strong> Two jobs. One: name the single swap you would genuinely keep doing, not the one that looks good in a photo. Two: find one "eco" thing that is mostly marketing. Bonus point if you can explain what is wrong with paper straws.</div>
+        <p><strong>Real win, or just marketing?</strong> Loads of "eco" labels are a normal product with a green leaf printed on it. Read each claim, decide, then tap to see the catch.</p>
+        <div class="gw" id="gw"></div>
+        <div class="task"><strong>Your challenge.</strong> Name the single swap you would genuinely keep doing, not the one that looks good in a photo. Bonus point if you can explain what is actually wrong with paper straws.</div>
         <textarea id="boss-text" placeholder="Type your answer here, if you like."></textarea>
       </div>
     </section>
@@ -301,7 +312,7 @@ var ICON = {
   yoghurt: svg('<path class="ink-fill ink-stroke" d="M20 22h24l-3 30a4 4 0 0 1-4 3H27a4 4 0 0 1-4-3z" fill="#eef2f4" stroke="#06243d" stroke-width="3"/><rect class="ink-fill ink-stroke" x="18" y="16" width="28" height="8" rx="2" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/>' + HI),
   crisps: svg('<path class="ink-fill ink-stroke" d="M18 12l28 0 4 6-4 6 4 6-4 6 4 6-4 6 4 6-28 0 4-6-4-6 4-6-4-6 4-6-4-6z" fill="#d9c24f" stroke="#06243d" stroke-width="3"/>' + HI),
   fork: svg('<path class="ink-fill ink-stroke" d="M24 8v14m6-14v14m6-14v14M24 8c0 0 0 0 0 0M21 22h18c0 6-4 8-6 9v25h-6V31c-2-1-6-3-6-9z" fill="#7fbfe0" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/>' + HI),
-  straw: svg('<path class="ink-fill ink-stroke" d="M26 7l10 0-7 50-6 0z" fill="#e57ab0" stroke="#06243d" stroke-width="3"/>' + HI),
+  straw: svg('<path class="ink-fill ink-stroke" d="M26 7l10 0-7 50-6 0z" fill="#e0563f" stroke="#06243d" stroke-width="3"/>' + HI),
   apple: svg('<path d="M32 21c-8-6-21 0-19 15 2 13 13 21 19 21s17-8 19-21c2-15-11-21-19-15z" fill="#d83b3b" stroke="#06243d" stroke-width="3"/><rect x="30" y="10" width="4" height="12" rx="2" fill="#7c5022"/><path d="M34 13c4-4 9-3 9-3s-1 6-6 6z" fill="#3fa05a" stroke="#06243d" stroke-width="2"/>' + HI),
   banana: svg('<path d="M14 20c2 18 16 30 34 26 4-1 4-5 1-5C34 43 24 33 22 18c-1-3-8-2-8 2z" fill="#f4cf3f" stroke="#06243d" stroke-width="3"/><path d="M44 41c2 0 3 1 3 3" stroke="#06243d" stroke-width="3" fill="none"/>' + HI),
   spoonm: svg('<ellipse cx="32" cy="16" rx="10" ry="12" fill="#c9ced2" stroke="#06243d" stroke-width="3"/><rect x="29" y="26" width="6" height="30" rx="3" fill="#c9ced2" stroke="#06243d" stroke-width="3"/>' + HI),
@@ -327,15 +338,15 @@ function setMsg(id, text, kind) { var m = document.getElementById(id); m.textCon
 
 /* Stage 1 spot */
 var SPOT = [
-  { id: "bottle", name: "Water bottle", plastic: true },
-  { id: "yoghurt", name: "Yoghurt pot", plastic: true },
-  { id: "crisps", name: "Crisp packet", plastic: true },
-  { id: "fork", name: "Plastic fork", plastic: true },
+  { id: "bottle", name: "Bottle", plastic: true },
+  { id: "yoghurt", name: "Pot", plastic: true },
+  { id: "crisps", name: "Packet", plastic: true },
+  { id: "fork", name: "Fork", plastic: true },
   { id: "straw", name: "Straw", plastic: true },
   { id: "apple", name: "Apple", plastic: false },
   { id: "banana", name: "Banana", plastic: false },
-  { id: "spoonm", name: "Metal spoon", plastic: false },
-  { id: "glass", name: "Glass cup", plastic: false }
+  { id: "spoonm", name: "Spoon", plastic: false },
+  { id: "glass", name: "Cup", plastic: false }
 ];
 var totalPlastic = SPOT.filter(function (s) { return s.plastic; }).length;
 var found = 0;
@@ -595,12 +606,37 @@ function wireNav() {
   document.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () { goStep(parseInt(b.getAttribute("data-go"), 10)); }); });
 }
 
+var GW = [
+  { claim: "\"100% recyclable\"", real: false, note: "Catch: recyclable is not the same as recycled. Most plastic that could be recycled never is." },
+  { claim: "\"Made from plant-based plastic\"", real: false, note: "Catch: it is still plastic. It often only breaks down in a special factory, not your bin or the sea." },
+  { claim: "\"Refill me again and again\"", real: true, note: "Real win, but only if you actually keep refilling it." },
+  { claim: "\"Biodegradable\"", real: false, note: "Catch: usually only breaks down in hot industrial composting. In a bin or the ocean it can just sit there." },
+  { claim: "\"30% less plastic in this pack\"", real: true, note: "Real win. Small, but less plastic really is less plastic." }
+];
+function buildGW() {
+  var box = document.getElementById("gw");
+  box.innerHTML = "";
+  GW.forEach(function (g) {
+    var card = document.createElement("div");
+    card.className = "gwcard";
+    card.innerHTML = '<div class="claim">' + g.claim + '</div><div class="gwopts"><button data-v="real">Real win</button><button data-v="catch">Spot the catch</button></div><div class="gwfb">' + g.note + '</div>';
+    card.querySelectorAll(".gwopts button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        card.classList.add("done");
+        card.classList.add(g.real ? "real" : "catch");
+        card.querySelectorAll(".gwopts button").forEach(function (x) { x.disabled = true; });
+      });
+    });
+    box.appendChild(card);
+  });
+}
 function wireBoss() {
   var b = document.getElementById("boss");
   var head = document.getElementById("boss-toggle");
   head.addEventListener("click", function () { var open = b.classList.toggle("open"); head.setAttribute("aria-expanded", open ? "true" : "false"); });
   var t = document.getElementById("boss-text");
   if (t) { var ex = load("boss"); if (ex) { t.value = ex; } t.addEventListener("input", function () { save("boss", t.value); }); }
+  buildGW();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
