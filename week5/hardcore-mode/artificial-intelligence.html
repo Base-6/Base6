@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Artificial Intelligence &middot; Hardcore Mode &middot; Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root { --theme: #4a6fa5; }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: 'Atkinson Hyperlegible', sans-serif; background: #fef8f4; color: #1a1a1a; line-height: 1.5; }
+  .site-header { position: relative; background: var(--theme, #007291); padding: 2.25rem 1.25rem 3.1rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -70px; left: -50px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.08); }
+  .site-header::after { content: ""; position: absolute; right: -55px; bottom: 5px; width: 210px; height: 210px; border-radius: 50%; background: rgba(239,119,36,0.20); }
+  .header-inner { position: relative; z-index: 2; max-width: 920px; margin: 0 auto; }
+  .header-back { position: absolute; top: 1rem; left: 1rem; z-index: 3; color: #fef8f4; font-weight: 700; text-decoration: none; opacity: .92; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .week-label { margin: 0 0 .35rem; color: #d7eef4; font-size: .85rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  h1 { margin: 0; color: #fef8f4; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; }
+  .header-sub { margin: .55rem auto 0; color: #e9f6f8; font-size: 1.05rem; max-width: 760px; }
+  .header-wave { position: absolute; left: 0; bottom: -1px; width: 100%; height: 40px; z-index: 1; }
+  main { max-width: 980px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+  .student-card, .intro, .section, .evidence-panel { background: #fff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 1.1rem; box-shadow: 0 4px 14px rgba(0,0,0,0.05); margin-bottom: 1.1rem; }
+  .intro { border-color: #ef7724; background: #fffaf6; }
+  .intro h2, .section h2, .evidence-panel h2 { margin: 0 0 .6rem; color: var(--theme, #007291); font-size: 1.25rem; }
+  .intro p, .section p { margin: .35rem 0; }
+  .student-card { display: grid; grid-template-columns: 1fr; gap: .75rem; border-color: var(--theme, #007291); }
+  label, .question-title { font-weight: 700; color: #1a1a1a; }
+  input[type="text"], textarea, select { width: 100%; font: inherit; padding: .75rem .85rem; border: 2px solid #d8d0c8; border-radius: 10px; background: #fff; color: #1a1a1a; }
+  textarea { min-height: 96px; resize: vertical; }
+  input:focus, textarea:focus, select:focus { outline: 3px solid #ef7724; outline-offset: 2px; border-color: var(--theme, #007291); }
+  .top-actions, .section-nav, .button-row { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; }
+  .section-nav { margin: 1rem 0 1.2rem; }
+  .nav-chip { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: .45rem .8rem; border: 2px solid var(--theme, #007291); border-radius: 999px; background: #fff; color: var(--theme, #007291); font-weight: 700; text-decoration: none; }
+  .nav-chip:hover { background: #f0fafc; }
+  .progress-wrap { margin: .6rem 0 .2rem; background: #e6f5f8; border-radius: 999px; overflow: hidden; height: 14px; border: 1px solid #b7dce5; }
+  .progress-bar { width: 0%; height: 100%; background: #ef7724; transition: width .2s ease; }
+  .progress-text { color: #555; font-size: .9rem; font-weight: 700; }
+  .section { padding: 0; overflow: hidden; }
+  .section-header { background: #f0fafc; border-bottom: 2px solid #d8edf3; padding: 1rem 1.1rem; }
+  .section-header h2 { margin: 0; }
+  .section-body { padding: 1.1rem; }
+  .question { border: 2px solid #efe6df; border-radius: 14px; padding: 1rem; margin: 1rem 0; background: #fff; }
+  .question-title { display: block; margin-bottom: .65rem; }
+  .question small { display: block; color: #555; margin-top: .4rem; }
+  .option-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .55rem; }
+  .option-grid label, .choice-row label, .check-list label { display: flex; align-items: flex-start; gap: .5rem; border: 2px solid #e0d8d0; border-radius: 12px; padding: .75rem; background: #fffaf6; cursor: pointer; font-weight: 700; color: #333; }
+  .option-grid input, .choice-row input, .check-list input { margin-top: .22rem; flex-shrink: 0; }
+  .choice-row { display: flex; gap: .5rem; flex-wrap: wrap; }
+  .choice-row label { min-width: 150px; }
+  .source-box { background: #f4f8f9; border: 2px solid #b8d7dc; border-radius: 12px; padding: 1rem; margin: 1rem 0; }
+  .source-box p { margin: .4rem 0; }
+  .mini-teach { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 14px; padding: .95rem; margin: .75rem 0 1rem; }
+  .mini-teach strong { color: #c05a10; }
+  .word-bank, .mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: .55rem; margin: .8rem 0; }
+  .term-pill { border: 2px solid #e0d8d0; background: #fff; border-radius: 999px; padding: .45rem .75rem; font-weight: 700; color: #333; }
+  .match-table { display: grid; gap: .7rem; }
+  .match-row { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(170px, .7fr); gap: .65rem; align-items: center; background: #fffaf6; border: 2px solid #efe6df; border-radius: 12px; padding: .75rem; }
+  .visual-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; align-items: start; }
+  .visual-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: .75rem; }
+  .visual-icon { min-height: 150px; border-radius: 12px; display:flex; align-items:center; justify-content:center; font-size:4.5rem; background: linear-gradient(135deg, #f0fafc, #fff3e8); border: 2px dashed #d8d0c8; }
+  .caption { font-size: .85rem; color: #555; margin-top: .4rem; font-weight: 700; }
+  .layout-diagram { border: 3px solid #1a1a1a; border-radius: 8px; background:#fff; padding:.8rem; display:grid; gap:.5rem; max-width: 230px; margin:auto; }
+  .layout-head { height: 24px; border:2px solid #888; }
+  .layout-main { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
+  .layout-photo { height:78px; border:2px solid #888; }
+  .layout-lines { display:grid; gap:.25rem; }
+  .layout-lines span { height:7px; background:#bbb; border-radius:999px; }
+  .doorbell { min-height:190px; background: linear-gradient(90deg,#b7dce5 0 25%,#e5e886 25% 48%,#98bd76 48% 72%,#21634f 72%); display:flex; align-items:center; justify-content:center; border-radius:12px; border:2px solid #d8d0c8; }
+  .doorbell-device { width:80px; height:140px; border-radius:20px; background:#323940; border:4px solid #1b2025; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow: 0 6px 14px rgba(0,0,0,.28); }
+  .lens { width:44px; height:44px; border-radius:50%; background:#111; border:6px solid #65727c; position:relative; }
+  .lens::after { content:""; position:absolute; inset:12px; border-radius:50%; background:#8cc4ff; }
+  .slot { width:30px; height:5px; border-radius:999px; background:#151515; margin-top:26px; }
+  .evidence-panel { border-color: #ef7724; background: #fffaf6; }
+  .evidence-output { min-height: 180px; white-space: pre-wrap; background: #fff; }
+  button { font: inherit; font-weight: 700; border: none; border-radius: 10px; padding: .75rem 1rem; min-height: 44px; cursor: pointer; }
+  .btn-primary { background: #ef7724; color: white; }
+  .btn-primary:hover { background: #c05a10; }
+  .btn-secondary { background: var(--theme, #007291); color: #fef8f4; }
+  .btn-secondary:hover { filter: brightness(.88); }
+  .btn-light { background: #fff; color: var(--theme, #007291); border: 2px solid var(--theme, #007291); }
+  .btn-light:hover { background: #f0fafc; }
+  .status { border-radius: 12px; padding: .75rem; margin: .75rem 0; font-weight: 700; display: none; }
+  .status.show { display: block; }
+  .status.ok { background: #e6f3ec; border: 2px solid #2e8b57; color: #1f5f3d; }
+  .status.warn { background: #fff3e8; border: 2px solid #ef7724; color: #8a470b; }
+  footer { text-align: center; color: #888; font-size: .82rem; border-top: 1px solid #e0d8d0; padding: 1.2rem; }
+  @media (min-width: 780px) { .student-card { grid-template-columns: 1fr auto; align-items: end; } .visual-grid { grid-template-columns: 0.72fr 1.28fr; } }
+  @media (max-width: 700px) { .match-row { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .progress-bar { transition: none; } }
+
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Hardcore Mode</a>
+  <div class="header-inner">
+    <p class="week-label">Base 6 &middot; Hardcore Mode</p>
+    <h1>Artificial Intelligence</h1>
+    <p class="header-sub">AI basics, everyday examples, hardware/software, models and school use.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+<main>
+  <div class="student-card">
+    <div>
+      <label for="studentName">Name or initials</label>
+      <input id="studentName" type="text" placeholder="Type name or initials here">
+    </div>
+    <div class="top-actions">
+      <button class="btn-light" type="button" onclick="saveDraft(true)">Save draft</button>
+      <button class="btn-light" type="button" onclick="resetActivity()">Reset</button>
+    </div>
+    <div style="grid-column:1/-1;">
+      <div class="progress-wrap" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-text" id="progressText">0% complete</div>
+    </div>
+  </div>
+  <div class="intro">
+    <h2>Mission</h2>
+    <p>This activity is based on the Artificial Intelligence worksheet. It keeps the original questions, then builds an evidence summary at the end.</p>
+    <p>Some questions are auto-checked. The final good/bad AI response is saved for Jay to read.</p>
+  </div>
+
+  <nav class="section-nav" aria-label="Activity sections">
+    <a class="nav-chip" href="#multiple">A. Multiple choice</a>
+    <a class="nav-chip" href="#truefalse">B. True / False</a>
+    <a class="nav-chip" href="#matching">C. Matching</a>
+    <a class="nav-chip" href="#systems">D. Doorbell</a>
+    <a class="nav-chip" href="#models">E. Models</a>
+    <a class="nav-chip" href="#extended">F. Extended</a>
+    <a class="nav-chip" href="#evidence">Finish</a>
+  </nav>
+
+  <section class="section" id="multiple">
+    <div class="section-header"><h2>Section A: Multiple Choice</h2></div>
+    <div class="section-body">
+      <div class="mini-teach"><strong>Quick reminder:</strong> AI means software that can use data to make decisions, spot patterns or improve over time.</div>
+      <div class="question"><span class="question-title">1. What do the letters AI stand for?</span><div class="option-grid"><label><input type="radio" name="q1" value="A"> A) Automatic Internet</label><label><input type="radio" name="q1" value="B"> B) Artificial Intelligence</label><label><input type="radio" name="q1" value="C"> C) Active Information</label><label><input type="radio" name="q1" value="D"> D) Advanced Input</label></div></div>
+      <div class="question"><span class="question-title">2. Which of these is the best way to describe AI?</span><div class="option-grid"><label><input type="radio" name="q2" value="A"> A) A computer screen that shows videos.</label><label><input type="radio" name="q2" value="B"> B) A keyboard that types very quickly.</label><label><input type="radio" name="q2" value="C"> C) A machine or software that can learn and make decisions like a person.</label><label><input type="radio" name="q2" value="D"> D) A robot made only of metal and plastic.</label></div></div>
+      <div class="question"><span class="question-title">3. Which of these is an everyday example of AI?</span><div class="option-grid"><label><input type="radio" name="q3" value="A"> A) A wooden ruler</label><label><input type="radio" name="q3" value="B"> B) A normal light bulb</label><label><input type="radio" name="q3" value="C"> C) A voice assistant like Siri or Alexa</label><label><input type="radio" name="q3" value="D"> D) A paper book</label></div></div>
+      <div class="question"><span class="question-title">4. Computers use hardware and software. Which of these is the software part of AI?</span><div class="option-grid"><label><input type="radio" name="q4" value="A"> A) The camera lens</label><label><input type="radio" name="q4" value="B"> B) The computer chip</label><label><input type="radio" name="q4" value="C"> C) The learning code / algorithm</label><label><input type="radio" name="q4" value="D"> D) The speaker</label></div></div>
+      <div class="question"><span class="question-title">5. How does an AI program learn to know what a cat looks like?</span><div class="option-grid"><label><input type="radio" name="q5" value="A"> A) By guessing.</label><label><input type="radio" name="q5" value="B"> B) By looking at thousands of pictures of cats.</label><label><input type="radio" name="q5" value="C"> C) By asking a human to type the word cat.</label></div></div>
+      <div class="question"><span class="question-title">6. Why do email systems use a spam filter?</span><div class="option-grid"><label><input type="radio" name="q6" value="A"> A) To use AI to stop junk emails from reaching you.</label><label><input type="radio" name="q6" value="B"> B) To change the screen colour.</label></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="truefalse">
+    <div class="section-header"><h2>Section B: True or False</h2></div>
+    <div class="section-body">
+      <div class="question"><span class="question-title">7. AI systems can learn from new data and get better over time.</span><div class="choice-row"><label><input type="radio" name="q7" value="True"> True</label><label><input type="radio" name="q7" value="False"> False</label></div></div>
+      <div class="question"><span class="question-title">8. Every computer program uses Artificial Intelligence.</span><div class="choice-row"><label><input type="radio" name="q8" value="True"> True</label><label><input type="radio" name="q8" value="False"> False</label></div></div>
+      <div class="question"><span class="question-title">9. A smart speaker needs a microphone (hardware) to hear you.</span><div class="choice-row"><label><input type="radio" name="q9" value="True"> True</label><label><input type="radio" name="q9" value="False"> False</label></div></div>
+      <div class="question"><span class="question-title">10. AI models do not need any data to learn things.</span><div class="choice-row"><label><input type="radio" name="q10" value="True"> True</label><label><input type="radio" name="q10" value="False"> False</label></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="matching">
+    <div class="section-header"><h2>Section C: Everyday AI Matching</h2></div>
+    <div class="section-body">
+      <div class="source-box"><strong>Word bank:</strong> Maps App · Face ID · Chatbot · Video Suggestions · Self-Driving Car</div>
+      <div class="match-table">
+        <div class="match-row"><span>Looks at your face to unlock your phone.</span><select id="q11_face"><option value="">Choose AI tool</option><option>Maps App</option><option>Face ID</option><option>Chatbot</option><option>Video Suggestions</option><option>Self-Driving Car</option></select></div>
+        <div class="match-row"><span>Suggests movies you might like based on what you watched.</span><select id="q11_videos"><option value="">Choose AI tool</option><option>Maps App</option><option>Face ID</option><option>Chatbot</option><option>Video Suggestions</option><option>Self-Driving Car</option></select></div>
+        <div class="match-row"><span>Types back answers to help you on a website.</span><select id="q11_chatbot"><option value="">Choose AI tool</option><option>Maps App</option><option>Face ID</option><option>Chatbot</option><option>Video Suggestions</option><option>Self-Driving Car</option></select></div>
+        <div class="match-row"><span>Steers a car safely without a human driver.</span><select id="q11_car"><option value="">Choose AI tool</option><option>Maps App</option><option>Face ID</option><option>Chatbot</option><option>Video Suggestions</option><option>Self-Driving Car</option></select></div>
+        <div class="match-row"><span>Finds the quickest route to your destination.</span><select id="q11_maps"><option value="">Choose AI tool</option><option>Maps App</option><option>Face ID</option><option>Chatbot</option><option>Video Suggestions</option><option>Self-Driving Car</option></select></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="systems">
+    <div class="section-header"><h2>Section D: Systems and Communication</h2></div>
+    <div class="section-body">
+      <div class="visual-grid">
+        <div class="visual-card"><div class="doorbell" aria-hidden="true"><div class="doorbell-device"><div class="lens"></div><div class="slot"></div></div></div><div class="caption">Smart doorbell: it uses AI to see if a family member is at the door.</div></div>
+        <div>
+          <div class="question"><span class="question-title">12. Which piece of hardware does the doorbell use to see the person?</span><div class="option-grid"><label><input type="radio" name="q12" value="microphone"> A microphone</label><label><input type="radio" name="q12" value="camera"> A camera</label><label><input type="radio" name="q12" value="keyboard"> A keyboard</label></div></div>
+          <div class="question"><span class="question-title">13. Use the missing words to finish how the AI works.</span><div class="source-box"><strong>Missing words:</strong> face · pictures · match</div><div class="mini-grid"><label>person's <select id="q13_1"><option value="">Choose</option><option>face</option><option>pictures</option><option>match</option></select></label><label>other <select id="q13_2"><option value="">Choose</option><option>face</option><option>pictures</option><option>match</option></select></label><label>looks for a <select id="q13_3"><option value="">Choose</option><option>face</option><option>pictures</option><option>match</option></select></label></div></div>
+        </div>
+      </div>
+      <div class="question"><label for="q14">14. What is the final output of this doorbell? It sends a __________ to the owner's phone.</label><input id="q14" type="text" placeholder="Type the missing word"></div>
+      <div class="question"><span class="question-title">15. Why might the AI make a mistake and think a stranger is a family member?</span><div class="option-grid"><label><input type="radio" name="q15" value="hat or glasses"> The person is wearing a hat or glasses.</label><label><input type="radio" name="q15" value="plastic"> The doorbell is made of plastic.</label></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="models">
+    <div class="section-header"><h2>Section E: Abstraction and Real-World Models</h2></div>
+    <div class="section-body">
+      <p>Apps like YouTube use AI models. They learn what you like so they can suggest videos.</p>
+      <div class="question"><span class="question-title">16. Tick two things the app tracks to learn what you like.</span><div class="check-list option-grid"><label><input type="checkbox" name="q16" value="click"> Which videos you click on</label><label><input type="checkbox" name="q16" value="watch"> How long you watch a video for</label><label><input type="checkbox" name="q16" value="lunch"> What you had for lunch</label></div></div>
+      <div class="question"><label for="q17">17. The software finds similar videos and puts them at the ________ of your screen.</label><input id="q17" type="text" placeholder="Type the missing word"></div>
+    </div>
+  </section>
+
+  <section class="section" id="extended">
+    <div class="section-header"><h2>Section F: Extended Response</h2></div>
+    <div class="section-body">
+      <div class="question"><span class="question-title">18. A town uses AI cameras to control traffic lights. Match the parts to show how they work together.</span><div class="match-table">
+        <div class="match-row"><strong>Input</strong><select id="q18_input"><option value="">Choose</option><option>camera counts cars</option><option>software decides</option><option>traffic light turns green</option></select></div>
+        <div class="match-row"><strong>Process</strong><select id="q18_process"><option value="">Choose</option><option>camera counts cars</option><option>software decides</option><option>traffic light turns green</option></select></div>
+        <div class="match-row"><strong>Output</strong><select id="q18_output"><option value="">Choose</option><option>camera counts cars</option><option>software decides</option><option>traffic light turns green</option></select></div>
+      </div></div>
+      <div class="visual-grid">
+        <div class="question"><label for="q19_good">19. One good thing about using AI at school: It can help students by...</label><textarea id="q19_good"></textarea></div>
+        <div class="question"><label for="q19_bad">19. One bad thing about using AI at school: It might be bad because...</label><textarea id="q19_bad"></textarea></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="evidence-panel" id="evidence">
+    <h2>Finish: Evidence send</h2>
+    <p>Prepare the evidence summary, then email it to Jay. The copy button is the backup if the email window does not open.</p>
+    <div class="button-row">
+      <button class="btn-secondary" type="button" onclick="prepareEvidence()">Prepare evidence</button>
+      <button class="btn-primary" type="button" onclick="emailEvidence()">Email results to Jay</button>
+      <button class="btn-light" type="button" onclick="copyEvidence()">Copy evidence</button>
+    </div>
+    <div class="status" id="status"></div>
+    <label for="evidenceOutput">Evidence summary</label>
+    <textarea id="evidenceOutput" class="evidence-output" readonly></textarea>
+  </section>
+</main>
+<footer>Base 6 &middot; Chilton Bridge School</footer>
+
+<script>
+const ACTIVITY_TITLE = 'Artificial Intelligence';
+const STORE_KEY = 'base6_hardcore_ai';
+const ALL_QS = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11_face','q11_videos','q11_chatbot','q11_car','q11_maps','q12','q13_1','q13_2','q13_3','q14','q15','q16','q17','q18_input','q18_process','q18_output','q19_good','q19_bad'];
+const EXACT = {
+  q1:'B', q2:'C', q3:'C', q4:'C', q5:'B', q6:'A',
+  q7:'True', q8:'False', q9:'True', q10:'False',
+  q11_face:'Face ID', q11_videos:'Video Suggestions', q11_chatbot:'Chatbot', q11_car:'Self-Driving Car', q11_maps:'Maps App',
+  q12:'camera', q13_1:'face', q13_2:'pictures', q13_3:'match', q15:'hat or glasses',
+  q18_input:'camera counts cars', q18_process:'software decides', q18_output:'traffic light turns green'
+};
+function exactExtra(){
+  let score = 0, total = 2;
+  const q14 = norm(getValue('q14'));
+  if(['notification','alert','message'].some(w => q14.includes(w))) score++;
+  const q17 = norm(getValue('q17'));
+  if(q17 === 'top' || q17.includes('top')) score++;
+  const chosen = getValue('q16').split('|').filter(Boolean).sort().join('|');
+  total++;
+  if(chosen === 'click|watch') score++;
+  return {score,total};
+}
+const KEYWORDS = {
+  q19_good: [['explain','simple','help','homework','support'], ['24/7','always','quick','ideas','learn']],
+  q19_bad: [['copy','cheat'], ['wrong','false','mistake','not accurate','privacy','data']]
+};
+const QUESTION_LABELS = {
+  q1:'1 AI stands for', q2:'2 Best AI description', q3:'3 Everyday AI example', q4:'4 Software part of AI', q5:'5 Learning cats', q6:'6 Spam filter', q7:'7 Learn from new data', q8:'8 Every program uses AI', q9:'9 Microphone hardware', q10:'10 AI needs data',
+  q11_face:'11 Match - unlock phone', q11_videos:'11 Match - video suggestions', q11_chatbot:'11 Match - website answers', q11_car:'11 Match - self-driving car', q11_maps:'11 Match - quickest route',
+  q12:'12 Doorbell hardware', q13_1:'13 Missing word 1', q13_2:'13 Missing word 2', q13_3:'13 Missing word 3', q14:'14 Doorbell output', q15:'15 AI mistake reason', q16:'16 App tracking choices', q17:'17 Screen position', q18_input:'18 Input', q18_process:'18 Process', q18_output:'18 Output', q19_good:'19 Good thing about AI at school', q19_bad:'19 Bad thing about AI at school'
+};
+
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+function norm(v){ return String(v || '').toLowerCase().trim().replace(/\s+/g,' '); }
+function getValue(q){
+  const radios = document.querySelectorAll('input[name="' + q + '"][type="radio"]');
+  if(radios.length) return Array.from(radios).find(r => r.checked)?.value || '';
+  const checks = document.querySelectorAll('input[name="' + q + '"][type="checkbox"]');
+  if(checks.length) return Array.from(checks).filter(c => c.checked).map(c => c.value).join('|');
+  const el = document.getElementById(q);
+  return el ? el.value.trim() : '';
+}
+function setValue(q, v){
+  const radios = document.querySelectorAll('input[name="' + q + '"][type="radio"]');
+  if(radios.length){ radios.forEach(r => r.checked = (r.value === v)); return; }
+  const checks = document.querySelectorAll('input[name="' + q + '"][type="checkbox"]');
+  if(checks.length){ const vals = String(v || '').split('|'); checks.forEach(c => c.checked = vals.includes(c.value)); return; }
+  const el = document.getElementById(q); if(el) el.value = v || '';
+}
+function answered(q){ return getValue(q).length > 0; }
+function saveDraft(show){
+  const data = { studentName: document.getElementById('studentName').value.trim(), answers: {} };
+  ALL_QS.forEach(q => data.answers[q] = getValue(q));
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch(e) {}
+  updateProgress();
+  if(show) showStatus('Draft saved on this device.', 'ok');
+}
+function loadDraft(){
+  try {
+    const data = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+    if(!data) { updateProgress(); return; }
+    if(data.studentName) document.getElementById('studentName').value = data.studentName;
+    if(data.answers) Object.keys(data.answers).forEach(q => setValue(q, data.answers[q]));
+  } catch(e) {}
+  updateProgress();
+}
+function updateProgress(){
+  const total = ALL_QS.length;
+  const done = ALL_QS.filter(answered).length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressText').textContent = pct + '% complete - ' + done + ' of ' + total + ' answer boxes completed';
+}
+function exactScore(){
+  let score = 0, total = 0;
+  Object.keys(EXACT).forEach(q => { total++; if(getValue(q) === EXACT[q]) score++; });
+  if (typeof exactExtra === 'function') { const extra = exactExtra(); score += extra.score; total += extra.total; }
+  return { score, total };
+}
+function keywordScore(){
+  let hits = 0, total = 0, byQ = [];
+  Object.keys(KEYWORDS).forEach(q => {
+    const v = norm(getValue(q));
+    let qHits = 0;
+    KEYWORDS[q].forEach(group => {
+      total++;
+      if(group.some(k => v.includes(k))) { hits++; qHits++; }
+    });
+    byQ.push(q.toUpperCase() + ': ' + qHits + '/' + KEYWORDS[q].length);
+  });
+  return { hits, total, byQ };
+}
+function responseLabel(q){ return QUESTION_LABELS[q] || q.toUpperCase(); }
+function buildEvidence(){
+  const name = document.getElementById('studentName').value.trim() || 'Not entered';
+  const exact = exactScore();
+  const kw = keywordScore();
+  const answeredCount = ALL_QS.filter(answered).length;
+  const lines = [];
+  lines.push('BASE 6 - HARDCORE MODE EVIDENCE');
+  lines.push('Activity: ' + ACTIVITY_TITLE);
+  lines.push('Student: ' + name);
+  lines.push('Date: ' + new Date().toLocaleString('en-GB'));
+  lines.push('');
+  lines.push('RESULTS SUMMARY');
+  lines.push('Questions / answer boxes completed: ' + answeredCount + '/' + ALL_QS.length);
+  lines.push('Auto-check answers: ' + exact.score + '/' + exact.total);
+  lines.push('Written keyword evidence: ' + kw.hits + '/' + kw.total + ' flags found');
+  lines.push('Note: written responses still need Jay to check for quality, tone and full accuracy.');
+  lines.push('');
+  lines.push('WRITTEN KEYWORD BREAKDOWN');
+  lines.push(kw.byQ.join(', '));
+  lines.push('');
+  lines.push('STUDENT RESPONSES');
+  ALL_QS.forEach(q => lines.push(responseLabel(q) + ': ' + (getValue(q) || '[blank]')));
+  return lines.join('\n');
+}
+function prepareEvidence(){
+  saveDraft(false);
+  const evidence = buildEvidence();
+  document.getElementById('evidenceOutput').value = evidence;
+  showStatus('Evidence prepared. You can now email it to Jay.', 'ok');
+}
+function emailEvidence(){
+  const out = document.getElementById('evidenceOutput');
+  if(!out.value.trim()) prepareEvidence();
+  const name = document.getElementById('studentName').value.trim() || 'Student';
+  const subject = encodeURIComponent('Base 6 Evidence - ' + ACTIVITY_TITLE + ' - ' + name);
+  const body = encodeURIComponent(document.getElementById('evidenceOutput').value);
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(TEACHER_EMAIL) + '&su=' + subject + '&body=' + body, '_blank');
+}
+function copyEvidence(){
+  const out = document.getElementById('evidenceOutput');
+  if(!out.value.trim()) prepareEvidence();
+  out.select();
+  navigator.clipboard?.writeText(out.value).then(() => showStatus('Evidence copied.', 'ok')).catch(() => showStatus('Select the evidence box and copy it manually.', 'warn'));
+}
+function resetActivity(){
+  if(confirm('Reset this activity on this device?')) {
+    localStorage.removeItem(STORE_KEY);
+    document.getElementById('studentName').value = '';
+    ALL_QS.forEach(q => setValue(q, ''));
+    document.getElementById('evidenceOutput').value = '';
+    updateProgress();
+    showStatus('Activity reset on this device.', 'warn');
+  }
+}
+function showStatus(msg, kind){
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status show ' + (kind || 'ok');
+}
+document.addEventListener('input', () => saveDraft(false));
+document.addEventListener('change', () => saveDraft(false));
+loadDraft();
+
+</script>
+</body>
+</html>
