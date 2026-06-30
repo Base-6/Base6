@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Hardcore Mode Enabled &middot; Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: #007291; padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(239,119,36,0.18); border-radius: 50%; }
+  .site-header .header-inner { position: relative; z-index: 2; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.9; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .week-label { font-size: 0.85rem; font-weight: 700; color: #d7eef4; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2.5rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
+  .site-header .header-sub { font-size: 1.1rem; color: #d7eef4; margin-top: 0.5rem; line-height: 1.5; }
+  .hero-ball { display: inline-flex; width: 58px; height: 58px; border-radius: 50%; align-items: center; justify-content: center; background: #fef8f4; border: 3px solid #ef7724; font-size: 2rem; margin: 0.85rem auto 0; box-shadow: 0 8px 20px rgba(0,0,0,0.16); }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+
+  .main { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin: 0 0 2.25rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
+  .intro h2 { font-size: 1.3rem; color: #c05a10; margin-bottom: 0.5rem; }
+  .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
+  .tiles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem; margin-bottom: 2.5rem; }
+  .tile { position: relative; background: #ffffff; border: 2px solid var(--c); border-radius: 16px; padding: 1.5rem 1.5rem 1.25rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.45rem; transition: transform 0.18s ease, box-shadow 0.18s ease; overflow: hidden; min-height: 225px; }
+  .tile::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--c); }
+  .tile:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 10px 26px var(--shadow); }
+  .tile-badge { width: 56px; height: 56px; border-radius: 50%; background: var(--bg); border: 2px solid var(--c); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; line-height: 1; margin-bottom: 0.4rem; }
+  .tile-subject { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c); }
+  .tile-title { font-size: 1.25rem; font-weight: 700; color: var(--c); line-height: 1.3; }
+  .tile-desc { font-size: 0.92rem; color: #444; line-height: 1.55; flex-grow: 1; }
+  .tile-go { margin-top: 0.7rem; font-size: 0.85rem; font-weight: 700; color: var(--c); display: inline-flex; align-items: center; gap: 0.3rem; }
+  .tile-go .arrow { transition: transform 0.18s ease; }
+  .tile:hover .tile-go .arrow { transform: translateX(4px); }
+  .tile.is-waiting { cursor: default; opacity: 0.95; }
+  .tile.is-waiting:hover { transform: none; box-shadow: none; }
+
+  .evidence-card { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 16px; padding: 1.5rem; margin-bottom: 2.5rem; }
+  .evidence-top { display: flex; align-items: flex-start; gap: 1rem; }
+  .evidence-icon { width: 44px; height: 44px; border-radius: 50%; background: #fff3e8; border: 1.5px solid #fcd8bc; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+  .evidence-title { font-size: 1.05rem; font-weight: 700; color: #1a1a1a; line-height: 1.4; margin-bottom: 0.45rem; }
+  .evidence-text { font-size: 0.9rem; color: #555; line-height: 1.6; }
+  .evidence-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.85rem; }
+  .evidence-tag { font-size: 0.72rem; padding: 2px 8px; border-radius: 20px; border: 1px solid #e0d8d0; color: #666; background: #fff; font-weight: 700; }
+
+  .quiet-note { font-size: 0.9rem; color: #555; line-height: 1.6; margin-top: -1.4rem; margin-bottom: 2.4rem; }
+  .cheer { text-align: center; margin-top: 2rem; font-size: 1.05rem; font-weight: 700; color: #007291; }
+  a:focus-visible, button:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile, .tile-go .arrow { transition: none; }
+    .tile:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Week 5</a>
+  <div class="header-inner">
+    <p class="week-label">Base 6</p>
+    <h1>Hardcore Mode Enabled</h1>
+    <p class="header-sub">Harder challenge activities with clear evidence at the end.</p>
+    <span class="hero-ball" aria-hidden="true">&#9889;</span>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+  <div class="intro">
+    <h2>Challenge route</h2>
+    <p>This is the optional challenge route for students who want something with a bit more bite.</p>
+  </div>
+
+  <p class="section-label">Challenge activity hub</p>
+  <div class="tiles-grid">
+    <div class="tile is-waiting" style="--c:#ef7724; --bg:#fdeee0; --shadow:rgba(239,119,36,0.24);">
+      <span class="tile-badge" aria-hidden="true">&#9889;</span>
+      <span class="tile-subject">Ready for PDF build</span>
+      <span class="tile-title">Worksheet Challenge Set</span>
+      <span class="tile-desc">Add the first harder worksheet activity here once the PDF has been converted.</span>
+      <span class="tile-go">Waiting for worksheet PDF</span>
+    </div>
+
+    <div class="tile is-waiting" style="--c:#007291; --bg:#e6f5f8; --shadow:rgba(0,114,145,0.22);">
+      <span class="tile-badge" aria-hidden="true">&#128290;</span>
+      <span class="tile-subject">Maths</span>
+      <span class="tile-title">Harder Maths</span>
+      <span class="tile-desc">A space for tougher number, measure, problem solving or Functional Skills activities.</span>
+      <span class="tile-go">Ready to add activity</span>
+    </div>
+
+    <div class="tile is-waiting" style="--c:#ef7724; --bg:#fdeee0; --shadow:rgba(239,119,36,0.24);">
+      <span class="tile-badge" aria-hidden="true">&#128221;</span>
+      <span class="tile-subject">English</span>
+      <span class="tile-title">Harder English</span>
+      <span class="tile-desc">A space for reading, inference, writing, vocabulary and Standard English challenges.</span>
+      <span class="tile-go">Ready to add activity</span>
+    </div>
+
+    <div class="tile is-waiting" style="--c:#2e8b57; --bg:#e6f3ec; --shadow:rgba(46,139,87,0.22);">
+      <span class="tile-badge" aria-hidden="true">&#129514;</span>
+      <span class="tile-subject">Challenge</span>
+      <span class="tile-title">Mixed Skills</span>
+      <span class="tile-desc">A space for longer tasks that mix reading, reasoning, maths, research and explanation.</span>
+      <span class="tile-go">Ready to add activity</span>
+    </div>
+  </div>
+
+  <p class="quiet-note">When an activity is added, replace a waiting card with a normal link card using the same tile style.</p>
+
+  <div class="evidence-card">
+    <div class="evidence-top">
+      <div class="evidence-icon" aria-hidden="true">&#128193;</div>
+      <div>
+        <div class="evidence-title">Evidence procedure</div>
+        <div class="evidence-text">Each Hardcore Mode activity should finish with a clear evidence section: name or initials, answers or completed choices, score or progress summary, reflection where useful, and a button to send or export the evidence for Jay.</div>
+        <div class="evidence-tags">
+          <span class="evidence-tag">Teach</span>
+          <span class="evidence-tag">Practise</span>
+          <span class="evidence-tag">Challenge</span>
+          <span class="evidence-tag">Evidence</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="cheer">Harder, cleaner, still Base 6.</p>
+</main>
+
+<footer>Base 6 &middot; Chilton Bridge School</footer>
+</body>
+</html>
