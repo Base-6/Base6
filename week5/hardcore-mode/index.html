@@ -132,6 +132,27 @@
     0%, 100% { filter: drop-shadow(0 0 5px rgba(239,119,36,0.7)); }
     50% { filter: drop-shadow(0 0 11px rgba(255,90,0,0.6)); }
   }
+  .hc-audio-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.35rem auto 0;
+    padding: 0.55rem 1.15rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff2e8;
+    background: rgba(0,0,0,0.42);
+    border: 2px solid rgba(239,119,36,0.9);
+    border-radius: 999px;
+    box-shadow: 0 0 0 4px rgba(239,119,36,0.12);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .hc-audio-btn:hover { background: rgba(239,119,36,0.9); color: #151515; }
+  .hc-audio-icon { font-size: 0.95rem; line-height: 1; }
 
   .main { max-width: 980px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
   .intro {
@@ -304,6 +325,10 @@
     <h1>Hardcore Mode <span class="header-pop">Enabled!</span></h1>
     <p class="header-sub">Boss-level activities for anyone who wants more bite, more thinking, and a proper evidence finish.</p>
     <div class="boss-meter" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    <button class="hc-audio-btn" id="hc-audio-btn" type="button" aria-label="Play intro sound">
+      <span class="hc-audio-icon" id="hc-audio-icon" aria-hidden="true">&#9654;</span>
+      <span id="hc-audio-label">Play intro</span>
+    </button>
   </div>
   <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
@@ -379,35 +404,53 @@
 </audio>
 <script>
 (function () {
-  // Plays once per browser session when the page first opens.
-  // Browsers block sound-on-load until the first interaction, so if the
-  // autoplay attempt is refused we fall back to the first tap or key press.
   var KEY = 'base6HardcoreIntroPlayed';
   var audio = document.getElementById('hc-audio');
   if (!audio) { return; }
 
-  var alreadyPlayed = false;
-  try { alreadyPlayed = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
-  if (alreadyPlayed) { return; }
+  var btn = document.getElementById('hc-audio-btn');
+  var icon = document.getElementById('hc-audio-icon');
+  var label = document.getElementById('hc-audio-label');
 
   audio.volume = 0.6;
 
-  function markPlayed() { try { sessionStorage.setItem(KEY, '1'); } catch (e) {} }
-  function onGesture() {
-    audio.play().then(markPlayed).catch(function () {});
-    document.removeEventListener('pointerdown', onGesture);
-    document.removeEventListener('keydown', onGesture);
+  function showPlaying() {
+    if (icon) { icon.innerHTML = '&#9208;'; }        // pause bars
+    if (label) { label.textContent = 'Pause'; }
+    if (btn) { btn.setAttribute('aria-label', 'Pause intro sound'); }
   }
-  function waitForGesture() {
-    document.addEventListener('pointerdown', onGesture, { once: true });
-    document.addEventListener('keydown', onGesture, { once: true });
+  function showIdle() {
+    if (icon) { icon.innerHTML = '&#9654;'; }        // play triangle
+    if (label) { label.textContent = 'Play intro'; }
+    if (btn) { btn.setAttribute('aria-label', 'Play intro sound'); }
   }
 
-  var attempt = audio.play();
-  if (attempt && typeof attempt.then === 'function') {
-    attempt.then(markPlayed).catch(waitForGesture);
-  } else {
-    markPlayed();
+  audio.addEventListener('play', showPlaying);
+  audio.addEventListener('pause', showIdle);
+  audio.addEventListener('ended', showIdle);
+
+  // The button is a real user gesture, so it always satisfies autoplay rules.
+  if (btn) {
+    btn.addEventListener('click', function () {
+      if (audio.paused) {
+        audio.play().catch(function () {});
+      } else {
+        audio.pause();
+      }
+    });
+  }
+
+  // Also try once per session on open. If the browser blocks it, the button remains.
+  var alreadyPlayed = false;
+  try { alreadyPlayed = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
+  if (!alreadyPlayed) {
+    var attempt = audio.play();
+    var mark = function () { try { sessionStorage.setItem(KEY, '1'); } catch (e) {} };
+    if (attempt && typeof attempt.then === 'function') {
+      attempt.then(mark).catch(function () {});
+    } else {
+      mark();
+    }
   }
 })();
 </script>
