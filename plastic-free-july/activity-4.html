@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity 4: The Chocolate Wrapper Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #06243d; --ink-soft: #2b4a63; --panel: #ffffff;
+    --plastic: #ff1e9c; --plastic-deep: #c40d74;
+    --choc: #6b3f25; --choc-deep: #3d2317; --cream: #fff3d4;
+    --coral: #ff7a3d; --sun: #ffce2e; --urchin: #7b4fc4; --turq: #15c2c2; --kelp: #2fa84f;
+    --accent: #ff9e2c; --accent-deep: #d97a13; --good: #2fa84f; --warn: #c40d74;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Atkinson Hyperlegible", Verdana, sans-serif; color: var(--ink);
+    line-height: 1.5; text-align: left; min-height: 100vh;
+    background: linear-gradient(180deg, #6fd0ee 0%, #2a9fd0 24%, #127aa8 52%, #0a5a86 80%, #073f5e 100%) fixed;
+  }
+  .wrap { max-width: 940px; margin: 0 auto; padding: 0 18px; }
+
+  .scene { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+  .ray { position: absolute; top: -12%; width: 130px; height: 130%; background: linear-gradient(to bottom, rgba(255,255,255,0.18), rgba(255,255,255,0)); transform: rotate(14deg); filter: blur(7px); }
+  .bub { position: absolute; bottom: -50px; border-radius: 50%; background: radial-gradient(circle at 32% 30%, rgba(255,255,255,0.85), rgba(255,255,255,0.10)); border: 1px solid rgba(255,255,255,0.4); animation: rise linear infinite; }
+  @keyframes rise { from { transform: translateY(0); opacity: 0.8; } to { transform: translateY(-112vh); opacity: 0; } }
+  .seabed { position: fixed; left: 0; right: 0; bottom: 0; width: 100%; height: 160px; }
+  .seabed svg { width: 100%; height: 100%; display: block; }
+  .kelp { transform-origin: bottom center; animation: sway 9s ease-in-out infinite alternate; }
+  .kelp.b { animation-duration: 11s; }
+  @keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+
+  .float-bottle { position: fixed; bottom: 58px; left: 5%; width: clamp(70px, 10vw, 112px); background: none; border: none; padding: 0; cursor: pointer; z-index: 5; filter: drop-shadow(0 8px 12px rgba(3,30,50,0.32)); animation: floatb 7s ease-in-out infinite; }
+  .float-bottle img { width: 100%; height: auto; display: block; }
+  .float-bottle:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; border-radius: 14px; }
+  .float-bottle.collected { opacity: 0.42; transform: rotate(-8deg) scale(0.92); }
+  @keyframes floatb { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-15px) rotate(3deg); } }
+
+  .topbar { background: linear-gradient(135deg, var(--accent), var(--accent-deep)); color: #ffffff; padding: 12px 0; position: sticky; top: 0; z-index: 20; box-shadow: 0 3px 12px rgba(3,30,50,0.2); }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .topbar a.back { color: #ffffff; text-decoration: none; font-weight: 700; background: rgba(255,255,255,0.22); padding: 8px 14px; border-radius: 999px; font-size: 1rem; }
+  .topbar a.back:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; }
+  .topbar .label { font-weight: 700; font-size: 1.05rem; }
+  .stars { display: flex; gap: 5px; align-items: center; }
+  .stars svg { width: 20px; height: 20px; display: block; }
+  .stars .star-label { font-size: 0.98rem; font-weight: 700; margin-left: 4px; }
+
+  .dots { display: flex; gap: 10px; justify-content: center; padding: 16px 0 2px; flex-wrap: wrap; }
+  .dots button { width: 16px; height: 16px; border-radius: 50%; padding: 0; cursor: pointer; background: radial-gradient(circle at 32% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.25)); border: 2px solid rgba(255,255,255,0.7); }
+  .dots button.on { background: radial-gradient(circle at 32% 30%, #ffffff, var(--sun)); border-color: #ffffff; box-shadow: 0 0 0 4px rgba(255,206,46,0.4); }
+  .dots button:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; }
+
+  .sheet { background: rgba(255,255,255,0.97); border-radius: 22px; margin: 14px auto 0; box-shadow: 0 12px 30px rgba(3,30,50,0.3); padding: 22px; }
+  .step { display: none; }
+  .step.active { display: block; }
+  .intro-row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+  .intro-row img { width: 132px; height: 132px; object-fit: contain; flex: 0 0 auto; filter: drop-shadow(0 6px 10px rgba(3,30,50,0.25)); animation: bob 6s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  h1 { font-size: clamp(1.9rem, 5vw, 2.65rem); margin: 0 0 6px; line-height: 1.08; }
+  h1 .pf, h2 .pf { color: var(--accent-deep); }
+  h2 { font-size: 1.52rem; margin: 0 0 6px; }
+  h3 { margin: 0 0 8px; font-size: 1.18rem; }
+  p.lead { font-size: 1.18rem; margin: 0; }
+  p { font-size: 1.07rem; }
+  .hint { color: var(--ink-soft); font-size: 1.02rem; }
+  .bubble { border-radius: 14px; padding: 10px 14px; font-weight: 700; margin-top: 12px; font-size: 1.02rem; }
+  .bubble.inky { background: #fff7e8; border: 3px solid var(--accent); color: var(--choc-deep); }
+  .bubble.phantom { background: #fff0f8; border: 3px solid var(--plastic); color: var(--plastic-deep); }
+  .bubble.deep { background: #eef7fb; border: 3px solid #bcdded; color: var(--ink); font-weight: 400; }
+
+  .nav { display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
+  button, .btnlink { font-family: inherit; font-size: 1.06rem; font-weight: 700; cursor: pointer; border: none; border-radius: 999px; padding: 12px 22px; }
+  button:focus-visible, .btnlink:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
+  .btn-next, .btnlink { background: var(--accent); color: #ffffff; box-shadow: 0 4px 0 var(--accent-deep); text-decoration: none; display: inline-block; text-align: center; }
+  .btn-back { background: #d4e8f0; color: var(--ink); }
+  .btn-ghost { background: #ffffff; color: var(--ink); border: 3px solid var(--accent); box-shadow: none; }
+  .btn-dark { background: var(--ink); color: #ffffff; box-shadow: 0 4px 0 #021221; }
+  .msg { min-height: 1.5em; font-weight: 700; margin: 8px 0 0; }
+  .msg.good { color: #1c7a36; }
+  .msg.try { color: var(--plastic-deep); }
+
+  .status-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 14px 0; }
+  .stat { background: #fff8ef; border: 3px solid #f0c486; border-radius: 16px; padding: 10px 12px; font-weight: 700; }
+  .stat strong { display: block; color: var(--accent-deep); font-size: 1.04rem; }
+  .stat span { font-size: 0.98rem; color: var(--ink-soft); }
+
+  .mission-alert { background: linear-gradient(135deg, #fff8ef, #ffe8c3); border: 4px solid var(--accent); border-radius: 18px; padding: 14px 16px; margin-top: 14px; }
+  .mission-alert .lights { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .light { background: #ffffff; border: 2px solid var(--accent); border-radius: 999px; padding: 6px 12px; font-weight: 700; }
+
+  .job-grid, .cards, .choice-grid, .boss-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 14px 0; }
+  .job, .info-card, .choice, .claim, .upgrade { background: #ffffff; border: 3px solid #cfe6f0; border-radius: 18px; padding: 14px; box-shadow: 0 3px 8px rgba(3,30,50,0.1); cursor: pointer; text-align: left; }
+  .job:hover, .info-card:hover, .choice:hover, .claim:hover, .upgrade:hover { border-color: var(--accent); }
+  .job.chosen, .choice.chosen, .upgrade.chosen { border-color: var(--good); background: #e3f6e8; }
+  .job .mini, .choice .mini { font-size: 2rem; line-height: 1; display: block; margin-bottom: 7px; }
+  .job strong, .choice strong, .upgrade strong { display: block; font-size: 1.06rem; }
+
+  .wrapper-lab { display: grid; grid-template-columns: minmax(220px, 330px) 1fr; gap: 18px; margin: 14px 0; align-items: start; }
+  .bar-list { display: flex; flex-direction: column; gap: 10px; }
+  .bar-btn { width: 100%; display: flex; align-items: center; gap: 10px; background: #ffffff; border: 3px solid #cfe6f0; border-radius: 16px; padding: 10px 12px; text-align: left; box-shadow: 0 3px 8px rgba(3,30,50,0.1); }
+  .bar-btn.done { border-color: var(--good); background: #e3f6e8; }
+  .bar-btn.on { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(255,158,44,0.25); }
+  .bar-icon { width: 56px; height: 40px; flex: 0 0 auto; border-radius: 9px; border: 3px solid var(--ink); display: grid; place-items: center; color: #ffffff; font-weight: 700; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.16); }
+  .bar-icon.plastic { background: var(--plastic); }
+  .bar-icon.foil { background: linear-gradient(135deg, #e8eef2, #9eaab3); color: var(--ink); }
+  .bar-icon.tray { background: linear-gradient(90deg, #8799a5 0 24%, var(--plastic) 24% 76%, #8799a5 76%); }
+  .bar-icon.paper { background: #c78e55; }
+  .bar-icon.tin { background: #4c8fa8; }
+  .inspect { min-height: 300px; background: #fff8ef; border: 4px solid var(--accent); border-radius: 18px; padding: 16px; }
+  .inspect h3 { font-size: 1.35rem; color: var(--choc-deep); }
+  .meter { margin: 9px 0; }
+  .meter label { display: flex; justify-content: space-between; gap: 8px; font-weight: 700; font-size: 0.98rem; }
+  .track { height: 14px; background: rgba(6,36,61,0.14); border-radius: 999px; overflow: hidden; border: 1px solid rgba(6,36,61,0.15); }
+  .fill { height: 100%; width: 0%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
+  .fill.bad { background: var(--plastic); }
+  .fill.good { background: var(--good); }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+  .tag { display: inline-block; font-size: 0.86rem; font-weight: 700; background: var(--ink); color: #ffffff; padding: 4px 10px; border-radius: 999px; }
+  .tag.warn { background: var(--plastic); }
+  .tag.good { background: var(--good); }
+  .tag.choc { background: var(--choc); }
+
+  .trap { background: linear-gradient(180deg, #fff4fa, #fff8ef); border: 4px solid var(--plastic); border-radius: 20px; padding: 16px; margin: 14px 0; }
+  .layers { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+  .layer { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #ffffff; border: 3px solid #cfe6f0; border-radius: 16px; padding: 10px 12px; cursor: pointer; text-align: left; }
+  .layer .left { display: flex; align-items: center; gap: 10px; }
+  .layer .piece { width: 54px; height: 34px; border-radius: 8px; border: 3px solid var(--ink); background: #ddd; flex: 0 0 auto; }
+  .layer.plastic .piece { background: var(--plastic); }
+  .layer.card .piece { background: #c9935d; }
+  .layer.foil .piece { background: linear-gradient(135deg, #ffffff, #a4b4bf); }
+  .layer.paper .piece { background: #f4d79a; }
+  .layer.keep { border-color: #cfe6f0; }
+  .layer.remove { border-color: var(--plastic); background: #ffe3f3; }
+  .layer.safe { border-color: var(--good); background: #e3f6e8; }
+  .layer .state { font-weight: 700; color: var(--ink-soft); }
+
+  .design-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 14px 0; }
+  .design-box { background: #f3fafc; border: 3px solid #cfe6f0; border-radius: 18px; padding: 14px; }
+  .design-box h3 { color: var(--accent-deep); }
+  .option { width: 100%; display: block; margin: 8px 0; text-align: left; background: #ffffff; border: 2px solid #bcdded; color: var(--ink); border-radius: 999px; padding: 9px 14px; font-size: 0.98rem; box-shadow: none; }
+  .option.selected { background: var(--accent); color: #ffffff; border-color: var(--accent-deep); }
+  .preview-wrap { background: #fff8ef; border: 4px solid var(--accent); border-radius: 20px; padding: 16px; margin: 16px 0; }
+  .wrapper-preview { max-width: 520px; min-height: 180px; margin: 8px auto 10px; border-radius: 18px; border: 5px solid var(--choc-deep); background: linear-gradient(135deg, #6b3f25, #b46a3c); color: #fff3d4; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; padding: 18px; box-shadow: 0 10px 20px rgba(3,30,50,0.24); position: relative; overflow: hidden; }
+  .wrapper-preview.ocean { background: linear-gradient(135deg, #0a7d7d, #2a9fd0); }
+  .wrapper-preview.bold { background: linear-gradient(135deg, #c40d74, #ff9e2c); }
+  .wrapper-preview.simple { background: linear-gradient(135deg, #e8d3aa, #ffffff); color: var(--ink); }
+  .wrapper-preview.premium { background: linear-gradient(135deg, #3d2317, #6b3f25); }
+  .wrapper-preview:before { content: ""; position: absolute; inset: -30px; background: repeating-linear-gradient(45deg, rgba(255,255,255,0.12) 0 10px, transparent 10px 20px); }
+  .wrapper-preview .name { position: relative; z-index: 1; font-weight: 700; font-size: clamp(1.8rem, 6vw, 2.7rem); line-height: 1; text-shadow: 0 2px 0 rgba(0,0,0,0.18); }
+  .wrapper-preview .strap { position: relative; z-index: 1; margin-top: 12px; background: rgba(255,255,255,0.22); border: 2px solid rgba(255,255,255,0.55); border-radius: 999px; padding: 6px 12px; font-weight: 700; }
+  .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-top: 10px; }
+  .score { background: #ffffff; border: 2px solid #cfe6f0; border-radius: 14px; padding: 10px; font-weight: 700; }
+  .score span { display: block; font-size: 1.4rem; color: var(--accent-deep); }
+
+  .tests { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin: 14px 0; }
+  .test { background: #ffffff; border: 3px solid #cfe6f0; border-radius: 18px; padding: 14px; }
+  .test.pass { border-color: var(--good); background: #e3f6e8; }
+  .test.warn { border-color: var(--accent); background: #fff8ef; }
+  .test.fail { border-color: var(--plastic); background: #ffe3f3; }
+  .test h3 { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .test .result { font-weight: 700; }
+
+  label.field { display: block; font-weight: 700; margin: 14px 0 6px; font-size: 1.08rem; }
+  input[type="text"], textarea, select { width: 100%; font-family: inherit; font-size: 1.06rem; padding: 12px; border-radius: 12px; border: 3px solid #bcdded; background: #ffffff; }
+  textarea { min-height: 84px; resize: vertical; }
+  input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 4px solid var(--ink); outline-offset: 2px; }
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .draw-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  .swatch { width: 38px; height: 38px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 0 0 2px #9cc4d4; cursor: pointer; padding: 0; }
+  .swatch.sel { box-shadow: 0 0 0 4px var(--ink); }
+  canvas { width: 100%; max-width: 640px; height: 300px; touch-action: none; background: #ffffff; border: 3px solid #bcdded; border-radius: 14px; display: block; }
+
+  .claim { cursor: default; }
+  .claim .claim-text { font-weight: 700; font-size: 1.06rem; margin-bottom: 8px; }
+  .claim .claim-opts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .claim .claim-opts button { background: #ffffff; color: var(--ink); border: 2px solid #bcdded; padding: 8px 12px; font-size: 0.96rem; box-shadow: none; }
+  .claim .claim-opts button.picked { background: var(--accent); color: #ffffff; border-color: var(--accent-deep); }
+  .claim.good { border-color: var(--good); background: #e3f6e8; }
+  .claim.try { border-color: var(--plastic); background: #ffe3f3; }
+  .claim .fb { margin-top: 8px; font-weight: 700; color: var(--ink-soft); }
+
+  .send { margin-top: 22px; background: #fff8ef; border: 3px solid var(--accent); border-radius: 18px; padding: 16px; }
+  .send h3 { margin: 0 0 8px; }
+  .evidence { background: #ffffff; border: 3px dashed #d8b67a; border-radius: 14px; padding: 12px; white-space: pre-wrap; font-size: 0.98rem; max-height: 260px; overflow: auto; }
+  .spacer { height: 170px; }
+
+  @media (max-width: 720px) {
+    .wrapper-lab { grid-template-columns: 1fr; }
+    .topbar { position: relative; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bub { display: none; }
+    .kelp, .intro-row img, .float-bottle { animation: none; }
+    .fill { transition: none; }
+    .reward { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="scene" aria-hidden="true">
+  <span class="ray" style="left:14%;"></span>
+  <span class="ray" style="left:48%; width:90px;"></span>
+  <span class="ray" style="left:78%; width:150px;"></span>
+  <span class="bub" style="left:10%; width:16px; height:16px; animation-duration:17s;"></span>
+  <span class="bub" style="left:30%; width:10px; height:10px; animation-duration:14s; animation-delay:4s;"></span>
+  <span class="bub" style="left:62%; width:14px; height:14px; animation-duration:20s; animation-delay:7s;"></span>
+  <span class="bub" style="left:84%; width:20px; height:20px; animation-duration:22s; animation-delay:2s;"></span>
+  <div class="seabed">
+    <svg viewBox="0 0 1200 200" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 100 C 180 64 360 124 560 96 C 760 68 980 124 1200 90 L1200 200 L0 200 Z" fill="#e6cf90"/>
+      <path d="M0 124 C 200 104 420 144 640 120 C 880 96 1040 144 1200 120 L1200 200 L0 200 Z" fill="#d9bd72"/>
+      <g class="kelp"><path d="M120 200 C 100 150 140 120 116 70 C 104 44 128 40 124 16" fill="none" stroke="#2f9e44" stroke-width="11" stroke-linecap="round"/></g>
+      <g class="kelp b"><path d="M150 200 C 168 156 134 128 158 84" fill="none" stroke="#3fb45a" stroke-width="9" stroke-linecap="round"/></g>
+      <g class="kelp"><path d="M1050 200 C 1030 150 1070 124 1046 74" fill="none" stroke="#2f9e44" stroke-width="11" stroke-linecap="round"/></g>
+      <g><ellipse cx="470" cy="178" rx="32" ry="18" fill="#ff7a3d"/><circle cx="452" cy="172" r="7" fill="#ffce2e"/></g>
+      <g><path d="M720 196 C 716 172 700 162 706 140 M740 196 C 744 170 762 162 754 138" stroke="#7b4fc4" stroke-width="9" fill="none" stroke-linecap="round"/></g>
+    </svg>
+  </div>
+</div>
+
+<button class="float-bottle" id="egg-bottle" aria-label="A plastic bottle floating where it should not be">
+  <img src="bottle.png" alt="">
+</button>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="back" href="index.html">Back to all activities</a>
+    <span class="stars" id="stars" aria-label="0 of 7 stars earned"></span>
+    <span class="label">Activity 4</span>
+  </div>
+</div>
+<div class="dots" id="dots"></div>
+
+<div class="reward" id="reward" role="status" aria-live="polite" style="position:fixed;left:50%;top:76px;transform:translateX(-50%) translateY(-16px);background:#ffffff;border:4px solid var(--sun);border-radius:18px;padding:12px 18px;box-shadow:0 10px 26px rgba(3,30,50,0.3);display:flex;align-items:center;gap:12px;opacity:0;pointer-events:none;z-index:60;transition:opacity 0.35s ease, transform 0.35s ease;max-width:88%;">
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:42px;height:42px;flex:0 0 auto;"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/></svg>
+  <p id="reward-text" style="margin:0;font-weight:700;font-size:1.08rem;color:var(--ink);">Well done!</p>
+</div>
+
+<main class="wrap">
+  <div class="sheet">
+
+    <section class="step active" id="s-intro">
+      <div class="intro-row">
+        <img src="octopus.png" alt="Captain Inky, a friendly blue octopus wearing a sailor hat">
+        <div>
+          <h1>The <span class="pf">Chocolate Wrapper</span> Test</h1>
+          <p class="lead">Chocolate Day has arrived, but the reef has found the wrappers. Investigate, redesign and pitch a better wrapper.</p>
+          <div class="bubble phantom">"The chocolate was lovely. The wrapper is someone else's problem." &middot; Plastic Phantom</div>
+          <div class="bubble inky">"Not today. A good design protects the chocolate and thinks about what happens next." &middot; Captain Inky</div>
+        </div>
+      </div>
+      <div class="mission-alert">
+        <strong>Mission briefing</strong>
+        <p style="margin:8px 0 0;">Your job is not to say "plastic bad, paper good". Your job is to think like a designer: packaging has a purpose, but poor packaging creates waste.</p>
+        <div class="lights"><span class="light">Investigate</span><span class="light">Design</span><span class="light">Test</span><span class="light">Improve</span><span class="light">Pitch</span></div>
+      </div>
+      <div class="status-strip">
+        <div class="stat"><strong id="bottle-stat">Bottle evidence: not collected</strong><span>Tap the bottle in the bottom corner.</span></div>
+        <div class="stat"><strong>Learning link</strong><span>Design choices, materials, trade-offs and honest eco claims.</span></div>
+      </div>
+      <div class="nav"><button class="btn-next" data-go="1">Start the test</button></div>
+    </section>
+
+    <section class="step" id="s-jobs">
+      <h2>Mission 1: What does a wrapper actually do?</h2>
+      <p>Pick the jobs a chocolate wrapper needs to do. The best answer is not "wrap it in nothing". Food packaging has jobs, but it should not be wasteful.</p>
+      <div class="job-grid" id="jobs"></div>
+      <p class="msg" id="jobs-msg" role="status"></p>
+      <div class="bubble deep"><strong>Deep link for older learners:</strong> A wrapper can reduce food waste by protecting food, but it can also create material waste. Good design balances both problems instead of pretending only one exists.</div>
+      <div class="nav"><button class="btn-back" data-go="0">Back</button><button class="btn-next" data-go="2">Next</button></div>
+    </section>
+
+    <section class="step" id="s-investigate">
+      <h2>Mission 2: Investigate five wrappers</h2>
+      <p>Tap each chocolate bar. Look at the trade-offs: protection, plastic use, recycling, reuse and whether the design is over-packaged.</p>
+      <div class="wrapper-lab">
+        <div class="bar-list" id="bar-list"></div>
+        <div class="inspect" id="inspect">
+          <h3>Choose a wrapper to inspect</h3>
+          <p>Captain Inky wants evidence before anyone starts designing.</p>
+        </div>
+      </div>
+      <p class="msg" id="inspect-msg" role="status"></p>
+      <div class="nav"><button class="btn-back" data-go="1">Back</button><button class="btn-next" data-go="3">Next</button></div>
+    </section>
+
+    <section class="step" id="s-trap">
+      <h2>Mission 3: Plastic Phantom's over-packaging trap</h2>
+      <p>The Phantom has designed a "luxury" chocolate bar with far too many layers. Tap layers to remove them. Keep anything that genuinely helps safety or information.</p>
+      <div class="trap">
+        <div class="bubble phantom">"More layers means more fancy. Also more plastic. Excellent." &middot; Plastic Phantom</div>
+        <div class="layers" id="layers"></div>
+      </div>
+      <p class="msg" id="trap-msg" role="status"></p>
+      <div class="nav"><button class="btn-back" data-go="2">Back</button><button class="btn-next" data-go="4">Next</button></div>
+    </section>
+
+    <section class="step" id="s-design">
+      <h2>Mission 4: Design a better wrapper</h2>
+      <p>Choose the materials and features. Your wrapper should protect the chocolate, use less unnecessary plastic, give clear information and avoid fake eco claims.</p>
+      <label class="field" for="bar-name">Chocolate bar name</label>
+      <input id="bar-name" type="text" maxlength="32" placeholder="Example: Reef Crunch" value="Reef Crunch">
+      <div class="design-grid" id="design-grid"></div>
+      <div class="preview-wrap">
+        <h3>Your wrapper preview</h3>
+        <div class="wrapper-preview ocean" id="wrapper-preview"><div class="name">Reef Crunch</div><div class="strap">recycled paper sleeve · allergy info · recycle guide</div></div>
+        <div class="score-grid" id="score-grid"></div>
+        <p class="hint" id="design-note">Every design is a compromise. Stronger protection can sometimes mean more material; less material can sometimes mean less protection.</p>
+      </div>
+      <div class="nav"><button class="btn-back" data-go="3">Back</button><button class="btn-next" id="test-design" data-go="5">Test my wrapper</button></div>
+    </section>
+
+    <section class="step" id="s-test">
+      <h2>Mission 5: Test and improve</h2>
+      <p>Real designers test ideas. A wrapper that looks good still has to survive bags, heat, shops, allergies and waste.</p>
+      <div class="tests" id="tests"></div>
+      <h3>Choose one improvement</h3>
+      <p>Pick the upgrade that would most improve your design.</p>
+      <div class="choice-grid" id="upgrades"></div>
+      <p class="msg" id="test-msg" role="status"></p>
+      <div class="nav"><button class="btn-back" data-go="4">Back</button><button class="btn-next" data-go="6">Next</button></div>
+    </section>
+
+    <section class="step" id="s-boss">
+      <h2>Boss level: Is paper always better?</h2>
+      <p>The Plastic Phantom is trying to make the debate too simple. Decide whether each claim is <strong>true</strong>, <strong>false</strong> or <strong>it depends</strong>.</p>
+      <div class="boss-grid" id="claims"></div>
+      <p class="msg" id="boss-msg" role="status"></p>
+      <div class="bubble deep"><strong>16+ challenge link:</strong> This is life-cycle thinking. A material can look better at first but still need energy, water, transport, reuse or specialist recycling. The best answer often depends on how the product is used and what happens after.</div>
+      <div class="nav"><button class="btn-back" data-go="5">Back</button><button class="btn-next" data-go="7">Final pitch</button></div>
+    </section>
+
+    <section class="step" id="s-pitch">
+      <h2>Final pitch to Captain Inky</h2>
+      <p>Explain your design. This is the evidence of learning: what you designed, why it works, and what is complicated about it.</p>
+      <div class="two">
+        <div>
+          <label class="field" for="protects">It protects the chocolate by...</label>
+          <textarea id="protects" placeholder="Example: using a paper sleeve with a thin barrier layer so it stays clean in a bag."></textarea>
+          <label class="field" for="lessplastic">It uses less unnecessary plastic because...</label>
+          <textarea id="lessplastic" placeholder="Example: I removed the tray and plastic window."></textarea>
+          <label class="field" for="tradeoff">One thing that is not simple about packaging is...</label>
+          <textarea id="tradeoff" placeholder="Example: paper is not always automatically better if it does not protect the food."></textarea>
+          <label class="field" for="action">One real-world action I could take is...</label>
+          <textarea id="action" placeholder="Example: choose chocolate with less packaging, or check if the wrapper is actually recyclable."></textarea>
+        </div>
+        <div>
+          <label class="field">Sketch a wrapper idea, if useful</label>
+          <div class="draw-tools" id="swatches" aria-label="Pick a colour"></div>
+          <canvas id="pad" width="640" height="300" aria-label="Drawing area"></canvas>
+          <div class="nav" style="margin-top:10px;"><button class="btn-ghost" id="clear-pad">Clear drawing</button><button class="btn-ghost" id="dl-pad">Download drawing</button></div>
+        </div>
+      </div>
+      <div class="send">
+        <h3>Send your evidence to Jay</h3>
+        <p style="margin:0 0 10px;">The email will include your wrapper choices, test results, boss-level thinking and final pitch.</p>
+        <button id="build-evidence" class="btn-dark">Build evidence preview</button>
+        <div class="evidence" id="evidence" style="margin-top:12px;">Evidence preview will appear here.</div>
+        <div class="nav"><button id="send-btn" class="btn-next">Send to Jay</button><a class="btnlink" href="index.html">All done</a></div>
+        <p class="msg" id="send-msg" role="status"></p>
+      </div>
+      <div class="nav"><button class="btn-back" data-go="6">Back</button></div>
+    </section>
+
+  </div>
+</main>
+<div class="spacer"></div>
+
+<script>
+"use strict";
+
+var NS = "pfj.a4.";
+var TOTAL_STARS = 7;
+function save(key, value) { try { localStorage.setItem(NS + key, value); } catch (e) {} }
+function load(key) { try { return localStorage.getItem(NS + key); } catch (e) { return null; } }
+function byId(id) { return document.getElementById(id); }
+
+var state = {
+  step: 0,
+  stars: [],
+  bottle: load("bottle") === "yes",
+  jobs: [],
+  inspected: [],
+  selectedBar: null,
+  removed: [],
+  design: { material: "recycled paper sleeve", closure: "paper band", info: "allergy info + recycle guide", style: "ocean" },
+  tests: [],
+  upgrade: "",
+  boss: {},
+  drawColour: "#06243d"
+};
+try { state.stars = JSON.parse(load("stars") || "[]"); } catch (e) { state.stars = []; }
+try { state.jobs = JSON.parse(load("jobs") || "[]"); } catch (e) { state.jobs = []; }
+try { state.inspected = JSON.parse(load("inspected") || "[]"); } catch (e) { state.inspected = []; }
+try { state.removed = JSON.parse(load("removed") || "[]"); } catch (e) { state.removed = []; }
+try { state.design = Object.assign(state.design, JSON.parse(load("design") || "{}")); } catch (e) {}
+try { state.boss = JSON.parse(load("boss") || "{}"); } catch (e) { state.boss = {}; }
+state.upgrade = load("upgrade") || "";
+
+function starSvg() {
+  return '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/></svg>';
+}
+function renderStars() {
+  var html = "";
+  for (var i = 0; i < state.stars.length; i++) { html += starSvg(); }
+  html += '<span class="star-label">' + state.stars.length + '/' + TOTAL_STARS + ' stars</span>';
+  byId("stars").innerHTML = html;
+  byId("stars").setAttribute("aria-label", state.stars.length + " of " + TOTAL_STARS + " stars earned");
+  save("stars", JSON.stringify(state.stars));
+}
+function award(id, text) {
+  if (state.stars.indexOf(id) === -1) {
+    state.stars.push(id);
+    renderStars();
+    showReward(text || "Star earned");
+  }
+}
+function showReward(text) {
+  var r = byId("reward");
+  byId("reward-text").textContent = text;
+  r.style.opacity = "1";
+  r.style.transform = "translateX(-50%) translateY(0)";
+  clearTimeout(r._t);
+  r._t = setTimeout(function () {
+    r.style.opacity = "0";
+    r.style.transform = "translateX(-50%) translateY(-16px)";
+  }, 3200);
+}
+
+var stepIds = ["s-intro", "s-jobs", "s-investigate", "s-trap", "s-design", "s-test", "s-boss", "s-pitch"];
+function renderDots() {
+  var d = byId("dots");
+  d.innerHTML = "";
+  stepIds.forEach(function (_, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", "Go to section " + (i + 1));
+    if (i === state.step) { b.className = "on"; }
+    b.addEventListener("click", function () { go(i); });
+    d.appendChild(b);
+  });
+}
+function go(n) {
+  state.step = Math.max(0, Math.min(stepIds.length - 1, n));
+  stepIds.forEach(function (id, i) { byId(id).classList.toggle("active", i === state.step); });
+  renderDots();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function wireNav() {
+  document.querySelectorAll("[data-go]").forEach(function (el) {
+    el.addEventListener("click", function () { go(parseInt(el.getAttribute("data-go"), 10)); });
+  });
+}
+
+function wireBottle() {
+  var b = byId("egg-bottle");
+  function updateBottle() {
+    byId("bottle-stat").textContent = state.bottle ? "Bottle evidence: collected" : "Bottle evidence: not collected";
+    b.classList.toggle("collected", state.bottle);
+  }
+  b.addEventListener("click", function () {
+    if (!state.bottle) {
+      state.bottle = true;
+      save("bottle", "yes");
+      award("bottle", "Bottle evidence collected");
+      updateBottle();
+    } else {
+      showReward("Already bagged as evidence. Nice spot.");
+    }
+  });
+  updateBottle();
+}
+
+var JOBS = [
+  { id: "clean", icon: "C", title: "Keep food clean", good: true, fb: "Yes. Food packaging helps keep food safe and clean." },
+  { id: "protect", icon: "P", title: "Protect it in a bag", good: true, fb: "Yes. Chocolate can snap, rub or get messy without protection." },
+  { id: "allergy", icon: "A", title: "Show allergy information", good: true, fb: "Yes. Allergy information is not optional decoration; it can keep people safe." },
+  { id: "brand", icon: "B", title: "Help people know what it is", good: true, fb: "Yes. A product needs clear information, but it does not need loads of extra layers." },
+  { id: "fancy", icon: "F", title: "Look expensive with extra layers", good: false, fb: "Not a key job. Fancy layers often create waste without protecting the food." },
+  { id: "forever", icon: "X", title: "Last in the ocean forever", good: false, fb: "Definitely not. The wrapper should have a sensible after-use plan." }
+];
+function renderJobs() {
+  var box = byId("jobs");
+  box.innerHTML = "";
+  JOBS.forEach(function (j) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "job" + (state.jobs.indexOf(j.id) > -1 ? " chosen" : "");
+    btn.innerHTML = '<span class="mini">' + j.icon + '</span><strong>' + j.title + '</strong><span class="hint">Tap to choose</span>';
+    btn.addEventListener("click", function () {
+      if (state.jobs.indexOf(j.id) > -1) { state.jobs = state.jobs.filter(function (x) { return x !== j.id; }); }
+      else { state.jobs.push(j.id); }
+      save("jobs", JSON.stringify(state.jobs));
+      byId("jobs-msg").textContent = j.fb;
+      byId("jobs-msg").className = "msg " + (j.good ? "good" : "try");
+      renderJobs();
+      var goodPicked = JOBS.filter(function (x) { return x.good && state.jobs.indexOf(x.id) > -1; }).length;
+      var badPicked = JOBS.filter(function (x) { return !x.good && state.jobs.indexOf(x.id) > -1; }).length;
+      if (goodPicked >= 4 && badPicked === 0) { award("jobs", "Wrapper jobs understood"); }
+    });
+    box.appendChild(btn);
+  });
+}
+
+var BARS = [
+  { id: "snap", name: "Choco Snap", type: "Shiny plastic flow-wrap", icon: "plastic", protect: 85, plastic: 90, recycle: 20, reuse: 5, waste: 75, tags: ["single-use", "flexible plastic"], note: "It protects the chocolate well, but flexible plastic wrappers are often hard to recycle in normal bins.", older: "This is a barrier-material trade-off: good protection, weak end-of-life plan." },
+  { id: "foil", name: "Foil Bite", type: "Paper sleeve + foil", icon: "foil", protect: 75, plastic: 15, recycle: 65, reuse: 10, waste: 35, tags: ["separable parts", "less plastic"], note: "Paper and foil can work well if the layers separate. If materials are stuck together, recycling becomes harder.", older: "Composite packaging is the tricky bit: separate layers are easier than laminated layers." },
+  { id: "mega", name: "Mega Munch", type: "Plastic tray + wrap + card", icon: "tray", protect: 95, plastic: 95, recycle: 25, reuse: 5, waste: 95, tags: ["over-packaged", "plastic tray"], note: "The tray looks premium, but it may not be needed. This is the Phantom's favourite kind of design.", older: "Over-packaging often adds marketing value more than functional value." },
+  { id: "eco", name: "Eco Bean", type: "Paper wrapper", icon: "paper", protect: 45, plastic: 5, recycle: 70, reuse: 10, waste: 25, tags: ["low plastic", "protection risk"], note: "Low plastic is good, but chocolate still needs protection from grease, crumbs and melting mess.", older: "Low material impact can be undermined if the product gets damaged or wasted." },
+  { id: "refill", name: "Refill Chunk", type: "Reusable tin", icon: "tin", protect: 90, plastic: 5, recycle: 80, reuse: 95, waste: 20, tags: ["reusable", "needs repeat use"], note: "A reusable tin can be strong, but it only becomes a real win if people actually reuse it.", older: "Reusable systems depend on behaviour. The design is only half the solution." }
+];
+function renderBars() {
+  var list = byId("bar-list");
+  list.innerHTML = "";
+  BARS.forEach(function (bar) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "bar-btn" + (state.inspected.indexOf(bar.id) > -1 ? " done" : "") + (state.selectedBar === bar.id ? " on" : "");
+    btn.innerHTML = '<span class="bar-icon ' + bar.icon + '">' + bar.name.split(" ")[0].charAt(0) + '</span><span><strong>' + bar.name + '</strong><br><span class="hint">' + bar.type + '</span></span>';
+    btn.addEventListener("click", function () { inspectBar(bar.id); });
+    list.appendChild(btn);
+  });
+}
+function meter(label, val, invert) {
+  var goodClass = invert ? (val > 65 ? "bad" : val < 35 ? "good" : "") : (val > 65 ? "good" : val < 35 ? "bad" : "");
+  return '<div class="meter"><label><span>' + label + '</span><span>' + val + '/100</span></label><div class="track"><div class="fill ' + goodClass + '" style="width:' + val + '%"></div></div></div>';
+}
+function inspectBar(id) {
+  var bar = BARS.find(function (b) { return b.id === id; });
+  state.selectedBar = id;
+  if (state.inspected.indexOf(id) === -1) { state.inspected.push(id); }
+  save("inspected", JSON.stringify(state.inspected));
+  var html = '<h3>' + bar.name + '</h3><p><strong>Wrapper:</strong> ' + bar.type + '</p>';
+  html += '<div class="tags">' + bar.tags.map(function (t) { return '<span class="tag ' + (t.indexOf("over") > -1 || t.indexOf("plastic") > -1 ? "warn" : "good") + '">' + t + '</span>'; }).join("") + '</div>';
+  html += meter("Protects chocolate", bar.protect, false);
+  html += meter("Plastic used", bar.plastic, true);
+  html += meter("Recycling chance", bar.recycle, false);
+  html += meter("Reuse value", bar.reuse, false);
+  html += meter("Waste risk", bar.waste, true);
+  html += '<p><strong>Finding:</strong> ' + bar.note + '</p><p class="hint"><strong>Older learner link:</strong> ' + bar.older + '</p>';
+  byId("inspect").innerHTML = html;
+  byId("inspect-msg").textContent = state.inspected.length + "/5 wrappers inspected";
+  byId("inspect-msg").className = "msg good";
+  renderBars();
+  if (state.inspected.length >= 5) { award("inspect", "Five wrappers investigated"); }
+}
+
+var LAYERS = [
+  { id: "film", name: "Outer plastic film", kind: "plastic", remove: true, why: "Good removal. It adds single-use plastic." },
+  { id: "tray", name: "Plastic display tray", kind: "plastic", remove: true, why: "Good removal. The tray is mostly for looks." },
+  { id: "window", name: "Tiny plastic window", kind: "plastic", remove: true, why: "Good removal. You can show the chocolate with a picture instead." },
+  { id: "sleeve", name: "Cardboard sleeve", kind: "card", remove: false, why: "Careful. A simple sleeve can hold key information." },
+  { id: "foil", name: "Thin foil barrier", kind: "foil", remove: false, why: "It might be useful if it protects the chocolate and separates from the paper." },
+  { id: "allergy", name: "Allergy and ingredient label", kind: "paper", remove: false, why: "Keep this. Food information matters." }
+];
+function renderLayers() {
+  var box = byId("layers");
+  box.innerHTML = "";
+  LAYERS.forEach(function (l) {
+    var chosen = state.removed.indexOf(l.id) > -1;
+    var row = document.createElement("button");
+    row.type = "button";
+    row.className = "layer " + l.kind + (chosen ? " remove" : "");
+    row.innerHTML = '<span class="left"><span class="piece"></span><span><strong>' + l.name + '</strong><br><span class="hint">' + (l.remove ? "Probably unnecessary" : "Probably useful") + '</span></span></span><span class="state">' + (chosen ? "Remove" : "Keep") + '</span>';
+    row.addEventListener("click", function () {
+      if (chosen) { state.removed = state.removed.filter(function (x) { return x !== l.id; }); }
+      else { state.removed.push(l.id); }
+      save("removed", JSON.stringify(state.removed));
+      byId("trap-msg").textContent = l.why;
+      byId("trap-msg").className = "msg " + (l.remove ? "good" : "try");
+      renderLayers();
+      checkTrap();
+    });
+    box.appendChild(row);
+  });
+}
+function checkTrap() {
+  var correctRemoved = LAYERS.filter(function (l) { return l.remove && state.removed.indexOf(l.id) > -1; }).length;
+  var wronglyRemoved = LAYERS.filter(function (l) { return !l.remove && state.removed.indexOf(l.id) > -1; }).length;
+  if (correctRemoved === 3 && wronglyRemoved === 0) {
+    byId("trap-msg").textContent = "Strong redesign: you removed unnecessary plastic and kept the useful information/protection.";
+    byId("trap-msg").className = "msg good";
+    award("trap", "Over-packaging trap defeated");
+  }
+}
+
+var DESIGN_GROUPS = [
+  { key: "material", title: "Main material", opts: ["recycled paper sleeve", "paper + separable foil", "compostable film", "reusable tin", "plastic flow-wrap"] },
+  { key: "closure", title: "Closure", opts: ["paper band", "folded ends", "small sticker", "reusable clip", "heat seal"] },
+  { key: "info", title: "Information", opts: ["allergy info + recycle guide", "allergy info only", "recycle guide only", "big eco claim", "QR code + clear label"] },
+  { key: "style", title: "Visual style", opts: ["ocean", "bold", "simple", "premium"] }
+];
+function renderDesign() {
+  var grid = byId("design-grid");
+  grid.innerHTML = "";
+  DESIGN_GROUPS.forEach(function (g) {
+    var box = document.createElement("div");
+    box.className = "design-box";
+    box.innerHTML = '<h3>' + g.title + '</h3>';
+    g.opts.forEach(function (o) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "option" + (state.design[g.key] === o ? " selected" : "");
+      b.textContent = o;
+      b.addEventListener("click", function () {
+        state.design[g.key] = o;
+        save("design", JSON.stringify(state.design));
+        updatePreview();
+        renderDesign();
+      });
+      box.appendChild(b);
+    });
+    grid.appendChild(box);
+  });
+  updatePreview();
+}
+function designScores() {
+  var d = state.design;
+  var protect = 60, plastic = 60, info = 60, reuse = 20;
+  if (d.material === "reusable tin") { protect += 30; plastic += 30; reuse += 70; }
+  if (d.material === "paper + separable foil") { protect += 20; plastic += 22; reuse += 5; }
+  if (d.material === "recycled paper sleeve") { protect += 5; plastic += 28; }
+  if (d.material === "compostable film") { protect += 15; plastic += 18; }
+  if (d.material === "plastic flow-wrap") { protect += 25; plastic -= 35; }
+  if (d.closure === "reusable clip") { reuse += 18; }
+  if (d.closure === "heat seal") { protect += 12; plastic -= 5; }
+  if (d.closure === "paper band") { plastic += 10; }
+  if (d.info.indexOf("allergy") > -1) { info += 22; }
+  if (d.info.indexOf("recycle") > -1 || d.info.indexOf("clear") > -1) { info += 18; plastic += 5; }
+  if (d.info === "big eco claim") { info -= 30; }
+  return { protect: Math.max(0, Math.min(100, protect)), plastic: Math.max(0, Math.min(100, plastic)), info: Math.max(0, Math.min(100, info)), reuse: Math.max(0, Math.min(100, reuse)) };
+}
+function updatePreview() {
+  var name = byId("bar-name").value.trim() || "Reef Crunch";
+  var p = byId("wrapper-preview");
+  p.className = "wrapper-preview " + state.design.style;
+  p.innerHTML = '<div class="name">' + escapeHtml(name) + '</div><div class="strap">' + state.design.material + ' · ' + state.design.info + '</div>';
+  var s = designScores();
+  byId("score-grid").innerHTML = '<div class="score"><span>' + s.protect + '</span>Protection</div><div class="score"><span>' + s.plastic + '</span>Less plastic</div><div class="score"><span>' + s.info + '</span>Clear info</div><div class="score"><span>' + s.reuse + '</span>Reuse value</div>';
+  save("design", JSON.stringify(state.design));
+  if (s.protect >= 70 && s.plastic >= 70 && s.info >= 75) { award("design", "Balanced wrapper designed"); }
+}
+function escapeHtml(txt) {
+  return String(txt).replace(/[&<>"]/g, function (m) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]; });
+}
+
+var UPGRADE_OPTIONS = [
+  { id: "allergy", title: "Make allergy information clearer", fb: "Good. Safety information matters more than decoration." },
+  { id: "remove", title: "Remove the unnecessary tray/window", fb: "Good. Less unnecessary material is a real improvement." },
+  { id: "barrier", title: "Add a separable barrier layer", fb: "Good if it protects the chocolate and can be separated afterwards." },
+  { id: "reuse", title: "Make the pack genuinely reusable", fb: "Good, as long as people actually reuse it." }
+];
+function runTests() {
+  var s = designScores();
+  var d = state.design;
+  var tests = [
+    { id: "bag", title: "Bag test", val: s.protect, pass: s.protect >= 70, text: s.protect >= 70 ? "Likely to survive in a school bag." : "Might tear, rub or make a chocolate mess." },
+    { id: "heat", title: "Heat/grease test", val: s.protect + (d.material.indexOf("foil") > -1 ? 10 : 0), pass: s.protect >= 75 || d.material.indexOf("foil") > -1, text: s.protect >= 75 || d.material.indexOf("foil") > -1 ? "Good barrier thinking." : "May need a better barrier, especially in warm weather." },
+    { id: "shop", title: "Shop test", val: d.style ? 80 : 40, pass: true, text: "People can identify the product and brand." },
+    { id: "allergy", title: "Allergy test", val: s.info, pass: s.info >= 75, text: s.info >= 75 ? "Clear safety information included." : "Needs clearer allergy and ingredient information." },
+    { id: "waste", title: "Waste test", val: s.plastic + s.reuse / 3, pass: s.plastic >= 70 || s.reuse >= 80, text: s.plastic >= 70 || s.reuse >= 80 ? "Better end-of-life plan than a single-use plastic wrap." : "Still creates a waste problem after the chocolate is gone." }
+  ];
+  state.tests = tests;
+  var box = byId("tests");
+  box.innerHTML = "";
+  tests.forEach(function (t) {
+    var div = document.createElement("div");
+    div.className = "test " + (t.pass ? "pass" : "warn");
+    div.innerHTML = '<h3>' + t.title + '<span>' + (t.pass ? "PASS" : "CHECK") + '</span></h3><p class="result">' + t.text + '</p>';
+    box.appendChild(div);
+  });
+  renderUpgrades();
+  award("test", "Wrapper tested like a designer");
+}
+function renderUpgrades() {
+  var box = byId("upgrades");
+  box.innerHTML = "";
+  UPGRADE_OPTIONS.forEach(function (u) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "upgrade" + (state.upgrade === u.id ? " chosen" : "");
+    b.innerHTML = '<strong>' + u.title + '</strong><span class="hint">' + u.fb + '</span>';
+    b.addEventListener("click", function () {
+      state.upgrade = u.id;
+      save("upgrade", u.id);
+      byId("test-msg").textContent = u.fb;
+      byId("test-msg").className = "msg good";
+      renderUpgrades();
+      award("improve", "Design improvement chosen");
+    });
+    box.appendChild(b);
+  });
+}
+
+var CLAIMS = [
+  { id: "paper", text: "Paper is always better than plastic.", ans: "It depends", fb: "It depends. Paper can be better, but it still uses resources and may not protect food well enough." },
+  { id: "recycle", text: "If a wrapper says recyclable, recycling is guaranteed.", ans: "False", fb: "False. It depends on local facilities, contamination and whether the materials are separable." },
+  { id: "reuse", text: "Reusable packaging only helps if people actually reuse it.", ans: "True", fb: "True. Reuse depends on behaviour, not just the object." },
+  { id: "foodwaste", text: "A little packaging can sometimes prevent a bigger food-waste problem.", ans: "True", fb: "True. Packaging can be useful when it prevents food being damaged or wasted." },
+  { id: "green", text: "An eco-looking leaf on the wrapper proves the product is better.", ans: "False", fb: "False. That could be greenwashing unless the claim is specific and honest." },
+  { id: "ban", text: "All plastic packaging should disappear immediately.", ans: "It depends", fb: "It depends. Reducing unnecessary plastic is good, but some packaging has safety, hygiene or protection roles." }
+];
+function renderClaims() {
+  var box = byId("claims");
+  box.innerHTML = "";
+  CLAIMS.forEach(function (c) {
+    var picked = state.boss[c.id];
+    var div = document.createElement("div");
+    var cls = "claim";
+    if (picked) { cls += picked === c.ans ? " good" : " try"; }
+    div.className = cls;
+    div.innerHTML = '<div class="claim-text">' + c.text + '</div><div class="claim-opts"></div><div class="fb">' + (picked ? c.fb : "") + '</div>';
+    var opts = div.querySelector(".claim-opts");
+    ["True", "False", "It depends"].forEach(function (o) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = o;
+      if (picked === o) { b.className = "picked"; }
+      b.addEventListener("click", function () {
+        state.boss[c.id] = o;
+        save("boss", JSON.stringify(state.boss));
+        byId("boss-msg").textContent = c.fb;
+        byId("boss-msg").className = "msg " + (o === c.ans ? "good" : "try");
+        renderClaims();
+        var correct = CLAIMS.filter(function (x) { return state.boss[x.id] === x.ans; }).length;
+        if (correct >= 5) { award("boss", "Boss level thinking unlocked"); }
+      });
+      opts.appendChild(b);
+    });
+    box.appendChild(div);
+  });
+}
+
+function buildEvidence() {
+  var s = designScores();
+  var name = byId("bar-name").value.trim() || "Reef Crunch";
+  var correctBoss = CLAIMS.filter(function (x) { return state.boss[x.id] === x.ans; }).length;
+  var goodJobs = JOBS.filter(function (x) { return x.good && state.jobs.indexOf(x.id) > -1; }).map(function (x) { return x.title; });
+  var inspectedNames = state.inspected.map(function (id) { return BARS.find(function (b) { return b.id === id; }).name; });
+  var removedNames = state.removed.map(function (id) { return LAYERS.find(function (l) { return l.id === id; }).name; });
+  var tests = state.tests.length ? state.tests : [];
+  var testLines = tests.map(function (t) { return "- " + t.title + ": " + (t.pass ? "PASS" : "CHECK") + " - " + t.text; }).join("\n");
+  var upgrade = UPGRADE_OPTIONS.find(function (u) { return u.id === state.upgrade; });
+  var text = "PLASTIC FREE JULY - ACTIVITY 4 EVIDENCE\n";
+  text += "Activity: The Chocolate Wrapper Test\n";
+  text += "Chocolate bar name: " + name + "\n";
+  text += "Stars earned: " + state.stars.length + "/" + TOTAL_STARS + "\n";
+  text += "Bottle evidence collected: " + (state.bottle ? "Yes" : "No") + "\n\n";
+  text += "WRAPPER JOBS SELECTED\n" + (goodJobs.length ? goodJobs.join("\n") : "No jobs selected yet") + "\n\n";
+  text += "WRAPPERS INVESTIGATED\n" + (inspectedNames.length ? inspectedNames.join(", ") : "None yet") + "\n\n";
+  text += "OVER-PACKAGING REMOVED\n" + (removedNames.length ? removedNames.join(", ") : "None yet") + "\n\n";
+  text += "MY DESIGN\n";
+  text += "Material: " + state.design.material + "\n";
+  text += "Closure: " + state.design.closure + "\n";
+  text += "Information: " + state.design.info + "\n";
+  text += "Style: " + state.design.style + "\n";
+  text += "Scores: protection " + s.protect + ", less plastic " + s.plastic + ", clear info " + s.info + ", reuse " + s.reuse + "\n\n";
+  text += "TEST RESULTS\n" + (testLines || "Tests not run yet") + "\n";
+  text += "Improvement chosen: " + (upgrade ? upgrade.title : "None yet") + "\n\n";
+  text += "BOSS LEVEL\nCorrect verdicts: " + correctBoss + "/" + CLAIMS.length + "\n";
+  CLAIMS.forEach(function (c) { text += "- " + c.text + " Answer: " + (state.boss[c.id] || "Not answered") + "\n"; });
+  text += "\nFINAL PITCH\n";
+  text += "It protects the chocolate by: " + (byId("protects").value || "") + "\n";
+  text += "It uses less unnecessary plastic because: " + (byId("lessplastic").value || "") + "\n";
+  text += "One thing that is not simple about packaging is: " + (byId("tradeoff").value || "") + "\n";
+  text += "One real-world action I could take is: " + (byId("action").value || "") + "\n";
+  byId("evidence").textContent = text;
+  save("lastEvidence", text);
+  award("pitch", "Final pitch evidence built");
+  return text;
+}
+function wireEmail() {
+  byId("build-evidence").addEventListener("click", function () { buildEvidence(); });
+  byId("send-btn").addEventListener("click", function () {
+    var text = buildEvidence();
+    var subject = "Plastic Free July Activity 4 Evidence - Chocolate Wrapper Test";
+    var body = text + "\n\nDrawing note: if a drawing was made, download it and attach it separately.";
+    window.location.href = "mailto:jay.raine@chiltonbridgeschool.co.uk?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+    byId("send-msg").textContent = "Email opened. Press send in the email window.";
+    byId("send-msg").className = "msg good";
+  });
+}
+
+function setupCanvas() {
+  var canvas = byId("pad");
+  var ctx = canvas.getContext("2d");
+  ctx.lineWidth = 5;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = state.drawColour;
+  var drawing = false;
+  function pos(e) {
+    var r = canvas.getBoundingClientRect();
+    var p = e.touches ? e.touches[0] : e;
+    return { x: (p.clientX - r.left) * (canvas.width / r.width), y: (p.clientY - r.top) * (canvas.height / r.height) };
+  }
+  function start(e) { drawing = true; var p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
+  function move(e) { if (!drawing) { return; } var p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); }
+  function end() { drawing = false; }
+  canvas.addEventListener("mousedown", start); canvas.addEventListener("mousemove", move); window.addEventListener("mouseup", end);
+  canvas.addEventListener("touchstart", start, { passive: false }); canvas.addEventListener("touchmove", move, { passive: false }); canvas.addEventListener("touchend", end);
+  var colours = ["#06243d", "#ff1e9c", "#ff9e2c", "#2fa84f", "#1e7fd0", "#6b3f25"];
+  var box = byId("swatches");
+  colours.forEach(function (c) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "swatch" + (c === state.drawColour ? " sel" : "");
+    b.style.background = c;
+    b.setAttribute("aria-label", "Pick colour " + c);
+    b.addEventListener("click", function () {
+      state.drawColour = c;
+      ctx.strokeStyle = c;
+      document.querySelectorAll(".swatch").forEach(function (x) { x.classList.remove("sel"); });
+      b.classList.add("sel");
+    });
+    box.appendChild(b);
+  });
+  byId("clear-pad").addEventListener("click", function () { ctx.clearRect(0, 0, canvas.width, canvas.height); });
+  byId("dl-pad").addEventListener("click", function () {
+    var a = document.createElement("a");
+    a.download = "chocolate-wrapper-design.png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+  });
+}
+
+function init() {
+  renderStars();
+  renderDots();
+  wireNav();
+  wireBottle();
+  renderJobs();
+  renderBars();
+  renderLayers();
+  renderDesign();
+  renderClaims();
+  setupCanvas();
+  wireEmail();
+  byId("bar-name").addEventListener("input", updatePreview);
+  byId("test-design").addEventListener("click", runTests);
+  if (state.selectedBar) { inspectBar(state.selectedBar); }
+  if (state.bottle) { byId("egg-bottle").classList.add("collected"); }
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
