@@ -61,9 +61,29 @@
   .kelp { transform-origin: bottom center; animation: sway 9s ease-in-out infinite alternate; }
   .kelp.b { animation-duration: 11s; }
   @keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
-  .float-bottle { position: absolute; bottom: 64px; left: 6%; width: clamp(74px, 11vw, 120px); height: auto;
+
+  /* ---- easter eggs: the floating bottle and the hiding Phantom ---- */
+  .float-bottle { position: fixed; bottom: 64px; left: 6%; width: clamp(74px, 11vw, 120px);
+    background: none; border: none; padding: 0; cursor: pointer; z-index: 5;
     filter: drop-shadow(0 8px 12px rgba(3,30,50,0.32)); animation: floatb 7s ease-in-out infinite; }
+  .float-bottle img { width: 100%; height: auto; display: block; }
+  .float-bottle:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; border-radius: 14px; }
   @keyframes floatb { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-15px) rotate(3deg); } }
+  .hide-phantom { position: fixed; bottom: 4px; right: 9%; width: 46px; height: 52px;
+    background: none; border: none; padding: 0; cursor: pointer; z-index: 4;
+    transform: rotate(-7deg); transition: transform 0.3s ease; }
+  .hide-phantom svg { width: 100%; height: 100%; display: block; }
+  .hide-phantom.duck { transform: rotate(-7deg) translateY(30px); }
+  .hide-phantom:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; border-radius: 10px; }
+
+  /* ---- reward toast ---- */
+  .reward { position: fixed; left: 50%; top: 24px; transform: translateX(-50%) translateY(-16px);
+    background: #ffffff; border: 4px solid var(--sun); border-radius: 18px; padding: 12px 18px;
+    box-shadow: 0 10px 26px rgba(3,30,50,0.3); display: flex; align-items: center; gap: 12px;
+    opacity: 0; pointer-events: none; z-index: 60; transition: opacity 0.35s ease, transform 0.35s ease; max-width: 88%; }
+  .reward.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .reward svg { width: 42px; height: 42px; flex: 0 0 auto; }
+  .reward p { margin: 0; font-weight: 700; font-size: 1.08rem; color: var(--ink); }
 
   /* ---- hero ---- */
   .hero {
@@ -84,18 +104,34 @@
   }
   .hero h1 .pf { color: var(--sun); }
   .hero p.lead { font-size: 1.25rem; margin: 0; max-width: 30ch; }
+  .bigq { margin: 12px 0 0; font-size: 1.15rem; font-weight: 700; color: var(--sun); }
+  .inkysay {
+    margin-top: 12px; display: inline-block; background: rgba(255,255,255,0.16);
+    border: 2px solid rgba(255,255,255,0.4); border-radius: 14px; padding: 8px 14px;
+    font-weight: 700; font-size: 1.02rem;
+  }
 
   .pinkkey {
     margin-top: 28px; background: rgba(255,255,255,0.14);
     border: 2px solid rgba(255,255,255,0.4); border-radius: 16px;
     padding: 14px 16px; display: flex; align-items: center; gap: 14px; max-width: 540px;
+    cursor: pointer; text-align: left; color: inherit; font: inherit; flex-wrap: wrap;
   }
+  .pinkkey:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; }
   .pinkkey img { width: 60px; height: 60px; object-fit: contain; flex: 0 0 auto;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
   .pinkkey .swatch { width: 20px; height: 20px; border-radius: 5px; background: var(--plastic);
     display: inline-block; vertical-align: middle; border: 2px solid #ffffff; }
-  .pinkkey p { margin: 0; font-size: 1.02rem; }
+  .pinkkey p { margin: 0; font-size: 1.02rem; flex: 1 1 260px; }
   .pinkkey strong { color: #ffd6ee; }
+  .pinkkey .keyhint { flex: 1 1 100%; font-size: 0.95rem; opacity: 0.85; font-weight: 700; margin-top: 4px; }
+  .pinkkey .keyreply {
+    flex: 1 1 100%; margin-top: 8px; background: rgba(255,255,255,0.18);
+    border: 2px solid rgba(255,255,255,0.5); border-radius: 12px; padding: 8px 12px;
+    font-weight: 700; font-size: 1rem;
+  }
+  .pinkkey.locked .keyhint { display: none; }
+  .pinkkey.locked .swatch { box-shadow: 0 0 0 4px rgba(255,206,46,0.55); }
 
   /* ---- intro ---- */
   .intro { padding: 30px 0 4px; }
@@ -120,6 +156,8 @@
   }
   .card:hover, .card:focus-visible { transform: translateY(-5px); box-shadow: 0 16px 30px rgba(3,30,50,0.38); outline: none; }
   .card:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; }
+  .card.soon { pointer-events: none; filter: grayscale(0.55); opacity: 0.75; }
+  .card.soon:hover { transform: none; box-shadow: 0 10px 24px rgba(3,30,50,0.28); }
   .card .band {
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     color: #ffffff; padding: 16px 18px 30px; position: relative; display: flex; align-items: center; gap: 14px;
@@ -140,10 +178,20 @@
     font-weight: 700; font-size: 1.08rem; padding: 11px 22px; border-radius: 999px;
     box-shadow: 0 4px 0 var(--accent2);
   }
+  .card.soon .go { background: #8ba4b3; box-shadow: 0 4px 0 #6d8593; }
   .tag {
     display: inline-block; font-size: 0.86rem; font-weight: 700; background: var(--coral);
     color: #ffffff; padding: 4px 11px; border-radius: 999px; margin-bottom: 10px;
+    align-self: flex-start;
   }
+  .bosschip {
+    display: inline-block; font-size: 0.82rem; font-weight: 700; background: var(--ink);
+    color: var(--sun); padding: 4px 11px; border-radius: 8px; letter-spacing: 1px;
+    margin-bottom: 12px; align-self: flex-start;
+  }
+  .progress { display: flex; gap: 4px; align-items: center; min-height: 20px; margin-bottom: 10px; }
+  .progress svg { width: 20px; height: 20px; display: block; }
+  .progress .plabel { font-size: 0.92rem; font-weight: 700; color: var(--ink-soft); margin-left: 4px; }
 
   footer { margin-top: 26px; padding: 22px 0 200px; color: #eaf6fb; font-size: 0.98rem; }
   footer .wrap { border-top: 2px solid rgba(255,255,255,0.3); padding-top: 16px; }
@@ -153,7 +201,9 @@
     .kelp { animation: none; }
     .hero img.octo { animation: none; }
     .float-bottle { animation: none; }
+    .hide-phantom { transition: none; }
     .card { transition: none; }
+    .reward { transition: none; }
   }
 </style>
 </head>
@@ -181,7 +231,26 @@
       <g><circle cx="300" cy="184" r="10" fill="#ff7a3d"/><circle cx="318" cy="186" r="7" fill="#ffce2e"/><circle cx="286" cy="188" r="6" fill="#7b4fc4"/></g>
     </svg>
   </div>
-  <img class="float-bottle" src="bottle.png" alt="">
+</div>
+
+<button class="float-bottle" id="egg-bottle" aria-label="A plastic bottle floating where it should not be">
+  <img src="bottle.png" alt="">
+</button>
+
+<button class="hide-phantom" id="egg-phantom" aria-label="A suspicious pink something, hiding by the seabed">
+  <svg viewBox="0 0 46 52" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M14 6 C 14 1 20 1 20 6 M26 6 C 26 1 32 1 32 6" fill="none" stroke="#c40d74" stroke-width="3" stroke-linecap="round"/>
+    <path d="M8 8 H38 L41 46 C 41 50 36 51 32 50 L23 47 L14 50 C 10 51 5 50 5 46 Z" fill="#ff1e9c" stroke="#c40d74" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M13 20 L20 24 M33 20 L26 24" stroke="#06243d" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="18" cy="27" r="2.4" fill="#06243d"/>
+    <circle cx="28" cy="27" r="2.4" fill="#06243d"/>
+    <path d="M17 36 C 20 33 26 33 29 36" fill="none" stroke="#06243d" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+</button>
+
+<div class="reward" id="reward" role="status" aria-live="polite">
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/></svg>
+  <p id="reward-text">Well done!</p>
 </div>
 
 <header class="hero">
@@ -191,14 +260,18 @@
       <div>
         <h1><span class="pf">Plastic</span> Free July</h1>
         <p class="lead">Five things to find out about plastic, with Captain Inky.</p>
+        <p class="bigq">Big question: is plastic a friend or an enemy?</p>
+        <p class="inkysay" id="inky-say">"Start anywhere. There is no wrong door." &middot; Captain Inky</p>
       </div>
     </div>
-    <div class="pinkkey">
+    <button class="pinkkey" id="pinkkey" aria-expanded="false">
       <img src="villain.png" alt="The Plastic Phantom, a pink plastic bag with a grumpy face">
       <p>Watch out for the <strong>pink</strong>. In here, <span class="swatch"></span> <strong>pink always means plastic</strong>. That is the Plastic Phantom, and it turns up everywhere.</p>
-    </div>
+      <span class="keyhint">Tap the pink to lock it in.</span>
+      <span class="keyreply" id="keyreply" hidden>"That's the one. Now you'll spot it everywhere." &middot; Captain Inky</span>
+    </button>
   </div>
-  <svg class="wave-b" viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 30 C 200 60 320 0 600 24 C 860 46 1000 8 1200 30 L1200 60 L0 60 Z" fill="#6fd0ee"/></svg>
+  <svg class="wave-b" viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M0 30 C 200 60 320 0 600 24 C 860 46 1000 8 1200 30 L1200 60 L0 60 Z" fill="#6fd0ee"/></svg>
 </header>
 
 <main>
@@ -206,7 +279,7 @@
     <div class="wrap">
       <div class="sheet">
         <h2>Pick an activity</h2>
-        <p>Each one takes about half an hour. You can do them in any order. A grown up can read along with you. Activities 1, 2 and 4 let you send your work to a teacher at the end.</p>
+        <p>Each one takes about half an hour. You can do them in any order. A grown-up can read along with you. Activities 1, 2 and 4 let you send your work to a teacher at the end.</p>
       </div>
     </div>
   </section>
@@ -218,46 +291,48 @@
         <a class="card" href="activity-1.html" style="--accent: var(--a1); --accent2: var(--a1d);">
           <div class="band">
             <span class="num">1</span><h3>What is plastic?</h3>
-            <svg class="peek" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="26" cy="32" rx="20" ry="13" fill="#ffce2e" stroke="#06243d" stroke-width="3"/><path d="M44 32 L60 22 L60 42 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3"/><circle cx="18" cy="29" r="3.5" fill="#06243d"/></svg>
-            <svg class="wave-c" viewBox="0 0 1200 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 12 C 220 30 360 0 620 12 C 880 24 1000 2 1200 12 L1200 26 L0 26 Z" fill="#ffffff"/></svg>
+            <svg class="peek" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="26" cy="32" rx="20" ry="13" fill="#ffce2e" stroke="#06243d" stroke-width="3"/><path d="M44 32 L60 22 L60 42 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3"/><circle cx="18" cy="29" r="3.5" fill="#06243d"/></svg>
+            <svg class="wave-c" viewBox="0 0 1200 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M0 12 C 220 30 360 0 620 12 C 880 24 1000 2 1200 12 L1200 26 L0 26 Z" fill="#ffffff"/></svg>
           </div>
-          <div class="body"><p>Sort it, find out what things are made of, and see where plastic comes from.</p><span class="go">Start</span></div>
+          <div class="body"><p>Sort it, find out what things are made of, and see where plastic comes from.</p><div class="progress" data-act="1"></div><span class="bosschip">BOSS LEVEL INSIDE</span><span class="go">Start</span></div>
         </a>
 
         <a class="card" href="activity-2.html" style="--accent: var(--a2); --accent2: var(--a2d);">
           <div class="band">
             <span class="num">2</span><h3>Spot and swap</h3>
-            <svg class="peek" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="26" cy="32" rx="20" ry="13" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/><path d="M44 32 L60 22 L60 42 Z" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/><circle cx="18" cy="29" r="3.5" fill="#06243d"/></svg>
-            <svg class="wave-c" viewBox="0 0 1200 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 12 C 220 30 360 0 620 12 C 880 24 1000 2 1200 12 L1200 26 L0 26 Z" fill="#ffffff"/></svg>
+            <svg class="peek" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="32" cy="38" rx="16" ry="11" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/><path d="M18 34 C 12 30 8 24 10 18 M46 34 C 52 30 56 24 54 18" fill="none" stroke="#06243d" stroke-width="3" stroke-linecap="round"/><circle cx="10" cy="16" r="5.5" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/><circle cx="54" cy="16" r="5.5" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/><path d="M22 48 L18 54 M32 50 L32 56 M42 48 L46 54" stroke="#06243d" stroke-width="3" stroke-linecap="round"/><path d="M26 28 C 26 24 28 22 28 22 M38 28 C 38 24 36 22 36 22" fill="none" stroke="#06243d" stroke-width="2.6" stroke-linecap="round"/><circle cx="27" cy="21" r="2.6" fill="#06243d"/><circle cx="37" cy="21" r="2.6" fill="#06243d"/></svg>
+            <svg class="wave-c" viewBox="0 0 1200 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M0 12 C 220 30 360 0 620 12 C 880 24 1000 2 1200 12 L1200 26 L0 26 Z" fill="#ffffff"/></svg>
           </div>
-          <div class="body"><p>Find the plastic we use every day, count it, and pick easy swaps to try.</p><span class="go">Start</span></div>
+          <div class="body"><p>Find the plastic we use every day, count it, and pick easy swaps to try.</p><div class="progress" data-act="2"></div><span class="go">Start</span></div>
         </a>
 
-        <a class="card" href="activity-3.html" style="--accent: var(--a3); --accent2: var(--a3d);">
+        <!-- To switch a card live: remove class "soon", remove aria-disabled and tabindex, and change the button text back to "Start". -->
+
+        <a class="card soon" href="activity-3.html" aria-disabled="true" tabindex="-1" style="--accent: var(--a3); --accent2: var(--a3d);">
           <div class="band">
             <span class="num">3</span><h3>Plastic island: true or not?</h3>
-            <svg class="peek" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 8 L40 26 L58 28 L44 40 L48 58 L32 48 L16 58 L20 40 L6 28 L24 26 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/></svg>
-            <svg class="wave-c" viewBox="0 0 1200 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 12 C 220 30 360 0 620 12 C 880 24 1000 2 1200 12 L1200 26 L0 26 Z" fill="#ffffff"/></svg>
+            <svg class="peek" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 8 L40 26 L58 28 L44 40 L48 58 L32 48 L16 58 L20 40 L6 28 L24 26 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/></svg>
+            <svg class="wave-c" viewBox="0 0 1200 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M0 12 C 220 30 360 0 620 12 C 880 24 1000 2 1200 12 L1200 26 L0 26 Z" fill="#ffffff"/></svg>
           </div>
-          <div class="body"><p>Is there really an island of rubbish in the sea? Find out what is true.</p><span class="go">Start</span></div>
+          <div class="body"><p>Is there really an island of rubbish in the sea? Find out what is true.</p><div class="progress" data-act="3"></div><span class="go">Coming soon</span></div>
         </a>
 
-        <a class="card" href="activity-4.html" style="--accent: var(--a4); --accent2: var(--a4d);">
+        <a class="card soon" href="activity-4.html" aria-disabled="true" tabindex="-1" style="--accent: var(--a4); --accent2: var(--a4d);">
           <div class="band">
             <span class="num">4</span><h3>The chocolate wrapper test</h3>
-            <svg class="peek" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M14 22 C 14 14 22 10 32 10 C 42 10 50 14 50 22 L50 30 C 50 46 42 54 32 54 C 22 54 14 46 14 30 Z" fill="#a8632b" stroke="#06243d" stroke-width="3"/><path d="M22 22 L42 22 M22 32 L42 32 M32 12 L32 52" stroke="#06243d" stroke-width="2.4" fill="none"/></svg>
-            <svg class="wave-c" viewBox="0 0 1200 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 12 C 220 30 360 0 620 12 C 880 24 1000 2 1200 12 L1200 26 L0 26 Z" fill="#ffffff"/></svg>
+            <svg class="peek" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M14 22 C 14 14 22 10 32 10 C 42 10 50 14 50 22 L50 30 C 50 46 42 54 32 54 C 22 54 14 46 14 30 Z" fill="#a8632b" stroke="#06243d" stroke-width="3"/><path d="M22 22 L42 22 M22 32 L42 32 M32 12 L32 52" stroke="#06243d" stroke-width="2.4" fill="none"/></svg>
+            <svg class="wave-c" viewBox="0 0 1200 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M0 12 C 220 30 360 0 620 12 C 880 24 1000 2 1200 12 L1200 26 L0 26 Z" fill="#ffffff"/></svg>
           </div>
-          <div class="body"><span class="tag">Chocolate Day</span><p>Compare five chocolate bars, then design a better wrapper with no plastic.</p><span class="go">Start</span></div>
+          <div class="body"><span class="tag">Chocolate Day</span><p>Compare five chocolate bars, then design a better wrapper with no plastic.</p><div class="progress" data-act="4"></div><span class="go">Coming soon</span></div>
         </a>
 
-        <a class="card" href="activity-5.html" style="--accent: var(--a5); --accent2: var(--a5d);">
+        <a class="card soon" href="activity-5.html" aria-disabled="true" tabindex="-1" style="--accent: var(--a5); --accent2: var(--a5d);">
           <div class="band">
             <span class="num">5</span><h3>The Story of a Bottle</h3>
-            <svg class="peek" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M16 40 C 10 34 12 24 22 24 C 24 14 40 14 42 24 C 52 24 54 36 46 40 Z" fill="#ffffff" stroke="#06243d" stroke-width="3"/><circle cx="50" cy="44" r="6" fill="#ffffff" stroke="#06243d" stroke-width="3"/></svg>
-            <svg class="wave-c" viewBox="0 0 1200 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 12 C 220 30 360 0 620 12 C 880 24 1000 2 1200 12 L1200 26 L0 26 Z" fill="#ffffff"/></svg>
+            <svg class="peek" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M16 40 C 10 34 12 24 22 24 C 24 14 40 14 42 24 C 52 24 54 36 46 40 Z" fill="#ffffff" stroke="#06243d" stroke-width="3"/><circle cx="50" cy="44" r="6" fill="#ffffff" stroke="#06243d" stroke-width="3"/></svg>
+            <svg class="wave-c" viewBox="0 0 1200 26" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M0 12 C 220 30 360 0 620 12 C 880 24 1000 2 1200 12 L1200 26 L0 26 Z" fill="#ffffff"/></svg>
           </div>
-          <div class="body"><p>A cheerful little picture book about one happy plastic bottle. Or is it?</p><span class="go">Start</span></div>
+          <div class="body"><p>A cheerful little picture book about one happy plastic bottle. Or is it?</p><div class="progress" data-act="5"></div><span class="go">Coming soon</span></div>
         </a>
 
       </div>
@@ -268,6 +343,107 @@
 <footer>
   <div class="wrap">Chilton Bridge School &middot; Plastic Free July &middot; Small changes add up to a big difference.</div>
 </footer>
+
+<script>
+"use strict";
+
+function loadKey(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+
+/* --- reward toast --- */
+function showReward(text) {
+  var r = document.getElementById("reward");
+  document.getElementById("reward-text").textContent = text;
+  r.classList.add("show");
+  clearTimeout(r._t);
+  r._t = setTimeout(function () { r.classList.remove("show"); }, 3500);
+}
+
+/* --- Inky's rotating greeting --- */
+var GREETS = [
+  '"Start anywhere. There is no wrong door." &middot; Captain Inky',
+  '"Five jobs. No rush. Pick whichever looks good." &middot; Captain Inky',
+  '"Half an hour each, give or take. Off you pop." &middot; Captain Inky',
+  '"The Phantom is about. Keep your eyes peeled for pink." &middot; Captain Inky'
+];
+function setGreeting() {
+  var el = document.getElementById("inky-say");
+  el.innerHTML = GREETS[Math.floor(Math.random() * GREETS.length)];
+}
+
+/* --- pink key: tap to lock it in --- */
+function wirePinkKey() {
+  var k = document.getElementById("pinkkey");
+  k.addEventListener("click", function () {
+    if (k.classList.contains("locked")) { return; }
+    k.classList.add("locked");
+    k.setAttribute("aria-expanded", "true");
+    document.getElementById("keyreply").hidden = false;
+  });
+}
+
+/* --- progress stars, read from each activity's saved stars --- */
+/* Convention: every activity saves earned stars as a JSON array at "pfj.aN.stars". */
+function goldStar() {
+  return '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/></svg>';
+}
+function starsFor(n) {
+  try {
+    var v = loadKey("pfj.a" + n + ".stars");
+    if (!v) { return 0; }
+    var arr = JSON.parse(v);
+    return arr && arr.length ? arr.length : 0;
+  } catch (e) { return 0; }
+}
+function renderProgress() {
+  document.querySelectorAll(".progress").forEach(function (box) {
+    var n = parseInt(box.getAttribute("data-act"), 10);
+    var count = starsFor(n);
+    if (!count) { box.innerHTML = ""; return; }
+    var html = "";
+    for (var i = 0; i < count; i++) { html += goldStar(); }
+    html += '<span class="plabel">' + count + (count === 1 ? " star" : " stars") + ' earned</span>';
+    box.innerHTML = html;
+  });
+}
+
+/* --- easter eggs --- */
+var EGG_LINES = [
+  "Oi! That does not belong here!",
+  "Still floating about, I see. Someone should fish that out.",
+  "I am keeping an eye on you, bottle."
+];
+var eggCount = 0;
+function wireBottle() {
+  var b = document.getElementById("egg-bottle");
+  b.addEventListener("click", function () {
+    showReward('"' + EGG_LINES[eggCount % EGG_LINES.length] + '" says Captain Inky.');
+    eggCount += 1;
+  });
+}
+var PHANTOM_LINES = [
+  "You FOUND me?!",
+  "How do you keep finding me?!",
+  "Fine. I was never hiding anyway."
+];
+var phantomCount = 0;
+function wirePhantom() {
+  var p = document.getElementById("egg-phantom");
+  p.addEventListener("click", function () {
+    showReward('"' + PHANTOM_LINES[phantomCount % PHANTOM_LINES.length] + '" shrieks the Plastic Phantom.');
+    phantomCount += 1;
+    p.classList.add("duck");
+    setTimeout(function () { p.classList.remove("duck"); }, 2500);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  setGreeting();
+  wirePinkKey();
+  renderProgress();
+  wireBottle();
+  wirePhantom();
+});
+</script>
 
 </body>
 </html>
