@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity 3: Rescue the Reef</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #06243d;
+    --ink-soft: #2b4a63;
+    --panel: #ffffff;
+    --plastic: #ff1e9c;
+    --plastic-deep: #c40d74;
+    --coral: #ff7a3d;
+    --coral-deep: #b94313;
+    --sun: #ffce2e;
+    --urchin: #7b4fc4;
+    --turq: #15c2c2;
+    --accent: #7b4fc4;
+    --accent-deep: #50308e;
+    --good: #2fa84f;
+    --reef: #0fb6b6;
+    --reef-deep: #0a7d7d;
+    --sand: #e6cf90;
+    --danger: #ff4f81;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Atkinson Hyperlegible", Verdana, sans-serif;
+    color: var(--ink);
+    line-height: 1.5;
+    text-align: left;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #72d9ef 0%, #2a9fd0 23%, #127aa8 50%, #0a5a86 78%, #073f5e 100%) fixed;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 18px; }
+  .scene { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+  .ray { position: absolute; top: -12%; width: 130px; height: 130%; background: linear-gradient(to bottom, rgba(255,255,255,0.18), rgba(255,255,255,0)); transform: rotate(14deg); filter: blur(7px); }
+  .bub { position: absolute; bottom: -50px; border-radius: 50%; background: radial-gradient(circle at 32% 30%, rgba(255,255,255,0.85), rgba(255,255,255,0.10)); border: 1px solid rgba(255,255,255,0.4); animation: rise linear infinite; }
+  @keyframes rise { from { transform: translateY(0); opacity: 0.8; } to { transform: translateY(-112vh); opacity: 0; } }
+  .seabed { position: fixed; left: 0; right: 0; bottom: 0; width: 100%; height: 170px; }
+  .seabed svg { width: 100%; height: 100%; display: block; }
+  .kelp { transform-origin: bottom center; animation: sway 9s ease-in-out infinite alternate; }
+  .kelp.b { animation-duration: 11s; }
+  @keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+  .float-bottle { position: fixed; bottom: 56px; left: 5%; width: clamp(70px, 10vw, 112px); background: none; border: none; padding: 0; cursor: pointer; z-index: 5; filter: drop-shadow(0 8px 12px rgba(3,30,50,0.32)); animation: floatb 7s ease-in-out infinite; }
+  .float-bottle img { width: 100%; height: auto; display: block; }
+  .float-bottle:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; border-radius: 14px; }
+  @keyframes floatb { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-15px) rotate(3deg); } }
+
+  .topbar { background: linear-gradient(135deg, var(--accent), var(--accent-deep)); color: #ffffff; padding: 12px 0; position: relative; }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .topbar a.back { color: #ffffff; text-decoration: none; font-weight: 700; background: rgba(255,255,255,0.22); padding: 8px 14px; border-radius: 999px; font-size: 1rem; }
+  .topbar a.back:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; }
+  .topbar .label { font-weight: 700; font-size: 1.05rem; }
+  .stars { display: flex; gap: 5px; align-items: center; }
+  .stars svg { width: 20px; height: 20px; display: block; }
+
+  .dots { display: flex; gap: 10px; justify-content: center; padding: 16px 0 2px; }
+  .dots button { width: 16px; height: 16px; border-radius: 50%; padding: 0; cursor: pointer; background: radial-gradient(circle at 32% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.25)); border: 2px solid rgba(255,255,255,0.7); }
+  .dots button.on { background: radial-gradient(circle at 32% 30%, #ffffff, var(--sun)); border-color: #ffffff; box-shadow: 0 0 0 4px rgba(255,206,46,0.4); }
+  .dots button:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; }
+
+  .sheet { background: rgba(255,255,255,0.96); border-radius: 22px; margin: 14px auto 0; box-shadow: 0 12px 30px rgba(3,30,50,0.3); padding: 22px; }
+  .step { display: none; }
+  .step.active { display: block; }
+
+  .intro-row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+  .intro-row img { width: 130px; height: 130px; object-fit: contain; flex: 0 0 auto; filter: drop-shadow(0 6px 10px rgba(3,30,50,0.25)); animation: bob 6s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); margin: 0 0 6px; }
+  h1 .pf { color: var(--accent-deep); }
+  h2 { font-size: 1.45rem; margin: 0 0 6px; }
+  h3 { font-size: 1.13rem; }
+  p.lead { font-size: 1.18rem; margin: 0; }
+  p { font-size: 1.08rem; }
+  .hint { color: var(--ink-soft); font-size: 1.02rem; }
+  .mini { font-size: 0.98rem; color: var(--ink-soft); }
+
+  .healthbox { background: #eef8f8; border: 3px solid #b7dfe4; border-radius: 18px; padding: 12px 14px; margin: 14px 0; }
+  .healthrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-weight: 700; }
+  .bar { height: 18px; border-radius: 999px; background: #d2e7ef; overflow: hidden; border: 2px solid #b7d6e2; margin-top: 8px; }
+  .fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--reef), var(--good)); transition: width 0.35s ease; }
+
+  .bubble { border-radius: 14px; padding: 10px 14px; font-weight: 700; margin-top: 12px; font-size: 1.02rem; }
+  .bubble.phantom { background: #fff0f8; border: 3px solid var(--plastic); color: var(--plastic-deep); }
+  .bubble.inky { background: #e7f8f8; border: 3px solid var(--reef); color: var(--reef-deep); }
+  .bubble.warn { background: #fff8ef; border: 3px solid var(--coral); color: var(--coral-deep); }
+
+  .nav { display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
+  button, .btn-link { font-family: inherit; font-size: 1.08rem; font-weight: 700; cursor: pointer; border: none; border-radius: 999px; padding: 12px 22px; }
+  button:focus-visible, .btn-link:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
+  .btn-next { background: var(--accent); color: #ffffff; box-shadow: 0 4px 0 var(--accent-deep); }
+  .btn-back { background: #d4e8f0; color: var(--ink); }
+  .btn-ghost { background: #ffffff; color: var(--ink); border: 3px solid var(--accent); }
+  .btn-link { text-decoration: none; display: inline-block; text-align: center; }
+  .locked { opacity: 0.55; }
+
+  .icon svg, .zone svg, .animal svg, .danger svg, .chain-card svg, .scenario svg, .court-card svg, .pledge svg {
+    background: radial-gradient(circle at 35% 28%, #ffffff, #e2f2f7); border-radius: 50%; padding: 6px; box-shadow: inset 0 -3px 6px rgba(3,30,50,0.12);
+  }
+
+  .zone-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin: 14px 0; }
+  .zone { text-align: left; background: #ffffff; border: 3px solid #cfe6f0; border-radius: 18px; padding: 15px; box-shadow: 0 3px 8px rgba(3,30,50,0.1); cursor: pointer; }
+  .zone svg { width: 64px; height: 64px; display: block; margin-bottom: 8px; }
+  .zone h3 { margin: 0 0 4px; }
+  .zone .reveal { display: none; margin-top: 8px; }
+  .zone.visited { border-color: var(--good); background: #e3f6e8; }
+  .zone.visited .reveal { display: block; }
+  .zone .tag { display: inline-block; font-size: 0.92rem; font-weight: 700; border-radius: 999px; padding: 4px 9px; background: #fff0f8; color: var(--plastic-deep); margin-top: 6px; }
+
+  .rescue-board { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 16px; margin-top: 14px; }
+  .animal-grid, .danger-list { display: flex; flex-wrap: wrap; gap: 10px; align-content: flex-start; }
+  .animal, .danger { background: #ffffff; border: 3px solid #cfe6f0; border-radius: 16px; padding: 10px; cursor: pointer; box-shadow: 0 3px 8px rgba(3,30,50,0.1); }
+  .animal { width: 136px; text-align: center; }
+  .animal svg { width: 64px; height: 64px; display: block; margin: 0 auto 6px; }
+  .animal .name, .danger .name { font-size: 0.98rem; font-weight: 700; }
+  .animal.sel, .danger.sel { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(123,79,196,0.25); }
+  .animal.saved { border-color: var(--good); background: #e3f6e8; cursor: default; animation: pop 0.35s ease; }
+  .animal.saved svg { background: radial-gradient(circle at 35% 28%, #ffffff, #cdeed6); }
+  .danger.used { opacity: 0.5; cursor: default; }
+  @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+  .danger { display: flex; align-items: center; gap: 10px; width: 100%; }
+  .danger svg { width: 48px; height: 48px; flex: 0 0 auto; }
+  .msg { min-height: 1.6em; font-weight: 700; margin: 8px 0 0; }
+  .msg.good { color: #1c7a36; }
+  .msg.try { color: var(--plastic-deep); }
+
+  .chain { margin: 14px 0; }
+  .chain-pool, .chain-slots { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
+  .chain-card { width: 140px; min-height: 136px; background: #ffffff; border: 3px solid #cfe6f0; border-radius: 16px; padding: 10px; text-align: center; cursor: pointer; box-shadow: 0 3px 8px rgba(3,30,50,0.1); }
+  .chain-card svg { width: 60px; height: 60px; display: block; margin: 0 auto 6px; }
+  .chain-card .name { font-weight: 700; font-size: 0.98rem; }
+  .chain-card .caption { font-size: 0.9rem; color: var(--ink-soft); }
+  .chain-card.picked { opacity: 0.42; cursor: default; }
+  .chain-card.slot { border-style: dashed; background: #f3fafc; min-height: 120px; color: var(--ink-soft); }
+  .chain-card.slot.filled { border-style: solid; background: #ffffff; color: var(--ink); }
+  .chain-card.slot.active { border-color: var(--plastic); background: #ffe3f3; box-shadow: 0 0 0 4px rgba(255,30,156,0.24); }
+  .chain-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+
+  .scenario-wrap { display: flex; flex-direction: column; gap: 12px; margin: 14px 0; }
+  .scenario { background: #ffffff; border: 3px solid #cfe6f0; border-radius: 18px; padding: 14px; box-shadow: 0 3px 8px rgba(3,30,50,0.1); }
+  .scenario-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .scenario svg { width: 54px; height: 54px; flex: 0 0 auto; }
+  .scenario h3 { margin: 0; }
+  .options { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .options button { background: #ffffff; color: var(--ink); border: 2px solid #bcdded; padding: 9px 14px; font-size: 0.98rem; }
+  .options button.picked { background: var(--sun); border-color: var(--sun); color: var(--ink); }
+  .scenario.goodchoice { border-color: var(--good); background: #e3f6e8; }
+  .scenario .fb { font-weight: 700; margin-top: 8px; min-height: 1.4em; color: var(--ink-soft); }
+
+  .court-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin-top: 14px; }
+  .court-card { background: #0e2f49; color: #eaf6fb; border: 3px solid #2b4a63; border-radius: 18px; padding: 14px; box-shadow: 0 3px 8px rgba(3,30,50,0.15); }
+  .court-card svg { width: 52px; height: 52px; }
+  .court-card .claim { font-weight: 700; font-size: 1.08rem; margin: 8px 0; }
+  .court-card .court-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .court-card .court-opts button { font-size: 0.94rem; padding: 8px 12px; background: #ffffff; color: var(--ink); border: 2px solid #2b4a63; }
+  .court-card.done { border-color: var(--sun); }
+  .court-card.done .court-opts button { opacity: 0.65; }
+  .court-card.done .court-opts button.correct { opacity: 1; background: var(--sun); border-color: var(--sun); color: var(--ink); }
+  .court-card .fb { display: none; margin-top: 8px; font-weight: 700; color: #ffdf75; }
+  .court-card.done .fb { display: block; }
+
+  .evidence-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+  label.field { display: block; font-weight: 700; margin: 14px 0 6px; font-size: 1.1rem; }
+  textarea, input[type="text"], select { width: 100%; font-family: inherit; font-size: 1.08rem; padding: 12px; border-radius: 12px; border: 3px solid #bcdded; background: #ffffff; }
+  textarea { min-height: 92px; resize: vertical; }
+  textarea:focus-visible, input[type="text"]:focus-visible, select:focus-visible { outline: 4px solid var(--ink); outline-offset: 2px; }
+  .pledge-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .pledge { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: #ffffff; border: 3px solid #cfe6f0; border-radius: 16px; padding: 12px 14px; cursor: pointer; box-shadow: 0 3px 8px rgba(3,30,50,0.1); }
+  .pledge svg { width: 48px; height: 48px; flex: 0 0 auto; }
+  .pledge .lab { font-weight: 700; flex: 1 1 auto; }
+  .pledge .box { width: 30px; height: 30px; border-radius: 8px; border: 3px solid #bcdded; flex: 0 0 auto; position: relative; }
+  .pledge.chosen { border-color: var(--good); background: #e3f6e8; }
+  .pledge.chosen .box { background: var(--good); border-color: var(--good); }
+  .pledge.chosen .box::after { content: ""; position: absolute; left: 9px; top: 3px; width: 8px; height: 16px; border: solid #ffffff; border-width: 0 4px 4px 0; transform: rotate(45deg); }
+
+  .draw-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  .swatch { width: 38px; height: 38px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 0 0 2px #9cc4d4; cursor: pointer; padding: 0; }
+  .swatch.sel { box-shadow: 0 0 0 4px var(--ink); }
+  .toolbtn { background: #ffffff; color: var(--ink); border: 3px solid var(--accent); border-radius: 999px; padding: 8px 16px; font-size: 1rem; }
+  .toolbtn.sel { background: var(--accent); color: #ffffff; }
+  canvas { width: 100%; max-width: 640px; height: 320px; touch-action: none; background: #ffffff; border: 3px solid #bcdded; border-radius: 14px; display: block; }
+
+  .send, .preview { margin-top: 18px; background: #f1fbfb; border: 3px solid var(--reef); border-radius: 18px; padding: 16px; }
+  .send h3, .preview h3 { margin: 0 0 8px; }
+  .send button { margin-top: 12px; background: var(--accent); color: #ffffff; box-shadow: 0 4px 0 var(--accent-deep); }
+  .send .note { color: var(--ink-soft); font-size: 1rem; margin: 10px 0 0; }
+  pre#evidence-preview { white-space: pre-wrap; font-family: inherit; font-size: 0.98rem; margin: 0; background: #ffffff; border: 2px solid #cfe6f0; border-radius: 12px; padding: 12px; color: var(--ink); }
+
+  .reward { position: fixed; left: 50%; top: 76px; transform: translateX(-50%) translateY(-16px); background: #ffffff; border: 4px solid var(--sun); border-radius: 18px; padding: 12px 18px; box-shadow: 0 10px 26px rgba(3,30,50,0.3); display: flex; align-items: center; gap: 12px; opacity: 0; pointer-events: none; z-index: 60; transition: opacity 0.35s ease, transform 0.35s ease; max-width: 88%; }
+  .reward.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .reward svg { width: 42px; height: 42px; flex: 0 0 auto; }
+  .reward p { margin: 0; font-weight: 700; font-size: 1.08rem; }
+  .spacer { height: 170px; }
+
+
+
+  /* immersive reef healing layer */
+  .scene::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: rgba(5, 35, 58, 0.34); transition: background 0.5s ease, opacity 0.5s ease; }
+  body[data-reef-health="low"] .scene::after { background: rgba(5, 35, 58, 0.42); }
+  body[data-reef-health="mid"] .scene::after { background: rgba(5, 35, 58, 0.24); }
+  body[data-reef-health="high"] .scene::after { background: rgba(5, 35, 58, 0.10); }
+  body[data-reef-health="full"] .scene::after { background: radial-gradient(circle at 50% 72%, rgba(255, 206, 46, 0.15), rgba(5, 35, 58, 0.03) 42%, rgba(5, 35, 58, 0.02)); }
+  .reef-life { position: absolute; inset: 0; pointer-events: none; }
+  .reef-life .life { position: absolute; opacity: 0; transform: translateY(18px) scale(0.82); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reef-life .fishy { width: 52px; height: 26px; border-radius: 50%; background: rgba(255, 206, 46, 0.86); filter: drop-shadow(0 5px 8px rgba(3,30,50,0.22)); }
+  .reef-life .fishy::after { content: ""; position: absolute; right: -14px; top: 5px; border-left: 17px solid rgba(255, 206, 46, 0.86); border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
+  .reef-life .fishy::before { content: ""; position: absolute; left: 12px; top: 7px; width: 4px; height: 4px; border-radius: 50%; background: var(--ink); }
+  .reef-life .coral-pop { width: 70px; height: 58px; border-radius: 50% 50% 44% 44%; background: radial-gradient(circle at 34% 36%, #ffce2e, #ff7a3d 58%, #7b4fc4); filter: drop-shadow(0 5px 8px rgba(3,30,50,0.18)); }
+  .reef-life .phantom-shadow { right: 4%; bottom: 112px; width: 96px; height: 96px; opacity: 0.46; background: url('villain.png') center/contain no-repeat; filter: drop-shadow(0 8px 13px rgba(3,30,50,0.34)); transform: translateX(0) rotate(-5deg); }
+  body[data-reef-health="mid"] .reef-life .life.one,
+  body[data-reef-health="high"] .reef-life .life.one,
+  body[data-reef-health="full"] .reef-life .life.one { opacity: 0.72; transform: translateY(0) scale(1); }
+  body[data-reef-health="high"] .reef-life .life.two,
+  body[data-reef-health="full"] .reef-life .life.two { opacity: 0.82; transform: translateY(0) scale(1); }
+  body[data-reef-health="full"] .reef-life .life.three { opacity: 0.92; transform: translateY(0) scale(1); }
+  body[data-reef-health="mid"] .reef-life .phantom-shadow { opacity: 0.34; transform: translateX(28px) rotate(-8deg); }
+  body[data-reef-health="high"] .reef-life .phantom-shadow { opacity: 0.18; transform: translateX(70px) rotate(-12deg); }
+  body[data-reef-health="full"] .reef-life .phantom-shadow { opacity: 0.04; transform: translateX(125px) rotate(-18deg); }
+
+  .mission-strip { margin-top: 10px; }
+  .badge-strip { background: rgba(255,255,255,0.9); border: 3px solid rgba(255,255,255,0.65); border-radius: 18px; padding: 10px; box-shadow: 0 6px 16px rgba(3,30,50,0.18); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .mission-badge { display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 7px 11px; background: #eef7fb; border: 2px solid #bcdded; color: var(--ink-soft); font-weight: 700; font-size: 0.94rem; }
+  .mission-badge.earned { background: #fff3c4; border-color: var(--sun); color: var(--ink); box-shadow: 0 0 0 3px rgba(255,206,46,0.22); }
+  .mission-badge .mini-icon { width: 22px; height: 22px; display: inline-grid; place-items: center; border-radius: 50%; background: #ffffff; }
+
+  .alert-panel { margin-top: 14px; border: 4px solid var(--danger); border-radius: 18px; padding: 14px; background: linear-gradient(135deg, #fff0f8, #fffaf0); box-shadow: 0 4px 0 rgba(196,13,116,0.18); }
+  .alert-panel .lights { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .alert-panel .light { display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; border-radius: 999px; background: #ffffff; border: 2px solid var(--danger); font-weight: 700; color: var(--plastic-deep); }
+  .alert-panel .dotlight { width: 12px; height: 12px; border-radius: 50%; background: var(--danger); box-shadow: 0 0 0 4px rgba(255,79,129,0.18); }
+
+  .evidence-bag { position: fixed; left: 4.4%; bottom: 16px; z-index: 6; background: rgba(255,255,255,0.96); border: 3px solid var(--sun); border-radius: 999px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--ink); box-shadow: 0 8px 18px rgba(3,30,50,0.25); max-width: min(310px, 88vw); }
+  .evidence-bag .bag-dot { width: 18px; height: 18px; border-radius: 50%; background: #d4e8f0; border: 2px solid #bcdded; }
+  .evidence-bag.collected .bag-dot { background: var(--sun); border-color: var(--ink); box-shadow: 0 0 0 4px rgba(255,206,46,0.22); }
+  .float-bottle.collected { animation: floatb 5s ease-in-out infinite; filter: drop-shadow(0 0 12px rgba(255,206,46,0.95)); }
+
+  .mission-stamp { position: fixed; top: 128px; right: 20px; z-index: 70; background: #ffffff; color: var(--accent-deep); border: 5px solid var(--sun); border-radius: 18px; padding: 14px 18px; font-weight: 700; transform: rotate(3deg) scale(0.82); opacity: 0; pointer-events: none; box-shadow: 0 12px 28px rgba(3,30,50,0.28); transition: opacity 0.28s ease, transform 0.28s ease; }
+  .mission-stamp.show { opacity: 1; transform: rotate(-3deg) scale(1); }
+
+  details.deep-dive { margin: 12px 0; border: 3px solid #cfe6f0; background: #f3fafc; border-radius: 16px; padding: 10px 12px; }
+  details.deep-dive summary { cursor: pointer; font-weight: 700; color: var(--accent-deep); }
+  details.deep-dive p { margin: 8px 0 0; }
+  .vocab-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .vocab { display: inline-block; border-radius: 999px; background: #ffffff; border: 2px solid #bcdded; padding: 5px 9px; font-weight: 700; font-size: 0.92rem; }
+  .vocab strong { color: var(--accent-deep); }
+
+  @media (max-width: 760px) {
+    .rescue-board { grid-template-columns: 1fr; }
+    .animal { width: calc(50% - 5px); }
+    .chain-card { width: calc(50% - 5px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bub { display: none; }
+    .kelp, .intro-row img, .float-bottle { animation: none; }
+    .reward, .fill { transition: none; }
+    .animal.saved { animation: none; }
+  }
+</style>
+</head>
+<body data-reef-health="low">
+
+<div class="scene" aria-hidden="true">
+  <span class="ray" style="left:14%;"></span>
+  <span class="ray" style="left:48%; width:90px;"></span>
+  <span class="ray" style="left:78%; width:150px;"></span>
+  <span class="bub" style="left:10%; width:16px; height:16px; animation-duration:17s;"></span>
+  <span class="bub" style="left:30%; width:10px; height:10px; animation-duration:14s; animation-delay:4s;"></span>
+  <span class="bub" style="left:62%; width:14px; height:14px; animation-duration:20s; animation-delay:7s;"></span>
+  <span class="bub" style="left:84%; width:20px; height:20px; animation-duration:22s; animation-delay:2s;"></span>
+  <div class="seabed">
+    <svg viewBox="0 0 1200 220" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 110 C 180 74 360 134 560 106 C 760 78 980 134 1200 100 L1200 220 L0 220 Z" fill="#e6cf90"/>
+      <path d="M0 134 C 200 114 420 154 640 130 C 880 106 1040 154 1200 130 L1200 220 L0 220 Z" fill="#d9bd72"/>
+      <g class="kelp"><path d="M120 220 C 100 162 142 132 116 82 C 104 52 128 44 124 18" fill="none" stroke="#2f9e44" stroke-width="11" stroke-linecap="round"/></g>
+      <g class="kelp b"><path d="M150 220 C 168 166 134 138 158 92" fill="none" stroke="#3fb45a" stroke-width="9" stroke-linecap="round"/></g>
+      <g class="kelp"><path d="M1050 220 C 1030 162 1070 134 1046 84" fill="none" stroke="#2f9e44" stroke-width="11" stroke-linecap="round"/></g>
+      <g><ellipse cx="470" cy="190" rx="32" ry="18" fill="#ff7a3d"/><circle cx="452" cy="184" r="7" fill="#ffce2e"/></g>
+      <g><path d="M720 216 C 716 184 700 174 706 150 M740 216 C 744 182 762 174 754 148" stroke="#7b4fc4" stroke-width="9" fill="none" stroke-linecap="round"/></g>
+      <g><circle cx="930" cy="196" r="16" fill="#15c2c2"/><circle cx="950" cy="198" r="9" fill="#0fb6b6"/><circle cx="912" cy="202" r="10" fill="#ff7a3d"/></g>
+    </svg>
+  </div>
+  <div class="reef-life" aria-hidden="true">
+    <span class="life one fishy" style="left:72%; bottom:138px;"></span>
+    <span class="life two fishy" style="left:18%; bottom:178px; transform: scaleX(-1) translateY(18px);"></span>
+    <span class="life three fishy" style="left:52%; bottom:210px;"></span>
+    <span class="life one coral-pop" style="left:28%; bottom:36px;"></span>
+    <span class="life two coral-pop" style="left:64%; bottom:28px;"></span>
+    <span class="life three coral-pop" style="left:82%; bottom:48px;"></span>
+    <span class="life phantom-shadow"></span>
+  </div>
+</div>
+
+<button class="float-bottle" id="egg-bottle" aria-label="A plastic bottle floating near the reef">
+  <img src="bottle.png" alt="">
+</button>
+<div class="evidence-bag" id="evidence-bag" aria-live="polite"><span class="bag-dot" aria-hidden="true"></span><span id="bag-text">Bottle evidence: waiting</span></div>
+<div class="mission-stamp" id="mission-stamp" aria-hidden="true">MISSION COMPLETE</div>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="back" href="index.html">Back to all activities</a>
+    <span class="stars" id="stars" aria-label="0 of 6 reef stars earned"></span>
+    <span class="label">Activity 3</span>
+  </div>
+</div>
+
+<div class="dots" id="dots"></div>
+<div class="mission-strip wrap"><div class="badge-strip" id="badge-strip" aria-label="Mission badges earned"></div></div>
+
+<div class="reward" id="reward" role="status" aria-live="polite">
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/></svg>
+  <p id="reward-text">Reef rescue progress!</p>
+</div>
+
+<main class="wrap">
+  <div class="sheet">
+
+    <section class="step active" id="s-intro">
+      <div class="intro-row">
+        <img src="octopus.png" alt="Captain Inky, a friendly blue octopus wearing a sailor hat">
+        <div>
+          <h1>Rescue the <span class="pf">Reef</span></h1>
+          <p class="lead">Reef scanner alert: plastic has been detected in three ocean zones. Some problems are obvious. Some are tiny. Some only make sense when you follow the chain.</p>
+          <div class="alert-panel" role="status" aria-label="Reef scanner alert">
+            <strong>Reef scanner alert</strong>
+            <div class="lights"><span class="light"><span class="dotlight"></span>Kelp Forest</span><span class="light"><span class="dotlight"></span>Turtle Grass</span><span class="light"><span class="dotlight"></span>Deep Reef</span></div>
+          </div>
+          <div class="bubble phantom">"Tiny problems? Excellent. Tiny things are easy to ignore." &middot; the Plastic Phantom</div>
+          <div class="bubble inky">"Not in this reef. We investigate, rescue, and rebuild." &middot; Captain Inky</div>
+        </div>
+      </div>
+      <div class="healthbox">
+        <div class="healthrow"><span>Reef health</span><span id="health-label">0%</span></div>
+        <div class="bar"><div class="fill" id="health-fill"></div></div>
+        <div class="vocab-row" aria-label="Vocabulary unlocked"><span class="vocab"><strong>single-use</strong>: used once</span><span class="vocab"><strong>microplastic</strong>: tiny plastic</span><span class="vocab"><strong>reusable</strong>: used again</span></div>
+      </div>
+      <div class="nav"><button class="btn-next" data-go="1">Start the rescue</button></div>
+    </section>
+
+    <section class="step" id="s-map">
+      <h2>Mission 1: Scan the ocean zones</h2>
+      <p>Tap each zone. Your scanner will reveal the plastic problem hiding there.</p>
+      <details class="deep-dive"><summary>Deep dive: useful words</summary><p><strong>Entanglement</strong> means an animal gets wrapped or trapped. <strong>Microplastic</strong> means tiny plastic pieces. <strong>Food chain</strong> means who eats what.</p></details>
+      <div class="healthbox">
+        <div class="healthrow"><span>Reef scanner</span><span id="scan-label">0 of 3 zones scanned</span></div>
+        <div class="bar"><div class="fill" id="scan-fill"></div></div>
+      </div>
+      <div class="zone-grid" id="zones"></div>
+      <p class="msg" id="zone-msg" role="status"></p>
+      <div class="nav"><button class="btn-back" data-go="0">Back</button><button class="btn-next" data-go="2">Next mission</button></div>
+    </section>
+
+    <section class="step" id="s-rescue">
+      <h2>Mission 2: Rescue the animals</h2>
+      <p>Tap an animal, then tap the plastic problem that could harm it. Some answers are obvious. Some need a careful think.</p>
+      <details class="deep-dive"><summary>Deep dive: why animals get mixed up</summary><p>Animals do not read labels. They react to shape, movement, smell and where food usually appears. That is why a bag, line or tiny plastic piece can become a real problem.</p></details>
+      <div class="rescue-board">
+        <div>
+          <h3>Animals to rescue</h3>
+          <div class="animal-grid" id="animals"></div>
+        </div>
+        <div>
+          <h3>Plastic problems</h3>
+          <div class="danger-list" id="dangers"></div>
+        </div>
+      </div>
+      <p class="msg" id="rescue-msg" role="status"></p>
+      <div class="nav"><button class="btn-back" data-go="1">Back</button><button class="btn-next" data-go="3">Next mission</button></div>
+    </section>
+
+    <section class="step" id="s-chain">
+      <h2>Mission 3: Tiny plastic, big problem</h2>
+      <p>Build the food chain from smallest to biggest. Then run the chain to see how tiny plastic can move through living things.</p>
+      <details class="deep-dive"><summary>Deep dive: why tiny can be tricky</summary><p>Whole bottles are easier to see and pick up. Microplastics are tiny, spread out, and can be swallowed by small living things.</p></details>
+      <div class="bubble warn"><strong>Key idea:</strong> plastic does not need to be large to be a problem. Tiny pieces can still travel.</div>
+      <div class="chain">
+        <h3>Tap cards in the right order</h3>
+        <div class="chain-pool" id="chain-pool"></div>
+        <h3>Your food chain</h3>
+        <div class="chain-slots" id="chain-slots"></div>
+        <div class="chain-actions">
+          <button class="btn-ghost" id="reset-chain">Reset chain</button>
+          <button class="btn-next" id="run-chain">Run the plastic trail</button>
+        </div>
+      </div>
+      <p class="msg" id="chain-msg" role="status"></p>
+      <label class="field" for="micro-why">Think deeper: why might microplastics be harder to deal with than one whole bottle?</label>
+      <textarea id="micro-why" placeholder="Microplastics might be harder because..."></textarea>
+      <div class="nav"><button class="btn-back" data-go="2">Back</button><button class="btn-next" data-go="4">Next mission</button></div>
+    </section>
+
+    <section class="step" id="s-choices">
+      <h2>Mission 4: Rebuild the reef</h2>
+      <p>Make realistic choices. The aim is not to be perfect. The aim is to reduce harm in a way people might actually do.</p>
+      <details class="deep-dive"><summary>Deep dive: reduce, reuse, recycle</summary><p><strong>Reduce</strong> means use less in the first place. <strong>Reuse</strong> means use the same thing again. <strong>Recycle</strong> helps, but only when the item can really be recycled and ends up in the right place.</p></details>
+      <div class="scenario-wrap" id="scenarios"></div>
+      <p class="msg" id="choice-msg" role="status"></p>
+      <div class="nav"><button class="btn-back" data-go="3">Back</button><button class="btn-next" data-go="5">Next mission</button></div>
+    </section>
+
+    <section class="step" id="s-court">
+      <h2>Mission 5: The Plastic Phantom's courtroom</h2>
+      <p>The Phantom is trying to confuse the jury. Read each claim and decide whether it is true, too simple, or sneaky wording.</p>
+      <details class="deep-dive"><summary>Deep dive: critical thinking</summary><p>Some claims sound neat but miss important details. A good answer can be: true, false, partly true, or too simple.</p></details>
+      <div class="bubble phantom">"I demand a fair trial. Also, please ignore the suspicious pink glitter everywhere." &middot; the Plastic Phantom</div>
+      <div class="court-grid" id="court"></div>
+      <p class="msg" id="court-msg" role="status"></p>
+      <div class="nav"><button class="btn-back" data-go="4">Back</button><button class="btn-next" data-go="6">Final evidence</button></div>
+    </section>
+
+    <section class="step" id="s-reflect">
+      <h2>Final evidence: my reef rescue plan</h2>
+      <p>Show what you have learned. Write it, choose it, draw it, or do a bit of each.</p>
+      <div class="evidence-grid">
+        <div>
+          <label class="field" for="animal-choice">I rescued this animal</label>
+          <select id="animal-choice">
+            <option value="">Pick one...</option>
+            <option>Turtle</option>
+            <option>Seal</option>
+            <option>Seabird</option>
+            <option>Fish</option>
+            <option>Crab</option>
+          </select>
+        </div>
+        <div>
+          <label class="field" for="problem-choice">The problem was</label>
+          <select id="problem-choice">
+            <option value="">Pick one...</option>
+            <option>Plastic bag</option>
+            <option>Fishing line</option>
+            <option>Microplastics</option>
+            <option>Plastic container</option>
+            <option>Plastic ring</option>
+          </select>
+        </div>
+      </div>
+      <label class="field" for="explain-text">My explanation</label>
+      <textarea id="explain-text" placeholder="Plastic can harm ocean animals because..."></textarea>
+      <label class="field">One realistic action I could try</label>
+      <div class="pledge-list" id="pledges"></div>
+      <label class="field" for="barrier-text">What might get in the way, and what could help?</label>
+      <textarea id="barrier-text" placeholder="It might be tricky if... A helpful fix could be..."></textarea>
+      <label class="field" for="complicated-text">One thing that is not simple about plastic</label>
+      <textarea id="complicated-text" placeholder="One thing that is not simple about plastic is..."></textarea>
+      <label class="field">Draw your rescued reef, if you like</label>
+      <div class="draw-tools" id="tools" aria-label="Pick a tool"></div>
+      <div class="draw-tools" id="swatches" aria-label="Pick a colour"></div>
+      <canvas id="pad" width="640" height="320" aria-label="Drawing area"></canvas>
+      <div class="nav" style="margin-top:10px;"><button class="btn-ghost" id="clear-pad">Clear drawing</button><button class="btn-ghost" id="dl-pad">Download my drawing</button></div>
+      <div class="preview">
+        <h3>Evidence preview</h3>
+        <pre id="evidence-preview">Your evidence will appear here as you work.</pre>
+      </div>
+      <div class="send">
+        <h3>Send your reef rescue evidence</h3>
+        <p style="margin:0 0 10px;">Pick a teacher, then tap send. It opens an email with your choices and writing in it.</p>
+        <label class="field" for="teacher" style="margin-top:0;">Choose your teacher</label>
+        <select id="teacher"><option value="">Pick a teacher...</option></select>
+        <div><button id="send-btn">Send to your teacher</button></div>
+        <p class="note">Your drawing stays on this screen. You can download it and attach it to the email, show it to your teacher, or your teacher can take a photo.</p>
+        <p class="msg" id="send-msg" role="status"></p>
+      </div>
+      <div class="nav"><button class="btn-back" data-go="5">Back</button><a class="btn-next btn-link" href="index.html">All done</a></div>
+    </section>
+
+  </div>
+</main>
+<div class="spacer"></div>
+
+<script>
+"use strict";
+
+var NS = "pfj.a3.";
+function save(key, value) { try { localStorage.setItem(NS + key, value); } catch (e) {} }
+function load(key) { try { return localStorage.getItem(NS + key); } catch (e) { return null; } }
+function byId(id) { return document.getElementById(id); }
+function svg(inner) { return '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + inner + '</svg>'; }
+
+var ICONS = {
+  star: '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/></svg>',
+  starOff: '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.75)" stroke-width="3" stroke-linejoin="round"/></svg>',
+  kelp: svg('<path d="M18 56 C 10 40 24 30 18 12" fill="none" stroke="#2fa84f" stroke-width="7" stroke-linecap="round"/><path d="M36 56 C 46 38 30 28 42 8" fill="none" stroke="#3fb45a" stroke-width="7" stroke-linecap="round"/><path d="M50 56 C 42 42 54 34 50 18" fill="none" stroke="#2fa84f" stroke-width="6" stroke-linecap="round"/>'),
+  turtle: svg('<ellipse cx="32" cy="34" rx="19" ry="15" fill="#2fa84f" stroke="#06243d" stroke-width="3"/><circle cx="32" cy="34" r="8" fill="#8bd17d"/><circle cx="32" cy="14" r="8" fill="#2fa84f" stroke="#06243d" stroke-width="3"/><circle cx="29" cy="12" r="1.8" fill="#06243d"/><circle cx="35" cy="12" r="1.8" fill="#06243d"/><path d="M16 30 L5 22 M48 30 L59 22 M16 42 L7 52 M48 42 L57 52" stroke="#06243d" stroke-width="5" stroke-linecap="round"/>'),
+  seal: svg('<ellipse cx="31" cy="35" rx="22" ry="14" fill="#9bb7c8" stroke="#06243d" stroke-width="3"/><circle cx="46" cy="28" r="10" fill="#9bb7c8" stroke="#06243d" stroke-width="3"/><circle cx="48" cy="26" r="2" fill="#06243d"/><path d="M13 36 L3 28 M13 41 L3 50" stroke="#06243d" stroke-width="5" stroke-linecap="round"/><path d="M39 41 C 44 48 52 48 58 42" stroke="#06243d" stroke-width="4" fill="none"/>'),
+  bird: svg('<path d="M13 37 C 25 13 45 13 53 35 C 43 27 27 28 13 37 Z" fill="#ffffff" stroke="#06243d" stroke-width="3"/><circle cx="39" cy="25" r="9" fill="#ffffff" stroke="#06243d" stroke-width="3"/><circle cx="41" cy="23" r="2" fill="#06243d"/><path d="M48 27 L60 23 L50 33 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3"/><path d="M23 36 C 31 45 42 45 48 36" stroke="#06243d" stroke-width="3" fill="none"/>'),
+  fish: svg('<ellipse cx="27" cy="32" rx="20" ry="13" fill="#1e7fd0" stroke="#06243d" stroke-width="3"/><path d="M44 32 L60 22 L60 42 Z" fill="#1e7fd0" stroke="#06243d" stroke-width="3"/><circle cx="18" cy="29" r="3.5" fill="#06243d"/><path d="M26 41 C 31 45 37 45 42 40" stroke="#06243d" stroke-width="3" fill="none"/>'),
+  crab: svg('<ellipse cx="32" cy="38" rx="16" ry="10" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/><circle cx="25" cy="28" r="4" fill="#ffffff" stroke="#06243d" stroke-width="3"/><circle cx="39" cy="28" r="4" fill="#ffffff" stroke="#06243d" stroke-width="3"/><circle cx="25" cy="28" r="1.5" fill="#06243d"/><circle cx="39" cy="28" r="1.5" fill="#06243d"/><path d="M18 38 L6 30 M46 38 L58 30 M20 46 L9 54 M44 46 L55 54" stroke="#06243d" stroke-width="4" stroke-linecap="round"/><path d="M14 30 C 5 18 17 14 20 22 M50 30 C 59 18 47 14 44 22" stroke="#06243d" stroke-width="4" fill="none" stroke-linecap="round"/>'),
+  bag: svg('<path d="M18 18 H46 L50 54 H14 Z" fill="#ffb6df" stroke="#c40d74" stroke-width="3"/><path d="M24 18 C 24 8 40 8 40 18" fill="none" stroke="#c40d74" stroke-width="3"/><path d="M24 34 C 31 29 36 40 44 34" fill="none" stroke="#c40d74" stroke-width="3"/>'),
+  line: svg('<path d="M11 17 C 30 4 58 18 43 35 C 30 50 7 40 19 25 C 29 12 48 24 35 36" fill="none" stroke="#c40d74" stroke-width="5" stroke-linecap="round"/><circle cx="45" cy="45" r="7" fill="none" stroke="#c40d74" stroke-width="4"/>'),
+  micro: svg('<circle cx="16" cy="18" r="4" fill="#ff1e9c"/><rect x="30" y="14" width="8" height="8" rx="2" fill="#c40d74"/><circle cx="47" cy="24" r="3" fill="#ff1e9c"/><rect x="20" y="35" width="7" height="7" rx="2" fill="#c40d74"/><circle cx="39" cy="44" r="4" fill="#ff1e9c"/><path d="M12 52 C 26 46 38 56 52 48" stroke="#06243d" stroke-width="3" fill="none" stroke-linecap="round"/>'),
+  container: svg('<rect x="14" y="23" width="36" height="26" rx="5" fill="#ffb6df" stroke="#c40d74" stroke-width="3"/><path d="M20 23 V17 H44 V23" fill="#ffd4ed" stroke="#c40d74" stroke-width="3"/><path d="M22 37 H42" stroke="#c40d74" stroke-width="3" stroke-linecap="round"/>'),
+  ring: svg('<circle cx="24" cy="26" r="11" fill="none" stroke="#c40d74" stroke-width="5"/><circle cx="42" cy="26" r="11" fill="none" stroke="#c40d74" stroke-width="5"/><circle cx="24" cy="44" r="11" fill="none" stroke="#c40d74" stroke-width="5"/><circle cx="42" cy="44" r="11" fill="none" stroke="#c40d74" stroke-width="5"/>'),
+  plankton: svg('<circle cx="31" cy="32" r="9" fill="#a0e9e9" stroke="#06243d" stroke-width="3"/><path d="M31 23 V8 M31 41 V56 M22 32 H7 M40 32 H56 M24 25 L14 15 M38 25 L50 13 M24 39 L13 50 M39 39 L50 50" stroke="#06243d" stroke-width="3" stroke-linecap="round"/>'),
+  bigfish: svg('<ellipse cx="28" cy="32" rx="24" ry="15" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/><path d="M49 32 L62 19 L62 45 Z" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/><circle cx="17" cy="28" r="3.5" fill="#06243d"/><path d="M28 44 C 35 50 45 47 51 40" stroke="#06243d" stroke-width="3" fill="none"/>'),
+  person: svg('<circle cx="32" cy="17" r="9" fill="#ffce2e" stroke="#06243d" stroke-width="3"/><path d="M20 56 C 22 39 24 30 32 30 C 40 30 42 39 44 56" fill="#7b4fc4" stroke="#06243d" stroke-width="3"/><path d="M21 39 H43" stroke="#06243d" stroke-width="3"/><path d="M24 24 C 28 28 36 28 40 24" stroke="#06243d" stroke-width="3" fill="none"/>'),
+  bottle: svg('<path d="M26 9 H38 V19 C 45 24 47 33 46 48 C 46 54 42 58 32 58 C 22 58 18 54 18 48 C 17 33 19 24 26 19 Z" fill="#bdeef4" stroke="#06243d" stroke-width="3"/><rect x="25" y="4" width="14" height="8" rx="2" fill="#ff1e9c" stroke="#06243d" stroke-width="3"/><path d="M21 37 H43" stroke="#06243d" stroke-width="3"/><path d="M24 45 H40" stroke="#06243d" stroke-width="3"/>'),
+  lunch: svg('<rect x="13" y="20" width="38" height="28" rx="5" fill="#ffce2e" stroke="#06243d" stroke-width="3"/><path d="M20 20 C 22 9 42 9 44 20" fill="none" stroke="#06243d" stroke-width="3"/><circle cx="25" cy="35" r="4" fill="#ff7a3d"/><circle cx="38" cy="35" r="4" fill="#2fa84f"/>'),
+  bin: svg('<path d="M18 22 H46 L42 56 H22 Z" fill="#2fa84f" stroke="#06243d" stroke-width="3"/><path d="M15 22 H49 M24 16 H40" stroke="#06243d" stroke-width="4" stroke-linecap="round"/><path d="M27 32 L32 27 L37 32 M32 27 V45" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'),
+  claim: svg('<rect x="10" y="14" width="44" height="36" rx="5" fill="#ffffff" stroke="#06243d" stroke-width="3"/><path d="M18 25 H46 M18 34 H38 M18 43 H43" stroke="#2b4a63" stroke-width="3" stroke-linecap="round"/><circle cx="49" cy="15" r="9" fill="#ffce2e" stroke="#06243d" stroke-width="3"/>'),
+  reef: svg('<circle cx="19" cy="45" r="9" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/><circle cx="34" cy="42" r="12" fill="#15c2c2" stroke="#06243d" stroke-width="3"/><circle cx="49" cy="48" r="8" fill="#7b4fc4" stroke="#06243d" stroke-width="3"/><path d="M20 45 H46" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>')
+};
+
+var stepIds = ["s-intro", "s-map", "s-rescue", "s-chain", "s-choices", "s-court", "s-reflect"];
+var currentStep = Number(load("step") || 0);
+var earned = JSON.parse(load("earned") || "[]");
+var state = {
+  zones: JSON.parse(load("zones") || "[]"),
+  saved: JSON.parse(load("saved") || "[]"),
+  chain: JSON.parse(load("chain") || "[]"),
+  choices: JSON.parse(load("choices") || "{}"),
+  court: JSON.parse(load("court") || "{}"),
+  pledges: JSON.parse(load("pledges") || "[]"),
+  bottleFound: load("bottleFound") === "yes"
+};
+
+var zoneData = [
+  { id: "kelp", title: "Kelp Forest", icon: ICONS.kelp, hazard: "Fishing line", reveal: "Thin fishing line can tangle around animals. It can be almost invisible underwater.", tag: "Entanglement risk" },
+  { id: "grass", title: "Turtle Grass", icon: ICONS.turtle, hazard: "Plastic bag", reveal: "A floating plastic bag can look like jellyfish. Some animals may mistake it for food.", tag: "Mistaken for food" },
+  { id: "deep", title: "Deep Reef", icon: ICONS.micro, hazard: "Microplastics", reveal: "Tiny plastic pieces can be swallowed by small animals and then move through the food chain.", tag: "Tiny but tricky" }
+];
+
+var rescueData = [
+  { id: "turtle", name: "Turtle", icon: ICONS.turtle, danger: "bag", feedback: "A turtle can mistake a floating plastic bag for jellyfish." },
+  { id: "seal", name: "Seal", icon: ICONS.seal, danger: "line", feedback: "A seal can get tangled in fishing line or rope." },
+  { id: "bird", name: "Seabird", icon: ICONS.bird, danger: "pieces", feedback: "A seabird can swallow small plastic pieces while searching for food." },
+  { id: "fish", name: "Fish", icon: ICONS.fish, danger: "micro", feedback: "A fish can swallow tiny plastic particles mixed into the water or food." },
+  { id: "crab", name: "Crab", icon: ICONS.crab, danger: "container", feedback: "A crab can crawl into plastic containers and get trapped." }
+];
+var dangerData = [
+  { id: "bag", name: "Plastic bag", icon: ICONS.bag },
+  { id: "line", name: "Fishing line", icon: ICONS.line },
+  { id: "pieces", name: "Small plastic pieces", icon: ICONS.ring },
+  { id: "micro", name: "Microplastics", icon: ICONS.micro },
+  { id: "container", name: "Plastic container", icon: ICONS.container }
+];
+
+var chainData = [
+  { id: "micro", name: "Microplastic", caption: "tiny plastic piece", icon: ICONS.micro },
+  { id: "plankton", name: "Plankton", caption: "tiny living thing", icon: ICONS.plankton },
+  { id: "smallfish", name: "Small fish", caption: "eats plankton", icon: ICONS.fish },
+  { id: "bigfish", name: "Bigger fish", caption: "eats small fish", icon: ICONS.bigfish },
+  { id: "seabird", name: "Seabird", caption: "eats fish", icon: ICONS.bird }
+];
+var chainCorrect = ["micro", "plankton", "smallfish", "bigfish", "seabird"];
+
+var scenarioData = [
+  { id: "lunch", title: "After lunch outside", icon: ICONS.lunch, options: [
+    { text: "Leave the wrapper", level: "harm", fb: "That leaves a plastic problem for wildlife, cleaners, or the wind." },
+    { text: "Put rubbish in the right bin", level: "good", fb: "Realistic win. It stops rubbish reaching drains, rivers, or the sea." },
+    { text: "Pick up one safe piece with an adult", level: "great", fb: "Good rescue choice. Only pick up safe items and use adult support if needed." }
+  ]},
+  { id: "drink", title: "You need a drink", icon: ICONS.bottle, options: [
+    { text: "Buy a new bottle every time", level: "harm", fb: "That creates more single-use plastic." },
+    { text: "Reuse a bottle you already have", level: "great", fb: "Best realistic win. Reusing matters more than owning lots of new reusable bottles." },
+    { text: "Recycle the bottle properly", level: "good", fb: "Helpful, but reducing and reusing usually comes before recycling." }
+  ]},
+  { id: "snack", title: "Choosing a snack", icon: ICONS.bin, options: [
+    { text: "Pick loads of tiny wrapped snacks", level: "harm", fb: "Lots of small wrappers can become lots of small litter." },
+    { text: "Choose fewer wrappers when possible", level: "great", fb: "Realistic and not preachy. Small changes can reduce single-use plastic." },
+    { text: "Skip food completely", level: "harm", fb: "Not the aim. Looking after yourself matters too." }
+  ]}
+];
+
+var courtData = [
+  { id: "ban", claim: "All plastic should be banned.", correct: "Too simple", fb: "Too simple. Some plastic is important for safety, medicine and keeping food fresh." },
+  { id: "hospital", claim: "Plastic can be useful in hospitals.", correct: "True", fb: "True. Some plastic helps keep medical equipment clean and safe." },
+  { id: "recycle", claim: "Recycling fixes everything.", correct: "Too simple", fb: "Too simple. Recycling helps, but reducing and reusing matter too." },
+  { id: "eco", claim: "If a wrapper says ocean-friendly, it must be safe for the sea.", correct: "Sneaky wording", fb: "Sneaky wording. A label is not proof. Ask what it is made from and what happens after use." },
+  { id: "reusable", claim: "A reusable item is always better the moment you buy it.", correct: "Too simple", fb: "Too simple. Reusable items help most when they are actually reused many times." },
+  { id: "person", claim: "One person's choices can never help.", correct: "Too simple", fb: "Too simple. One choice is not everything, but habits, schools and groups can change what gets used and thrown away." },
+  { id: "bio", claim: "Biodegradable always means it disappears safely anywhere.", correct: "Sneaky wording", fb: "Sneaky wording. Some items only break down in the right conditions, not just anywhere in the sea." }
+];
+var courtOptions = ["True", "Too simple", "Sneaky wording"];
+
+var pledgeData = [
+  { id: "bottle", label: "Use a refillable bottle when I can", icon: ICONS.bottle },
+  { id: "litter", label: "Put my rubbish in the right place", icon: ICONS.bin },
+  { id: "wrapped", label: "Choose fewer wrapped snacks when it is realistic", icon: ICONS.lunch },
+  { id: "notice", label: "Notice sneaky plastic instead of guessing", icon: ICONS.claim },
+  { id: "talk", label: "Explain one reef risk to someone else", icon: ICONS.reef }
+];
+
+var teachers = [
+  { name: "Jay", email: "jay.raine@chiltonbridgeschool.co.uk" },
+  { name: "Angie", email: "" },
+  { name: "Amy", email: "" },
+  { name: "Other teacher", email: "" }
+];
+
+var badgeData = [
+  { id: "scan", label: "Zone Scanner", symbol: "◌" },
+  { id: "rescue", label: "Animal Rescuer", symbol: "✓" },
+  { id: "chain", label: "Food Chain Detective", symbol: "→" },
+  { id: "choices", label: "Reef Rebuilder", symbol: "✦" },
+  { id: "court", label: "Courtroom Challenger", symbol: "!" },
+  { id: "bottle", label: "Bottle Spotter", symbol: "●" },
+  { id: "plan", label: "Action Planner", symbol: "+" }
+];
+
+function renderStars() {
+  var html = "";
+  var starTotal = 6;
+  for (var i = 0; i < starTotal; i++) html += i < earned.length ? ICONS.star : ICONS.starOff;
+  byId("stars").innerHTML = html;
+  byId("stars").setAttribute("aria-label", Math.min(earned.length, 6) + " of 6 reef stars earned");
+}
+function currentBadges() {
+  var badges = earned.slice();
+  if (state.bottleFound && badges.indexOf("bottle") === -1) badges.push("bottle");
+  return badges;
+}
+function renderBadges() {
+  var holder = byId("badge-strip");
+  if (!holder) return;
+  var badges = currentBadges();
+  holder.innerHTML = badgeData.map(function(b) {
+    var on = badges.indexOf(b.id) !== -1;
+    return '<span class="mission-badge' + (on ? ' earned' : '') + '"><span class="mini-icon">' + b.symbol + '</span>' + b.label + '</span>';
+  }).join("");
+}
+function showStamp(text) {
+  var stamp = byId("mission-stamp");
+  if (!stamp) return;
+  stamp.textContent = text || "MISSION COMPLETE";
+  stamp.classList.add("show");
+  setTimeout(function() { stamp.classList.remove("show"); }, 1200);
+}
+function updateBottleEvidence() {
+  var bag = byId("evidence-bag");
+  var txt = byId("bag-text");
+  var bottle = byId("egg-bottle");
+  if (!bag || !txt || !bottle) return;
+  bag.classList.toggle("collected", state.bottleFound);
+  bottle.classList.toggle("collected", state.bottleFound);
+  txt.textContent = state.bottleFound ? "Bottle evidence: collected" : "Bottle evidence: click the bottle";
+}
+function renderDots() {
+  var dots = byId("dots");
+  dots.innerHTML = "";
+  stepIds.forEach(function(id, index) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", "Go to section " + (index + 1));
+    if (index === currentStep) b.className = "on";
+    b.addEventListener("click", function() { go(index); });
+    dots.appendChild(b);
+  });
+}
+function reefHealth() {
+  var score = 0;
+  score += Math.min(state.zones.length, 3) * 8;
+  score += Math.min(state.saved.length, 5) * 8;
+  if (arraysEqual(state.chain, chainCorrect)) score += 18;
+  Object.keys(state.choices).forEach(function(id) {
+    var choice = state.choices[id];
+    if (choice.level === "great") score += 9;
+    else if (choice.level === "good") score += 6;
+    else score += 1;
+  });
+  score += Object.keys(state.court).length * 4;
+  score += Math.min(state.pledges.length, 3) * 3;
+  return Math.min(100, score);
+}
+function updateHealth() {
+  var health = reefHealth();
+  byId("health-label").textContent = health + "%";
+  byId("health-fill").style.width = health + "%";
+  var tier = health >= 90 ? "full" : health >= 60 ? "high" : health >= 30 ? "mid" : "low";
+  document.body.setAttribute("data-reef-health", tier);
+}
+function showReward(text) {
+  var r = byId("reward");
+  byId("reward-text").textContent = text;
+  r.classList.add("show");
+  setTimeout(function() { r.classList.remove("show"); }, 1800);
+}
+function earn(key, text) {
+  if (earned.indexOf(key) === -1) {
+    earned.push(key);
+    save("earned", JSON.stringify(earned));
+    renderStars();
+    renderBadges();
+    showReward(text || "Reef rescue progress!");
+    showStamp(text || "MISSION COMPLETE");
+  }
+}
+function go(index) {
+  currentStep = Math.max(0, Math.min(stepIds.length - 1, index));
+  stepIds.forEach(function(id, i) { byId(id).classList.toggle("active", i === currentStep); });
+  save("step", String(currentStep));
+  renderDots();
+  renderStars();
+  renderBadges();
+  updateHealth();
+  updateBottleEvidence();
+  updatePreview();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function arraysEqual(a, b) { return a.length === b.length && a.every(function(v, i) { return v === b[i]; }); }
+function storeState() {
+  save("zones", JSON.stringify(state.zones));
+  save("saved", JSON.stringify(state.saved));
+  save("chain", JSON.stringify(state.chain));
+  save("choices", JSON.stringify(state.choices));
+  save("court", JSON.stringify(state.court));
+  save("pledges", JSON.stringify(state.pledges));
+  updateHealth();
+  renderBadges();
+  updateBottleEvidence();
+  updatePreview();
+}
+
+function renderZones() {
+  var holder = byId("zones");
+  holder.innerHTML = "";
+  zoneData.forEach(function(z) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "zone" + (state.zones.indexOf(z.id) !== -1 ? " visited" : "");
+    btn.innerHTML = z.icon + '<h3>' + z.title + '</h3><p class="mini">Tap to scan this zone.</p><div class="reveal"><strong>Scanner found:</strong> ' + z.hazard + '<br>' + z.reveal + '<br><span class="tag">' + z.tag + '</span></div>';
+    btn.addEventListener("click", function() {
+      if (state.zones.indexOf(z.id) === -1) {
+        state.zones.push(z.id);
+        byId("zone-msg").textContent = z.title + " scanned: " + z.reveal;
+        byId("zone-msg").className = "msg good";
+        if (state.zones.length === 3) earn("scan", "All zones scanned. Reef map unlocked!");
+      } else {
+        byId("zone-msg").textContent = z.title + " has already been scanned.";
+        byId("zone-msg").className = "msg";
+      }
+      storeState();
+      renderZones();
+      updateScanBar();
+    });
+    holder.appendChild(btn);
+  });
+  updateScanBar();
+}
+function updateScanBar() {
+  byId("scan-label").textContent = state.zones.length + " of 3 zones scanned";
+  byId("scan-fill").style.width = (state.zones.length / 3 * 100) + "%";
+}
+
+var selectedAnimal = null;
+var selectedDanger = null;
+function renderRescue() {
+  var animals = byId("animals");
+  var dangers = byId("dangers");
+  animals.innerHTML = "";
+  dangers.innerHTML = "";
+  rescueData.forEach(function(a) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    var isSaved = state.saved.indexOf(a.id) !== -1;
+    btn.className = "animal" + (selectedAnimal === a.id ? " sel" : "") + (isSaved ? " saved" : "");
+    btn.innerHTML = a.icon + '<div class="name">' + a.name + '</div>';
+    btn.addEventListener("click", function() {
+      if (isSaved) return;
+      selectedAnimal = a.id;
+      tryMatch();
+      renderRescue();
+    });
+    animals.appendChild(btn);
+  });
+  dangerData.forEach(function(d) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    var used = rescueData.some(function(a) { return a.danger === d.id && state.saved.indexOf(a.id) !== -1; });
+    btn.className = "danger" + (selectedDanger === d.id ? " sel" : "") + (used ? " used" : "");
+    btn.innerHTML = d.icon + '<div class="name">' + d.name + '</div>';
+    btn.addEventListener("click", function() {
+      if (used) return;
+      selectedDanger = d.id;
+      tryMatch();
+      renderRescue();
+    });
+    dangers.appendChild(btn);
+  });
+}
+function rescueHint(animalId, dangerId) {
+  var animal = rescueData.find(function(a) { return a.id === animalId; });
+  var danger = dangerData.find(function(d) { return d.id === dangerId; });
+  var dangerName = danger ? danger.name.toLowerCase() : "that problem";
+  var guide = {
+    turtle: "Turtles feed near floating soft shapes, so the plastic bag clue matters most.",
+    seal: "Seals move through water fast, so loose line or rope is the biggest clue.",
+    bird: "Seabirds peck at small bits while searching for food, so small plastic pieces matter.",
+    fish: "Fish can take in tiny particles mixed with water or food, so microplastics are the clue.",
+    crab: "Crabs crawl into gaps and containers, so getting trapped is the clue."
+  };
+  return "Not this pair. " + (animal ? guide[animal.id] : "Look at how the animal eats or moves.") + " " + dangerName + " may be a problem somewhere, but not the best match here.";
+}
+function tryMatch() {
+  if (!selectedAnimal || !selectedDanger) return;
+  var animal = rescueData.find(function(a) { return a.id === selectedAnimal; });
+  if (animal.danger === selectedDanger) {
+    state.saved.push(animal.id);
+    byId("rescue-msg").textContent = animal.name + " rescued. " + animal.feedback;
+    byId("rescue-msg").className = "msg good";
+    selectedAnimal = null;
+    selectedDanger = null;
+    if (state.saved.length === rescueData.length) earn("rescue", "All animals rescued!");
+    storeState();
+  } else {
+    byId("rescue-msg").textContent = rescueHint(selectedAnimal, selectedDanger);
+    byId("rescue-msg").className = "msg try";
+    selectedDanger = null;
+  }
+}
+
+function renderChain() {
+  var pool = byId("chain-pool");
+  var slots = byId("chain-slots");
+  pool.innerHTML = "";
+  slots.innerHTML = "";
+  chainData.forEach(function(c) {
+    var card = document.createElement("button");
+    card.type = "button";
+    card.className = "chain-card" + (state.chain.indexOf(c.id) !== -1 ? " picked" : "");
+    card.innerHTML = c.icon + '<div class="name">' + c.name + '</div><div class="caption">' + c.caption + '</div>';
+    card.addEventListener("click", function() {
+      if (state.chain.indexOf(c.id) !== -1 || state.chain.length >= chainCorrect.length) return;
+      state.chain.push(c.id);
+      storeState();
+      renderChain();
+      checkChain(false);
+    });
+    pool.appendChild(card);
+  });
+  for (var i = 0; i < chainCorrect.length; i++) {
+    var filled = state.chain[i];
+    var cardData = chainData.find(function(c) { return c.id === filled; });
+    var slot = document.createElement("div");
+    slot.className = "chain-card slot" + (filled ? " filled" : "");
+    slot.setAttribute("data-slot", String(i));
+    slot.innerHTML = filled ? cardData.icon + '<div class="name">' + (i + 1) + '. ' + cardData.name + '</div><div class="caption">' + cardData.caption + '</div>' : '<div class="name">' + (i + 1) + '</div><div class="caption">waiting...</div>';
+    slots.appendChild(slot);
+  }
+}
+function checkChain(showMessages) {
+  if (state.chain.length < chainCorrect.length) {
+    if (showMessages) {
+      byId("chain-msg").textContent = "Build the full chain first.";
+      byId("chain-msg").className = "msg try";
+    }
+    return false;
+  }
+  if (arraysEqual(state.chain, chainCorrect)) {
+    byId("chain-msg").textContent = "Correct chain. Tiny plastic can travel from small living things to larger animals.";
+    byId("chain-msg").className = "msg good";
+    earn("chain", "Food chain solved!");
+    storeState();
+    return true;
+  }
+  byId("chain-msg").textContent = "Not quite. Start with the tiny plastic, then think: who gets eaten next?";
+  byId("chain-msg").className = "msg try";
+  return false;
+}
+function runChainAnimation() {
+  if (!checkChain(true)) return;
+  var slots = Array.prototype.slice.call(document.querySelectorAll(".chain-card.slot"));
+  slots.forEach(function(s) { s.classList.remove("active"); });
+  slots.forEach(function(slot, index) {
+    setTimeout(function() {
+      slots.forEach(function(s) { s.classList.remove("active"); });
+      slot.classList.add("active");
+      if (index === slots.length - 1) {
+        byId("chain-msg").textContent = "The plastic trail moved through the whole chain. That is why tiny pieces still matter.";
+        byId("chain-msg").className = "msg good";
+      }
+    }, index * 650);
+  });
+}
+
+function renderScenarios() {
+  var holder = byId("scenarios");
+  holder.innerHTML = "";
+  scenarioData.forEach(function(s) {
+    var picked = state.choices[s.id];
+    var card = document.createElement("div");
+    card.className = "scenario" + (picked && (picked.level === "good" || picked.level === "great") ? " goodchoice" : "");
+    var opts = s.options.map(function(o, idx) {
+      var cls = picked && picked.text === o.text ? "picked" : "";
+      return '<button type="button" class="' + cls + '" data-scenario="' + s.id + '" data-index="' + idx + '">' + o.text + '</button>';
+    }).join("");
+    card.innerHTML = '<div class="scenario-head">' + s.icon + '<div><h3>' + s.title + '</h3><div class="mini">Choose the option that feels most helpful and realistic.</div></div></div><div class="options">' + opts + '</div><div class="fb">' + (picked ? picked.fb : '') + '</div>';
+    holder.appendChild(card);
+  });
+  holder.querySelectorAll("button[data-scenario]").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      var sid = btn.getAttribute("data-scenario");
+      var idx = Number(btn.getAttribute("data-index"));
+      var scenario = scenarioData.find(function(s) { return s.id === sid; });
+      var choice = scenario.options[idx];
+      state.choices[sid] = choice;
+      storeState();
+      renderScenarios();
+      byId("choice-msg").textContent = choice.fb;
+      byId("choice-msg").className = choice.level === "harm" ? "msg try" : "msg good";
+      if (Object.keys(state.choices).length === scenarioData.length) earn("choices", "Reef rebuilding choices made!");
+    });
+  });
+}
+
+function renderCourt() {
+  var holder = byId("court");
+  holder.innerHTML = "";
+  courtData.forEach(function(c) {
+    var done = state.court[c.id];
+    var card = document.createElement("div");
+    card.className = "court-card" + (done ? " done" : "");
+    var opts = courtOptions.map(function(o) {
+      var cls = done && o === c.correct ? "correct" : "";
+      return '<button type="button" class="' + cls + '" data-court="' + c.id + '" data-answer="' + o + '">' + o + '</button>';
+    }).join("");
+    card.innerHTML = ICONS.claim + '<div class="claim">' + c.claim + '</div><div class="court-opts">' + opts + '</div><div class="fb">' + c.fb + '</div>';
+    holder.appendChild(card);
+  });
+  holder.querySelectorAll("button[data-court]").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      var id = btn.getAttribute("data-court");
+      if (state.court[id]) return;
+      var answer = btn.getAttribute("data-answer");
+      var claim = courtData.find(function(c) { return c.id === id; });
+      if (answer === claim.correct) {
+        state.court[id] = answer;
+        byId("court-msg").textContent = "Correct: " + claim.fb;
+        byId("court-msg").className = "msg good";
+        if (Object.keys(state.court).length === courtData.length) earn("court", "Plastic Phantom cross-examined!");
+      } else {
+        byId("court-msg").textContent = "Not quite. The best answer is: " + claim.correct + ". " + claim.fb;
+        byId("court-msg").className = "msg try";
+        state.court[id] = claim.correct;
+      }
+      storeState();
+      renderCourt();
+    });
+  });
+}
+
+function renderPledges() {
+  var holder = byId("pledges");
+  holder.innerHTML = "";
+  pledgeData.forEach(function(p) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "pledge" + (state.pledges.indexOf(p.id) !== -1 ? " chosen" : "");
+    btn.innerHTML = p.icon + '<span class="lab">' + p.label + '</span><span class="box" aria-hidden="true"></span>';
+    btn.addEventListener("click", function() {
+      var i = state.pledges.indexOf(p.id);
+      if (i === -1) state.pledges.push(p.id);
+      else state.pledges.splice(i, 1);
+      storeState();
+      renderPledges();
+      if (state.pledges.length > 0) earn("plan", "Realistic action plan started!");
+    });
+    holder.appendChild(btn);
+  });
+}
+
+function populateTeachers() {
+  var select = byId("teacher");
+  teachers.forEach(function(t) {
+    var opt = document.createElement("option");
+    opt.value = t.email || t.name;
+    opt.textContent = t.name + (t.email ? "" : " (type email manually after it opens)");
+    if (t.name === "Jay") opt.selected = true;
+    select.appendChild(opt);
+  });
+}
+
+function selectedLabels(list, ids) {
+  return ids.map(function(id) {
+    var found = list.find(function(item) { return item.id === id; });
+    return found ? found.label || found.name || found.title : id;
+  });
+}
+function buildEvidence() {
+  var scanned = selectedLabels(zoneData, state.zones);
+  var rescued = selectedLabels(rescueData, state.saved);
+  var choices = scenarioData.map(function(s) {
+    var c = state.choices[s.id];
+    return s.title + ": " + (c ? c.text + " — " + c.fb : "not answered");
+  });
+  var court = courtData.map(function(c) { return c.claim + " — " + (state.court[c.id] || "not answered"); });
+  var pledges = selectedLabels(pledgeData, state.pledges);
+  var animalChoice = byId("animal-choice") ? byId("animal-choice").value : "";
+  var problemChoice = byId("problem-choice") ? byId("problem-choice").value : "";
+  var explain = byId("explain-text") ? byId("explain-text").value.trim() : "";
+  var microWhy = byId("micro-why") ? byId("micro-why").value.trim() : "";
+  var barrier = byId("barrier-text") ? byId("barrier-text").value.trim() : "";
+  var complicated = byId("complicated-text") ? byId("complicated-text").value.trim() : "";
+  var badges = badgeData.filter(function(b) { return currentBadges().indexOf(b.id) !== -1; }).map(function(b) { return b.label; });
+  return [
+    "Activity 3: Rescue the Reef",
+    "",
+    "Reef health: " + reefHealth() + "%",
+    "Stars earned: " + Math.min(earned.length, 6) + "/6",
+    "Mission badges: " + (badges.length ? badges.join(", ") : "none yet"),
+    "Bottle evidence collected: " + (state.bottleFound ? "yes" : "no"),
+    "",
+    "Zones scanned:",
+    scanned.length ? "- " + scanned.join("\n- ") : "- none yet",
+    "",
+    "Animals rescued:",
+    rescued.length ? "- " + rescued.join("\n- ") : "- none yet",
+    "",
+    "Food chain:",
+    state.chain.length ? "- " + selectedLabels(chainData, state.chain).join(" -> ") : "- not built yet",
+    "",
+    "Think deeper answer:",
+    microWhy || "Not answered yet.",
+    "",
+    "Reef rebuilding choices:",
+    "- " + choices.join("\n- "),
+    "",
+    "Courtroom answers:",
+    "- " + court.join("\n- "),
+    "",
+    "Final evidence:",
+    "I rescued: " + (animalChoice || "not selected"),
+    "The problem was: " + (problemChoice || "not selected"),
+    "Explanation: " + (explain || "Not written yet."),
+    "Realistic action: " + (pledges.length ? pledges.join(", ") : "not selected"),
+    "Barrier / support: " + (barrier || "Not written yet."),
+    "What is not simple: " + (complicated || "Not written yet.")
+  ].join("\n");
+}
+function updatePreview() {
+  if (byId("evidence-preview")) byId("evidence-preview").textContent = buildEvidence();
+}
+function sendEmail() {
+  updatePreview();
+  var teacher = byId("teacher").value;
+  if (!teacher) {
+    byId("send-msg").textContent = "Pick a teacher first.";
+    byId("send-msg").className = "msg try";
+    return;
+  }
+  var subject = "Activity 3 evidence: Rescue the Reef";
+  var body = buildEvidence();
+  var mailto = "mailto:" + encodeURIComponent(teacher.indexOf("@") !== -1 ? teacher : "") + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  window.location.href = mailto;
+  byId("send-msg").textContent = "Email opened. Press send in your email app.";
+  byId("send-msg").className = "msg good";
+}
+
+function setupDrawing() {
+  var canvas = byId("pad");
+  if (!canvas) return;
+  var ctx = canvas.getContext("2d");
+  var drawing = false;
+  var colour = "#06243d";
+  var size = 5;
+  var colours = ["#06243d", "#0fb6b6", "#2fa84f", "#ff7a3d", "#ff1e9c", "#7b4fc4", "#ffce2e", "#ffffff"];
+  var sizes = [
+    { label: "Pen", value: 5 },
+    { label: "Thick pen", value: 11 },
+    { label: "Reef brush", value: 18 }
+  ];
+  function clearCanvas() {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#d8f0fa";
+    ctx.fillRect(0, 0, canvas.width, 210);
+    ctx.fillStyle = "#e6cf90";
+    ctx.beginPath();
+    ctx.moveTo(0, 250);
+    ctx.bezierCurveTo(160, 220, 280, 280, 430, 245);
+    ctx.bezierCurveTo(520, 225, 580, 250, 640, 235);
+    ctx.lineTo(640, 320);
+    ctx.lineTo(0, 320);
+    ctx.closePath();
+    ctx.fill();
+  }
+  clearCanvas();
+  var tools = byId("tools");
+  var swatches = byId("swatches");
+  sizes.forEach(function(s, idx) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "toolbtn" + (idx === 0 ? " sel" : "");
+    btn.textContent = s.label;
+    btn.addEventListener("click", function() {
+      size = s.value;
+      tools.querySelectorAll("button").forEach(function(b) { b.classList.remove("sel"); });
+      btn.classList.add("sel");
+    });
+    tools.appendChild(btn);
+  });
+  colours.forEach(function(c, idx) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "swatch" + (idx === 0 ? " sel" : "");
+    btn.style.background = c;
+    btn.setAttribute("aria-label", "Pick colour " + c);
+    btn.addEventListener("click", function() {
+      colour = c;
+      swatches.querySelectorAll("button").forEach(function(b) { b.classList.remove("sel"); });
+      btn.classList.add("sel");
+    });
+    swatches.appendChild(btn);
+  });
+  function pos(evt) {
+    var rect = canvas.getBoundingClientRect();
+    var clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+    var clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+    return { x: (clientX - rect.left) * (canvas.width / rect.width), y: (clientY - rect.top) * (canvas.height / rect.height) };
+  }
+  function start(evt) {
+    evt.preventDefault();
+    drawing = true;
+    var p = pos(evt);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  }
+  function move(evt) {
+    if (!drawing) return;
+    evt.preventDefault();
+    var p = pos(evt);
+    ctx.lineTo(p.x, p.y);
+    ctx.strokeStyle = colour;
+    ctx.lineWidth = size;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.stroke();
+  }
+  function end() { drawing = false; }
+  canvas.addEventListener("mousedown", start);
+  canvas.addEventListener("mousemove", move);
+  window.addEventListener("mouseup", end);
+  canvas.addEventListener("touchstart", start, { passive: false });
+  canvas.addEventListener("touchmove", move, { passive: false });
+  canvas.addEventListener("touchend", end);
+  byId("clear-pad").addEventListener("click", clearCanvas);
+  byId("dl-pad").addEventListener("click", function() {
+    var link = document.createElement("a");
+    link.download = "my-rescued-reef.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+}
+
+function setupEvents() {
+  document.querySelectorAll("[data-go]").forEach(function(btn) {
+    btn.addEventListener("click", function() { go(Number(btn.getAttribute("data-go"))); });
+  });
+  byId("egg-bottle").addEventListener("click", function() {
+    state.bottleFound = true;
+    save("bottleFound", "yes");
+    renderBadges();
+    updateBottleEvidence();
+    showReward("Bottle evidence collected. It belongs in the evidence bag, not the reef.");
+    showStamp("EVIDENCE COLLECTED");
+    updatePreview();
+  });
+  byId("reset-chain").addEventListener("click", function() {
+    state.chain = [];
+    storeState();
+    renderChain();
+    byId("chain-msg").textContent = "Chain reset. Try again from the tiniest piece.";
+    byId("chain-msg").className = "msg";
+  });
+  byId("run-chain").addEventListener("click", runChainAnimation);
+  ["micro-why", "animal-choice", "problem-choice", "explain-text", "barrier-text", "complicated-text"].forEach(function(id) {
+    byId(id).addEventListener("input", updatePreview);
+    byId(id).addEventListener("change", updatePreview);
+  });
+  byId("send-btn").addEventListener("click", sendEmail);
+}
+
+function init() {
+  renderDots();
+  renderStars();
+  renderBadges();
+  updateHealth();
+  updateBottleEvidence();
+  renderZones();
+  renderRescue();
+  renderChain();
+  renderScenarios();
+  renderCourt();
+  renderPledges();
+  populateTeachers();
+  setupDrawing();
+  setupEvents();
+  go(currentStep);
+  if (state.zones.length === 3) earn("scan", "All zones scanned. Reef map unlocked!");
+  if (state.saved.length === rescueData.length) earn("rescue", "All animals rescued!");
+  if (arraysEqual(state.chain, chainCorrect)) earn("chain", "Food chain solved!");
+  if (Object.keys(state.choices).length === scenarioData.length) earn("choices", "Reef rebuilding choices made!");
+  if (Object.keys(state.court).length === courtData.length) earn("court", "Plastic Phantom cross-examined!");
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
