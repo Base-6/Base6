@@ -458,12 +458,12 @@
         <pre id="evidence-preview">Your evidence will appear here as you work.</pre>
       </div>
       <div class="send">
-        <h3>Send your reef rescue evidence</h3>
-        <p style="margin:0 0 10px;">Pick a teacher, then tap send. It opens an email with your choices and writing in it.</p>
+        <h3>Send your work to a teacher</h3>
+        <p style="margin:0 0 10px;">Pick a teacher, then tap send. It opens an email with your choices, thinking and action plan.</p>
         <label class="field" for="teacher" style="margin-top:0;">Choose your teacher</label>
         <select id="teacher"><option value="">Pick a teacher...</option></select>
         <div><button id="send-btn">Send to your teacher</button></div>
-        <p class="note">Your drawing stays on this screen. You can download it and attach it to the email, show it to your teacher, or your teacher can take a photo.</p>
+        <p class="note">Then press send in the email that opens. Your drawing stays on this screen; download it and attach it if you want to include it.</p>
         <p class="msg" id="send-msg" role="status"></p>
       </div>
       <div class="nav"><button class="btn-back" data-go="5">Back</button><a class="btn-next btn-link" href="index.html">All done</a></div>
@@ -586,11 +586,37 @@ var pledgeData = [
   { id: "talk", label: "Explain one reef risk to someone else", icon: ICONS.reef }
 ];
 
-var teachers = [
-  { name: "Jay", email: "jay.raine@chiltonbridgeschool.co.uk" },
-  { name: "Angie", email: "" },
-  { name: "Amy", email: "" },
-  { name: "Other teacher", email: "" }
+var STAFF = [
+  { name: "Alex Ireland", email: "alex.ireland@chiltonbridgeschool.co.uk" },
+  { name: "Alice Ruckert", email: "alice.ruckert@chiltonbridgeschool.co.uk" },
+  { name: "Aliesha Tucker", email: "aliesha.tucker@chiltonbridgeschool.co.uk" },
+  { name: "Andrew Holmes", email: "andrew.holmes@chiltonbridgeschool.co.uk" },
+  { name: "Andrew Murphy", email: "andy.murphy@chiltonbridgeschool.co.uk" },
+  { name: "Angela Poole", email: "angela.poole@chiltonbridgeschool.co.uk" },
+  { name: "Anika Beard", email: "anika.beard@chiltonbridgeschool.co.uk" },
+  { name: "Anne-Marie Lock", email: "anne-marie.lock@chiltonbridgeschool.co.uk" },
+  { name: "Ashleigh Leeke-Coleman", email: "ashleigh.leeke-coleman@chiltonbridgeschool.co.uk" },
+  { name: "Daniel Smith", email: "dan.smith@chiltonbridgeschool.co.uk" },
+  { name: "David Wrathall", email: "david.wrathall@chiltonbridgeschool.co.uk" },
+  { name: "Hamish Kemp-Harington", email: "hamish.kemp-harington@chiltonbridgeschool.co.uk" },
+  { name: "Holly Jones", email: "holly.jones@chiltonbridgeschool.co.uk" },
+  { name: "James Rich", email: "james.rich@chiltonbridgeschool.co.uk" },
+  { name: "Jasmine Mann", email: "jasmine.mann@chiltonbridgeschool.co.uk" },
+  { name: "Jason Deelchand-Bee", email: "jason.deelchand-bee@chiltonbridgeschool.co.uk" },
+  { name: "Jay Raine", email: "jay.raine@chiltonbridgeschool.co.uk" },
+  { name: "Jennifer Wilson", email: "jennifer.wilson@chiltonbridgeschool.co.uk" },
+  { name: "Joanna Messenger", email: "joanna.messenger@chiltonbridgeschool.co.uk" },
+  { name: "Katie Duckworth", email: "katie.duckworth@chiltonbridgeschool.co.uk" },
+  { name: "Lewis Walls", email: "lewis.walls@chiltonbridgeschool.co.uk" },
+  { name: "Louise Hann", email: "louise.hann@chiltonbridgeschool.co.uk" },
+  { name: "Madeleine Stokes", email: "madeleine.stokes@chiltonbridgeschool.co.uk" },
+  { name: "Rebecca Divall", email: "rebecca.divall@chiltonbridgeschool.co.uk" },
+  { name: "Sally Layzell", email: "sally.layzell@chiltonbridgeschool.co.uk" },
+  { name: "Sarah Semyanik", email: "sarah.semyanik@chiltonbridgeschool.co.uk" },
+  { name: "Tara Russell", email: "tara.russell@chiltonbridgeschool.co.uk" },
+  { name: "Thomas Jackson", email: "thomas.jackson@chiltonbridgeschool.co.uk" },
+  { name: "William Pearse", email: "william.pearse@chiltonbridgeschool.co.uk" },
+  { name: "Willow White", email: "willow.white@chiltonbridgeschool.co.uk" }
 ];
 
 var badgeData = [
@@ -966,11 +992,11 @@ function renderPledges() {
 
 function populateTeachers() {
   var select = byId("teacher");
-  teachers.forEach(function(t) {
+  STAFF.forEach(function(t) {
     var opt = document.createElement("option");
-    opt.value = t.email || t.name;
-    opt.textContent = t.name + (t.email ? "" : " (type email manually after it opens)");
-    if (t.name === "Jay") opt.selected = true;
+    opt.value = t.email;
+    opt.textContent = t.name;
+    if (t.name === "Jay Raine") opt.selected = true;
     select.appendChild(opt);
   });
 }
@@ -1043,11 +1069,17 @@ function sendEmail() {
     byId("send-msg").className = "msg try";
     return;
   }
-  var subject = "Activity 3 evidence: Rescue the Reef";
-  var body = buildEvidence();
-  var mailto = "mailto:" + encodeURIComponent(teacher.indexOf("@") !== -1 ? teacher : "") + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-  window.location.href = mailto;
-  byId("send-msg").textContent = "Email opened. Press send in your email app.";
+  var subject = "Plastic Free July - Activity 3";
+  var body = "Hello,\n\nHere is my work.\n\n" + buildEvidence() + "\n\nFrom a student in Plastic Free July.";
+  var url = "https://mail.google.com/mail/?view=cm&fs=1"
+    + "&to=" + encodeURIComponent(teacher)
+    + "&su=" + encodeURIComponent(subject)
+    + "&body=" + encodeURIComponent(body);
+  var opened = window.open(url, "_blank");
+  if (!opened) {
+    window.location.href = url;
+  }
+  byId("send-msg").textContent = "Email opened. Press send in the email.";
   byId("send-msg").className = "msg good";
 }
 
