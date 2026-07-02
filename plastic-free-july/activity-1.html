@@ -35,21 +35,27 @@
   .kelp { transform-origin: bottom center; animation: sway 9s ease-in-out infinite alternate; }
   .kelp.b { animation-duration: 11s; }
   @keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
-  .float-bottle { position: absolute; bottom: 56px; left: 5%; width: clamp(70px, 10vw, 112px); height: auto;
+  .float-bottle { position: fixed; bottom: 56px; left: 5%; width: clamp(70px, 10vw, 112px);
+    background: none; border: none; padding: 0; cursor: pointer; z-index: 5;
     filter: drop-shadow(0 8px 12px rgba(3,30,50,0.32)); animation: floatb 7s ease-in-out infinite; }
+  .float-bottle img { width: 100%; height: auto; display: block; }
+  .float-bottle:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; border-radius: 14px; }
   @keyframes floatb { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-15px) rotate(3deg); } }
 
   .topbar { background: linear-gradient(135deg, var(--accent), var(--accent-deep)); color: #ffffff; padding: 12px 0; position: relative; }
-  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .topbar a.back { color: #ffffff; text-decoration: none; font-weight: 700; background: rgba(255,255,255,0.22); padding: 8px 14px; border-radius: 999px; font-size: 1rem; }
   .topbar a.back:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; }
   .topbar .label { font-weight: 700; font-size: 1.05rem; }
+  .stars { display: flex; gap: 5px; align-items: center; }
+  .stars svg { width: 20px; height: 20px; display: block; }
 
   .dots { display: flex; gap: 10px; justify-content: center; padding: 16px 0 2px; }
-  .dots span { width: 16px; height: 16px; border-radius: 50%;
+  .dots button { width: 16px; height: 16px; border-radius: 50%; padding: 0; cursor: pointer;
     background: radial-gradient(circle at 32% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.25));
     border: 2px solid rgba(255,255,255,0.7); }
-  .dots span.on { background: radial-gradient(circle at 32% 30%, #ffffff, var(--sun)); border-color: #ffffff; box-shadow: 0 0 0 4px rgba(255,206,46,0.4); }
+  .dots button.on { background: radial-gradient(circle at 32% 30%, #ffffff, var(--sun)); border-color: #ffffff; box-shadow: 0 0 0 4px rgba(255,206,46,0.4); }
+  .dots button:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; }
 
   .sheet { background: rgba(255,255,255,0.96); border-radius: 22px; margin: 14px auto 0;
     box-shadow: 0 12px 30px rgba(3,30,50,0.3); padding: 22px; }
@@ -67,6 +73,10 @@
   p { font-size: 1.08rem; }
   .hint { color: var(--ink-soft); font-size: 1.02rem; }
 
+  .bubble { border-radius: 14px; padding: 10px 14px; font-weight: 700; margin-top: 12px; font-size: 1.02rem; }
+  .bubble.phantom { background: #fff0f8; border: 3px solid var(--plastic); color: var(--plastic-deep); }
+  .bubble.inky { background: #e7f8f8; border: 3px solid var(--accent); color: var(--accent-deep); }
+
   .nav { display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
   button { font-family: inherit; font-size: 1.08rem; font-weight: 700; cursor: pointer; border: none; border-radius: 999px; padding: 12px 22px; }
   button:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
@@ -75,7 +85,7 @@
   .btn-ghost { background: #ffffff; color: var(--ink); border: 3px solid var(--accent); }
 
   /* shared glossy chip behind icons */
-  .thing svg, .flip svg, .jstep svg {
+  .thing svg, .flip svg, .jstep svg, .twist-item svg {
     background: radial-gradient(circle at 35% 28%, #ffffff, #e2f2f7);
     border-radius: 50%; padding: 6px; box-shadow: inset 0 -3px 6px rgba(3,30,50,0.12);
   }
@@ -86,6 +96,8 @@
   .thing svg { width: 58px; height: 58px; display: block; margin: 0 auto 6px; }
   .thing .name { font-size: 0.96rem; font-weight: 700; }
   .thing.sel { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(15,182,182,0.3); }
+  .thing.done { animation: dropin 0.35s ease; }
+  @keyframes dropin { 0% { transform: scale(1.15) translateY(-8px); } 60% { transform: scale(0.95) translateY(2px); } 100% { transform: scale(1) translateY(0); } }
   .thing.done.plastic { background: #ffe3f3; }
   .thing.done.plastic .ink-fill { fill: var(--plastic); }
   .thing.done.plastic .ink-stroke { stroke: var(--plastic-deep); }
@@ -117,6 +129,12 @@
   .qcard.solved.plastic { background: #ffe3f3; border-color: var(--plastic); }
   .qcard.solved.plastic .ink-fill { fill: var(--plastic); }
   .qcard.solved.plastic .ink-stroke { stroke: var(--plastic-deep); }
+  /* tricky twist */
+  .twist { background: #fffaf0; border: 3px solid var(--sun); border-radius: 18px; padding: 14px 16px; margin: 6px 0 14px; }
+  .twist h3 { margin: 0 0 10px; }
+  .twist-row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .twist-item { text-align: center; font-weight: 700; font-size: 0.98rem; }
+  .twist-item svg { width: 64px; height: 64px; display: block; margin: 0 auto 6px; }
   /* predict */
   .predict { background: #eef7fb; border: 3px solid #bcdded; border-radius: 16px; padding: 14px; margin: 6px 0 14px; }
   .predict .opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
@@ -146,6 +164,8 @@
   .jstep.on.plastic { border-color: var(--plastic); background: #ffe3f3; }
   .jstep.on.plastic .ink-fill { fill: var(--plastic); }
   .jstep.on.plastic .ink-stroke { stroke: var(--plastic-deep); }
+  .jstep.mystery { border-style: dashed; border-color: #9cc4d4; background: #f3fafc; color: var(--ink-soft); }
+  .jstep.mystery .qmark { font-size: 2.6rem; font-weight: 700; line-height: 64px; height: 64px; }
   .arrow { align-self: center; font-size: 1.7rem; color: var(--ink-soft); font-weight: 700; }
 
   /* Both true */
@@ -161,6 +181,8 @@
   .pan li { margin: 4px 0; font-size: 1.05rem; }
   .pan .tap { color: var(--ink-soft); font-weight: 700; }
   .pan.open .tap { display: none; }
+  .pan .bubble { display: none; }
+  .pan.open .bubble { display: block; }
   .pan.prob img { width: 42px; height: 42px; object-fit: contain; }
   .verdict { background: #fff4fa; border: 4px solid var(--plastic); border-radius: 18px; padding: 14px 16px; margin-top: 6px; }
   .verdict strong { color: var(--plastic-deep); }
@@ -170,8 +192,10 @@
   textarea { width: 100%; min-height: 96px; font-family: inherit; font-size: 1.08rem; padding: 12px; border-radius: 12px; border: 3px solid #bcdded; resize: vertical; }
   textarea:focus-visible { outline: 4px solid var(--ink); outline-offset: 2px; }
   .draw-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
-  .swatch { width: 38px; height: 38px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 0 0 2px #9cc4d4; cursor: pointer; }
+  .swatch { width: 38px; height: 38px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 0 0 2px #9cc4d4; cursor: pointer; padding: 0; }
   .swatch.sel { box-shadow: 0 0 0 4px var(--ink); }
+  .toolbtn { background: #ffffff; color: var(--ink); border: 3px solid var(--accent); border-radius: 999px; padding: 8px 16px; font-size: 1rem; }
+  .toolbtn.sel { background: var(--accent); color: #ffffff; }
   canvas { width: 100%; max-width: 640px; height: 320px; touch-action: none; background: #ffffff; border: 3px solid #bcdded; border-radius: 14px; display: block; }
   .send { margin-top: 22px; background: #f1fbfb; border: 3px solid var(--accent); border-radius: 18px; padding: 16px; }
   .send h3 { margin: 0 0 8px; }
@@ -207,6 +231,7 @@
     .bub { display: none; }
     .kelp, .intro-row img { animation: none; }
     .float-bottle { animation: none; }
+    .thing.done { animation: none; }
     .reward { transition: none; }
     .boss-head .chev { transition: none; }
   }
@@ -233,17 +258,21 @@
       <g><path d="M720 196 C 716 172 700 162 706 140 M740 196 C 744 170 762 162 754 138" stroke="#7b4fc4" stroke-width="9" fill="none" stroke-linecap="round"/></g>
     </svg>
   </div>
-  <img class="float-bottle" src="bottle.png" alt="">
 </div>
+
+<button class="float-bottle" id="egg-bottle" aria-label="A plastic bottle floating where it should not be">
+  <img src="bottle.png" alt="">
+</button>
 
 <div class="topbar">
   <div class="wrap">
     <a class="back" href="index.html">Back to all activities</a>
+    <span class="stars" id="stars" aria-label="0 of 4 stars earned"></span>
     <span class="label">Activity 1</span>
   </div>
 </div>
 
-<div class="dots" id="dots" aria-hidden="true"></div>
+<div class="dots" id="dots"></div>
 
 <div class="reward" id="reward" role="status" aria-live="polite">
   <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/></svg>
@@ -259,6 +288,7 @@
       <div>
         <h1>What is <span class="pf">plastic</span>?</h1>
         <p class="lead">I'm Captain Inky. Let's work out what plastic actually is. Three quick rounds, then your verdict.</p>
+        <div class="bubble phantom">"Plastic? Never heard of it. Nothing to see here." &middot; a suspicious voice from the shadows</div>
       </div>
     </div>
     <div class="nav"><button class="btn-next" data-go="1">Start</button></div>
@@ -280,6 +310,14 @@
     <h2>Game 2: What is it made of?</h2>
     <p>Look at each picture. What do you think it is made of? Tap your answer.</p>
     <div class="cards" id="cards"></div>
+    <div class="twist" id="twist" hidden>
+      <h3>Tricky twist</h3>
+      <div class="twist-row">
+        <div class="twist-item"><span id="twist-wood"></span>Wooden spoon</div>
+        <div class="twist-item"><span id="twist-plastic"></span>Plastic spoon</div>
+      </div>
+      <p style="margin:10px 0 0;">Same job, different stuff. Spoons come in wood AND plastic. You cannot tell what something is made of just from its name. You have to look closely at the material.</p>
+    </div>
     <p class="msg" id="made-msg" role="status"></p>
     <div class="nav"><button class="btn-back" data-go="1">Back</button><button class="btn-next" data-go="3">Next</button></div>
   </section>
@@ -299,6 +337,7 @@
 
   <section class="step" id="s-both">
     <h2>The big idea</h2>
+    <div class="predict"><strong>Think first.</strong> Before you open the boxes, can you remember one way plastic helps us, and one problem it causes? Say your answers in your head, or out loud if you like. Then open the boxes to check.</div>
     <p>Open both boxes. Plastic isn't all bad, and it isn't all good either.</p>
     <div class="panels">
       <div class="pan help" id="pan-help" tabindex="0" role="button" aria-expanded="false">
@@ -308,9 +347,13 @@
       <div class="pan prob" id="pan-prob" tabindex="0" role="button" aria-expanded="false">
         <h3><img src="villain.png" alt="">Plastic is a problem</h3><span class="tap">Tap to see why</span>
         <ul><li>It lasts a very, very long time.</li><li>It breaks into tiny bits that never go away.</li><li>It can hurt sea animals.</li></ul>
+        <div class="bubble phantom">"Ha! Exactly! My plastic lasts FOREVER! You will never be rid of it!" &middot; the Plastic Phantom</div>
       </div>
     </div>
-    <div class="verdict" id="verdict" style="display:none;"><p style="margin:0;">Both boxes are true at once. <strong>Plastic is useful AND a problem.</strong> That is what makes it tricky.</p></div>
+    <div class="verdict" id="verdict" style="display:none;">
+      <p style="margin:0;">Both boxes are true at once. <strong>Plastic is useful AND a problem.</strong> That is what makes it tricky.</p>
+      <div class="bubble inky">"Forever is a very long time to be litter, Phantom. We will see about that." &middot; Captain Inky</div>
+    </div>
     <div class="nav"><button class="btn-back" data-go="3">Back</button><button class="btn-next" data-go="5">Next</button></div>
   </section>
 
@@ -320,16 +363,17 @@
     <label class="field" for="reflect-text">Write your idea</label>
     <textarea id="reflect-text" placeholder="Plastic is..."></textarea>
     <label class="field">Or draw it</label>
+    <div class="draw-tools" id="tools" aria-label="Pick a tool"></div>
     <div class="draw-tools" id="swatches" aria-label="Pick a colour"></div>
     <canvas id="pad" width="640" height="320" aria-label="Drawing area"></canvas>
-    <div class="nav" style="margin-top:10px;"><button class="btn-ghost" id="clear-pad">Clear drawing</button></div>
+    <div class="nav" style="margin-top:10px;"><button class="btn-ghost" id="clear-pad">Clear drawing</button><button class="btn-ghost" id="dl-pad">Download my drawing</button></div>
     <div class="send">
       <h3>Send your work to a teacher</h3>
       <p style="margin:0 0 10px;">Pick a teacher, then tap send. It opens an email with your writing in it.</p>
       <label class="field" for="teacher" style="margin-top:0;">Choose your teacher</label>
       <select id="teacher"><option value="">Pick a teacher...</option></select>
       <div><button id="send-btn">Send to your teacher</button></div>
-      <p class="note">Your drawing stays on this screen. Show it to your teacher, or they can take a photo of it.</p>
+      <p class="note">Your drawing stays on this screen. You can download it with the button above and attach it to your email, show it to your teacher, or they can take a photo of it.</p>
       <p class="msg" id="send-msg" role="status"></p>
     </div>
     <section class="boss" id="boss">
@@ -365,6 +409,9 @@
 var NS = "pfj.a1.";
 function save(key, value) { try { localStorage.setItem(NS + key, value); } catch (e) {} }
 function load(key) { try { return localStorage.getItem(NS + key); } catch (e) { return null; } }
+function loadJSON(key, fallback) { try { var v = localStorage.getItem(NS + key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+
+var quiet = false; /* true while restoring saved progress, so toasts stay silent */
 
 function svg(inner) { return '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + inner + '</svg>'; }
 var HI = '<ellipse cx="26" cy="20" rx="9" ry="5" fill="#ffffff" opacity="0.45"/>';
@@ -374,6 +421,7 @@ var ICON = {
   straw: svg('<path class="ink-fill ink-stroke" d="M26 7l10 0-7 50-6 0z" fill="#e0563f" stroke="#06243d" stroke-width="3"/>' + HI),
   brick: svg('<rect class="ink-fill ink-stroke" x="14" y="26" width="36" height="22" rx="3" fill="#e8a13b" stroke="#06243d" stroke-width="3"/><circle class="ink-fill ink-stroke" cx="24" cy="24" r="5" fill="#e8a13b" stroke="#06243d" stroke-width="3"/><circle class="ink-fill ink-stroke" cx="40" cy="24" r="5" fill="#e8a13b" stroke="#06243d" stroke-width="3"/>' + HI),
   spoon: svg('<ellipse cx="32" cy="17" rx="11" ry="13" fill="#b9803f" stroke="#06243d" stroke-width="3"/><rect x="29" y="27" width="6" height="30" rx="3" fill="#b9803f" stroke="#06243d" stroke-width="3"/>' + HI),
+  pspoon: svg('<ellipse cx="32" cy="17" rx="11" ry="13" fill="#ffb1dc" stroke="#c40d74" stroke-width="3"/><rect x="29" y="27" width="6" height="30" rx="3" fill="#ffb1dc" stroke="#c40d74" stroke-width="3"/>' + HI),
   jar: svg('<rect x="23" y="8" width="18" height="7" rx="2" fill="#9fd8c5" stroke="#06243d" stroke-width="3"/><path d="M21 16h22v36a4 4 0 0 1-4 4H25a4 4 0 0 1-4-4z" fill="#cdeee6" stroke="#06243d" stroke-width="3"/>' + HI),
   can: svg('<rect x="21" y="10" width="22" height="44" rx="5" fill="#c9ced2" stroke="#06243d" stroke-width="3"/><rect x="21" y="17" width="22" height="6" fill="#aab1b7"/>' + HI),
   apple: svg('<path d="M32 21c-8-6-21 0-19 15 2 13 13 21 19 21s17-8 19-21c2-15-11-21-19-15z" fill="#d83b3b" stroke="#06243d" stroke-width="3"/><rect x="30" y="10" width="4" height="12" rx="2" fill="#7c5022"/><path d="M34 13c4-4 9-3 9-3s-1 6-6 6z" fill="#3fa05a" stroke="#06243d" stroke-width="2"/>' + HI),
@@ -384,8 +432,8 @@ var ICON = {
   pellets: svg('<circle class="ink-fill ink-stroke" cx="24" cy="28" r="8" fill="#dfe4e7" stroke="#06243d" stroke-width="3"/><circle class="ink-fill ink-stroke" cx="41" cy="24" r="8" fill="#dfe4e7" stroke="#06243d" stroke-width="3"/><circle class="ink-fill ink-stroke" cx="30" cy="43" r="8" fill="#dfe4e7" stroke="#06243d" stroke-width="3"/>')
 };
 
-var REWARD = document.getElementById ? null : null;
 function showReward(text) {
+  if (quiet) { return; }
   var r = document.getElementById("reward");
   document.getElementById("reward-text").textContent = text;
   r.classList.add("show");
@@ -393,24 +441,48 @@ function showReward(text) {
   r._t = setTimeout(function () { r.classList.remove("show"); }, 3500);
 }
 
+/* --- Stars: earned rewards that persist and show in the top bar --- */
+var STAR_IDS = ["sort", "made", "journey", "both"];
+function getStars() { return loadJSON("stars", []); }
+function earnStar(id) {
+  var s = getStars();
+  if (s.indexOf(id) === -1) { s.push(id); save("stars", JSON.stringify(s)); }
+  renderStars();
+}
+function starSvg(filled) {
+  return '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="' + (filled ? "#ffce2e" : "rgba(255,255,255,0.25)") + '" stroke="' + (filled ? "#06243d" : "#ffffff") + '" stroke-width="3" stroke-linejoin="round"/></svg>';
+}
+function renderStars() {
+  var box = document.getElementById("stars");
+  var s = getStars();
+  box.setAttribute("aria-label", s.length + " of 4 stars earned");
+  var html = "";
+  STAR_IDS.forEach(function (id) { html += starSvg(s.indexOf(id) !== -1); });
+  box.innerHTML = html;
+}
+
+/* --- Game 1: Sort it --- */
 var THINGS = [
-  { id: "bottle", name: "Bottle", plastic: true },
-  { id: "bag", name: "Bag", plastic: true },
-  { id: "straw", name: "Straw", plastic: true },
-  { id: "brick", name: "Building block", plastic: true },
-  { id: "spoon", name: "Spoon", plastic: false },
-  { id: "jar", name: "Jar", plastic: false },
-  { id: "can", name: "Can", plastic: false },
-  { id: "apple", name: "Apple", plastic: false }
+  { id: "bottle", name: "Bottle", plastic: true, fact: "Yes. Bottles like this are plastic, made from oil." },
+  { id: "bag", name: "Bag", plastic: true, fact: "Yes. Thin stretchy bags are plastic film, also made from oil." },
+  { id: "straw", name: "Straw", plastic: true, fact: "Yes. Most straws are plastic. Paper ones exist too." },
+  { id: "brick", name: "Building block", plastic: true, fact: "Yes. Building blocks are hard plastic, built to last for decades." },
+  { id: "spoon", name: "Spoon", plastic: false, fact: "Right. This spoon is wood, cut from a tree." },
+  { id: "jar", name: "Jar", plastic: false, fact: "Right. Jars like this are glass, made from melted sand." },
+  { id: "can", name: "Can", plastic: false, fact: "Right. Cans are metal. Metal can be recycled again and again." },
+  { id: "apple", name: "Apple", plastic: false, fact: "Right. An apple is natural. It rots away in a few weeks." }
 ];
+var SORT_DONE_MSG = "All sorted. See how the pink ones glow? Plastic never blends in underwater. Keep an eye out for that pink all week.";
 var selected = null;
 var placed = 0;
+var sortState = [];
 function buildTray() {
   var tray = document.getElementById("tray");
   tray.innerHTML = "";
   THINGS.forEach(function (t) {
     var el = document.createElement("button");
     el.className = "thing " + (t.plastic ? "plastic" : "notplastic");
+    el.setAttribute("data-id", t.id);
     el.setAttribute("aria-label", t.name);
     el.innerHTML = ICON[t.id] + '<span class="name">' + t.name + '</span>';
     el.addEventListener("click", function () { selectThing(t.id, el); });
@@ -424,24 +496,51 @@ function selectThing(id, el) {
   el.classList.add("sel");
   setMsg("sort-msg", "Now tap a bin.", "");
 }
+function placeThing(id, bin) {
+  var el = document.querySelector('.thing[data-id="' + id + '"]');
+  if (!el || el.classList.contains("done")) { return; }
+  var holder = document.getElementById(bin === "plastic" ? "hold-plastic" : "hold-not");
+  el.classList.remove("sel");
+  el.classList.add("done");
+  el.disabled = true;
+  holder.appendChild(el);
+  placed += 1;
+}
 function placeInBin(bin) {
   if (!selected) { setMsg("sort-msg", "Tap a thing first.", "try"); return; }
   var t = THINGS.filter(function (x) { return x.id === selected.id; })[0];
   var correct = (bin === "plastic" && t.plastic) || (bin === "not" && !t.plastic);
   if (!correct) { setMsg("sort-msg", "Hmm, not that bin. Have another go.", "try"); selected.el.classList.remove("sel"); selected = null; return; }
-  var holder = document.getElementById(bin === "plastic" ? "hold-plastic" : "hold-not");
-  selected.el.classList.remove("sel");
-  selected.el.classList.add("done");
-  selected.el.disabled = true;
-  holder.appendChild(selected.el);
+  placeThing(t.id, bin);
   selected = null;
-  placed += 1;
-  if (placed >= THINGS.length) { setMsg("sort-msg", "All sorted. The pink ones are all plastic.", "good"); showReward("All sorted! Nice work."); }
-  else { setMsg("sort-msg", "Nice one. Keep going.", "good"); }
+  sortState.push({ id: t.id, bin: bin });
+  save("sort", JSON.stringify(sortState));
+  if (placed >= THINGS.length) {
+    setMsg("sort-msg", t.fact + " " + SORT_DONE_MSG, "good");
+    showReward("All sorted! Nice work.");
+    earnStar("sort");
+  } else {
+    setMsg("sort-msg", t.fact, "good");
+  }
+}
+function restoreSort() {
+  sortState = loadJSON("sort", []);
+  if (!sortState.length) { return; }
+  sortState.forEach(function (s) { placeThing(s.id, s.bin); });
+  if (placed >= THINGS.length) { setMsg("sort-msg", SORT_DONE_MSG, "good"); }
 }
 function setMsg(id, text, kind) { var m = document.getElementById(id); m.textContent = text; m.className = "msg" + (kind ? " " + kind : ""); }
 
-function shuffle(a) { var r = a.slice(); for (var i = r.length - 1; i > 0; i--) { var j = (i * 7 + 3) % (i + 1); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; }
+function shuffle(a) {
+  var r = a.slice();
+  for (var i = r.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = r[i]; r[i] = r[j]; r[j] = t;
+  }
+  return r;
+}
+
+/* --- Game 2: What is it made of? --- */
 var MADE = [
   { id: "bottle", ans: "Plastic", plastic: true, opts: ["Plastic", "Glass", "Metal", "Paper"] },
   { id: "spoon", ans: "Wood", plastic: false, opts: ["Wood", "Plastic", "Metal", "Paper"] },
@@ -451,12 +550,30 @@ var MADE = [
   { id: "ball", ans: "Rubber", plastic: false, opts: ["Rubber", "Plastic", "Metal", "Wood"] }
 ];
 var solvedCount = 0;
+var madeState = [];
+function solveCard(card, c, byUser) {
+  if (card.classList.contains("solved")) { return; }
+  card.classList.add("solved");
+  var fb = card.querySelector(".qfb");
+  card.querySelectorAll(".opts button").forEach(function (x) {
+    if (x.textContent === c.ans) { x.classList.add("right"); }
+    x.disabled = true;
+  });
+  fb.textContent = c.plastic ? "Yes. It is plastic. Watch it turn pink." : "Correct. That one is " + c.ans.toLowerCase() + ".";
+  solvedCount += 1;
+  if (solvedCount >= MADE.length) {
+    setMsg("made-msg", "All worked out. Notice only one of these is plastic. But wait, there is a twist above.", "good");
+    document.getElementById("twist").hidden = false;
+    if (byUser) { showReward("You worked them all out!"); earnStar("made"); }
+  }
+}
 function buildCards() {
   var box = document.getElementById("cards");
   box.innerHTML = "";
   MADE.forEach(function (c) {
     var card = document.createElement("div");
     card.className = "qcard " + (c.plastic ? "plastic" : "");
+    card.setAttribute("data-id", c.id);
     card.innerHTML = ICON[c.id] + '<div class="qmid"><div class="qq">What is this made of?</div><div class="opts"></div><div class="qfb"></div></div>';
     var optbox = card.querySelector(".opts");
     var fb = card.querySelector(".qfb");
@@ -466,12 +583,9 @@ function buildCards() {
       b.addEventListener("click", function () {
         if (card.classList.contains("solved")) { return; }
         if (o === c.ans) {
-          b.classList.add("right");
-          card.classList.add("solved");
-          optbox.querySelectorAll("button").forEach(function (x) { x.disabled = true; });
-          fb.textContent = c.plastic ? "Yes. It is plastic. Watch it turn pink." : "Correct. That one is " + c.ans.toLowerCase() + ".";
-          solvedCount += 1;
-          if (solvedCount >= MADE.length) { setMsg("made-msg", "All worked out. Notice only one of these is plastic.", "good"); showReward("You worked them all out!"); }
+          solveCard(card, c, true);
+          madeState.push(c.id);
+          save("made", JSON.stringify(madeState));
         } else {
           b.classList.add("wrong");
           fb.textContent = "Not that one. Look again.";
@@ -483,20 +597,41 @@ function buildCards() {
     box.appendChild(card);
   });
 }
+function restoreMade() {
+  madeState = loadJSON("made", []);
+  if (!madeState.length) { return; }
+  madeState.forEach(function (id) {
+    var c = MADE.filter(function (x) { return x.id === id; })[0];
+    var card = document.querySelector('.qcard[data-id="' + id + '"]');
+    if (c && card) { solveCard(card, c, false); }
+  });
+}
+function buildTwistIcons() {
+  document.getElementById("twist-wood").innerHTML = ICON.spoon;
+  document.getElementById("twist-plastic").innerHTML = ICON.pspoon;
+}
+
+/* --- Game 3: Journey --- */
 var PRED = ["Trees", "Oil", "Sand", "Rocks"];
 function buildPredict() {
   var box = document.getElementById("predict-opts");
   PRED.forEach(function (o) {
     var b = document.createElement("button");
     b.textContent = o;
-    b.addEventListener("click", function () {
-      box.querySelectorAll("button").forEach(function (x) { x.classList.remove("picked"); });
-      b.classList.add("picked");
-      var fb = document.getElementById("predict-fb");
-      fb.textContent = (o === "Oil") ? "Spot on. Plastic is made from oil. Follow it below." : "Good guess, but no. It is actually oil. Follow it below.";
-    });
+    b.addEventListener("click", function () { pickPredict(o, true); });
     box.appendChild(b);
   });
+}
+function pickPredict(o, byUser) {
+  var box = document.getElementById("predict-opts");
+  box.querySelectorAll("button").forEach(function (x) { x.classList.toggle("picked", x.textContent === o); });
+  var fb = document.getElementById("predict-fb");
+  fb.textContent = (o === "Oil") ? "Spot on. Plastic is made from oil. Follow it below." : "Good guess, but no. It is actually oil. Follow it below.";
+  if (byUser) { save("predict", o); }
+}
+function restorePredict() {
+  var p = load("predict");
+  if (p) { pickPredict(p, false); }
 }
 
 var JOURNEY = [
@@ -505,39 +640,92 @@ var JOURNEY = [
   { id: "pellets", cap: "3. It is made into tiny plastic beads.", plastic: true },
   { id: "bottle", cap: "4. The beads are melted into things, like a bottle.", plastic: true }
 ];
+var JOURNEY_DONE_CAP = "So plastic is made by people, from oil. It is useful, but it sticks around for a very long time.";
 var litCount = 0;
+var journeyState = [];
+function lightStep(id, byUser) {
+  var el = document.querySelector('.jstep[data-id="' + id + '"]');
+  if (!el) { return; }
+  var j = JOURNEY.filter(function (x) { return x.id === id; })[0];
+  if (!el.classList.contains("on")) {
+    el.classList.add("on");
+    litCount += 1;
+    if (byUser) { journeyState.push(id); save("journey", JSON.stringify(journeyState)); }
+  }
+  document.getElementById("journey-cap").textContent = j.cap;
+  if (litCount >= JOURNEY.length) {
+    document.getElementById("journey-cap").textContent = JOURNEY_DONE_CAP;
+    if (byUser) { showReward("You followed the whole journey!"); earnStar("journey"); }
+  }
+}
 function buildJourney() {
   var box = document.getElementById("journey");
   box.innerHTML = "";
   JOURNEY.forEach(function (j, i) {
     var el = document.createElement("button");
     el.className = "jstep " + (j.plastic ? "plastic" : "");
+    el.setAttribute("data-id", j.id);
     el.setAttribute("aria-label", j.cap);
     el.innerHTML = ICON[j.id] + '<div class="cap">' + j.cap + '</div>';
-    el.addEventListener("click", function () {
-      if (!el.classList.contains("on")) { el.classList.add("on"); litCount += 1; }
-      document.getElementById("journey-cap").textContent = j.cap;
-      if (litCount >= JOURNEY.length) { document.getElementById("journey-cap").textContent = "So plastic is made by people, from oil. It is useful, but it sticks around for a very long time."; showReward("You followed the whole journey!"); }
-    });
+    el.addEventListener("click", function () { lightStep(j.id, true); });
     box.appendChild(el);
-    if (i < JOURNEY.length - 1) { var ar = document.createElement("span"); ar.className = "arrow"; ar.innerHTML = "&rarr;"; box.appendChild(ar); }
+    var ar = document.createElement("span"); ar.className = "arrow"; ar.innerHTML = "&rarr;"; box.appendChild(ar);
   });
+  var m = document.createElement("button");
+  m.className = "jstep mystery";
+  m.setAttribute("aria-label", "Step five, a mystery for later this week");
+  m.innerHTML = '<div class="qmark" aria-hidden="true">?</div><div class="cap">5. Where next?</div>';
+  m.addEventListener("click", function () {
+    document.getElementById("journey-cap").textContent = "Where does the bottle go next? That is a story for later this week. Keep watching for the pink.";
+  });
+  box.appendChild(m);
+}
+function restoreJourney() {
+  journeyState = loadJSON("journey", []);
+  if (!journeyState.length) { return; }
+  journeyState.forEach(function (id) { lightStep(id, false); });
+  if (litCount >= JOURNEY.length) { document.getElementById("journey-cap").textContent = JOURNEY_DONE_CAP; }
 }
 
-function wirePanel(id) {
+/* --- The big idea --- */
+var panelState = { help: false, prob: false };
+function openPanel(which, byUser) {
+  var p = document.getElementById(which === "help" ? "pan-help" : "pan-prob");
+  if (p.classList.contains("open")) { return; }
+  p.classList.add("open");
+  p.setAttribute("aria-expanded", "true");
+  panelState[which] = true;
+  if (byUser) { save("panels", JSON.stringify(panelState)); }
+  if (panelState.help && panelState.prob) { showVerdict(byUser); }
+}
+function showVerdict(byUser) {
+  document.getElementById("verdict").style.display = "block";
+  if (byUser) { showReward("Both are true at once!"); earnStar("both"); }
+}
+function wirePanel(id, which) {
   var p = document.getElementById(id);
-  function openIt() { p.classList.add("open"); p.setAttribute("aria-expanded", "true"); checkBoth(); }
+  function openIt() { openPanel(which, true); }
   p.addEventListener("click", openIt);
   p.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openIt(); } });
 }
-function checkBoth() {
-  var a = document.getElementById("pan-help").classList.contains("open");
-  var b = document.getElementById("pan-prob").classList.contains("open");
-  if (a && b) { document.getElementById("verdict").style.display = "block"; showReward("Both are true at once!"); }
+function restorePanels() {
+  var saved = loadJSON("panels", null);
+  if (!saved) { return; }
+  if (saved.help) { openPanel("help", false); }
+  if (saved.prob) { openPanel("prob", false); }
 }
 
+/* --- Drawing pad, tools and stamps --- */
 var PALETTE = ["#0fb6b6", "#1e7fd0", "#2fa84f", "#ff9e2c", "#7c5022", "#ff1e9c", "#06243d"];
 var drawColour = PALETTE[0];
+var tool = "pen";
+var TOOLS = [
+  { id: "pen", lab: "Pen" },
+  { id: "fish", lab: "Fish stamp" },
+  { id: "bottle", lab: "Bottle stamp" },
+  { id: "star", lab: "Star stamp" },
+  { id: "bubble", lab: "Bubble stamp" }
+];
 function buildSwatches() {
   var box = document.getElementById("swatches");
   PALETTE.forEach(function (col, i) {
@@ -548,6 +736,50 @@ function buildSwatches() {
     s.addEventListener("click", function () { drawColour = col; Array.prototype.forEach.call(box.children, function (c) { c.classList.remove("sel"); }); s.classList.add("sel"); });
     box.appendChild(s);
   });
+}
+function buildTools() {
+  var box = document.getElementById("tools");
+  TOOLS.forEach(function (t, i) {
+    var b = document.createElement("button");
+    b.className = "toolbtn" + (i === 0 ? " sel" : "");
+    b.textContent = t.lab;
+    b.addEventListener("click", function () { tool = t.id; Array.prototype.forEach.call(box.children, function (c) { c.classList.remove("sel"); }); b.classList.add("sel"); });
+    box.appendChild(b);
+  });
+}
+function stampAt(ctx, kind, x, y) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.lineWidth = 3;
+  ctx.lineJoin = "round";
+  ctx.strokeStyle = "#06243d";
+  ctx.fillStyle = drawColour;
+  if (kind === "fish") {
+    ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(28, -11); ctx.lineTo(28, 11); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(0, 0, 18, 12, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(-8, -3, 3, 0, Math.PI * 2); ctx.fillStyle = "#ffffff"; ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(-8, -3, 1.4, 0, Math.PI * 2); ctx.fillStyle = "#06243d"; ctx.fill();
+  } else if (kind === "bottle") {
+    ctx.beginPath(); ctx.rect(-6, -26, 12, 7); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.rect(-9, -19, 18, 40); ctx.fill(); ctx.stroke();
+  } else if (kind === "star") {
+    ctx.beginPath();
+    for (var i = 0; i < 10; i++) {
+      var ang = -Math.PI / 2 + i * Math.PI / 5;
+      var r = (i % 2 === 0) ? 20 : 8.5;
+      var px = Math.cos(ang) * r;
+      var py = Math.sin(ang) * r;
+      if (i === 0) { ctx.moveTo(px, py); } else { ctx.lineTo(px, py); }
+    }
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+  } else {
+    ctx.globalAlpha = 0.35;
+    ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.stroke();
+    ctx.beginPath(); ctx.arc(-5, -5, 3.5, 0, Math.PI * 2); ctx.fillStyle = "#ffffff"; ctx.fill();
+  }
+  ctx.restore();
 }
 function setupPad() {
   var canvas = document.getElementById("pad");
@@ -562,7 +794,15 @@ function setupPad() {
     var cy = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
     return { x: cx * (canvas.width / r.width), y: cy * (canvas.height / r.height) };
   }
-  function start(e) { drawing = true; var p = pos(e); ctx.strokeStyle = drawColour; ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
+  function start(e) {
+    var p = pos(e);
+    if (tool !== "pen") { stampAt(ctx, tool, p.x, p.y); storeDrawing(canvas); e.preventDefault(); return; }
+    drawing = true;
+    ctx.strokeStyle = drawColour;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    e.preventDefault();
+  }
   function move(e) { if (!drawing) { return; } var p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); }
   function end() { if (!drawing) { return; } drawing = false; storeDrawing(canvas); }
   canvas.addEventListener("mousedown", start);
@@ -572,9 +812,43 @@ function setupPad() {
   canvas.addEventListener("touchmove", move, { passive: false });
   canvas.addEventListener("touchend", end);
   document.getElementById("clear-pad").addEventListener("click", function () { ctx.clearRect(0, 0, canvas.width, canvas.height); save("drawing", ""); });
+  document.getElementById("dl-pad").addEventListener("click", downloadDrawing);
 }
 function storeDrawing(canvas) { try { save("drawing", canvas.toDataURL("image/png")); } catch (e) {} }
+function downloadDrawing() {
+  try {
+    var canvas = document.getElementById("pad");
+    var off = document.createElement("canvas");
+    off.width = canvas.width; off.height = canvas.height;
+    var c = off.getContext("2d");
+    c.fillStyle = "#ffffff";
+    c.fillRect(0, 0, off.width, off.height);
+    c.drawImage(canvas, 0, 0);
+    var a = document.createElement("a");
+    a.href = off.toDataURL("image/png");
+    a.download = "my-plastic-verdict.png";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch (e) {}
+}
 
+/* --- Easter egg: the floating bottle --- */
+var EGG_LINES = [
+  "Oi! That does not belong here!",
+  "Still floating about, I see. Someone should fish that out.",
+  "I am keeping an eye on you, bottle."
+];
+var eggCount = 0;
+function wireEgg() {
+  var b = document.getElementById("egg-bottle");
+  b.addEventListener("click", function () {
+    showReward('"' + EGG_LINES[eggCount % EGG_LINES.length] + '" says Captain Inky.');
+    eggCount += 1;
+  });
+}
+
+/* --- Send to teacher --- */
 var STAFF = [
   { name: "Alex Ireland", email: "alex.ireland@chiltonbridgeschool.co.uk" },
   { name: "Alice Ruckert", email: "alice.ruckert@chiltonbridgeschool.co.uk" },
@@ -630,8 +904,17 @@ function sendWork() {
   setMsg("send-msg", "Email opened. Press send in the email.", "good");
 }
 
+/* --- Steps and navigation --- */
 var STEPS = ["s-intro", "s-sort", "s-made", "s-journey", "s-both", "s-reflect"];
-function buildDots() { var d = document.getElementById("dots"); STEPS.forEach(function () { d.appendChild(document.createElement("span")); }); }
+function buildDots() {
+  var d = document.getElementById("dots");
+  STEPS.forEach(function (id, i) {
+    var b = document.createElement("button");
+    b.setAttribute("aria-label", "Go to part " + (i + 1) + " of " + STEPS.length);
+    b.addEventListener("click", function () { goStep(i); });
+    d.appendChild(b);
+  });
+}
 function goStep(i) {
   STEPS.forEach(function (id, n) {
     document.getElementById(id).classList.toggle("active", n === i);
@@ -651,6 +934,7 @@ function wireText() {
   t.addEventListener("input", function () { save("text", t.value); });
 }
 
+/* --- Boss level --- */
 var BOSS1 = [
   { id: "banana", lab: "Banana peel", say: "a few weeks" },
   { id: "paper", lab: "Paper bag", say: "about a month" },
@@ -701,12 +985,27 @@ function wireBoss() {
   var rs = document.getElementById("rank-reset"); if (rs) { rs.addEventListener("click", buildRank); }
 }
 
+/* --- Restore saved progress, quietly --- */
+function restoreAll() {
+  quiet = true;
+  restoreSort();
+  restoreMade();
+  restorePredict();
+  restoreJourney();
+  restorePanels();
+  quiet = false;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-  buildDots(); buildTray(); buildCards(); buildPredict(); buildJourney();
-  wirePanel("pan-help"); wirePanel("pan-prob");
-  buildSwatches(); setupPad(); buildTeachers(); wireText(); wireNav(); wireBoss();
+  buildDots(); buildTray(); buildCards(); buildTwistIcons(); buildPredict(); buildJourney();
+  wirePanel("pan-help", "help"); wirePanel("pan-prob", "prob");
+  buildTools(); buildSwatches(); setupPad(); buildTeachers(); wireText(); wireNav(); wireBoss(); wireEgg();
+  renderStars();
+  restoreAll();
   document.getElementById("send-btn").addEventListener("click", sendWork);
-  goStep(0);
+  var st = parseInt(load("step"), 10);
+  if (isNaN(st) || st < 0 || st >= STEPS.length) { st = 0; }
+  goStep(st);
 });
 </script>
 
