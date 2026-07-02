@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Activity 2: Spot and swap</title>
+<title>Activity 2: Plastic Patrol - Spot and Swap</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -12,7 +12,8 @@
     --ink: #06243d; --ink-soft: #2b4a63; --panel: #ffffff;
     --plastic: #ff1e9c; --plastic-deep: #c40d74;
     --coral: #ff7a3d; --sun: #ffce2e; --urchin: #7b4fc4; --turq: #15c2c2; --kelp: #2fa84f;
-    --accent: #1e7fd0; --accent-deep: #145a96; --good: #2fa84f;
+    --accent: #0fb6b6; --accent-deep: #0a7d7d; --blue: #1e7fd0; --blue-deep: #145a96;
+    --good: #2fa84f; --warn: #ffb000; --soft: #eef7fb; --line: #bcdded;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
@@ -21,7 +22,7 @@
     line-height: 1.5; text-align: left; min-height: 100vh;
     background: linear-gradient(180deg, #6fd0ee 0%, #2a9fd0 24%, #127aa8 52%, #0a5a86 80%, #073f5e 100%) fixed;
   }
-  .wrap { max-width: 900px; margin: 0 auto; padding: 0 18px; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 18px; }
 
   .scene { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
   .ray { position: absolute; top: -12%; width: 130px; height: 130%;
@@ -35,88 +36,136 @@
   .kelp { transform-origin: bottom center; animation: sway 9s ease-in-out infinite alternate; }
   .kelp.b { animation-duration: 11s; }
   @keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
-  .float-bottle { position: absolute; bottom: 56px; left: 5%; width: clamp(70px, 10vw, 112px); height: auto;
+
+  .float-bottle { position: fixed; bottom: 56px; left: 5%; width: clamp(70px, 10vw, 112px);
+    background: none; border: none; padding: 0; cursor: pointer; z-index: 5;
     filter: drop-shadow(0 8px 12px rgba(3,30,50,0.32)); animation: floatb 7s ease-in-out infinite; }
+  .float-bottle img { width: 100%; height: auto; display: block; }
+  .float-bottle:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; border-radius: 14px; }
   @keyframes floatb { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-15px) rotate(3deg); } }
 
-  .topbar { background: linear-gradient(135deg, var(--accent), var(--accent-deep)); color: #ffffff; padding: 12px 0; }
-  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .topbar { background: linear-gradient(135deg, var(--accent), var(--accent-deep)); color: #ffffff; padding: 12px 0; position: relative; }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .topbar a.back { color: #ffffff; text-decoration: none; font-weight: 700; background: rgba(255,255,255,0.22); padding: 8px 14px; border-radius: 999px; font-size: 1rem; }
   .topbar a.back:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; }
   .topbar .label { font-weight: 700; font-size: 1.05rem; }
+  .stars { display: flex; gap: 5px; align-items: center; }
+  .stars svg { width: 21px; height: 21px; display: block; }
 
   .dots { display: flex; gap: 10px; justify-content: center; padding: 16px 0 2px; }
-  .dots span { width: 16px; height: 16px; border-radius: 50%;
-    background: radial-gradient(circle at 32% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.25)); border: 2px solid rgba(255,255,255,0.7); }
-  .dots span.on { background: radial-gradient(circle at 32% 30%, #ffffff, var(--sun)); border-color: #ffffff; box-shadow: 0 0 0 4px rgba(255,206,46,0.4); }
+  .dots button { width: 16px; height: 16px; border-radius: 50%; padding: 0; cursor: pointer;
+    background: radial-gradient(circle at 32% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.25));
+    border: 2px solid rgba(255,255,255,0.7); }
+  .dots button.on { background: radial-gradient(circle at 32% 30%, #ffffff, var(--sun)); border-color: #ffffff; box-shadow: 0 0 0 4px rgba(255,206,46,0.4); }
+  .dots button:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; }
 
-  .sheet { background: rgba(255,255,255,0.96); border-radius: 22px; margin: 14px auto 0; box-shadow: 0 12px 30px rgba(3,30,50,0.3); padding: 22px; }
+  .sheet { background: rgba(255,255,255,0.96); border-radius: 22px; margin: 14px auto 0;
+    box-shadow: 0 12px 30px rgba(3,30,50,0.3); padding: 22px; }
   .step { display: none; }
   .step.active { display: block; }
 
   .intro-row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
   .intro-row img { width: 130px; height: 130px; object-fit: contain; flex: 0 0 auto; filter: drop-shadow(0 6px 10px rgba(3,30,50,0.25)); animation: bob 6s ease-in-out infinite; }
   @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-  h1 { font-size: clamp(1.8rem, 5vw, 2.5rem); margin: 0 0 6px; }
-  h1 .pf { color: var(--accent-deep); }
+  h1 { font-size: clamp(1.8rem, 5vw, 2.55rem); margin: 0 0 6px; }
+  h1 .pf, h2 .pf { color: var(--accent-deep); }
   h2 { font-size: 1.45rem; margin: 0 0 6px; }
+  h3 { font-size: 1.15rem; }
   p.lead { font-size: 1.18rem; margin: 0; }
   p { font-size: 1.08rem; }
   .hint { color: var(--ink-soft); font-size: 1.02rem; }
 
+  .bubble { border-radius: 14px; padding: 10px 14px; font-weight: 700; margin-top: 12px; font-size: 1.02rem; }
+  .bubble.phantom { background: #fff0f8; border: 3px solid var(--plastic); color: var(--plastic-deep); }
+  .bubble.inky { background: #e7f8f8; border: 3px solid var(--accent); color: var(--accent-deep); }
+  .bubble.neutral { background: #fffaf0; border: 3px solid var(--sun); color: var(--ink); }
+
   .nav { display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
-  button { font-family: inherit; font-size: 1.08rem; font-weight: 700; cursor: pointer; border: none; border-radius: 999px; padding: 12px 22px; }
-  button:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
+  button, .buttonlike { font-family: inherit; font-size: 1.08rem; font-weight: 700; cursor: pointer; border: none; border-radius: 999px; padding: 12px 22px; }
+  button:focus-visible, a:focus-visible, textarea:focus-visible, select:focus-visible, input:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
   .btn-next { background: var(--accent); color: #ffffff; box-shadow: 0 4px 0 var(--accent-deep); }
   .btn-back { background: #d4e8f0; color: var(--ink); }
   .btn-ghost { background: #ffffff; color: var(--ink); border: 3px solid var(--accent); }
+  button:disabled { cursor: not-allowed; opacity: 0.68; }
 
-  .item svg, .swapcard svg, .judge svg, .pledge svg { background: radial-gradient(circle at 35% 28%, #ffffff, #e2f2f7); border-radius: 50%; padding: 6px; box-shadow: inset 0 -3px 6px rgba(3,30,50,0.12); }
+  .mission-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 16px 0; }
+  .mission-card { background: #f3fafc; border: 3px solid #cfe6f0; border-radius: 18px; padding: 14px; box-shadow: 0 3px 8px rgba(3,30,50,0.08); }
+  .mission-card strong { display: block; color: var(--accent-deep); margin-bottom: 4px; }
 
-  /* Stage 1 spot */
-  .counter { display: inline-flex; align-items: center; gap: 10px; background: #ffe3f3; border: 3px solid var(--plastic); color: var(--plastic-deep); font-weight: 700; font-size: 1.15rem; padding: 8px 16px; border-radius: 999px; margin: 6px 0 12px; }
+  .item svg, .swapcard svg, .judge svg, .pledge svg, .choice-card svg, .claim-card svg, .mini-icon svg {
+    background: radial-gradient(circle at 35% 28%, #ffffff, #e2f2f7);
+    border-radius: 50%; padding: 6px; box-shadow: inset 0 -3px 6px rgba(3,30,50,0.12);
+  }
+
+  .counter-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 6px 0 12px; }
+  .counter { display: inline-flex; align-items: center; gap: 10px; background: #ffe3f3; border: 3px solid var(--plastic); color: var(--plastic-deep); font-weight: 700; font-size: 1.08rem; padding: 8px 16px; border-radius: 999px; }
+  .counter.good { background: #e3f6e8; border-color: var(--good); color: #1c7a36; }
   .table { background: linear-gradient(180deg, #f3fafc 0%, #f3fafc 64%, #e6cf90 64%, #d9bd72 100%); border: 3px solid #cfe6f0; border-radius: 18px; padding: 16px 16px 22px; }
   .shelf { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-  .item { width: 96px; border: 3px solid transparent; border-radius: 16px; background: #ffffff; padding: 10px 6px 6px; text-align: center; cursor: pointer; box-shadow: 0 3px 8px rgba(3,30,50,0.12); }
-  .item svg { width: 56px; height: 56px; display: block; margin: 0 auto 6px; }
+  .item { width: 104px; border: 3px solid transparent; border-radius: 16px; background: #ffffff; padding: 10px 6px 6px; text-align: center; cursor: pointer; box-shadow: 0 3px 8px rgba(3,30,50,0.12); }
+  .item svg { width: 58px; height: 58px; display: block; margin: 0 auto 6px; }
   .item .name { font-size: 0.94rem; font-weight: 700; }
   .item.found { background: #ffe3f3; border-color: var(--plastic); }
+  .item.sneaky { box-shadow: 0 0 0 4px rgba(255,206,46,0.45), 0 3px 8px rgba(3,30,50,0.12); }
   .item.found .ink-fill { fill: var(--plastic); }
   .item.found .ink-stroke { stroke: var(--plastic-deep); }
+  .item.checked-not { background: #e3f6e8; border-color: var(--good); }
   .item.nope { animation: wob 0.4s; }
   @keyframes wob { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  .feedback-card { background: #f1fbfb; border: 3px solid var(--accent); border-radius: 18px; padding: 12px 14px; margin: 12px 0 0; font-weight: 700; min-height: 3.2em; }
+  .feedback-card .tag { display: inline-block; padding: 2px 8px; border-radius: 8px; background: var(--sun); margin-right: 6px; color: var(--ink); }
 
-  /* Stage 2 micro */
-  .microbox { position: relative; height: 280px; background: linear-gradient(180deg, #d8f0fa, #bfe6f6); border: 3px solid #cfe6f0; border-radius: 18px; overflow: hidden; margin: 12px 0; }
-  .microbox .bit { position: absolute; background: var(--plastic); border: 2px solid var(--plastic-deep); border-radius: 4px; }
-  .microbox .fish { position: absolute; right: 16px; bottom: 16px; width: 70px; height: 70px; opacity: 0; transition: opacity 0.5s; }
+  .lab-controls { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+  .lab-controls button { background: #ffffff; color: var(--ink); border: 3px solid var(--accent); }
+  .lab-controls button.used { background: var(--accent); color: #ffffff; }
+  .microbox { position: relative; height: 310px; background: linear-gradient(180deg, #d8f0fa, #bfe6f6); border: 3px solid #cfe6f0; border-radius: 18px; overflow: hidden; margin: 12px 0; }
+  .microbox .bit { position: absolute; background: var(--plastic); border: 2px solid var(--plastic-deep); border-radius: 5px; box-shadow: 0 2px 3px rgba(3,30,50,0.16); transition: width 0.2s, height 0.2s; }
+  .microbox .fish { position: absolute; right: 16px; bottom: 16px; width: 78px; height: 78px; opacity: 0; transition: opacity 0.5s; }
   .microbox.final .fish { opacity: 1; }
   .microbox .phantom { position: absolute; left: 14px; top: 12px; width: 58px; height: 58px; opacity: 0.92; filter: drop-shadow(0 4px 6px rgba(3,30,50,0.3)); }
   .micro-cap { font-weight: 700; font-size: 1.1rem; min-height: 2.6em; }
+  .quizline { background: #fffaf0; border: 3px solid var(--sun); border-radius: 18px; padding: 14px 16px; margin: 14px 0; }
+  .quizline .opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .quizline .opts button { background: #ffffff; color: var(--ink); border: 2px solid var(--sun); padding: 9px 14px; font-size: 1rem; }
+  .quizline .opts button.right { background: #e3f6e8; border-color: var(--good); color: #1c7a36; }
+  .quizline .opts button.wrong { background: #ffe3ef; border-color: var(--plastic); color: var(--plastic-deep); }
+  .qfb { font-weight: 700; min-height: 1.4em; margin-top: 8px; }
 
-  /* Stage 3 swaps */
   .swaprow { display: flex; gap: 18px; flex-wrap: wrap; }
-  .col { flex: 1 1 240px; }
+  .col { flex: 1 1 260px; }
   .col h3 { font-size: 1.1rem; margin: 0 0 8px; }
   .col.plastic h3 { color: var(--plastic-deep); }
   .col.swap h3 { color: #1c7a36; }
-  .swapcard { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: #ffffff; border: 3px solid #cfe6f0; border-radius: 14px; padding: 8px 12px; margin-bottom: 10px; cursor: pointer; box-shadow: 0 3px 8px rgba(3,30,50,0.1); }
-  .swapcard svg { width: 46px; height: 46px; flex: 0 0 auto; }
+  .swapcard { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: #ffffff; border: 3px solid #cfe6f0; border-radius: 14px; padding: 9px 12px; margin-bottom: 10px; cursor: pointer; box-shadow: 0 3px 8px rgba(3,30,50,0.1); }
+  .swapcard svg { width: 48px; height: 48px; flex: 0 0 auto; }
   .swapcard .lab { font-weight: 700; font-size: 1.02rem; }
   .col.plastic .swapcard .ink-fill { fill: var(--plastic); }
   .col.plastic .swapcard .ink-stroke { stroke: var(--plastic-deep); }
-  .swapcard.sel { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(30,127,208,0.25); }
+  .swapcard.sel { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(15,182,182,0.25); }
   .swapcard.matched { border-color: var(--good); background: #e3f6e8; cursor: default; }
-  .judge-wrap { margin-top: 14px; display: none; }
+  .judge-wrap { margin-top: 16px; display: none; }
   .judge-wrap.show { display: block; }
-  .judge { display: flex; align-items: center; gap: 12px; background: #fff8ef; border: 3px solid var(--coral); border-radius: 14px; padding: 10px 12px; margin: 10px 0; flex-wrap: wrap; }
-  .judge svg { width: 50px; height: 50px; }
-  .judge .q { font-weight: 700; flex: 1 1 160px; }
-  .judge .opts { display: flex; gap: 8px; flex-wrap: wrap; }
-  .judge .opts button { font-size: 0.98rem; padding: 8px 14px; background: #ffffff; border: 2px solid var(--coral); color: var(--ink); }
-  .judge .fb { width: 100%; font-weight: 700; color: var(--ink-soft); min-height: 1.4em; }
+  .judge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .judge { background: #fff8ef; border: 3px solid var(--coral); border-radius: 16px; padding: 12px; }
+  .judge .top { display: flex; align-items: center; gap: 10px; }
+  .judge svg { width: 52px; height: 52px; flex: 0 0 auto; }
+  .judge .q { font-weight: 700; }
+  .judge .opts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .judge .opts button { font-size: 0.98rem; padding: 8px 12px; background: #ffffff; border: 2px solid var(--coral); color: var(--ink); }
+  .judge .opts button.picked { background: var(--coral); color: #ffffff; }
+  .judge .fb { font-weight: 700; color: var(--ink-soft); min-height: 1.4em; margin-top: 8px; }
 
-  /* Stage 4 pledge */
+  .claim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin: 14px 0; }
+  .claim-card { background: #0e2f49; color: #eaf6fb; border-radius: 18px; padding: 14px; border: 3px solid #2b4a63; }
+  .claim-card .claim { font-weight: 700; font-size: 1.08rem; color: #ffffff; }
+  .claim-card .opts { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .claim-card button { background: #ffffff; color: var(--ink); border: 2px solid #2b4a63; border-radius: 999px; padding: 8px 12px; font-size: 0.98rem; }
+  .claim-card button.picked { background: var(--sun); color: var(--ink); }
+  .claim-card .fb { display: none; font-weight: 700; margin-top: 8px; }
+  .claim-card.done .fb { display: block; }
+  .claim-card.real { border-color: var(--good); }
+  .claim-card.catch { border-color: var(--plastic); }
+
   .pledge { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: #ffffff; border: 3px solid #cfe6f0; border-radius: 16px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; box-shadow: 0 3px 8px rgba(3,30,50,0.1); }
   .pledge svg { width: 50px; height: 50px; flex: 0 0 auto; }
   .pledge .lab { font-weight: 700; font-size: 1.06rem; flex: 1 1 auto; }
@@ -124,19 +173,30 @@
   .pledge.chosen { border-color: var(--good); background: #e3f6e8; }
   .pledge.chosen .box { background: var(--good); border-color: var(--good); }
   .pledge.chosen .box::after { content: ""; position: absolute; left: 9px; top: 3px; width: 8px; height: 16px; border: solid #ffffff; border-width: 0 4px 4px 0; transform: rotate(45deg); }
+  .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin: 12px 0; }
+  label.field { display: block; font-weight: 700; margin: 12px 0 6px; font-size: 1.06rem; }
+  textarea, input[type="text"] { width: 100%; font-family: inherit; font-size: 1.06rem; padding: 12px; border-radius: 12px; border: 3px solid #bcdded; resize: vertical; background: #ffffff; color: var(--ink); }
+  textarea { min-height: 90px; }
+  select { font-family: inherit; font-size: 1.06rem; padding: 12px; border-radius: 12px; border: 3px solid #bcdded; width: 100%; max-width: 460px; background: #ffffff; color: var(--ink); }
+  .draw-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  .swatch { width: 38px; height: 38px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 0 0 2px #9cc4d4; cursor: pointer; padding: 0; }
+  .swatch.sel { box-shadow: 0 0 0 4px var(--ink); }
+  .toolbtn { background: #ffffff; color: var(--ink); border: 3px solid var(--accent); border-radius: 999px; padding: 8px 16px; font-size: 1rem; }
+  .toolbtn.sel { background: var(--accent); color: #ffffff; }
+  canvas { width: 100%; max-width: 640px; height: 300px; touch-action: none; background: #ffffff; border: 3px solid #bcdded; border-radius: 14px; display: block; }
 
-  .send { margin-top: 22px; background: #eef5fd; border: 3px solid var(--accent); border-radius: 18px; padding: 16px; }
+  .send { margin-top: 22px; background: #f1fbfb; border: 3px solid var(--accent); border-radius: 18px; padding: 16px; }
   .send h3 { margin: 0 0 8px; }
-  select { font-family: inherit; font-size: 1.08rem; padding: 12px; border-radius: 12px; border: 3px solid #bcdded; width: 100%; max-width: 420px; background: #ffffff; }
-  select:focus-visible { outline: 4px solid var(--ink); outline-offset: 2px; }
   .send button { margin-top: 12px; background: var(--accent); color: #ffffff; box-shadow: 0 4px 0 var(--accent-deep); }
   .send .note { color: var(--ink-soft); font-size: 1rem; margin: 10px 0 0; }
   .msg { min-height: 1.6em; font-weight: 700; margin: 8px 0 0; }
   .msg.good { color: #1c7a36; }
   .msg.try { color: var(--plastic-deep); }
+  .evidence { background: #fffaf0; border: 3px solid var(--sun); border-radius: 18px; padding: 14px 16px; margin-top: 14px; }
+  .evidence pre { white-space: pre-wrap; font-family: inherit; font-size: 0.98rem; margin: 8px 0 0; color: var(--ink); }
 
   .boss { margin-top: 24px; border-radius: 18px; overflow: hidden; border: 3px solid var(--ink); }
-  .boss-head { width: 100%; text-align: left; background: var(--ink); color: #ffffff; padding: 13px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; border: none; font-family: inherit; font-size: 1.05rem; font-weight: 700; }
+  .boss-head { width: 100%; text-align: left; background: var(--ink); color: #ffffff; padding: 13px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; border: none; font-family: inherit; font-size: 1.05rem; font-weight: 700; border-radius: 0; }
   .boss-head .badge { background: var(--sun); color: var(--ink); padding: 4px 10px; border-radius: 8px; letter-spacing: 1px; flex: 0 0 auto; }
   .boss-head .sub { font-weight: 400; font-size: 0.92rem; opacity: 0.85; }
   .boss-head .chev { margin-left: auto; transition: transform 0.2s ease; }
@@ -145,30 +205,28 @@
   .boss.open .boss-body { display: block; }
   .boss-body p { font-size: 1.06rem; }
   .boss-body strong { color: var(--sun); }
-  .boss-body .task { background: rgba(255,255,255,0.08); border-left: 5px solid var(--sun); padding: 11px 14px; border-radius: 8px; margin-top: 12px; }
-  .boss-body textarea { width: 100%; min-height: 80px; margin-top: 10px; font-family: inherit; font-size: 1.05rem; padding: 10px; border-radius: 10px; border: 3px solid #2b4a63; background: #ffffff; color: var(--ink); }
-  /* boss greenwash */
-  .gw { margin: 12px 0; }
-  .gwcard { background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.25); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; }
-  .gwcard .claim { font-weight: 700; font-size: 1.08rem; }
-  .gwcard .gwopts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-  .gwcard .gwopts button { background: #ffffff; color: var(--ink); border: 2px solid #2b4a63; border-radius: 999px; padding: 8px 14px; font-weight: 700; font-family: inherit; font-size: 0.98rem; cursor: pointer; }
-  .gwcard .gwfb { margin-top: 8px; font-weight: 700; min-height: 1.3em; display: none; }
-  .gwcard.done .gwfb { display: block; }
-  .gwcard.real .gwfb { color: #8be0a0; }
-  .gwcard.catch .gwfb { color: #ff8fc6; }
-  .reward { position: fixed; left: 50%; top: 76px; transform: translateX(-50%) translateY(-16px); background: #ffffff; border: 4px solid var(--sun); border-radius: 18px; padding: 12px 18px; box-shadow: 0 10px 26px rgba(3,30,50,0.3); display: flex; align-items: center; gap: 12px; opacity: 0; pointer-events: none; z-index: 60; transition: opacity 0.35s ease, transform 0.35s ease; max-width: 88%; }
+  .boss-body textarea { border: 3px solid #2b4a63; }
+
+  .reward { position: fixed; left: 50%; top: 76px; transform: translateX(-50%) translateY(-16px);
+    background: #ffffff; border: 4px solid var(--sun); border-radius: 18px; padding: 12px 18px;
+    box-shadow: 0 10px 26px rgba(3,30,50,0.3); display: flex; align-items: center; gap: 12px;
+    opacity: 0; pointer-events: none; z-index: 60; transition: opacity 0.35s ease, transform 0.35s ease; max-width: 88%; }
   .reward.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .reward svg { width: 42px; height: 42px; flex: 0 0 auto; }
   .reward p { margin: 0; font-weight: 700; font-size: 1.08rem; }
   .spacer { height: 170px; }
 
+  @media (max-width: 600px) {
+    .sheet { padding: 16px; border-radius: 18px; }
+    .topbar .wrap { justify-content: center; }
+    .item { width: 96px; }
+    .swapcard { padding: 8px 10px; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .bub { display: none; }
     .kelp, .intro-row img, .float-bottle { animation: none; }
     .item.nope { animation: none; }
-    .reward, .microbox .fish { transition: none; }
-    .boss-head .chev { transition: none; }
+    .reward, .microbox .fish, .boss-head .chev { transition: none; }
   }
 </style>
 </head>
@@ -193,17 +251,21 @@
       <g><path d="M720 196 C 716 172 700 162 706 140 M740 196 C 744 170 762 162 754 138" stroke="#7b4fc4" stroke-width="9" fill="none" stroke-linecap="round"/></g>
     </svg>
   </div>
-  <img class="float-bottle" src="bottle.png" alt="">
 </div>
+
+<button class="float-bottle" id="egg-bottle" aria-label="A suspicious plastic bottle floating in the sea">
+  <img src="bottle.png" alt="">
+</button>
 
 <div class="topbar">
   <div class="wrap">
     <a class="back" href="index.html">Back to all activities</a>
+    <span class="stars" id="stars" aria-label="0 of 5 stars earned"></span>
     <span class="label">Activity 2</span>
   </div>
 </div>
 
-<div class="dots" id="dots" aria-hidden="true"></div>
+<div class="dots" id="dots"></div>
 
 <div class="reward" id="reward" role="status" aria-live="polite">
   <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/></svg>
@@ -217,81 +279,142 @@
     <div class="intro-row">
       <img src="octopus.png" alt="Captain Inky, a friendly blue octopus wearing a sailor hat">
       <div>
-        <h1>Spot and <span class="pf">swap</span></h1>
-        <p class="lead">How much plastic do you get through in a day? Let's spot it, see where it ends up, and find some swaps worth making.</p>
+        <h1>Plastic Patrol: <span class="pf">Spot and Swap</span></h1>
+        <p class="lead">Captain Inky needs you to scan an ordinary lunch, spot the sneaky plastic, and choose swaps that actually make sense.</p>
+        <div class="bubble phantom">"Ordinary lunch? Perfect. They will never notice how much plastic I hid in there." &middot; the Plastic Phantom</div>
       </div>
     </div>
-    <div class="nav"><button class="btn-next" data-go="1">Start</button></div>
+    <div class="mission-grid" aria-label="Mission stages">
+      <div class="mission-card"><strong>1. Scan</strong>Spot obvious and sneaky plastic.</div>
+      <div class="mission-card"><strong>2. Lab</strong>Find out what happens when plastic breaks down.</div>
+      <div class="mission-card"><strong>3. Workshop</strong>Choose swaps and judge what is realistic.</div>
+      <div class="mission-card"><strong>4. Detective</strong>Spot greenwash and sneaky labels.</div>
+      <div class="mission-card"><strong>5. Action</strong>Pick one change you could genuinely try.</div>
+    </div>
+    <div class="bubble inky">"No guilt. No perfect planet hero nonsense. We are looking for one real choice that could actually happen." &middot; Captain Inky</div>
+    <div class="nav"><button class="btn-next" data-go="1">Start patrol</button></div>
   </section>
 
   <section class="step" id="s-spot">
-    <h2>Spot the plastic</h2>
-    <p>Here is a lunch table. Tap everything you think is plastic, and watch it turn pink. Look at each one, do not just go by its name.</p>
-    <div class="counter">Plastic found: <span id="count">0</span></div>
-    <div class="table"><div class="shelf" id="shelf"></div></div>
+    <h2>Mission 1: Scan the lunch table</h2>
+    <p>Tap each item. If it is plastic, it turns pink. If it is not plastic, you still get a clue. Look at the material, not just the object name.</p>
+    <div class="counter-row">
+      <div class="counter">Plastic found: <span id="count">0</span>/<span id="total-plastic">0</span></div>
+      <div class="counter good">Sneaky plastic found: <span id="sneaky-count">0</span>/<span id="total-sneaky">0</span></div>
+    </div>
+    <div class="table"><div class="shelf" id="shelf" aria-label="Lunch table items"></div></div>
+    <div class="feedback-card" id="spot-feedback" role="status">Tap an item to scan it.</div>
     <p class="msg" id="spot-msg" role="status"></p>
-    <div class="nav"><button class="btn-back" data-go="0">Back</button><button class="btn-next" data-go="2">Next</button></div>
+    <div class="nav"><button class="btn-back" data-go="0">Back</button><button class="btn-next" data-go="2">Next mission</button></div>
   </section>
 
   <section class="step" id="s-micro">
-    <h2>Where does it go?</h2>
-    <p>One plastic bottle. Tap "Break it" and watch what happens. Does plastic ever actually go away?</p>
+    <h2>Mission 2: Plastic breakdown lab</h2>
+    <p>Plastic does not vanish like magic. Test what sunlight, waves and time do to one plastic bottle.</p>
+    <div class="lab-controls" aria-label="Lab controls">
+      <button data-force="sun">Add sunlight</button>
+      <button data-force="waves">Add waves</button>
+      <button data-force="time">Add time</button>
+      <button class="btn-ghost" id="reset-lab">Reset lab</button>
+    </div>
     <div class="microbox" id="microbox">
-      <img class="phantom" src="villain.png" alt="">
+      <img class="phantom" src="villain.png" alt="The Plastic Phantom lurking near the plastic">
       <svg class="fish" id="microfish" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="26" cy="32" rx="20" ry="13" fill="#1e7fd0" stroke="#06243d" stroke-width="3"/><path d="M44 32 L60 22 L60 42 Z" fill="#1e7fd0" stroke="#06243d" stroke-width="3"/><circle cx="18" cy="29" r="3.5" fill="#06243d"/></svg>
     </div>
-    <p class="micro-cap" id="micro-cap">This bottle is plastic. Tap to break it.</p>
-    <div class="nav">
-      <button class="btn-back" data-go="1">Back</button>
-      <button class="btn-ghost" id="break-btn">Break it</button>
-      <button class="btn-next" data-go="3">Next</button>
+    <p class="micro-cap" id="micro-cap">Start with one plastic bottle. Add sunlight, waves and time to see what changes.</p>
+    <div class="quizline" id="micro-quiz">
+      <strong>What happened to the plastic?</strong>
+      <div class="opts">
+        <button data-answer="gone">It disappeared</button>
+        <button data-answer="smaller">It broke into smaller pieces</button>
+        <button data-answer="water">It turned into water</button>
+      </div>
+      <div class="qfb" id="micro-fb"></div>
     </div>
+    <div class="bubble inky">"Smaller does not mean gone. Tiny plastic is still plastic." &middot; Captain Inky</div>
+    <div class="nav"><button class="btn-back" data-go="1">Back</button><button class="btn-next" data-go="3">Next mission</button></div>
   </section>
 
   <section class="step" id="s-swap">
-    <h2>Swap it</h2>
-    <p>Tap a pink plastic item, then tap what we could use instead.</p>
+    <h2>Mission 3: Swap workshop</h2>
+    <p>First, match each single-use item to a swap. Then judge the awkward cases. Some plastic is easy to reduce. Some is harder. Some keeps people safe.</p>
     <div class="swaprow">
       <div class="col plastic"><h3>Plastic now</h3><div id="col-plastic"></div></div>
       <div class="col swap"><h3>We could use</h3><div id="col-swap"></div></div>
     </div>
     <p class="msg" id="swap-msg" role="status"></p>
     <div class="judge-wrap" id="judge-wrap">
-      <h3>One more thing to think about</h3>
-      <p>Some plastic is harder to swap. There is no wrong answer here. What do you think?</p>
-      <div id="judges"></div>
+      <h3>Realistic, tricky, or keep the plastic?</h3>
+      <p>Pick the best judgement for each. There is feedback after every choice.</p>
+      <div class="judge-grid" id="judges"></div>
     </div>
-    <div class="nav"><button class="btn-back" data-go="2">Back</button><button class="btn-next" data-go="4">Next</button></div>
+    <div class="nav"><button class="btn-back" data-go="2">Back</button><button class="btn-next" data-go="4">Next mission</button></div>
   </section>
 
-  <section class="step" id="s-pledge">
-    <h2>My swaps to try</h2>
-    <p>Pick as many as you like, or none. No pressure. Even one swap you actually stick with beats ten you do not.</p>
+  <section class="step" id="s-greenwash">
+    <h2>Mission 4: Greenwash detective</h2>
+    <p>Some labels sound eco-friendly but hide the catch. Read the claim, then decide: real win, maybe, or sneaky wording?</p>
+    <div class="claim-grid" id="claims"></div>
+    <p class="msg" id="claim-msg" role="status"></p>
+    <div class="bubble phantom">"I printed a green leaf on it. That definitely fixes everything." &middot; the Plastic Phantom</div>
+    <div class="nav"><button class="btn-back" data-go="3">Back</button><button class="btn-next" data-go="5">Final mission</button></div>
+  </section>
+
+  <section class="step" id="s-action">
+    <h2>Final mission: My realistic action plan</h2>
+    <p>Pick swaps you might try. Then choose one swap and make a tiny plan. One real change beats ten fake promises.</p>
     <div id="pledges"></div>
-    <div class="send">
-      <h3>Send your swaps to a teacher</h3>
-      <p style="margin:0 0 10px;">Pick a teacher, then tap send. It opens an email with your swaps in it.</p>
-      <label for="teacher" style="display:block;font-weight:700;margin-bottom:6px;">Choose your teacher</label>
-      <select id="teacher"><option value="">Pick a teacher...</option></select>
-      <div><button id="send-btn">Send to your teacher</button></div>
-      <p class="note">Then press send in the email that opens.</p>
-      <p class="msg" id="send-msg" role="status"></p>
+
+    <div class="quizline">
+      <strong>Choose one swap to turn into a plan.</strong>
+      <label class="field" for="main-swap">My one realistic swap</label>
+      <select id="main-swap"><option value="">Pick one...</option></select>
+      <div class="plan-grid">
+        <div><label class="field" for="where-plan">Where I will try it</label><input id="where-plan" type="text" placeholder="Example: school trips, lunch, shopping"></div>
+        <div><label class="field" for="barrier-plan">What might get in the way</label><input id="barrier-plan" type="text" placeholder="Example: I might forget it"></div>
+        <div><label class="field" for="backup-plan">My backup plan</label><input id="backup-plan" type="text" placeholder="Example: put it by my bag"></div>
+      </div>
+      <label class="field" for="reflect-text">My verdict on plastic</label>
+      <textarea id="reflect-text" placeholder="Plastic is useful because... but it is a problem because..."></textarea>
     </div>
+
+    <label class="field">Optional drawing</label>
+    <p class="hint">Draw your swap, the Plastic Phantom, or what happens when plastic breaks into tiny pieces.</p>
+    <div class="draw-tools" id="tools" aria-label="Pick a tool"></div>
+    <div class="draw-tools" id="swatches" aria-label="Pick a colour"></div>
+    <canvas id="pad" width="640" height="300" aria-label="Drawing area"></canvas>
+    <div class="nav" style="margin-top:10px;"><button class="btn-ghost" id="clear-pad">Clear drawing</button><button class="btn-ghost" id="dl-pad">Download drawing</button></div>
+
     <section class="boss" id="boss">
       <button class="boss-head" id="boss-toggle" aria-expanded="false" aria-controls="boss-body">
         <span class="badge">BOSS LEVEL</span>
-        <span class="sub">optional, for anyone who wants the awkward truth</span>
+        <span class="sub">optional: choose the swap you would actually keep doing</span>
         <span class="chev" aria-hidden="true">&rarr;</span>
       </button>
       <div class="boss-body" id="boss-body">
-        <p><strong>Reusable only counts if you reuse it.</strong> A cotton tote bag has to be used about 131 times before it beats a single-use plastic bag for its effect on the climate (that is from a UK government study). So the planet points come from the 131st trip to the shop, not from owning fourteen tote bags in fourteen colours. We see you.</p>
-        <p><strong>Real win, or just marketing?</strong> Loads of "eco" labels are a normal product with a green leaf printed on it. Read each claim, decide, then tap to see the catch.</p>
-        <div class="gw" id="gw"></div>
-        <div class="task"><strong>Your challenge.</strong> Name the single swap you would genuinely keep doing, not the one that looks good in a photo. Bonus point if you can explain what is actually wrong with paper straws.</div>
-        <textarea id="boss-text" placeholder="Type your answer here, if you like."></textarea>
+        <p><strong>Reusable only counts if you reuse it.</strong> Buying a new bottle, bag or lunchbox is not the win by itself. The win is using it again and again.</p>
+        <p><strong>The awkward truth:</strong> the best swap is not always the fanciest one. It is the one that fits your real life.</p>
+        <label class="field" for="boss-text" style="color:#eaf6fb;">Which swap would you genuinely keep doing, and why?</label>
+        <textarea id="boss-text" placeholder="The swap I would actually keep doing is..."></textarea>
       </div>
     </section>
-    <div class="nav"><button class="btn-back" data-go="3">Back</button><a class="btn-next" href="index.html" style="text-decoration:none;display:inline-block;text-align:center;">All done</a></div>
+
+    <div class="evidence">
+      <strong>Evidence preview</strong>
+      <p class="hint" style="margin:6px 0 0;">This updates when you type or choose answers. It is what the email will include.</p>
+      <pre id="evidence-preview"></pre>
+    </div>
+
+    <div class="send">
+      <h3>Send your work to a teacher</h3>
+      <p style="margin:0 0 10px;">Pick a teacher, then tap send. It opens an email with your choices, thinking and action plan.</p>
+      <label class="field" for="teacher" style="margin-top:0;">Choose your teacher</label>
+      <select id="teacher"><option value="">Pick a teacher...</option></select>
+      <div><button id="send-btn">Send to your teacher</button></div>
+      <p class="note">Then press send in the email that opens. Your drawing stays on this screen; download it and attach it if you want to include it.</p>
+      <p class="msg" id="send-msg" role="status"></p>
+    </div>
+    <div class="nav"><button class="btn-back" data-go="4">Back</button><a class="btn-next buttonlike" href="index.html" style="text-decoration:none;display:inline-block;text-align:center;">All done</a></div>
   </section>
 
   </div>
@@ -301,7 +424,7 @@
 <script>
 "use strict";
 
-var NS = "pfj.a2.";
+var NS = "pfj.a2.v2.";
 function save(key, value) { try { localStorage.setItem(NS + key, value); } catch (e) {} }
 function load(key) { try { return localStorage.getItem(NS + key); } catch (e) { return null; } }
 
@@ -311,7 +434,7 @@ var ICON = {
   bottle: svg('<rect class="ink-fill ink-stroke" x="24" y="6" width="16" height="9" rx="2" fill="#8fd0e6" stroke="#06243d" stroke-width="3"/><path class="ink-fill ink-stroke" d="M25 15h14v6c4 2 4 6 4 11v18a4 4 0 0 1-4 4H25a4 4 0 0 1-4-4V32c0-5 0-9 4-11z" fill="#bfe6f2" stroke="#06243d" stroke-width="3"/>' + HI),
   yoghurt: svg('<path class="ink-fill ink-stroke" d="M20 22h24l-3 30a4 4 0 0 1-4 3H27a4 4 0 0 1-4-3z" fill="#eef2f4" stroke="#06243d" stroke-width="3"/><rect class="ink-fill ink-stroke" x="18" y="16" width="28" height="8" rx="2" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/>' + HI),
   crisps: svg('<path class="ink-fill ink-stroke" d="M18 12l28 0 4 6-4 6 4 6-4 6 4 6-4 6 4 6-28 0 4-6-4-6 4-6-4-6 4-6-4-6z" fill="#d9c24f" stroke="#06243d" stroke-width="3"/>' + HI),
-  fork: svg('<path class="ink-fill ink-stroke" d="M24 8v14m6-14v14m6-14v14M24 8c0 0 0 0 0 0M21 22h18c0 6-4 8-6 9v25h-6V31c-2-1-6-3-6-9z" fill="#7fbfe0" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/>' + HI),
+  fork: svg('<path class="ink-fill ink-stroke" d="M24 8v14m6-14v14m6-14v14M21 22h18c0 6-4 8-6 9v25h-6V31c-2-1-6-3-6-9z" fill="#7fbfe0" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/>' + HI),
   straw: svg('<path class="ink-fill ink-stroke" d="M26 7l10 0-7 50-6 0z" fill="#e0563f" stroke="#06243d" stroke-width="3"/>' + HI),
   apple: svg('<path d="M32 21c-8-6-21 0-19 15 2 13 13 21 19 21s17-8 19-21c2-15-11-21-19-15z" fill="#d83b3b" stroke="#06243d" stroke-width="3"/><rect x="30" y="10" width="4" height="12" rx="2" fill="#7c5022"/><path d="M34 13c4-4 9-3 9-3s-1 6-6 6z" fill="#3fa05a" stroke="#06243d" stroke-width="2"/>' + HI),
   banana: svg('<path d="M14 20c2 18 16 30 34 26 4-1 4-5 1-5C34 43 24 33 22 18c-1-3-8-2-8 2z" fill="#f4cf3f" stroke="#06243d" stroke-width="3"/><path d="M44 41c2 0 3 1 3 3" stroke="#06243d" stroke-width="3" fill="none"/>' + HI),
@@ -324,7 +447,13 @@ var ICON = {
   carrot: svg('<path d="M30 22l8 0 4 0-14 34-8-20z" fill="#ff7a3d" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/><path d="M30 22c-3-8 0-12 0-12m6 12c2-7 7-8 7-8m-7 8c0-9 4-10 4-10" stroke="#2f9e44" stroke-width="3" fill="none" stroke-linecap="round"/>'),
   wrapveg: svg('<path d="M30 24l8 0 4 0-14 32-8-18z" fill="#ff7a3d" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/><rect class="ink-fill ink-stroke" x="12" y="16" width="40" height="44" rx="6" fill="#ff7ec8" stroke="#c40d74" stroke-width="3" opacity="0.45"/>'),
   medicine: svg('<rect x="22" y="6" width="20" height="12" rx="3" fill="#ffffff" stroke="#06243d" stroke-width="3"/><rect x="19" y="18" width="26" height="40" rx="5" fill="#e0564f" stroke="#06243d" stroke-width="3"/><path d="M32 30v16M24 38h16" stroke="#ffffff" stroke-width="5"/>'),
-  cup: svg('<path d="M20 18h22l-2 8H22z" fill="#2fa84f" stroke="#06243d" stroke-width="3"/><path d="M22 26h20l-3 28a4 4 0 0 1-4 3H29a4 4 0 0 1-4-3z" fill="#caa46a" stroke="#06243d" stroke-width="3"/>')
+  cup: svg('<path d="M20 18h22l-2 8H22z" fill="#2fa84f" stroke="#06243d" stroke-width="3"/><path d="M22 26h20l-3 28a4 4 0 0 1-4 3H29a4 4 0 0 1-4-3z" fill="#caa46a" stroke="#06243d" stroke-width="3"/>'),
+  paperCup: svg('<path d="M19 17h26l-4 39a4 4 0 0 1-4 3H27a4 4 0 0 1-4-3z" fill="#f5f0dc" stroke="#06243d" stroke-width="3"/><path class="ink-stroke" d="M23 27h18" stroke="#c40d74" stroke-width="3"/><path class="ink-fill" d="M24 19h16l-1 8H25z" fill="#ff7ec8" opacity="0.45"/>' + HI),
+  carton: svg('<path d="M18 22l14-12 14 12v34a4 4 0 0 1-4 4H22a4 4 0 0 1-4-4z" fill="#ffffff" stroke="#06243d" stroke-width="3"/><path d="M32 10v50" stroke="#06243d" stroke-width="3"/><rect class="ink-fill ink-stroke" x="39" y="22" width="8" height="8" rx="3" fill="#ff7ec8" stroke="#c40d74" stroke-width="2"/><path d="M22 34h16" stroke="#2fa84f" stroke-width="5"/>'),
+  tea: svg('<path d="M18 24h28v21c0 8-6 14-14 14s-14-6-14-14z" fill="#cfeefb" stroke="#06243d" stroke-width="3"/><path d="M46 30h5c7 0 7 12 0 12h-5" fill="none" stroke="#06243d" stroke-width="3"/><path class="ink-stroke" d="M32 24v-9h13" stroke="#c40d74" stroke-width="3" fill="none"/><rect class="ink-fill ink-stroke" x="43" y="9" width="10" height="8" rx="2" fill="#ff7ec8" stroke="#c40d74" stroke-width="2"/>'),
+  lunchbox: svg('<rect x="13" y="20" width="38" height="34" rx="7" fill="#15c2c2" stroke="#06243d" stroke-width="3"/><path d="M23 20c1-8 17-8 18 0" fill="none" stroke="#06243d" stroke-width="3"/><rect x="17" y="30" width="30" height="12" rx="3" fill="#ffffff" opacity="0.7"/>'),
+  bag: svg('<path class="ink-fill ink-stroke" d="M17 23h30l-4 31a4 4 0 0 1-4 3H25a4 4 0 0 1-4-3z" fill="#cfd6da" stroke="#06243d" stroke-width="3"/><path class="ink-stroke" d="M25 23c0-8 3-12 7-12s7 4 7 12" fill="none" stroke="#06243d" stroke-width="3"/>' + HI),
+  compost: svg('<path d="M19 20h26l-3 36a4 4 0 0 1-4 3H26a4 4 0 0 1-4-3z" fill="#7c5022" stroke="#06243d" stroke-width="3"/><path d="M26 38c8-15 18-10 20-22-14 0-22 5-20 22z" fill="#2fa84f" stroke="#06243d" stroke-width="2"/>')
 };
 
 function showReward(text) {
@@ -332,119 +461,175 @@ function showReward(text) {
   document.getElementById("reward-text").textContent = text;
   r.classList.add("show");
   clearTimeout(r._t);
-  r._t = setTimeout(function () { r.classList.remove("show"); }, 3500);
+  r._t = setTimeout(function () { r.classList.remove("show"); }, 3400);
 }
-function setMsg(id, text, kind) { var m = document.getElementById(id); m.textContent = text; m.className = "msg" + (kind ? " " + kind : ""); }
+function setMsg(id, text, kind) { var m = document.getElementById(id); if (!m) { return; } m.textContent = text; m.className = "msg" + (kind ? " " + kind : ""); }
+function shuffle(a) { var r = a.slice(); for (var i = r.length - 1; i > 0; i--) { var j = (i * 7 + 3) % (i + 1); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; }
 
-/* Stage 1 spot */
+var stars = {};
+function loadStars() { var s = load("stars"); if (s) { try { stars = JSON.parse(s); } catch (e) { stars = {}; } } }
+function earnStar(id, text) { if (stars[id]) { return; } stars[id] = true; save("stars", JSON.stringify(stars)); updateStars(); showReward(text); }
+function updateStars() {
+  var box = document.getElementById("stars");
+  var earned = Object.keys(stars).filter(function (k) { return stars[k]; }).length;
+  var html = "";
+  for (var i = 0; i < 5; i++) {
+    var fill = i < earned ? "#ffce2e" : "rgba(255,255,255,0.35)";
+    html += '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="' + fill + '" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/></svg>';
+  }
+  box.innerHTML = html;
+  box.setAttribute("aria-label", earned + " of 5 stars earned");
+}
+
+/* Mission 1 */
 var SPOT = [
-  { id: "bottle", name: "Bottle", plastic: true },
-  { id: "yoghurt", name: "Pot", plastic: true },
-  { id: "crisps", name: "Packet", plastic: true },
-  { id: "fork", name: "Fork", plastic: true },
-  { id: "straw", name: "Straw", plastic: true },
-  { id: "apple", name: "Apple", plastic: false },
-  { id: "banana", name: "Banana", plastic: false },
-  { id: "spoonm", name: "Spoon", plastic: false },
-  { id: "glass", name: "Cup", plastic: false }
+  { id: "bottle", name: "Bottle", plastic: true, sneaky: false, feedback: "Plastic bottle. It can be recycled, but only if it actually reaches the right recycling bin." },
+  { id: "yoghurt", name: "Yoghurt pot", plastic: true, sneaky: false, feedback: "Plastic pot. Rinsing it gives recycling a better chance." },
+  { id: "crisps", name: "Crisp packet", plastic: true, sneaky: false, feedback: "Plastic/foil packet. Useful for keeping crisps crisp, but awkward to recycle." },
+  { id: "fork", name: "Fork", plastic: true, sneaky: false, feedback: "Single-use plastic fork. Easy to miss because it is just there for a few minutes." },
+  { id: "straw", name: "Straw", plastic: true, sneaky: false, feedback: "Plastic straw. Small, light and easy to drop or lose." },
+  { id: "paperCup", name: "Paper cup", plastic: true, sneaky: true, feedback: "Sneaky plastic. Many paper cups have a thin plastic lining so they do not leak." },
+  { id: "carton", name: "Carton cap", plastic: true, sneaky: true, feedback: "Sneaky plastic. The carton looks like card, but the cap and lining can be plastic." },
+  { id: "tea", name: "Tea bag tag", plastic: true, sneaky: true, feedback: "Sneaky plastic. Some tea bags use plastic to seal the bag. It depends on the brand." },
+  { id: "apple", name: "Apple", plastic: false, feedback: "Not plastic. Loose fruit is usually an easy win because it does not need a wrapper." },
+  { id: "banana", name: "Banana", plastic: false, feedback: "Not plastic. Nature already gave this one packaging." },
+  { id: "spoonm", name: "Metal spoon", plastic: false, feedback: "Not plastic. Same job as a plastic spoon, different material." },
+  { id: "glass", name: "Glass cup", plastic: false, feedback: "Not plastic. It can be washed and reused, but it can also smash." }
 ];
-var totalPlastic = SPOT.filter(function (s) { return s.plastic; }).length;
-var found = 0;
+var scanned = {};
 function buildShelf() {
+  var saved = load("scanned");
+  if (saved) { try { scanned = JSON.parse(saved); } catch (e) { scanned = {}; } }
+  document.getElementById("total-plastic").textContent = String(SPOT.filter(function (s) { return s.plastic; }).length);
+  document.getElementById("total-sneaky").textContent = String(SPOT.filter(function (s) { return s.sneaky; }).length);
   var shelf = document.getElementById("shelf");
   shelf.innerHTML = "";
   SPOT.forEach(function (s) {
     var el = document.createElement("button");
-    el.className = "item";
-    el.setAttribute("aria-label", s.name);
+    var state = scanned[s.id];
+    el.className = "item" + (state && s.plastic ? " found" : "") + (state && !s.plastic ? " checked-not" : "") + (state && s.sneaky ? " sneaky" : "");
+    el.setAttribute("aria-label", "Scan " + s.name);
     el.innerHTML = ICON[s.id] + '<span class="name">' + s.name + '</span>';
     el.addEventListener("click", function () { tapItem(s, el); });
     shelf.appendChild(el);
   });
+  updateSpotCount();
+}
+function updateSpotCount() {
+  var found = SPOT.filter(function (s) { return s.plastic && scanned[s.id]; }).length;
+  var sneaky = SPOT.filter(function (s) { return s.sneaky && scanned[s.id]; }).length;
+  var totalPlastic = SPOT.filter(function (s) { return s.plastic; }).length;
+  var totalSneaky = SPOT.filter(function (s) { return s.sneaky; }).length;
+  document.getElementById("count").textContent = String(found);
+  document.getElementById("sneaky-count").textContent = String(sneaky);
+  return { found: found, sneaky: sneaky, totalPlastic: totalPlastic, totalSneaky: totalSneaky };
 }
 function tapItem(s, el) {
-  if (el.classList.contains("found")) { return; }
-  if (!s.plastic) {
-    el.classList.add("nope");
-    setMsg("spot-msg", s.name + " is not plastic. Look for plastic.", "try");
-    setTimeout(function () { el.classList.remove("nope"); }, 400);
+  if (scanned[s.id]) {
+    document.getElementById("spot-feedback").innerHTML = '<span class="tag">Already scanned</span>' + s.feedback;
     return;
   }
-  el.classList.add("found");
-  found += 1;
-  document.getElementById("count").textContent = String(found);
-  if (found >= totalPlastic) {
-    setMsg("spot-msg", "You found all the plastic. That is " + totalPlastic + " plastic things, just at one lunch.", "good");
-    showReward("You found all the plastic!");
+  scanned[s.id] = true;
+  save("scanned", JSON.stringify(scanned));
+  if (s.plastic) {
+    el.classList.add("found");
+    if (s.sneaky) { el.classList.add("sneaky"); }
   } else {
-    setMsg("spot-msg", "Found one. Keep looking.", "good");
+    el.classList.add("checked-not", "nope");
+    setTimeout(function () { el.classList.remove("nope"); }, 400);
   }
+  var label = s.plastic ? (s.sneaky ? "Sneaky plastic" : "Plastic") : "Not plastic";
+  document.getElementById("spot-feedback").innerHTML = '<span class="tag">' + label + '</span>' + s.feedback;
+  var c = updateSpotCount();
+  if (c.found >= c.totalPlastic) {
+    setMsg("spot-msg", "You found every plastic item, including the sneaky ones.", "good");
+    earnStar("scan", "Lunch table fully scanned!");
+  } else if (s.plastic) {
+    setMsg("spot-msg", "Good spot. Keep scanning for the sneaky stuff.", "good");
+  } else {
+    setMsg("spot-msg", "Useful clue. Not everything on the table is plastic.", "");
+  }
+  updateEvidencePreview();
 }
 
-/* Stage 2 micro */
-var microStage = 0;
-var MICRO_CAPS = [
-  "This bottle is plastic. Tap to break it.",
-  "It breaks into pieces. But it is still here.",
-  "Smaller and smaller pieces. Still here.",
-  "Now it is tiny bits called microplastics. They never go away. They float in the sea, and fish can eat them by mistake."
-];
-function renderBits(box, count, size) {
+/* Mission 2 */
+var forces = {};
+function renderBits(count, size) {
+  var box = document.getElementById("microbox");
   Array.prototype.slice.call(box.querySelectorAll(".bit")).forEach(function (b) { b.remove(); });
   var w = box.clientWidth || 600;
-  var h = box.clientHeight || 280;
+  var h = box.clientHeight || 300;
   for (var i = 0; i < count; i++) {
     var b = document.createElement("span");
     b.className = "bit";
     b.style.width = size + "px";
-    b.style.height = size + "px";
-    var gx = (i * 97 + 23) % (w - size - 20) + 10;
-    var gy = (i * 53 + 31) % (h - size - 60) + 20;
+    b.style.height = Math.max(6, Math.floor(size * 0.7)) + "px";
+    var gx = (i * 97 + 23) % Math.max(20, (w - size - 20)) + 10;
+    var gy = (i * 53 + 31) % Math.max(20, (h - size - 70)) + 24;
     b.style.left = gx + "px";
     b.style.top = gy + "px";
+    b.style.transform = "rotate(" + (((i * 23) % 48) - 24) + "deg)";
     box.appendChild(b);
   }
 }
-function setupMicro() {
+function microLevel() { return Object.keys(forces).filter(function (k) { return forces[k]; }).length; }
+function updateMicro() {
   var box = document.getElementById("microbox");
-  renderBits(box, 1, 90);
-  document.getElementById("micro-cap").textContent = MICRO_CAPS[0];
-  document.getElementById("break-btn").addEventListener("click", function () {
-    if (microStage >= 3) { return; }
-    microStage += 1;
-    if (microStage === 1) { renderBits(box, 6, 40); }
-    else if (microStage === 2) { renderBits(box, 24, 16); }
-    else { renderBits(box, 70, 7); box.classList.add("final"); }
-    document.getElementById("micro-cap").textContent = MICRO_CAPS[microStage];
-    if (microStage >= 3) {
-      document.getElementById("break-btn").textContent = "It will not go away";
-      document.getElementById("break-btn").disabled = true;
-      showReward("Plastic never really goes away.");
-    } else {
-      document.getElementById("break-btn").textContent = "Break it again";
-    }
+  var level = microLevel();
+  box.classList.toggle("final", level >= 3);
+  if (level === 0) { renderBits(1, 94); document.getElementById("micro-cap").textContent = "Start with one plastic bottle. Add sunlight, waves and time to see what changes."; }
+  if (level === 1) { renderBits(6, 42); document.getElementById("micro-cap").textContent = "The bottle cracks into pieces. The plastic has changed shape, but it is still here."; }
+  if (level === 2) { renderBits(28, 17); document.getElementById("micro-cap").textContent = "The pieces get smaller. They are easier for animals to mistake for food."; }
+  if (level >= 3) { renderBits(90, 7); document.getElementById("micro-cap").textContent = "Now there are tiny pieces called microplastics. They are small, but they are still plastic."; }
+}
+function setupMicro() {
+  renderBits(1, 94);
+  document.querySelectorAll(".lab-controls [data-force]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var f = btn.getAttribute("data-force");
+      forces[f] = true;
+      btn.classList.add("used");
+      updateMicro();
+      if (microLevel() >= 3) { showReward("The plastic got smaller, not gone."); }
+    });
+  });
+  document.getElementById("reset-lab").addEventListener("click", function () {
+    forces = {};
+    document.querySelectorAll(".lab-controls [data-force]").forEach(function (btn) { btn.classList.remove("used"); });
+    updateMicro();
+  });
+  document.querySelectorAll("#micro-quiz [data-answer]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var ok = btn.getAttribute("data-answer") === "smaller";
+      document.querySelectorAll("#micro-quiz [data-answer]").forEach(function (b) { b.classList.remove("right", "wrong"); });
+      btn.classList.add(ok ? "right" : "wrong");
+      document.getElementById("micro-fb").textContent = ok ? "Exactly. Plastic can break into smaller pieces without disappearing." : "Not quite. Look again: the plastic is still there, just in smaller pieces.";
+      save("microAnswer", ok ? "It broke into smaller pieces" : btn.textContent);
+      if (ok) { earnStar("lab", "Microplastic idea unlocked!"); }
+      updateEvidencePreview();
+    });
   });
 }
 
-/* Stage 3 swaps */
+/* Mission 3 */
 var PAIRS = [
-  { id: "p1", plastic: "bottle", plab: "Plastic bottle", swap: "flask", slab: "Bottle I refill" },
-  { id: "p2", plastic: "straw", plab: "Plastic straw", swap: "metalstraw", slab: "Straw I wash" },
-  { id: "p3", plastic: "wrapveg", plab: "Veg in plastic", swap: "carrot", slab: "Loose veg" },
-  { id: "p4", plastic: "bottle2", plab: "Plastic bag", swap: "tote", slab: "Cloth bag" }
+  { id: "p1", plastic: "bottle", plab: "Single-use bottle", swap: "flask", slab: "Refillable bottle", feedback: "Best if it is used again and again." },
+  { id: "p2", plastic: "straw", plab: "Plastic straw", swap: "metalstraw", slab: "Washable straw", feedback: "Only useful if you need or want a straw." },
+  { id: "p3", plastic: "wrapveg", plab: "Veg in plastic", swap: "carrot", slab: "Loose veg", feedback: "An easy win when loose food is available." },
+  { id: "p4", plastic: "bag", plab: "Plastic bag", swap: "tote", slab: "Bag I reuse", feedback: "The word that matters is reuse." },
+  { id: "p5", plastic: "yoghurt", plab: "Snack pot", swap: "tub", slab: "Reusable tub", feedback: "Good for packed lunches if it gets brought back." }
 ];
-/* note: use a bag glyph for p4 plastic side */
-ICON.bottle2 = svg('<path class="ink-fill ink-stroke" d="M17 23h30l-4 31a4 4 0 0 1-4 3H25a4 4 0 0 1-4-3z" fill="#cfd6da" stroke="#06243d" stroke-width="3"/><path class="ink-stroke" d="M25 23c0-8 3-12 7-12s7 4 7 12" fill="none" stroke="#06243d" stroke-width="3"/>' + HI);
 var selPlastic = null;
-var matched = 0;
-function shuffle(a) { var r = a.slice(); for (var i = r.length - 1; i > 0; i--) { var j = (i * 7 + 3) % (i + 1); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; }
+var matched = {};
 function buildSwaps() {
+  var saved = load("matched");
+  if (saved) { try { matched = JSON.parse(saved); } catch (e) { matched = {}; } }
   var cp = document.getElementById("col-plastic");
   var cs = document.getElementById("col-swap");
   cp.innerHTML = ""; cs.innerHTML = "";
   PAIRS.forEach(function (pr) {
     var el = document.createElement("button");
-    el.className = "swapcard";
+    el.className = "swapcard" + (matched[pr.id] ? " matched" : "");
     el.setAttribute("data-id", pr.id);
     el.setAttribute("aria-label", pr.plab);
     el.innerHTML = ICON[pr.plastic] + '<span class="lab">' + pr.plab + '</span>';
@@ -453,72 +638,136 @@ function buildSwaps() {
   });
   shuffle(PAIRS).forEach(function (pr) {
     var el = document.createElement("button");
-    el.className = "swapcard";
+    el.className = "swapcard" + (matched[pr.id] ? " matched" : "");
     el.setAttribute("data-id", pr.id);
     el.setAttribute("aria-label", pr.slab);
     el.innerHTML = ICON[pr.swap] + '<span class="lab">' + pr.slab + '</span>';
     el.addEventListener("click", function () { pickSwap(pr.id, el); });
     cs.appendChild(el);
   });
+  if (Object.keys(matched).length >= PAIRS.length) { document.getElementById("judge-wrap").classList.add("show"); }
 }
+function pairById(id) { return PAIRS.filter(function (p) { return p.id === id; })[0]; }
 function pickPlastic(id, el) {
   if (el.classList.contains("matched")) { return; }
   if (selPlastic && selPlastic.el) { selPlastic.el.classList.remove("sel"); }
   selPlastic = { id: id, el: el };
   el.classList.add("sel");
-  setMsg("swap-msg", "Now tap what we could use instead.", "");
+  setMsg("swap-msg", "Now tap a swap that could replace it.", "");
 }
 function pickSwap(id, el) {
   if (el.classList.contains("matched")) { return; }
-  if (!selPlastic) { setMsg("swap-msg", "Tap a pink plastic thing first.", "try"); return; }
-  if (selPlastic.id !== id) { setMsg("swap-msg", "Not a match. Have another go.", "try"); selPlastic.el.classList.remove("sel"); selPlastic = null; return; }
+  if (!selPlastic) { setMsg("swap-msg", "Tap a plastic item first.", "try"); return; }
+  if (selPlastic.id !== id) {
+    setMsg("swap-msg", "Not quite. Try matching the item to the most realistic replacement.", "try");
+    selPlastic.el.classList.remove("sel");
+    selPlastic = null;
+    return;
+  }
+  var pair = pairById(id);
   el.classList.add("matched");
   selPlastic.el.classList.remove("sel");
   selPlastic.el.classList.add("matched");
   selPlastic = null;
-  matched += 1;
-  if (matched >= PAIRS.length) {
-    setMsg("swap-msg", "Every one has a swap. Now the tricky part.", "good");
+  matched[id] = true;
+  save("matched", JSON.stringify(matched));
+  if (Object.keys(matched).length >= PAIRS.length) {
+    setMsg("swap-msg", "All swaps matched. Now judge which swaps are actually realistic.", "good");
     document.getElementById("judge-wrap").classList.add("show");
-    showReward("You found every swap!");
+    earnStar("swap", "Swap workshop complete!");
   } else {
-    setMsg("swap-msg", "Good match.", "good");
+    setMsg("swap-msg", "Good match. " + pair.feedback, "good");
   }
+  updateEvidencePreview();
 }
-
 var JUDGES = [
-  { id: "crisps", q: "A crisp packet. Could we swap it easily?", note: "True. Crisp packets are hard to swap right now. That is not your fault." },
-  { id: "medicine", q: "Medicine in plastic. Should we always swap it?", note: "Some plastic keeps us safe and well. That kind is worth keeping." }
+  { id: "crisps", icon: "crisps", q: "Crisp packets", best: "tricky", note: "Tricky. They keep food fresh, but the mixed materials are hard to recycle." },
+  { id: "medicine", icon: "medicine", q: "Medicine packaging", best: "keep", note: "Keep the plastic if it protects medicine and keeps people safe." },
+  { id: "bottle", icon: "bottle", q: "A drink bottle every day", best: "easy", note: "Easy win for lots of people: refill one bottle instead of buying many." },
+  { id: "tea", icon: "tea", q: "Tea bags with plastic seal", best: "tricky", note: "Tricky. It depends on brand and what is available at home or school." }
 ];
+var judgeAnswers = {};
 function buildJudges() {
+  var saved = load("judgeAnswers");
+  if (saved) { try { judgeAnswers = JSON.parse(saved); } catch (e) { judgeAnswers = {}; } }
   var box = document.getElementById("judges");
+  box.innerHTML = "";
   JUDGES.forEach(function (j) {
     var el = document.createElement("div");
     el.className = "judge";
-    el.innerHTML = ICON[j.id] + '<span class="q">' + j.q + '</span>' +
-      '<span class="opts"><button data-v="easy">Easy swap</button><button data-v="tricky">Tricky</button><button data-v="keep">Keep it</button></span>' +
-      '<span class="fb"></span>';
+    el.innerHTML = '<div class="top">' + ICON[j.icon] + '<span class="q">' + j.q + '</span></div>' +
+      '<div class="opts"><button data-v="easy">Easy win</button><button data-v="tricky">Tricky</button><button data-v="keep">Keep the plastic</button></div>' +
+      '<div class="fb"></div>';
     el.querySelectorAll(".opts button").forEach(function (b) {
-      b.addEventListener("click", function () { el.querySelector(".fb").textContent = j.note; });
+      if (judgeAnswers[j.id] === b.getAttribute("data-v")) { b.classList.add("picked"); el.querySelector(".fb").textContent = j.note; }
+      b.addEventListener("click", function () {
+        judgeAnswers[j.id] = b.getAttribute("data-v");
+        save("judgeAnswers", JSON.stringify(judgeAnswers));
+        el.querySelectorAll(".opts button").forEach(function (x) { x.classList.remove("picked"); });
+        b.classList.add("picked");
+        el.querySelector(".fb").textContent = j.note;
+        if (Object.keys(judgeAnswers).length >= JUDGES.length) { earnStar("judge", "Realistic choices made!"); }
+        updateEvidencePreview();
+      });
     });
     box.appendChild(el);
   });
 }
 
-/* Stage 4 pledge */
+/* Mission 4 */
+var CLAIMS = [
+  { id: "c1", claim: "100% recyclable", best: "maybe", type: "catch", note: "Maybe. Recyclable is not the same as actually recycled." },
+  { id: "c2", claim: "Refill me again and again", best: "real", type: "real", note: "Real win, but only if someone actually refills it." },
+  { id: "c3", claim: "Plant-based plastic", best: "maybe", type: "catch", note: "Maybe. It can still behave like plastic and may need special processing." },
+  { id: "c4", claim: "Now with a green leaf on the packet", best: "sneaky", type: "catch", note: "Sneaky wording. A green picture does not prove anything changed." },
+  { id: "c5", claim: "30% less plastic", best: "real", type: "real", note: "Real win. Less plastic is genuinely less plastic, even if it is not perfect." }
+];
+var claimAnswers = {};
+function buildClaims() {
+  var saved = load("claimAnswers");
+  if (saved) { try { claimAnswers = JSON.parse(saved); } catch (e) { claimAnswers = {}; } }
+  var box = document.getElementById("claims");
+  box.innerHTML = "";
+  CLAIMS.forEach(function (c) {
+    var card = document.createElement("div");
+    card.className = "claim-card";
+    card.innerHTML = '<div class="claim">"' + c.claim + '"</div>' +
+      '<div class="opts"><button data-v="real">Real win</button><button data-v="maybe">Maybe</button><button data-v="sneaky">Sneaky wording</button></div>' +
+      '<div class="fb">' + c.note + '</div>';
+    card.querySelectorAll("button").forEach(function (btn) {
+      if (claimAnswers[c.id] === btn.getAttribute("data-v")) { btn.classList.add("picked"); card.classList.add("done", c.type); }
+      btn.addEventListener("click", function () {
+        claimAnswers[c.id] = btn.getAttribute("data-v");
+        save("claimAnswers", JSON.stringify(claimAnswers));
+        card.classList.add("done", c.type);
+        card.querySelectorAll("button").forEach(function (b) { b.classList.remove("picked"); });
+        btn.classList.add("picked");
+        setMsg("claim-msg", btn.getAttribute("data-v") === c.best ? "Good detective work." : "Useful thought. Read the catch and decide whether you agree.", btn.getAttribute("data-v") === c.best ? "good" : "");
+        if (Object.keys(claimAnswers).length >= CLAIMS.length) { earnStar("greenwash", "Greenwash detective complete!"); }
+        updateEvidencePreview();
+      });
+    });
+    box.appendChild(card);
+  });
+}
+
+/* Final action */
 var PLEDGES = [
   { id: "pl1", icon: "flask", lab: "Use a bottle I can refill" },
-  { id: "pl2", icon: "tote", lab: "Bring a cloth bag for shopping" },
-  { id: "pl3", icon: "carrot", lab: "Choose loose fruit and veg" },
+  { id: "pl2", icon: "tote", lab: "Bring a bag I can reuse" },
+  { id: "pl3", icon: "carrot", lab: "Choose loose fruit or veg" },
   { id: "pl4", icon: "cup", lab: "Use a cup I can wash" },
-  { id: "pl5", icon: "metalstraw", lab: "Say no thank you to plastic straws" }
+  { id: "pl5", icon: "tub", lab: "Use a lunch tub instead of throwaway wrap" },
+  { id: "pl6", icon: "compost", lab: "Put compostable waste in the right place" }
 ];
 var chosen = {};
 function buildPledges() {
   var box = document.getElementById("pledges");
+  var sel = document.getElementById("main-swap");
   var saved = load("pledges");
   if (saved) { try { chosen = JSON.parse(saved); } catch (e) { chosen = {}; } }
   PLEDGES.forEach(function (p) {
+    var opt = document.createElement("option"); opt.value = p.lab; opt.textContent = p.lab; sel.appendChild(opt);
     var el = document.createElement("button");
     el.className = "pledge" + (chosen[p.id] ? " chosen" : "");
     el.setAttribute("aria-pressed", chosen[p.id] ? "true" : "false");
@@ -529,12 +778,95 @@ function buildPledges() {
       el.classList.toggle("chosen", now);
       el.setAttribute("aria-pressed", now ? "true" : "false");
       save("pledges", JSON.stringify(chosen));
+      updateEvidencePreview();
     });
     box.appendChild(el);
   });
 }
+function checkActionPlan() {
+  if (document.getElementById("main-swap").value && document.getElementById("where-plan").value.trim() && document.getElementById("backup-plan").value.trim()) {
+    earnStar("action", "Realistic action plan written!");
+  }
+}
+function buildActionFields() {
+  ["main-swap", "where-plan", "barrier-plan", "backup-plan", "reflect-text", "boss-text"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) { return; }
+    var old = load(id);
+    if (old) { el.value = old; }
+    el.addEventListener("input", function () {
+      save(id, el.value);
+      checkActionPlan();
+      updateEvidencePreview();
+    });
+    el.addEventListener("change", function () { save(id, el.value); checkActionPlan(); updateEvidencePreview(); });
+  });
+}
 
-/* staff + send */
+/* drawing */
+var draw = { colour: "#06243d", size: 6, drawing: false, lastX: 0, lastY: 0 };
+function setupDrawing() {
+  var tools = document.getElementById("tools");
+  var swatches = document.getElementById("swatches");
+  var canvas = document.getElementById("pad");
+  var ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  [
+    { lab: "Pen", size: 5 }, { lab: "Thick pen", size: 12 }, { lab: "Eraser", size: 18, eraser: true }
+  ].forEach(function (t, idx) {
+    var b = document.createElement("button");
+    b.className = "toolbtn" + (idx === 0 ? " sel" : "");
+    b.textContent = t.lab;
+    b.addEventListener("click", function () {
+      document.querySelectorAll("#tools .toolbtn").forEach(function (x) { x.classList.remove("sel"); });
+      b.classList.add("sel");
+      draw.size = t.size;
+      draw.eraser = !!t.eraser;
+    });
+    tools.appendChild(b);
+  });
+  ["#06243d", "#ff1e9c", "#0fb6b6", "#2fa84f", "#ffce2e", "#ff7a3d"].forEach(function (c, idx) {
+    var b = document.createElement("button");
+    b.className = "swatch" + (idx === 0 ? " sel" : "");
+    b.style.background = c;
+    b.setAttribute("aria-label", "Pick colour " + c);
+    b.addEventListener("click", function () {
+      document.querySelectorAll("#swatches .swatch").forEach(function (x) { x.classList.remove("sel"); });
+      b.classList.add("sel");
+      draw.colour = c;
+      draw.eraser = false;
+      document.querySelectorAll("#tools .toolbtn").forEach(function (x, n) { x.classList.toggle("sel", n === 0); });
+      draw.size = 5;
+    });
+    swatches.appendChild(b);
+  });
+  function pos(e) {
+    var rect = canvas.getBoundingClientRect();
+    var p = e.touches ? e.touches[0] : e;
+    return { x: (p.clientX - rect.left) * (canvas.width / rect.width), y: (p.clientY - rect.top) * (canvas.height / rect.height) };
+  }
+  function start(e) { e.preventDefault(); var p = pos(e); draw.drawing = true; draw.lastX = p.x; draw.lastY = p.y; }
+  function move(e) {
+    if (!draw.drawing) { return; }
+    e.preventDefault();
+    var p = pos(e);
+    ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.lineWidth = draw.size; ctx.strokeStyle = draw.eraser ? "#ffffff" : draw.colour;
+    ctx.beginPath(); ctx.moveTo(draw.lastX, draw.lastY); ctx.lineTo(p.x, p.y); ctx.stroke();
+    draw.lastX = p.x; draw.lastY = p.y;
+  }
+  function end() { draw.drawing = false; }
+  canvas.addEventListener("mousedown", start); canvas.addEventListener("mousemove", move); window.addEventListener("mouseup", end);
+  canvas.addEventListener("touchstart", start, { passive: false }); canvas.addEventListener("touchmove", move, { passive: false }); canvas.addEventListener("touchend", end);
+  document.getElementById("clear-pad").addEventListener("click", function () { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height); });
+  document.getElementById("dl-pad").addEventListener("click", function () {
+    var a = document.createElement("a");
+    a.download = "plastic-patrol-drawing.png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+  });
+}
+
+/* staff + evidence */
 var STAFF = [
   { name: "Alex Ireland", email: "alex.ireland@chiltonbridgeschool.co.uk" },
   { name: "Alice Ruckert", email: "alice.ruckert@chiltonbridgeschool.co.uk" },
@@ -569,80 +901,113 @@ var STAFF = [
 ];
 function buildTeachers() {
   var sel = document.getElementById("teacher");
-  STAFF.forEach(function (s) { var o = document.createElement("option"); o.value = s.email; o.textContent = s.name; sel.appendChild(o); });
+  STAFF.forEach(function (s) { var o = document.createElement("option"); o.value = s.email; o.textContent = s.name; if (s.name === "Jay Raine") { o.selected = true; } sel.appendChild(o); });
+}
+function chosenPledgesText() {
+  var picks = PLEDGES.filter(function (p) { return chosen[p.id]; }).map(function (p) { return "- " + p.lab; });
+  return picks.length ? picks.join("\n") : "(No swaps chosen yet.)";
+}
+function judgeText() {
+  return JUDGES.map(function (j) { return "- " + j.q + ": " + (judgeAnswers[j.id] || "not answered"); }).join("\n");
+}
+function claimText() {
+  return CLAIMS.map(function (c) { return "- " + c.claim + ": " + (claimAnswers[c.id] || "not answered"); }).join("\n");
+}
+function evidenceBody() {
+  var c = updateSpotCount();
+  var body = "Plastic Free July - Activity 2: Plastic Patrol\n\n";
+  body += "Mission 1 - Scan the lunch table\n";
+  body += "Plastic found: " + c.found + "/" + c.totalPlastic + "\n";
+  body += "Sneaky plastic found: " + c.sneaky + "/" + c.totalSneaky + "\n\n";
+  body += "Mission 2 - Plastic breakdown lab\n";
+  body += "Answer: " + (load("microAnswer") || "not answered yet") + "\n\n";
+  body += "Mission 3 - Swap workshop\n";
+  body += "Swaps matched: " + Object.keys(matched).length + "/" + PAIRS.length + "\n";
+  body += "Judgements:\n" + judgeText() + "\n\n";
+  body += "Mission 4 - Greenwash detective\n" + claimText() + "\n\n";
+  body += "Swaps I might try:\n" + chosenPledgesText() + "\n\n";
+  body += "My one realistic swap: " + (document.getElementById("main-swap").value || "not chosen") + "\n";
+  body += "Where I will try it: " + (document.getElementById("where-plan").value.trim() || "not written") + "\n";
+  body += "What might get in the way: " + (document.getElementById("barrier-plan").value.trim() || "not written") + "\n";
+  body += "My backup plan: " + (document.getElementById("backup-plan").value.trim() || "not written") + "\n\n";
+  body += "My verdict on plastic:\n" + (document.getElementById("reflect-text").value.trim() || "not written") + "\n\n";
+  var boss = document.getElementById("boss-text").value.trim();
+  if (boss) { body += "Boss Level:\n" + boss + "\n\n"; }
+  body += "Stars earned: " + Object.keys(stars).filter(function (k) { return stars[k]; }).length + "/5";
+  return body;
+}
+function updateEvidencePreview() {
+  var pre = document.getElementById("evidence-preview");
+  if (pre) { pre.textContent = evidenceBody(); }
 }
 function sendWork() {
   var sel = document.getElementById("teacher");
   var email = sel.value;
   if (!email) { setMsg("send-msg", "Pick a teacher first.", "try"); return; }
-  var picks = PLEDGES.filter(function (p) { return chosen[p.id]; }).map(function (p) { return "- " + p.lab; });
-  var body = "Hello,\n\nHere is my Plastic Free July work for Activity 2: Spot and swap.\n\n";
-  body += "I spotted " + found + " plastic things we use at one lunch.\n\n";
-  body += "Swaps I want to try:\n" + (picks.length ? picks.join("\n") : "(I have not picked a swap yet.)") + "\n\n";
-  var bossEl = document.getElementById("boss-text");
-  var bossVal = bossEl ? bossEl.value.trim() : "";
-  if (bossVal) { body += "Boss Level: " + bossVal + "\n\n"; }
-  body += "From a student in Plastic Free July.";
   var url = "https://mail.google.com/mail/?view=cm&fs=1"
     + "&to=" + encodeURIComponent(email)
     + "&su=" + encodeURIComponent("Plastic Free July - Activity 2")
-    + "&body=" + encodeURIComponent(body);
+    + "&body=" + encodeURIComponent("Hello,\n\nHere is my work.\n\n" + evidenceBody() + "\n\nFrom a student in Plastic Free July.");
   window.open(url, "_blank");
   setMsg("send-msg", "Email opened. Press send in the email.", "good");
 }
 
 /* navigation */
-var STEPS = ["s-intro", "s-spot", "s-micro", "s-swap", "s-pledge"];
-function buildDots() { var d = document.getElementById("dots"); STEPS.forEach(function () { d.appendChild(document.createElement("span")); }); }
+var STEPS = ["s-intro", "s-spot", "s-micro", "s-swap", "s-greenwash", "s-action"];
+function buildDots() {
+  var d = document.getElementById("dots");
+  STEPS.forEach(function (id, i) {
+    var b = document.createElement("button");
+    b.setAttribute("aria-label", "Go to step " + (i + 1));
+    b.addEventListener("click", function () { goStep(i); });
+    d.appendChild(b);
+  });
+}
 function goStep(i) {
+  if (i < 0 || i >= STEPS.length) { i = 0; }
   STEPS.forEach(function (id, n) {
     document.getElementById(id).classList.toggle("active", n === i);
     document.getElementById("dots").children[n].classList.toggle("on", n === i);
   });
   save("step", String(i));
   window.scrollTo({ top: 0, behavior: "auto" });
+  updateEvidencePreview();
 }
 function wireNav() {
   document.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () { goStep(parseInt(b.getAttribute("data-go"), 10)); }); });
-}
-
-var GW = [
-  { claim: "\"100% recyclable\"", real: false, note: "Catch: recyclable is not the same as recycled. Most plastic that could be recycled never is." },
-  { claim: "\"Made from plant-based plastic\"", real: false, note: "Catch: it is still plastic. It often only breaks down in a special factory, not your bin or the sea." },
-  { claim: "\"Refill me again and again\"", real: true, note: "Real win, but only if you actually keep refilling it." },
-  { claim: "\"Biodegradable\"", real: false, note: "Catch: usually only breaks down in hot industrial composting. In a bin or the ocean it can just sit there." },
-  { claim: "\"30% less plastic in this pack\"", real: true, note: "Real win. Small, but less plastic really is less plastic." }
-];
-function buildGW() {
-  var box = document.getElementById("gw");
-  box.innerHTML = "";
-  GW.forEach(function (g) {
-    var card = document.createElement("div");
-    card.className = "gwcard";
-    card.innerHTML = '<div class="claim">' + g.claim + '</div><div class="gwopts"><button data-v="real">Real win</button><button data-v="catch">Spot the catch</button></div><div class="gwfb">' + g.note + '</div>';
-    card.querySelectorAll(".gwopts button").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        card.classList.add("done");
-        card.classList.add(g.real ? "real" : "catch");
-        card.querySelectorAll(".gwopts button").forEach(function (x) { x.disabled = true; });
-      });
-    });
-    box.appendChild(card);
-  });
 }
 function wireBoss() {
   var b = document.getElementById("boss");
   var head = document.getElementById("boss-toggle");
   head.addEventListener("click", function () { var open = b.classList.toggle("open"); head.setAttribute("aria-expanded", open ? "true" : "false"); });
-  var t = document.getElementById("boss-text");
-  if (t) { var ex = load("boss"); if (ex) { t.value = ex; } t.addEventListener("input", function () { save("boss", t.value); }); }
-  buildGW();
+}
+function wireEgg() {
+  var btn = document.getElementById("egg-bottle");
+  btn.addEventListener("click", function () {
+    showReward("Suspicious bottle spotted. The Phantom is annoyed.");
+  });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  buildDots(); buildShelf(); setupMicro(); buildSwaps(); buildJudges(); buildPledges(); buildTeachers(); wireNav(); wireBoss();
+  loadStars();
+  buildDots();
+  updateStars();
+  buildShelf();
+  setupMicro();
+  buildSwaps();
+  buildJudges();
+  buildClaims();
+  buildPledges();
+  buildActionFields();
+  setupDrawing();
+  buildTeachers();
+  wireNav();
+  wireBoss();
+  wireEgg();
   document.getElementById("send-btn").addEventListener("click", sendWork);
-  goStep(0);
+  var start = parseInt(load("step") || "0", 10);
+  if (isNaN(start)) { start = 0; }
+  goStep(start);
 });
 </script>
 
