@@ -409,6 +409,7 @@
       <details class="deep-dive"><summary>Deep dive: critical thinking</summary><p>Some claims sound neat but miss important details. A good answer can be: true, false, partly true, or too simple.</p></details>
       <div class="bubble phantom">"I demand a fair trial. Also, please ignore the suspicious pink glitter everywhere." &middot; the Plastic Phantom</div>
       <div class="court-grid" id="court"></div>
+      <div class="bubble phantom" id="court-verdict" hidden>"Objection! Objection!! ...Fine. Overruled." &middot; the Plastic Phantom, losing gracefully</div>
       <p class="msg" id="court-msg" role="status"></p>
       <div class="nav"><button class="btn-back" data-go="4">Back</button><button class="btn-next" data-go="6">Final evidence</button></div>
     </section>
@@ -508,7 +509,7 @@ var ICONS = {
 
 var stepIds = ["s-intro", "s-map", "s-rescue", "s-chain", "s-choices", "s-court", "s-reflect"];
 var currentStep = Number(load("step") || 0);
-var earned = JSON.parse(load("earned") || "[]");
+var earned = JSON.parse(load("stars") || "[]");
 var state = {
   zones: JSON.parse(load("zones") || "[]"),
   saved: JSON.parse(load("saved") || "[]"),
@@ -574,7 +575,8 @@ var courtData = [
   { id: "eco", claim: "If a wrapper says ocean-friendly, it must be safe for the sea.", correct: "Sneaky wording", fb: "Sneaky wording. A label is not proof. Ask what it is made from and what happens after use." },
   { id: "reusable", claim: "A reusable item is always better the moment you buy it.", correct: "Too simple", fb: "Too simple. Reusable items help most when they are actually reused many times." },
   { id: "person", claim: "One person's choices can never help.", correct: "Too simple", fb: "Too simple. One choice is not everything, but habits, schools and groups can change what gets used and thrown away." },
-  { id: "bio", claim: "Biodegradable always means it disappears safely anywhere.", correct: "Sneaky wording", fb: "Sneaky wording. Some items only break down in the right conditions, not just anywhere in the sea." }
+  { id: "bio", claim: "Biodegradable always means it disappears safely anywhere.", correct: "Sneaky wording", fb: "Sneaky wording. Some items only break down in the right conditions, not just anywhere in the sea." },
+  { id: "island", claim: "There is a solid island of rubbish in the sea that you could walk on.", correct: "Sneaky wording", fb: "Sneaky wording. The garbage patch is real, but it is mostly a soup of tiny plastic pieces spread through the water. In some ways that is worse, because you cannot just scoop up an island." }
 ];
 var courtOptions = ["True", "Too simple", "Sneaky wording"];
 
@@ -620,12 +622,12 @@ var STAFF = [
 ];
 
 var badgeData = [
-  { id: "scan", label: "Zone Scanner", symbol: "◌" },
-  { id: "rescue", label: "Animal Rescuer", symbol: "✓" },
-  { id: "chain", label: "Food Chain Detective", symbol: "→" },
-  { id: "choices", label: "Reef Rebuilder", symbol: "✦" },
+  { id: "scan", label: "Zone Scanner", symbol: "&#9676;" },
+  { id: "rescue", label: "Animal Rescuer", symbol: "&#10003;" },
+  { id: "chain", label: "Food Chain Detective", symbol: "&rarr;" },
+  { id: "choices", label: "Reef Rebuilder", symbol: "&#10022;" },
   { id: "court", label: "Courtroom Challenger", symbol: "!" },
-  { id: "bottle", label: "Bottle Spotter", symbol: "●" },
+  { id: "bottle", label: "Bottle Spotter", symbol: "&#9679;" },
   { id: "plan", label: "Action Planner", symbol: "+" }
 ];
 
@@ -655,7 +657,8 @@ function showStamp(text) {
   if (!stamp) return;
   stamp.textContent = text || "MISSION COMPLETE";
   stamp.classList.add("show");
-  setTimeout(function() { stamp.classList.remove("show"); }, 1200);
+  clearTimeout(stamp._t);
+  stamp._t = setTimeout(function() { stamp.classList.remove("show"); }, 1200);
 }
 function updateBottleEvidence() {
   var bag = byId("evidence-bag");
@@ -704,12 +707,13 @@ function showReward(text) {
   var r = byId("reward");
   byId("reward-text").textContent = text;
   r.classList.add("show");
-  setTimeout(function() { r.classList.remove("show"); }, 1800);
+  clearTimeout(r._t);
+  r._t = setTimeout(function() { r.classList.remove("show"); }, 1800);
 }
 function earn(key, text) {
   if (earned.indexOf(key) === -1) {
     earned.push(key);
-    save("earned", JSON.stringify(earned));
+    save("stars", JSON.stringify(earned));
     renderStars();
     renderBadges();
     showReward(text || "Reef rescue progress!");
@@ -726,7 +730,7 @@ function go(index) {
   updateHealth();
   updateBottleEvidence();
   updatePreview();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: "auto" });
 }
 function arraysEqual(a, b) { return a.length === b.length && a.every(function(v, i) { return v === b[i]; }); }
 function storeState() {
@@ -937,6 +941,7 @@ function renderScenarios() {
 function renderCourt() {
   var holder = byId("court");
   holder.innerHTML = "";
+  byId("court-verdict").hidden = Object.keys(state.court).length !== courtData.length;
   courtData.forEach(function(c) {
     var done = state.court[c.id];
     var card = document.createElement("div");
@@ -996,7 +1001,6 @@ function populateTeachers() {
     var opt = document.createElement("option");
     opt.value = t.email;
     opt.textContent = t.name;
-    if (t.name === "Jay Raine") opt.selected = true;
     select.appendChild(opt);
   });
 }
@@ -1012,9 +1016,9 @@ function buildEvidence() {
   var rescued = selectedLabels(rescueData, state.saved);
   var choices = scenarioData.map(function(s) {
     var c = state.choices[s.id];
-    return s.title + ": " + (c ? c.text + " — " + c.fb : "not answered");
+    return s.title + ": " + (c ? c.text + " - " + c.fb : "not answered");
   });
-  var court = courtData.map(function(c) { return c.claim + " — " + (state.court[c.id] || "not answered"); });
+  var court = courtData.map(function(c) { return c.claim + " - " + (state.court[c.id] || "not answered"); });
   var pledges = selectedLabels(pledgeData, state.pledges);
   var animalChoice = byId("animal-choice") ? byId("animal-choice").value : "";
   var problemChoice = byId("problem-choice") ? byId("problem-choice").value : "";
@@ -1112,6 +1116,9 @@ function setupDrawing() {
     ctx.fill();
   }
   clearCanvas();
+  function storeDrawing() { try { save("drawing", canvas.toDataURL("image/png")); } catch (e) {} }
+  var savedDrawing = load("drawing");
+  if (savedDrawing) { var img = new Image(); img.onload = function() { ctx.drawImage(img, 0, 0, canvas.width, canvas.height); }; img.src = savedDrawing; }
   var tools = byId("tools");
   var swatches = byId("swatches");
   sizes.forEach(function(s, idx) {
@@ -1163,14 +1170,14 @@ function setupDrawing() {
     ctx.lineJoin = "round";
     ctx.stroke();
   }
-  function end() { drawing = false; }
+  function end() { if (!drawing) return; drawing = false; storeDrawing(); }
   canvas.addEventListener("mousedown", start);
   canvas.addEventListener("mousemove", move);
   window.addEventListener("mouseup", end);
   canvas.addEventListener("touchstart", start, { passive: false });
   canvas.addEventListener("touchmove", move, { passive: false });
   canvas.addEventListener("touchend", end);
-  byId("clear-pad").addEventListener("click", clearCanvas);
+  byId("clear-pad").addEventListener("click", function() { clearCanvas(); storeDrawing(); });
   byId("dl-pad").addEventListener("click", function() {
     var link = document.createElement("a");
     link.download = "my-rescued-reef.png";
