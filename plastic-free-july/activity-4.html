@@ -229,7 +229,7 @@
 <div class="topbar">
   <div class="wrap">
     <a class="back" href="index.html">Back to all activities</a>
-    <span class="stars" id="stars" aria-label="0 of 7 stars earned"></span>
+    <span class="stars" id="stars" aria-label="0 of 9 stars earned"></span>
     <span class="label">Activity 4</span>
   </div>
 </div>
@@ -307,7 +307,7 @@
       <div class="design-grid" id="design-grid"></div>
       <div class="preview-wrap">
         <h3>Your wrapper preview</h3>
-        <div class="wrapper-preview ocean" id="wrapper-preview"><div class="name">Reef Crunch</div><div class="strap">recycled paper sleeve · allergy info · recycle guide</div></div>
+        <div class="wrapper-preview ocean" id="wrapper-preview"><div class="name">Reef Crunch</div><div class="strap">recycled paper sleeve &middot; allergy info &middot; recycle guide</div></div>
         <div class="score-grid" id="score-grid"></div>
         <p class="hint" id="design-note">Every design is a compromise. Stronger protection can sometimes mean more material; less material can sometimes mean less protection.</p>
       </div>
@@ -329,6 +329,7 @@
       <h2>Boss level: Is paper always better?</h2>
       <p>The Plastic Phantom is trying to make the debate too simple. Decide whether each claim is <strong>true</strong>, <strong>false</strong> or <strong>it depends</strong>.</p>
       <div class="boss-grid" id="claims"></div>
+      <div class="bubble phantom" id="boss-verdict" hidden>"This trial is rigged! Rigged, I say! ...Fine. Keep your honest labels." &middot; the Plastic Phantom, losing again</div>
       <p class="msg" id="boss-msg" role="status"></p>
       <div class="bubble deep"><strong>16+ challenge link:</strong> This is life-cycle thinking. A material can look better at first but still need energy, water, transport, reuse or specialist recycling. The best answer often depends on how the product is used and what happens after.</div>
       <div class="nav"><button class="btn-back" data-go="5">Back</button><button class="btn-next" data-go="7">Final pitch</button></div>
@@ -356,11 +357,13 @@
         </div>
       </div>
       <div class="send">
-        <h3>Send your evidence to Jay</h3>
+        <h3>Send your evidence to a teacher</h3>
         <p style="margin:0 0 10px;">The email will include your wrapper choices, test results, boss-level thinking and final pitch.</p>
-        <button id="build-evidence" class="btn-dark">Build evidence preview</button>
+        <label class="field" for="teacher" style="margin-top:0;">Choose your teacher</label>
+        <select id="teacher"><option value="">Pick a teacher...</option></select>
+        <button id="build-evidence" class="btn-dark" style="margin-top:12px;">Build evidence preview</button>
         <div class="evidence" id="evidence" style="margin-top:12px;">Evidence preview will appear here.</div>
-        <div class="nav"><button id="send-btn" class="btn-next">Send to Jay</button><a class="btnlink" href="index.html">All done</a></div>
+        <div class="nav"><button id="send-btn" class="btn-next">Send to your teacher</button><a class="btnlink" href="index.html">All done</a></div>
         <p class="msg" id="send-msg" role="status"></p>
       </div>
       <div class="nav"><button class="btn-back" data-go="6">Back</button></div>
@@ -374,7 +377,7 @@
 "use strict";
 
 var NS = "pfj.a4.";
-var TOTAL_STARS = 7;
+var TOTAL_STARS = 9;
 function save(key, value) { try { localStorage.setItem(NS + key, value); } catch (e) {} }
 function load(key) { try { return localStorage.getItem(NS + key); } catch (e) { return null; } }
 function byId(id) { return document.getElementById(id); }
@@ -400,6 +403,7 @@ try { state.removed = JSON.parse(load("removed") || "[]"); } catch (e) { state.r
 try { state.design = Object.assign(state.design, JSON.parse(load("design") || "{}")); } catch (e) {}
 try { state.boss = JSON.parse(load("boss") || "{}"); } catch (e) { state.boss = {}; }
 state.upgrade = load("upgrade") || "";
+state.selectedBar = load("selectedBar") || null;
 
 function starSvg() {
   return '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/></svg>';
@@ -447,8 +451,9 @@ function renderDots() {
 function go(n) {
   state.step = Math.max(0, Math.min(stepIds.length - 1, n));
   stepIds.forEach(function (id, i) { byId(id).classList.toggle("active", i === state.step); });
+  save("step", String(state.step));
   renderDots();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: "auto" });
 }
 function wireNav() {
   document.querySelectorAll("[data-go]").forEach(function (el) {
@@ -532,6 +537,7 @@ function meter(label, val, invert) {
 function inspectBar(id) {
   var bar = BARS.find(function (b) { return b.id === id; });
   state.selectedBar = id;
+  save("selectedBar", id);
   if (state.inspected.indexOf(id) === -1) { state.inspected.push(id); }
   save("inspected", JSON.stringify(state.inspected));
   var html = '<h3>' + bar.name + '</h3><p><strong>Wrapper:</strong> ' + bar.type + '</p>';
@@ -638,7 +644,7 @@ function updatePreview() {
   var name = byId("bar-name").value.trim() || "Reef Crunch";
   var p = byId("wrapper-preview");
   p.className = "wrapper-preview " + state.design.style;
-  p.innerHTML = '<div class="name">' + escapeHtml(name) + '</div><div class="strap">' + state.design.material + ' · ' + state.design.info + '</div>';
+  p.innerHTML = '<div class="name">' + escapeHtml(name) + '</div><div class="strap">' + state.design.material + ' &middot; ' + state.design.info + '</div>';
   var s = designScores();
   byId("score-grid").innerHTML = '<div class="score"><span>' + s.protect + '</span>Protection</div><div class="score"><span>' + s.plastic + '</span>Less plastic</div><div class="score"><span>' + s.info + '</span>Clear info</div><div class="score"><span>' + s.reuse + '</span>Reuse value</div>';
   save("design", JSON.stringify(state.design));
@@ -707,6 +713,8 @@ var CLAIMS = [
 function renderClaims() {
   var box = byId("claims");
   box.innerHTML = "";
+  var correctNow = CLAIMS.filter(function (x) { return state.boss[x.id] === x.ans; }).length;
+  byId("boss-verdict").hidden = correctNow < 5;
   CLAIMS.forEach(function (c) {
     var picked = state.boss[c.id];
     var div = document.createElement("div");
@@ -773,14 +781,74 @@ function buildEvidence() {
   award("pitch", "Final pitch evidence built");
   return text;
 }
+function wireTextSaves() {
+  ["protects", "lessplastic", "tradeoff", "action"].forEach(function (id) {
+    var el = byId(id);
+    var existing = load("txt." + id);
+    if (existing) { el.value = existing; }
+    el.addEventListener("input", function () { save("txt." + id, el.value); });
+  });
+  var bn = byId("bar-name");
+  var savedName = load("barName");
+  if (savedName) { bn.value = savedName; }
+  bn.addEventListener("input", function () { save("barName", bn.value); });
+}
+
+var STAFF = [
+  { name: "Alex Ireland", email: "alex.ireland@chiltonbridgeschool.co.uk" },
+  { name: "Alice Ruckert", email: "alice.ruckert@chiltonbridgeschool.co.uk" },
+  { name: "Aliesha Tucker", email: "aliesha.tucker@chiltonbridgeschool.co.uk" },
+  { name: "Andrew Holmes", email: "andrew.holmes@chiltonbridgeschool.co.uk" },
+  { name: "Andrew Murphy", email: "andy.murphy@chiltonbridgeschool.co.uk" },
+  { name: "Angela Poole", email: "angela.poole@chiltonbridgeschool.co.uk" },
+  { name: "Anika Beard", email: "anika.beard@chiltonbridgeschool.co.uk" },
+  { name: "Anne-Marie Lock", email: "anne-marie.lock@chiltonbridgeschool.co.uk" },
+  { name: "Ashleigh Leeke-Coleman", email: "ashleigh.leeke-coleman@chiltonbridgeschool.co.uk" },
+  { name: "Daniel Smith", email: "dan.smith@chiltonbridgeschool.co.uk" },
+  { name: "David Wrathall", email: "david.wrathall@chiltonbridgeschool.co.uk" },
+  { name: "Hamish Kemp-Harington", email: "hamish.kemp-harington@chiltonbridgeschool.co.uk" },
+  { name: "Holly Jones", email: "holly.jones@chiltonbridgeschool.co.uk" },
+  { name: "James Rich", email: "james.rich@chiltonbridgeschool.co.uk" },
+  { name: "Jasmine Mann", email: "jasmine.mann@chiltonbridgeschool.co.uk" },
+  { name: "Jason Deelchand-Bee", email: "jason.deelchand-bee@chiltonbridgeschool.co.uk" },
+  { name: "Jay Raine", email: "jay.raine@chiltonbridgeschool.co.uk" },
+  { name: "Jennifer Wilson", email: "jennifer.wilson@chiltonbridgeschool.co.uk" },
+  { name: "Joanna Messenger", email: "joanna.messenger@chiltonbridgeschool.co.uk" },
+  { name: "Katie Duckworth", email: "katie.duckworth@chiltonbridgeschool.co.uk" },
+  { name: "Lewis Walls", email: "lewis.walls@chiltonbridgeschool.co.uk" },
+  { name: "Louise Hann", email: "louise.hann@chiltonbridgeschool.co.uk" },
+  { name: "Madeleine Stokes", email: "madeleine.stokes@chiltonbridgeschool.co.uk" },
+  { name: "Rebecca Divall", email: "rebecca.divall@chiltonbridgeschool.co.uk" },
+  { name: "Sally Layzell", email: "sally.layzell@chiltonbridgeschool.co.uk" },
+  { name: "Sarah Semyanik", email: "sarah.semyanik@chiltonbridgeschool.co.uk" },
+  { name: "Tara Russell", email: "tara.russell@chiltonbridgeschool.co.uk" },
+  { name: "Thomas Jackson", email: "thomas.jackson@chiltonbridgeschool.co.uk" },
+  { name: "William Pearse", email: "william.pearse@chiltonbridgeschool.co.uk" },
+  { name: "Willow White", email: "willow.white@chiltonbridgeschool.co.uk" }
+];
+function populateTeachers() {
+  var sel = byId("teacher");
+  STAFF.forEach(function (s) { var o = document.createElement("option"); o.value = s.email; o.textContent = s.name; sel.appendChild(o); });
+}
 function wireEmail() {
   byId("build-evidence").addEventListener("click", function () { buildEvidence(); });
   byId("send-btn").addEventListener("click", function () {
+    var teacher = byId("teacher").value;
+    if (!teacher) {
+      byId("send-msg").textContent = "Pick a teacher first.";
+      byId("send-msg").className = "msg try";
+      return;
+    }
     var text = buildEvidence();
-    var subject = "Plastic Free July Activity 4 Evidence - Chocolate Wrapper Test";
-    var body = text + "\n\nDrawing note: if a drawing was made, download it and attach it separately.";
-    window.location.href = "mailto:jay.raine@chiltonbridgeschool.co.uk?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-    byId("send-msg").textContent = "Email opened. Press send in the email window.";
+    var subject = "Plastic Free July - Activity 4";
+    var body = "Hello,\n\nHere is my work.\n\n" + text + "\n\nDrawing note: if a drawing was made, download it and attach it separately.\n\nFrom a student in Plastic Free July.";
+    var url = "https://mail.google.com/mail/?view=cm&fs=1"
+      + "&to=" + encodeURIComponent(teacher)
+      + "&su=" + encodeURIComponent(subject)
+      + "&body=" + encodeURIComponent(body);
+    var opened = window.open(url, "_blank");
+    if (!opened) { window.location.href = url; }
+    byId("send-msg").textContent = "Email opened. Press send in the email.";
     byId("send-msg").className = "msg good";
   });
 }
@@ -799,7 +867,10 @@ function setupCanvas() {
   }
   function start(e) { drawing = true; var p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
   function move(e) { if (!drawing) { return; } var p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); }
-  function end() { drawing = false; }
+  function storeDrawing() { try { save("drawing", canvas.toDataURL("image/png")); } catch (e) {} }
+  var savedDrawing = load("drawing");
+  if (savedDrawing) { var img = new Image(); img.onload = function () { ctx.drawImage(img, 0, 0, canvas.width, canvas.height); }; img.src = savedDrawing; }
+  function end() { if (!drawing) { return; } drawing = false; storeDrawing(); }
   canvas.addEventListener("mousedown", start); canvas.addEventListener("mousemove", move); window.addEventListener("mouseup", end);
   canvas.addEventListener("touchstart", start, { passive: false }); canvas.addEventListener("touchmove", move, { passive: false }); canvas.addEventListener("touchend", end);
   var colours = ["#06243d", "#ff1e9c", "#ff9e2c", "#2fa84f", "#1e7fd0", "#6b3f25"];
@@ -818,7 +889,7 @@ function setupCanvas() {
     });
     box.appendChild(b);
   });
-  byId("clear-pad").addEventListener("click", function () { ctx.clearRect(0, 0, canvas.width, canvas.height); });
+  byId("clear-pad").addEventListener("click", function () { ctx.clearRect(0, 0, canvas.width, canvas.height); save("drawing", ""); });
   byId("dl-pad").addEventListener("click", function () {
     var a = document.createElement("a");
     a.download = "chocolate-wrapper-design.png";
@@ -835,14 +906,18 @@ function init() {
   renderJobs();
   renderBars();
   renderLayers();
+  wireTextSaves();
   renderDesign();
   renderClaims();
   setupCanvas();
+  populateTeachers();
   wireEmail();
   byId("bar-name").addEventListener("input", updatePreview);
   byId("test-design").addEventListener("click", runTests);
   if (state.selectedBar) { inspectBar(state.selectedBar); }
   if (state.bottle) { byId("egg-bottle").classList.add("collected"); }
+  var savedStep = parseInt(load("step"), 10);
+  go(isNaN(savedStep) ? 0 : savedStep);
 }
 
 document.addEventListener("DOMContentLoaded", init);
