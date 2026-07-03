@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity 5: The Story of a Bottle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #06243d; --ink-soft: #2b4a63;
+    --plastic: #ff1e9c; --plastic-deep: #c40d74;
+    --coral: #ff7a3d; --sun: #ffce2e; --turq: #15c2c2; --kelp: #2fa84f;
+    --accent: #6b54c8; --accent-deep: #4c3a98; --good: #2fa84f;
+    --paper: #fdf6e6; --paper-edge: #e8dcbf; --pencil: #5a5a66;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Atkinson Hyperlegible", Verdana, sans-serif; color: var(--ink);
+    line-height: 1.5; text-align: left; min-height: 100vh;
+    background: linear-gradient(180deg, #6fd0ee 0%, #2a9fd0 24%, #127aa8 52%, #0a5a86 80%, #073f5e 100%) fixed;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+
+  .scene { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+  .ray { position: absolute; top: -12%; width: 130px; height: 130%; background: linear-gradient(to bottom, rgba(255,255,255,0.18), rgba(255,255,255,0)); transform: rotate(14deg); filter: blur(7px); }
+  .bub { position: absolute; bottom: -50px; border-radius: 50%; background: radial-gradient(circle at 32% 30%, rgba(255,255,255,0.85), rgba(255,255,255,0.10)); border: 1px solid rgba(255,255,255,0.4); animation: rise linear infinite; }
+  @keyframes rise { from { transform: translateY(0); opacity: 0.8; } to { transform: translateY(-112vh); opacity: 0; } }
+  .seabed { position: fixed; left: 0; right: 0; bottom: 0; width: 100%; height: 150px; }
+  .seabed svg { width: 100%; height: 100%; display: block; }
+  .kelp { transform-origin: bottom center; animation: sway 9s ease-in-out infinite alternate; }
+  .kelp.b { animation-duration: 11s; }
+  @keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+
+  /* the spot where the bottle usually floats: an empty corner with a note */
+  .gone-sign { position: fixed; bottom: 52px; left: 5%; z-index: 5; background: none; border: none; padding: 0; cursor: pointer; filter: drop-shadow(0 6px 10px rgba(3,30,50,0.3)); }
+  .gone-sign svg { width: clamp(78px, 11vw, 120px); height: auto; display: block; }
+  .gone-sign:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; border-radius: 12px; }
+
+  .topbar { background: linear-gradient(135deg, var(--accent), var(--accent-deep)); color: #ffffff; padding: 12px 0; }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .topbar a.back { color: #ffffff; text-decoration: none; font-weight: 700; background: rgba(255,255,255,0.22); padding: 8px 14px; border-radius: 999px; font-size: 1rem; }
+  .topbar a.back:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; }
+  .topbar .label { font-weight: 700; font-size: 1.05rem; }
+  .stars { display: flex; gap: 5px; align-items: center; }
+  .stars svg { width: 20px; height: 20px; display: block; }
+
+  .reward { position: fixed; left: 50%; top: 76px; transform: translateX(-50%) translateY(-16px); background: #ffffff; border: 4px solid var(--sun); border-radius: 18px; padding: 12px 18px; box-shadow: 0 10px 26px rgba(3,30,50,0.3); display: flex; align-items: center; gap: 12px; opacity: 0; pointer-events: none; z-index: 60; transition: opacity 0.35s ease, transform 0.35s ease; max-width: 88%; }
+  .reward.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .reward svg { width: 42px; height: 42px; flex: 0 0 auto; }
+  .reward p { margin: 0; font-weight: 700; font-size: 1.06rem; }
+
+  /* ---- the book ---- */
+  .book-area { padding: 26px 0 10px; }
+  .book { position: relative; max-width: 700px; margin: 18px auto 0; }
+  .ribbons { position: absolute; top: -26px; right: 34px; display: flex; gap: 10px; z-index: 3; }
+  .ribbon { width: 22px; height: 44px; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); background: #cfd8de; opacity: 0.5; box-shadow: 0 3px 5px rgba(3,30,50,0.25); }
+  .ribbon.earned { opacity: 1; }
+  .ribbon.r-fleece.earned { background: var(--turq); }
+  .ribbon.r-kept.earned { background: var(--sun); }
+  .ribbon.r-landfill.earned { background: #8a6d4b; }
+  .ribbon.r-reef.earned { background: var(--plastic); }
+
+  .bookshell { background: linear-gradient(135deg, #5a45ad, #3c2d7c); border-radius: 14px 20px 20px 14px; padding: 14px 16px 16px 22px; box-shadow: 0 18px 40px rgba(3,30,50,0.45); position: relative; }
+  .bookshell::before { content: ""; position: absolute; left: 10px; top: 10px; bottom: 10px; width: 6px; border-radius: 4px; background: linear-gradient(180deg, rgba(255,255,255,0.24), rgba(0,0,0,0.24)); }
+  .pagebox { position: relative; perspective: 1700px; background: var(--paper); border-radius: 4px 12px 12px 4px; box-shadow: inset 12px 0 22px -14px rgba(60,40,10,0.55), inset -2px 0 8px rgba(60,40,10,0.12); }
+  .bookpage { position: relative; transform-origin: left center; background: var(--paper); border-radius: 4px 12px 12px 4px; }
+  .bookpage.overlay { position: absolute; inset: 0; z-index: 4; overflow: hidden; box-shadow: 6px 0 18px rgba(3,30,50,0.28); }
+  .bookpage.turn-out { animation: turnout 0.5s ease-in forwards; }
+  @keyframes turnout { from { transform: rotateY(0deg); } to { transform: rotateY(-102deg); } }
+  .bookpage.turn-in { animation: turnin 0.5s ease-out; }
+  @keyframes turnin { from { transform: rotateY(-102deg); } to { transform: rotateY(0deg); } }
+  .page-inner { padding: 18px 20px 16px 26px; min-height: 430px; display: flex; flex-direction: column; background:
+    linear-gradient(0deg, rgba(120,90,40,0.04), rgba(120,90,40,0.04)),
+    repeating-linear-gradient(0deg, rgba(120,90,40,0.028) 0 2px, transparent 2px 5px); border-radius: 4px 12px 12px 4px; }
+  .pageno { position: absolute; bottom: 10px; right: 16px; font-size: 0.92rem; color: var(--pencil); font-weight: 700; }
+  .illus { border: 3px solid var(--paper-edge); border-radius: 12px; overflow: hidden; background: #ffffff; box-shadow: 0 3px 8px rgba(60,40,10,0.14); }
+  .illus svg { width: 100%; height: auto; display: block; }
+
+  .storytext { margin: 12px 4px 0; font-size: 1.1rem; }
+  .storytext p { margin: 0 0 8px; font-style: italic; }
+  .storytext p::first-letter { font-style: normal; font-weight: 700; font-size: 1.9em; line-height: 1; color: var(--accent-deep); padding-right: 2px; }
+  .byline { font-size: 0.92rem; color: var(--plastic-deep); font-weight: 700; font-style: normal; }
+
+  .moodrow { display: flex; align-items: center; gap: 8px; margin: 8px 4px 0; color: var(--pencil); font-size: 0.9rem; font-weight: 700; }
+  .moodrow .gauge { flex: 0 0 130px; height: 12px; border: 2px solid var(--pencil); border-radius: 3px; background: #ffffff; position: relative; transform: rotate(-1deg); }
+  .moodrow .gauge span { position: absolute; left: 0; top: 0; bottom: 0; background: repeating-linear-gradient(45deg, var(--plastic) 0 5px, #ffb1dc 5px 10px); }
+  .moodrow em { font-style: italic; }
+
+  .flap { margin: 10px 4px 0; width: calc(100% - 8px); text-align: left; background: #fff9e8; border: 2px dashed #d8bd7a; border-radius: 10px; padding: 0; cursor: pointer; overflow: hidden; font-family: inherit; }
+  .flap .flap-tab { display: flex; align-items: center; gap: 8px; padding: 9px 12px; font-weight: 700; color: #7a5c1e; font-size: 0.98rem; }
+  .flap .flap-tab::before { content: ""; width: 14px; height: 14px; background: #f0d68a; clip-path: polygon(0 0, 100% 0, 0 100%); flex: 0 0 auto; }
+  .flap .flap-truth { display: block; padding: 0 12px; max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease; background: #e7f8f8; border-top: 2px solid var(--turq); color: var(--ink); font-weight: 700; font-size: 0.99rem; transform-origin: top center; }
+  .flap.open .flap-truth { max-height: 200px; padding: 9px 12px; }
+  .flap.open .flap-tab { color: var(--ink-soft); }
+  .flap:focus-visible { outline: 4px solid var(--ink); outline-offset: 2px; }
+
+  .pagenav { margin-top: auto; padding-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  button, .btnlink { font-family: inherit; font-size: 1.04rem; font-weight: 700; cursor: pointer; border: none; border-radius: 999px; padding: 11px 20px; }
+  button:focus-visible, .btnlink:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
+  .btn-turn { background: var(--accent); color: #ffffff; box-shadow: 0 4px 0 var(--accent-deep); }
+  .btn-back { background: #eadfc2; color: var(--ink); }
+  .btn-ghost { background: #ffffff; color: var(--ink); border: 3px solid var(--accent); }
+
+  .choices { margin: 12px 4px 0; background: #f6efdb; border: 2px solid var(--paper-edge); border-radius: 12px; padding: 12px; }
+  .choices p { margin: 0 0 10px; font-weight: 700; font-style: normal; }
+  .choices button { display: block; width: 100%; text-align: left; margin: 8px 0 0; background: #ffffff; color: var(--ink); border: 3px solid var(--accent); }
+
+  .endnote { margin: 10px 4px 0; background: #f1ecff; border: 3px solid var(--accent); border-radius: 12px; padding: 10px 12px; font-weight: 700; }
+  .cover-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 430px; background: linear-gradient(135deg, #6b54c8, #443088); border-radius: 4px 12px 12px 4px; color: #ffffff; padding: 24px;
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0 3px, transparent 3px 9px), linear-gradient(135deg, #6b54c8, #443088); }
+  .cover-plate { background: var(--paper); color: var(--ink); border: 3px solid #caa94e; border-radius: 8px; padding: 16px 22px; box-shadow: 0 6px 14px rgba(0,0,0,0.3); max-width: 420px; }
+  .cover-plate h1 { margin: 0 0 6px; font-size: clamp(1.6rem, 5vw, 2.2rem); line-height: 1.1; }
+  .cover-plate .auth { color: var(--plastic-deep); font-weight: 700; }
+  .cover-plate .authsub { font-size: 0.88rem; color: var(--ink-soft); }
+  .cover-inner .illus { margin-top: 18px; border: none; background: none; box-shadow: none; width: 150px; }
+
+  .tracker { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 4px 0; }
+  .track-card { flex: 1 1 140px; background: #ffffff; border: 3px solid #d9cba0; border-radius: 12px; padding: 10px; text-align: center; font-weight: 700; font-size: 0.95rem; color: var(--ink-soft); }
+  .track-card.found { border-color: var(--good); background: #e3f6e8; color: var(--ink); }
+
+  .bubble { border-radius: 14px; padding: 10px 14px; font-weight: 700; margin: 12px 4px 0; font-size: 1rem; font-style: normal; }
+  .bubble.phantom { background: #fff0f8; border: 3px solid var(--plastic); color: var(--plastic-deep); }
+  .bubble.inky { background: #e7f8f8; border: 3px solid var(--turq); color: #0a7d7d; }
+
+  /* ---- the author's desk below the book ---- */
+  .desk { background: rgba(255,255,255,0.96); border-radius: 22px; margin: 26px auto 0; box-shadow: 0 12px 30px rgba(3,30,50,0.3); padding: 22px; max-width: 700px; }
+  .desk h2 { margin: 0 0 6px; font-size: 1.42rem; }
+  .desk h3 { margin: 0 0 8px; font-size: 1.14rem; }
+  .desk p { font-size: 1.05rem; }
+  label.field { display: block; font-weight: 700; margin: 14px 0 6px; font-size: 1.06rem; }
+  textarea, select, input[type="text"] { width: 100%; font-family: inherit; font-size: 1.05rem; padding: 12px; border-radius: 12px; border: 3px solid #bcdded; background: #ffffff; }
+  textarea { min-height: 84px; resize: vertical; }
+  textarea:focus-visible, select:focus-visible { outline: 4px solid var(--ink); outline-offset: 2px; }
+  .draw-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  .swatch { width: 38px; height: 38px; border-radius: 50%; border: 3px solid #ffffff; box-shadow: 0 0 0 2px #9cc4d4; cursor: pointer; padding: 0; }
+  .swatch.sel { box-shadow: 0 0 0 4px var(--ink); }
+  canvas { width: 100%; max-width: 640px; height: 300px; touch-action: none; background: #ffffff; border: 3px solid #bcdded; border-radius: 14px; display: block; }
+  .msg { min-height: 1.5em; font-weight: 700; margin: 8px 0 0; }
+  .msg.good { color: #1c7a36; }
+  .msg.try { color: var(--plastic-deep); }
+
+  .librarian { margin-top: 22px; background: #fdf6e6; border: 3px solid #d8bd7a; border-radius: 16px; padding: 16px; position: relative; }
+  .librarian::before { content: "LIBRARIAN'S NOTE"; position: absolute; top: -12px; left: 16px; background: var(--ink); color: var(--sun); font-size: 0.78rem; font-weight: 700; letter-spacing: 1px; padding: 3px 10px; border-radius: 6px; }
+  .bossq { background: #ffffff; border: 3px solid #e2d4ac; border-radius: 12px; padding: 12px; margin-top: 12px; }
+  .bossq .phrase { font-weight: 700; font-style: italic; margin-bottom: 8px; }
+  .bossq .opts { display: flex; flex-direction: column; gap: 8px; }
+  .bossq .opts button { text-align: left; background: #ffffff; color: var(--ink); border: 2px solid #bcdded; font-size: 0.98rem; padding: 9px 12px; }
+  .bossq .opts button.right { background: #e3f6e8; border-color: var(--good); color: #1c7a36; }
+  .bossq .opts button.wrong { background: #ffe3ef; border-color: var(--plastic); color: var(--plastic-deep); }
+  .bossq .qfb { font-weight: 700; margin-top: 6px; min-height: 1.3em; color: var(--ink-soft); font-size: 0.96rem; }
+
+  .send { margin-top: 22px; background: #f1fbfb; border: 3px solid var(--turq); border-radius: 18px; padding: 16px; }
+  .send h3 { margin: 0 0 8px; }
+  .send button.sendbtn { margin-top: 12px; background: var(--accent); color: #ffffff; box-shadow: 0 4px 0 var(--accent-deep); }
+  .send .note { color: var(--ink-soft); font-size: 0.98rem; margin: 10px 0 0; }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+  .spacer { height: 170px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bub { display: none; }
+    .kelp { animation: none; }
+    .reward { transition: none; }
+    .bookpage.turn-out, .bookpage.turn-in { animation: none; }
+    .flap .flap-truth { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene" aria-hidden="true">
+  <span class="ray" style="left:14%;"></span>
+  <span class="ray" style="left:48%; width:90px;"></span>
+  <span class="ray" style="left:78%; width:150px;"></span>
+  <span class="bub" style="left:10%; width:16px; height:16px; animation-duration:17s;"></span>
+  <span class="bub" style="left:30%; width:10px; height:10px; animation-duration:14s; animation-delay:4s;"></span>
+  <span class="bub" style="left:62%; width:14px; height:14px; animation-duration:20s; animation-delay:7s;"></span>
+  <span class="bub" style="left:84%; width:20px; height:20px; animation-duration:22s; animation-delay:2s;"></span>
+  <div class="seabed">
+    <svg viewBox="0 0 1200 200" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 100 C 180 64 360 124 560 96 C 760 68 980 124 1200 90 L1200 200 L0 200 Z" fill="#e6cf90"/>
+      <path d="M0 124 C 200 104 420 144 640 120 C 880 96 1040 144 1200 120 L1200 200 L0 200 Z" fill="#d9bd72"/>
+      <g class="kelp"><path d="M120 200 C 100 150 140 120 116 70 C 104 44 128 40 124 16" fill="none" stroke="#2f9e44" stroke-width="11" stroke-linecap="round"/></g>
+      <g class="kelp b"><path d="M150 200 C 168 156 134 128 158 84" fill="none" stroke="#3fb45a" stroke-width="9" stroke-linecap="round"/></g>
+      <g class="kelp"><path d="M1050 200 C 1030 150 1070 124 1046 74" fill="none" stroke="#2f9e44" stroke-width="11" stroke-linecap="round"/></g>
+      <g><ellipse cx="470" cy="178" rx="32" ry="18" fill="#ff7a3d"/><circle cx="452" cy="172" r="7" fill="#ffce2e"/></g>
+      <g><path d="M720 196 C 716 172 700 162 706 140 M740 196 C 744 170 762 162 754 138" stroke="#7b4fc4" stroke-width="9" fill="none" stroke-linecap="round"/></g>
+    </svg>
+  </div>
+</div>
+
+<button class="gone-sign" id="gone-sign" aria-label="A small sign where the floating bottle usually is">
+  <svg viewBox="0 0 120 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect x="54" y="40" width="10" height="52" rx="3" fill="#8a6d4b" stroke="#06243d" stroke-width="3"/>
+    <rect x="14" y="10" width="92" height="36" rx="8" fill="#e8dcbf" stroke="#06243d" stroke-width="3" transform="rotate(-3 60 28)"/>
+    <text x="60" y="26" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="12" font-weight="700" fill="#06243d" transform="rotate(-3 60 28)">GONE</text>
+    <text x="60" y="40" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="12" font-weight="700" fill="#06243d" transform="rotate(-3 60 28)">READING</text>
+  </svg>
+</button>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="back" href="index.html">Back to all activities</a>
+    <span class="stars" id="stars" aria-label="0 of 8 stars earned"></span>
+    <span class="label">Activity 5</span>
+  </div>
+</div>
+
+<div class="reward" id="reward" role="status" aria-live="polite">
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#06243d" stroke-width="3" stroke-linejoin="round"/></svg>
+  <p id="reward-text">Well done!</p>
+</div>
+
+<main>
+  <div class="book-area wrap">
+    <div class="book">
+      <div class="ribbons" id="ribbons" aria-label="Endings found, shown as bookmark ribbons">
+        <span class="ribbon r-fleece" title="Fleece ending"></span>
+        <span class="ribbon r-landfill" title="Landfill ending"></span>
+        <span class="ribbon r-reef" title="Reef ending"></span>
+        <span class="ribbon r-kept" title="Kept ending"></span>
+      </div>
+      <div class="bookshell">
+        <div class="pagebox" id="pagebox">
+          <div class="bookpage" id="page-current"></div>
+        </div>
+      </div>
+    </div>
+    <p class="sr-only" id="page-announce" aria-live="polite"></p>
+  </div>
+
+  <section class="desk wrap" id="desk">
+    <h2>The author's desk</h2>
+    <p>When you have finished reading (once, or four times), this is where you write the missing last page and send it off. Nothing here is compulsory, and there is no wrong ending to like best.</p>
+
+    <h3 style="margin-top:16px;">Your page</h3>
+    <label class="field" for="fav-ending">The ending I choose for the bottle</label>
+    <select id="fav-ending">
+      <option value="">Still deciding...</option>
+      <option>The fleece jacket</option>
+      <option>The landfill</option>
+      <option>The reef, in tiny pieces</option>
+      <option>Kept and refilled</option>
+    </select>
+    <label class="field" for="last-line">The bottle's last diary line, in your words</label>
+    <textarea id="last-line" placeholder="Dear diary..."></textarea>
+    <label class="field" for="caption-line">Or Captain Inky's honest closing caption</label>
+    <textarea id="caption-line" placeholder="What really happened was..."></textarea>
+    <label class="field">Draw the final illustration, if you like</label>
+    <div class="draw-tools" id="swatches" aria-label="Pick a colour"></div>
+    <canvas id="pad" width="640" height="300" aria-label="Drawing area"></canvas>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;"><button class="btn-ghost" id="clear-pad">Clear drawing</button><button class="btn-ghost" id="dl-pad">Download my drawing</button></div>
+
+    <div class="librarian">
+      <h3>For anyone who fancies interrogating the author</h3>
+      <p style="margin:0;">This book was written by "A. Phantom". Authors choose their words to make you feel things. Match each of the book's phrases to what actually happened.</p>
+      <div id="bossqs"></div>
+      <div class="bubble phantom" id="boss-verdict" hidden>"Slander! I am a very honest author! ...Alright, mostly honest. Somewhat honest. Look, the pictures were accurate." &middot; A. Phantom</div>
+      <label class="field" for="away-text">Bonus think: when we "throw something away", where is away?</label>
+      <textarea id="away-text" placeholder="Away is..."></textarea>
+    </div>
+
+    <div class="send">
+      <h3>Send your page to a teacher</h3>
+      <p style="margin:0 0 10px;">Pick a teacher, then tap send. The email includes your ending, your writing, and which endings you found in the book.</p>
+      <label class="field" for="teacher" style="margin-top:0;">Choose your teacher</label>
+      <select id="teacher"><option value="">Pick a teacher...</option></select>
+      <div><button class="sendbtn" id="send-btn">Send to your teacher</button></div>
+      <p class="note">Your drawing stays on this screen. You can download it with the button above and attach it, show it to your teacher, or they can take a photo of it.</p>
+      <p class="msg" id="send-msg" role="status"></p>
+    </div>
+  </section>
+</main>
+<div class="spacer"></div>
+
+<script>
+"use strict";
+
+var NS = "pfj.a5.";
+function save(key, value) { try { localStorage.setItem(NS + key, value); } catch (e) {} }
+function load(key) { try { return localStorage.getItem(NS + key); } catch (e) { return null; } }
+function loadJSON(key, fallback) { try { var v = localStorage.getItem(NS + key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+function byId(id) { return document.getElementById(id); }
+
+var TOTAL_STARS = 8;
+var state = {
+  page: load("page") || "cover",
+  history: loadJSON("history", []),
+  stars: loadJSON("stars", []),
+  flaps: loadJSON("flaps", []),
+  pinks: loadJSON("pinks", []),
+  endings: loadJSON("endings", []),
+  boss: loadJSON("boss", {})
+};
+
+var reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function showReward(text) {
+  var r = byId("reward");
+  byId("reward-text").textContent = text;
+  r.classList.add("show");
+  clearTimeout(r._t);
+  r._t = setTimeout(function () { r.classList.remove("show"); }, 3200);
+}
+function starSvg(filled) {
+  return '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="' + (filled ? "#ffce2e" : "rgba(255,255,255,0.25)") + '" stroke="' + (filled ? "#06243d" : "#ffffff") + '" stroke-width="3" stroke-linejoin="round"/></svg>';
+}
+function renderStars() {
+  var html = "";
+  for (var i = 0; i < TOTAL_STARS; i++) { html += starSvg(i < state.stars.length); }
+  byId("stars").innerHTML = html;
+  byId("stars").setAttribute("aria-label", state.stars.length + " of " + TOTAL_STARS + " stars earned");
+}
+function award(id, text) {
+  if (state.stars.indexOf(id) === -1) {
+    state.stars.push(id);
+    save("stars", JSON.stringify(state.stars));
+    renderStars();
+    showReward(text || "Star earned!");
+  }
+}
+
+/* ---- illustrations ---- */
+function il(inner) { return '<svg viewBox="0 0 640 380" xmlns="http://www.w3.org/2000/svg" role="img">' + inner + '</svg>'; }
+function bottleAt(x, y, s, face) {
+  var mouth = face === "worried" ? '<path d="M-9 30 C -4 26 4 26 9 30" fill="none" stroke="#06243d" stroke-width="3" stroke-linecap="round"/>' : '<path d="M-9 26 C -4 32 4 32 9 26" fill="none" stroke="#06243d" stroke-width="3" stroke-linecap="round"/>';
+  return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')">'
+    + '<path d="M-16 -22 H16 V-12 C 26 -6 29 6 28 26 C 28 40 22 46 0 46 C -22 46 -28 40 -28 26 C -29 6 -26 -6 -16 -12 Z" fill="#bdeef4" stroke="#06243d" stroke-width="3"/>'
+    + '<rect x="-11" y="-32" width="22" height="12" rx="3" fill="#ff1e9c" stroke="#06243d" stroke-width="3"/>'
+    + '<circle cx="-8" cy="10" r="3" fill="#06243d"/><circle cx="8" cy="10" r="3" fill="#06243d"/>'
+    + mouth
+    + '<ellipse cx="-12" cy="-2" rx="5" ry="9" fill="#ffffff" opacity="0.55"/>'
+    + '</g>';
+}
+function pinkspot(inner, label) {
+  return '<g class="pinkspot" role="button" tabindex="0" aria-label="' + label + '" style="cursor:pointer;">' + inner + '</g>';
+}
+
+var ART = {
+  cover: '<svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" role="img">' + bottleAt(80, 80, 1.4, "happy") + '</svg>',
+  p1: il('<rect x="0" y="0" width="640" height="380" fill="#dff0f7"/>'
+    + '<path d="M40 300 V150 l70 46 V150 l70 46 V120 h180 v180 Z" fill="#9aa6ad" stroke="#06243d" stroke-width="4"/>'
+    + '<rect x="300" y="60" width="22" height="60" fill="#7d858c" stroke="#06243d" stroke-width="3"/><circle cx="311" cy="50" r="14" fill="#e8eef2"/>'
+    + '<rect x="120" y="300" width="480" height="16" rx="8" fill="#5f6d78"/>'
+    + '<g transform="translate(200 268)">' + '<path d="M-12 -16 H12 V-9 C 19 -4 21 4 20 18 C 20 28 16 32 0 32 C -16 32 -20 28 -20 18 C -21 4 -19 -4 -12 -9 Z" fill="#bdeef4" stroke="#06243d" stroke-width="3"/><rect x="-8" y="-23" width="16" height="9" rx="2" fill="#8fd0e6" stroke="#06243d" stroke-width="3"/></g>'
+    + '<g transform="translate(300 268)">' + '<path d="M-12 -16 H12 V-9 C 19 -4 21 4 20 18 C 20 28 16 32 0 32 C -16 32 -20 28 -20 18 C -21 4 -19 -4 -12 -9 Z" fill="#bdeef4" stroke="#06243d" stroke-width="3"/><rect x="-8" y="-23" width="16" height="9" rx="2" fill="#8fd0e6" stroke="#06243d" stroke-width="3"/></g>'
+    + bottleAt(430, 262, 1.05, "happy")
+    + pinkspot('<g transform="translate(560 300)"><path d="M-26 -34 H26 L30 30 H-30 Z" fill="#ff1e9c" stroke="#c40d74" stroke-width="3"/><text x="0" y="4" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="13" font-weight="700" fill="#ffffff">PELLETS</text></g>', "A pink sack of plastic pellets")),
+  p2: il('<rect x="0" y="0" width="640" height="380" fill="#fdf3e3"/>'
+    + '<rect x="60" y="90" width="520" height="14" fill="#c9935d" stroke="#06243d" stroke-width="3"/>'
+    + '<rect x="60" y="220" width="520" height="14" fill="#c9935d" stroke="#06243d" stroke-width="3"/>'
+    + '<g transform="translate(150 60)"><rect x="-22" y="-20" width="44" height="50" rx="6" fill="#ffce2e" stroke="#06243d" stroke-width="3"/></g>'
+    + '<g transform="translate(240 60)"><rect x="-22" y="-20" width="44" height="50" rx="6" fill="#2fa84f" stroke="#06243d" stroke-width="3"/></g>'
+    + bottleAt(420, 52, 1, "happy")
+    + '<rect x="470" y="34" width="66" height="30" rx="6" fill="#ffffff" stroke="#06243d" stroke-width="3"/><text x="503" y="54" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="15" font-weight="700" fill="#06243d">99p</text>'
+    + '<path d="M320 380 C 330 320 360 280 410 240 L440 268 C 400 300 380 330 372 380 Z" fill="#f0b98d" stroke="#06243d" stroke-width="3"/>'
+    + pinkspot('<g transform="translate(120 190)"><path d="M-18 -12 H18 L22 26 H-22 Z" fill="#ff1e9c" stroke="#c40d74" stroke-width="3"/><path d="M-9 -12 C -9 -22 9 -22 9 -12" fill="none" stroke="#c40d74" stroke-width="3"/></g>', "A pink plastic bag tucked under the shelf")),
+  p3: il('<rect x="0" y="0" width="640" height="380" fill="#e7f4e0"/>'
+    + '<rect x="0" y="300" width="640" height="80" fill="#bfe0a8"/>'
+    + '<rect x="120" y="220" width="400" height="18" rx="6" fill="#8a6d4b" stroke="#06243d" stroke-width="3"/><rect x="150" y="238" width="14" height="70" fill="#6e563c"/><rect x="476" y="238" width="14" height="70" fill="#6e563c"/>'
+    + '<circle cx="540" cy="80" r="42" fill="#ffffff" stroke="#06243d" stroke-width="4"/><path d="M540 80 L540 52 M540 80 L562 88" stroke="#06243d" stroke-width="4" stroke-linecap="round"/><text x="540" y="140" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="14" font-weight="700" fill="#06243d">4 minutes later</text>'
+    + bottleAt(320, 186, 1.1, "happy")
+    + '<path d="M296 176 C 286 166 286 152 296 146" fill="none" stroke="#9cc4d4" stroke-width="4" stroke-linecap="round"/>'
+    + pinkspot('<g transform="translate(190 330)"><rect x="-4" y="-26" width="8" height="52" rx="4" fill="#ff1e9c" stroke="#c40d74" stroke-width="2.6" transform="rotate(24)"/></g>', "A pink straw dropped in the grass")),
+  p4: il('<rect x="0" y="0" width="640" height="380" fill="#f3ead4"/>'
+    + bottleAt(320, 120, 1.1, "worried")
+    + '<path d="M120 380 C 130 330 150 300 180 280 L206 306 C 182 326 168 350 162 380 Z" fill="#f0b98d" stroke="#06243d" stroke-width="3"/>'
+    + '<g transform="translate(160 250)"><path d="M-40 -30 H40 L32 40 H-32 Z" fill="#2fa84f" stroke="#06243d" stroke-width="4"/><path d="M-12 -6 L0 -18 L12 -6 M0 -18 V14" stroke="#ffffff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="0" y="62" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="14" font-weight="700" fill="#06243d">the recycling box</text></g>'
+    + '<g transform="translate(480 260)"><path d="M-80 30 C -40 10 40 10 80 30 L80 44 H-80 Z" fill="#e6cf90" stroke="#06243d" stroke-width="3"/><path d="M-80 16 C -50 4 -20 8 0 14" fill="none" stroke="#2a9fd0" stroke-width="6" stroke-linecap="round"/><text x="0" y="66" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="14" font-weight="700" fill="#06243d">the beach</text></g>'),
+  p5: il('<rect x="0" y="0" width="640" height="380" fill="#e8eef2"/>'
+    + '<rect x="40" y="220" width="560" height="16" rx="8" fill="#5f6d78"/><circle cx="90" cy="252" r="14" fill="#39434c"/><circle cx="220" cy="252" r="14" fill="#39434c"/><circle cx="350" cy="252" r="14" fill="#39434c"/><circle cx="480" cy="252" r="14" fill="#39434c"/>'
+    + '<rect x="480" y="90" width="120" height="80" rx="10" fill="#9aa6ad" stroke="#06243d" stroke-width="4"/><text x="540" y="136" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="14" font-weight="700" fill="#ffffff">SORTER</text>'
+    + bottleAt(180, 188, 1, "happy")
+    + '<g transform="translate(300 194)"><rect x="-16" y="-14" width="32" height="30" rx="4" fill="#c9ced2" stroke="#06243d" stroke-width="3"/></g>'
+    + '<g transform="translate(390 196)"><rect x="-18" y="-12" width="36" height="26" rx="4" fill="#e9d9b8" stroke="#06243d" stroke-width="3"/></g>'
+    + pinkspot('<g transform="translate(520 236)"><path d="M-24 0 C -12 -14 12 10 24 -4" fill="none" stroke="#ff1e9c" stroke-width="7" stroke-linecap="round"/></g>', "A strip of pink plastic film caught in the rollers")),
+  p6: il('<rect x="0" y="0" width="640" height="380" fill="#f3ead4"/>'
+    + '<g transform="translate(160 190)"><circle cx="0" cy="-60" r="26" fill="#ffce2e" stroke="#06243d" stroke-width="3"/><path d="M-14 -30 C -20 10 -14 60 -10 90 M14 -30 C 20 10 14 60 10 90 M-14 0 H14" stroke="#06243d" stroke-width="4" fill="none"/><path d="M-8 -66 C -4 -62 4 -62 8 -66" fill="none" stroke="#06243d" stroke-width="3"/><path d="M22 -76 C 34 -84 44 -80 46 -70" fill="none" stroke="#06243d" stroke-width="3"/></g>'
+    + '<g transform="translate(400 150)"><rect x="-70" y="-40" width="140" height="90" rx="10" fill="#ffffff" stroke="#06243d" stroke-width="4"/>' + bottleAt(-30, 8, 0.7, "happy") + '<g transform="translate(30 12)"><path d="M-16 -18 H16 L12 20 H-12 Z" fill="#ff9e2c" stroke="#06243d" stroke-width="3"/><path d="M-10 -6 H10 M-8 4 H8" stroke="#06243d" stroke-width="2.4"/></g><text x="0" y="72" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="13" font-weight="700" fill="#06243d">one load, mixed items</text></g>'),
+  p7: il('<rect x="0" y="0" width="640" height="380" fill="#eef7fb"/>'
+    + '<rect x="60" y="40" width="520" height="14" rx="7" fill="#8a6d4b"/><circle cx="140" cy="47" r="8" fill="#39434c"/><circle cx="360" cy="47" r="8" fill="#39434c"/>'
+    + '<g transform="translate(360 180)"><path d="M-70 -110 L-30 -126 C -20 -132 20 -132 30 -126 L70 -110 L54 -70 L40 -78 L40 96 H-40 V-78 L-54 -70 Z" fill="#15c2c2" stroke="#06243d" stroke-width="4"/><path d="M-40 -40 H40 M-40 20 H40" stroke="#0a7d7d" stroke-width="3"/><rect x="-16" y="34" width="32" height="42" rx="4" fill="#ffffff" stroke="#06243d" stroke-width="3"/><text x="0" y="52" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="9" font-weight="700" fill="#06243d">MADE FROM</text><text x="0" y="66" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="9" font-weight="700" fill="#06243d">12 BOTTLES</text></g>'
+    + '<g transform="translate(140 300)"><rect x="-60" y="-40" width="120" height="76" rx="10" fill="#e8eef2" stroke="#06243d" stroke-width="4"/><circle cx="0" cy="-2" r="26" fill="#ffffff" stroke="#06243d" stroke-width="3"/><path d="M-14 -2 C -6 -12 6 8 14 -2" fill="none" stroke="#2a9fd0" stroke-width="3"/></g>'
+    + pinkspot('<g transform="translate(140 352)"><path d="M-20 0 C -10 -8 -2 6 8 -2 C 14 -7 20 -2 24 2" fill="none" stroke="#ff1e9c" stroke-width="5" stroke-linecap="round"/></g>', "Pink microfibre threads in the washing machine filter")),
+  p8: il('<rect x="0" y="0" width="640" height="380" fill="#ffedd2"/>'
+    + '<circle cx="90" cy="70" r="34" fill="#ffce2e" stroke="#06243d" stroke-width="3"/>'
+    + '<path d="M0 260 C 120 236 220 268 320 252 C 430 234 540 262 640 246 L640 380 H0 Z" fill="#e6cf90"/>'
+    + '<path d="M0 300 C 140 280 300 316 460 296 C 540 286 600 300 640 292 L640 380 H0 Z" fill="#2a9fd0" opacity="0.85"/>'
+    + '<path d="M0 300 C 140 280 300 316 460 296" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.8"/>'
+    + bottleAt(250, 250, 1, "happy")
+    + pinkspot('<g transform="translate(430 268)"><circle r="11" fill="#ff1e9c" stroke="#c40d74" stroke-width="3"/><circle r="4" fill="#c40d74"/></g>', "A pink bottle top half buried in the sand")),
+  p9: il('<rect x="0" y="0" width="640" height="380" fill="#8fd0e6"/>'
+    + '<path d="M0 90 C 120 74 240 104 360 88 C 480 72 580 100 640 86 L640 0 H0 Z" fill="#c9ecf7"/>'
+    + '<path d="M0 130 C 160 114 320 146 640 122" fill="none" stroke="#ffffff" stroke-width="5" opacity="0.7"/>'
+    + bottleAt(200, 170, 1, "happy")
+    + '<g transform="translate(440 230)"><ellipse cx="0" cy="0" rx="66" ry="44" fill="#2fa84f" stroke="#06243d" stroke-width="4"/><ellipse cx="0" cy="0" rx="34" ry="22" fill="#8bd17d"/><circle cx="-74" cy="-16" r="22" fill="#2fa84f" stroke="#06243d" stroke-width="4"/><circle cx="-80" cy="-20" r="3" fill="#06243d"/><path d="M-92 -6 C -88 -1 -80 -1 -76 -6" fill="none" stroke="#06243d" stroke-width="3"/><path d="M52 -30 L86 -44 M52 30 L86 44" stroke="#06243d" stroke-width="8" stroke-linecap="round"/></g>'
+    + pinkspot('<g transform="translate(320 120)"><rect x="-9" y="-6" width="18" height="12" rx="3" fill="#ff1e9c" stroke="#c40d74" stroke-width="2.6" transform="rotate(-14)"/></g>', "A small pink fragment floating at the surface")),
+  p10: il('<rect x="0" y="0" width="640" height="380" fill="#6f93ad"/>'
+    + '<path d="M60 60 C 40 20 120 6 140 40 C 200 10 260 40 240 74 C 220 100 90 100 60 60 Z" fill="#4c6579" stroke="#06243d" stroke-width="3"/>'
+    + '<path d="M380 50 C 360 14 440 0 460 34 C 520 6 580 34 560 68 C 540 94 410 90 380 50 Z" fill="#3d5568" stroke="#06243d" stroke-width="3"/>'
+    + '<path d="M150 96 L128 132 L146 132 L124 172" fill="none" stroke="#ffce2e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>'
+    + '<path d="M0 220 C 120 196 260 240 400 216 C 500 200 580 224 640 210 L640 380 H0 Z" fill="#2a729b"/>'
+    + bottleAt(320, 230, 1.05, "worried")
+    + '<path d="M180 300 C 220 288 260 292 300 300 M340 306 C 400 294 470 298 520 308" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity="0.7"/>'
+    + '<path d="M120 330 L60 348 M520 330 L590 350" stroke="#ffce2e" stroke-width="6" stroke-linecap="round"/>'),
+  p11: il('<rect x="0" y="0" width="640" height="380" fill="#ffedd2"/>'
+    + '<path d="M0 250 C 140 228 300 262 460 244 C 540 236 600 250 640 242 L640 380 H0 Z" fill="#e6cf90"/>'
+    + '<g transform="translate(200 210)"><circle cx="0" cy="-58" r="24" fill="#f0b98d" stroke="#06243d" stroke-width="3"/><path d="M-8 -62 C -4 -58 4 -58 8 -62" fill="none" stroke="#06243d" stroke-width="3" transform="translate(0 4)"/><path d="M-26 -34 H26 L20 40 H-20 Z" fill="#ffce2e" stroke="#06243d" stroke-width="4"/><path d="M-26 -20 H26" stroke="#e0a800" stroke-width="4"/><path d="M22 -18 L92 24" stroke="#8a6d4b" stroke-width="6" stroke-linecap="round"/><path d="M86 20 L104 34 M104 20 L86 34" stroke="#39434c" stroke-width="5" stroke-linecap="round"/></g>'
+    + bottleAt(316 , 252, 1, "happy")
+    + '<g transform="translate(470 240)"><path d="M-30 -20 H30 L24 44 H-24 Z" fill="#2fa84f" stroke="#06243d" stroke-width="4"/><text x="0" y="16" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="12" font-weight="700" fill="#ffffff">BEACH</text><text x="0" y="30" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="12" font-weight="700" fill="#ffffff">CLEAN</text></g>'
+    + pinkspot('<g transform="translate(120 300)"><path d="M-14 -20 C -20 -8 -18 8 -8 16 C 2 22 14 16 16 6 C 12 10 2 10 -2 2 C -6 -6 -6 -14 -14 -20 Z" fill="#ff1e9c" stroke="#c40d74" stroke-width="3"/></g>', "A pink rubber glove dropped by the beach cleaners")),
+  p12: il('<rect x="0" y="0" width="640" height="120" fill="#bfe0a8"/>'
+    + '<rect x="0" y="120" width="640" height="90" fill="#8a6d4b"/>'
+    + '<rect x="0" y="210" width="640" height="90" fill="#6e563c"/>'
+    + '<rect x="0" y="300" width="640" height="80" fill="#54412c"/>'
+    + '<path d="M120 120 C 116 150 128 170 122 196 M124 140 C 134 148 132 160 140 166" stroke="#3d2f1e" stroke-width="4" fill="none" stroke-linecap="round"/>'
+    + '<g transform="translate(220 250)"><rect x="-18" y="-10" width="36" height="22" rx="4" fill="#c9ced2" stroke="#06243d" stroke-width="3" transform="rotate(-9)"/></g>'
+    + '<g transform="translate(470 172)"><rect x="-20" y="-12" width="40" height="24" rx="4" fill="#e9d9b8" stroke="#06243d" stroke-width="3" transform="rotate(7)"/></g>'
+    + bottleAt(330, 258, 1, "happy")
+    + '<text x="330" y="106" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="14" font-weight="700" fill="#06243d">somewhere under a hill</text>'
+    + pinkspot('<g transform="translate(140 330)"><path d="M-22 -8 H22 L26 16 H-26 Z" fill="#ff1e9c" stroke="#c40d74" stroke-width="3" transform="rotate(-6)"/></g>', "A pink bag buried in the layer below")),
+  p13: il('<rect x="0" y="0" width="640" height="380" fill="#127aa8"/>'
+    + '<path d="M0 320 C 120 300 240 332 380 312 C 500 296 580 320 640 308 L640 380 H0 Z" fill="#e6cf90"/>'
+    + '<g><circle cx="140" cy="330" r="26" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/><circle cx="180" cy="338" r="16" fill="#7b4fc4" stroke="#06243d" stroke-width="3"/><path d="M470 336 C 466 306 452 298 458 276 M490 336 C 494 304 510 298 502 274" stroke="#2fa84f" stroke-width="8" fill="none" stroke-linecap="round"/></g>'
+    + '<g fill="#ff1e9c"><circle cx="180" cy="120" r="4"/><circle cx="220" cy="90" r="3"/><circle cx="260" cy="140" r="5"/><circle cx="310" cy="100" r="3"/><circle cx="350" cy="150" r="4"/><circle cx="400" cy="110" r="3"/><circle cx="440" cy="160" r="5"/><circle cx="300" cy="190" r="3"/><circle cx="380" cy="200" r="4"/><circle cx="240" cy="210" r="3"/><circle cx="480" cy="120" r="3"/><circle cx="200" cy="170" r="3"/></g>'
+    + '<g transform="translate(520 220)"><ellipse cx="0" cy="0" rx="34" ry="20" fill="#1e7fd0" stroke="#06243d" stroke-width="3"/><path d="M28 0 L52 -14 L52 14 Z" fill="#1e7fd0" stroke="#06243d" stroke-width="3"/><circle cx="-16" cy="-5" r="4" fill="#06243d"/><ellipse cx="-32" cy="2" rx="7" ry="5" fill="#0e2f49"/></g>'
+    + pinkspot('<g transform="translate(120 300)"><path d="M-14 -10 L10 -16 L14 8 L-8 14 Z" fill="#ff1e9c" stroke="#c40d74" stroke-width="3"/></g>', "A larger pink shard wedged behind the coral")),
+  back: il('<rect x="0" y="0" width="640" height="380" fill="#f6efdb"/>'
+    + bottleAt(320, 150, 1.3, "happy")
+    + '<text x="320" y="256" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="40" font-weight="700" fill="#4c3a98">The End?</text>'
+    + '<text x="320" y="288" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="15" font-weight="700" fill="#5a5a66">one bottle, four endings</text>')
+};
+
+/* ---- the pages ---- */
+var PAGES = {
+  cover: { kind: "cover" },
+  p1: { kind: "story", no: 1, next: "p2", mood: 15, flap: true,
+    text: "Once upon a time, in a shiny palace called The Factory, a beautiful bottle was born. You may remember my glamorous origins: oil, factory, tiny beads, and then... me!",
+    truth: "The 'palace' is a factory that makes thousands of bottles an hour. The bottle is made from oil that took millions of years to form underground.",
+    pinkLine: "A whole sack of plastic pellets. That is how every bottle starts." },
+  p2: { kind: "story", no: 2, next: "p3", mood: 20, flap: true,
+    text: "At the shop, a hand reached past all the other drinks and chose ME. It was the happiest day of my life. I cost 99p, which everyone agrees is a bargain.",
+    truth: "The bottle is single-use. It was designed to be bought once, emptied once, and let go. The 99p does not include what happens to it afterwards.",
+    pinkLine: "A pink bag lurking under the shelf. They get everywhere." },
+  p3: { kind: "story", no: 3, next: "p4", mood: 35, flap: true,
+    text: "My drink was enjoyed on a lovely park bench. My life's great purpose, complete! It took four whole minutes. What an adventure.",
+    truth: "Millions of years to make the oil. Minutes to use the bottle. That is the strangest maths in this whole book.",
+    pinkLine: "A pink straw in the grass. Four-minute adventures leave things behind." },
+  p4: { kind: "choice", no: 4, mood: null,
+    text: "And then the hand hovered. Where would I go next? I was far too happy to worry about it.",
+    choices: [
+      { label: "If the bottle goes in the recycling box, turn to page 5", target: "p5" },
+      { label: "If the bottle is left on the beach, turn to page 8", target: "p8" }
+    ] },
+  p5: { kind: "story", no: 5, next: "p6", mood: 30, flap: true,
+    text: "I was taken to a wonderful spa. Machines! Conveyor belts! A magnet (not interested in me, very rude). Everyone here gets a glorious new life. Probably.",
+    truth: "Sorting is real work done by machines and people. It only goes well if the right things arrive in the right bins, reasonably clean.",
+    pinkLine: "Pink plastic film jamming the rollers. Film is the sorter's least favourite guest." },
+  p6: { kind: "choice", no: 6, mood: null,
+    text: "But at the sorting plant, a worker frowned at our load. Some of my travelling companions were... questionable.",
+    choices: [
+      { label: "If the load is clean and the bottle becomes something new, turn to page 7", target: "p7" },
+      { label: "If the load is too messy and gets rejected, turn to page 12", target: "p12" }
+    ] },
+  p7: { kind: "ending", no: 7, ending: "fleece", mood: 25,
+    text: "I was shredded, melted, and spun into a magnificent FLEECE JACKET, along with eleven friends. I am warm, I am stylish, and I am worn on cold mornings. A triumph!",
+    truth: "This is a genuinely good ending, and an honest one: it is downcycling, not magic. The jacket cannot easily become a bottle again, and each wash sheds tiny fibres. Better? Much. Perfect? No.",
+    endnote: "Ending found: The fleece jacket. Ribbon earned.",
+    pinkLine: "Pink microfibres in the washing machine filter. Even the good ending sheds." },
+  p8: { kind: "story", no: 8, next: "p9", mood: 55, flap: true,
+    text: "I was left on the beach for a lovely seaside holiday! Then the sea itself came up the sand to collect me personally. Honestly, the service here.",
+    truth: "This is how most ocean plastic starts: dropped or blown on land, then carried by water. The sea was not offering a holiday.",
+    pinkLine: "A pink bottle top, half buried. The beach collects these." },
+  p9: { kind: "story", no: 9, next: "p10", mood: 75, flap: true,
+    text: "Out on the open sea I made a friend: an enormous turtle! It swam right up and gave me a friendly lick. I am extremely popular with wildlife.",
+    truth: "The turtle was trying to eat the bottle. Floating plastic looks like food to many sea animals. This is not friendship.",
+    pinkLine: "Another pink fragment at the surface. The bottle has company out here." },
+  p10: { kind: "choice", no: 10, mood: null,
+    text: "Then the sky went dark and the sea got LOUD. A storm! Thrilling! The currents pulled two ways, and I could not choose either of them.",
+    choices: [
+      { label: "If the bottle washes ashore and is found by the beach clean, turn to page 11", target: "p11" },
+      { label: "If the bottle drifts on into the sun and the waves, turn to page 13", target: "p13" }
+    ] },
+  p11: { kind: "ending", no: 11, ending: "kept", mood: 10,
+    text: "The storm threw me back onto the sand, where a crew in bright yellow found me, washed me, and KEPT me. I hear I am now 'the famous one'. I do get recognised. You may even have seen me floating about somewhere this week...",
+    truth: "Yes, that bottle. The one from every page of this website. It got fished out, kept, and given a job: reminding everyone where bottles end up. Reuse is the quiet hero of this whole story.",
+    endnote: "Ending found: Kept and refilled. Ribbon earned. (It was the famous bottle all along.)",
+    pinkLine: "A pink glove the beach cleaners dropped. Even the rescuers leave traces. Ironic." },
+  p12: { kind: "ending", no: 12, ending: "landfill", mood: 70,
+    text: "Our whole load was turned away, and I was taken somewhere quiet and cosy under a hill. It is dark. It is peaceful. Nothing ever happens. I mean NOTHING. Ever.",
+    truth: "In landfill, almost nothing changes. No sun, little air, no story. The bottle will still be a bottle when today's students are grandparents. That is the whole point of this page: nothing happens, for lifetimes.",
+    endnote: "Ending found: The landfill. Ribbon earned.",
+    pinkLine: "A pink bag in the layer below. It has been down there longer than this book." },
+  p13: { kind: "ending", no: 13, ending: "reef", mood: 95,
+    text: "The sun and the waves gave me the most AMAZING makeover. I am not one bottle any more. I am hundreds of tiny sparkling pieces, and I am EVERYWHERE. You cannot get rid of me now!",
+    truth: "For once, the Phantom is not exaggerating. Sunlight and waves break plastic into microplastics: pieces small enough for plankton and fish to swallow, and far too small and scattered for anyone to collect. This ending has no fix on the page. That is why the choices earlier in the book matter.",
+    endnote: "Ending found: The reef, in tiny pieces. Ribbon earned.",
+    pinkLine: "A bigger shard behind the coral. The small specks all started as pieces like this." },
+  back: { kind: "back", no: null }
+};
+
+var ENDING_NAMES = { fleece: "The fleece jacket", landfill: "The landfill", reef: "The reef, in tiny pieces", kept: "Kept and refilled" };
+var PINK_PAGES = ["p1", "p2", "p3", "p5", "p7", "p8", "p9", "p11", "p12", "p13"];
+var FLAP_PAGES = ["p1", "p2", "p3", "p5", "p8", "p9"];
+
+/* ---- page rendering ---- */
+function renderRibbons() {
+  ["fleece", "landfill", "reef", "kept"].forEach(function (id) {
+    var el = document.querySelector(".ribbon.r-" + id);
+    el.classList.toggle("earned", state.endings.indexOf(id) !== -1);
+  });
+}
+function pageHtml(id) {
+  var p = PAGES[id];
+  if (p.kind === "cover") {
+    return '<div class="cover-inner">'
+      + '<div class="cover-plate"><h1>The Story of a Bottle</h1><div class="auth">by A. Phantom</div><div class="authsub">(no relation, stop asking)</div></div>'
+      + '<div class="illus">' + ART.cover + '</div>'
+      + '<div class="pagenav" style="justify-content:center;"><button class="btn-turn" data-turn="p1">Open the book</button></div>'
+      + '</div>';
+  }
+  if (p.kind === "back") {
+    var cards = ["fleece", "landfill", "reef", "kept"].map(function (e) {
+      var found = state.endings.indexOf(e) !== -1;
+      return '<div class="track-card' + (found ? " found" : "") + '">' + ENDING_NAMES[e] + '<br>' + (found ? "found" : "not found yet") + '</div>';
+    }).join("");
+    var html = '<div class="page-inner">'
+      + '<div class="illus">' + ART.back + '</div>'
+      + '<div class="tracker">' + cards + '</div>';
+    if (state.endings.length < 4) {
+      html += '<div class="endnote">There are more endings hiding in this book. If you fancy it, turn back to page 4 and choose differently. No pressure; one good read is a good read.</div>';
+    } else {
+      html += '<div class="endnote">All four endings found. You have read this book more thoroughly than its author ever did.</div>';
+    }
+    html += '<div class="bubble inky">"Same bottle, four futures, and the only difference was a choice. Head down to the desk below if you want to write the real last page." &middot; Captain Inky</div>'
+      + '<div class="pagenav"><button class="btn-back" data-histback="1">Back a page</button><button class="btn-ghost" data-turn="p4">Back to the choices (page 4)</button><button class="btn-ghost" data-turn="cover">Start from the cover</button></div>'
+      + '</div>';
+    return html;
+  }
+  var html = '<div class="page-inner">';
+  html += '<div class="illus">' + ART[id] + '</div>';
+  html += '<div class="storytext"><p>' + p.text + ' <span class="byline">&middot; A. Phantom</span></p></div>';
+  if (p.mood !== null && p.mood !== undefined) {
+    html += '<div class="moodrow"><em>how it is really going:</em><span class="gauge"><span style="width:' + p.mood + '%;"></span></span></div>';
+  }
+  if (p.kind === "ending") {
+    html += '<button class="flap" type="button" aria-expanded="false"><span class="flap-tab">What is really happening here?</span><span class="flap-truth">' + p.truth + '</span></button>';
+    html += '<div class="endnote">' + p.endnote + '</div>';
+    html += '<div class="pagenav"><button class="btn-back" data-histback="1">Back a page</button><button class="btn-turn" data-turn="back">Turn to the last page</button></div>';
+  } else if (p.kind === "choice") {
+    html += '<div class="choices"><p>What happens next is up to you.</p>' + p.choices.map(function (c) {
+      return '<button type="button" data-turn="' + c.target + '">' + c.label + ' &rarr;</button>';
+    }).join("") + '</div>';
+    html += '<div class="pagenav"><button class="btn-back" data-histback="1">Back a page</button></div>';
+  } else {
+    if (p.flap) {
+      html += '<button class="flap" type="button" aria-expanded="false"><span class="flap-tab">What is really happening here?</span><span class="flap-truth">' + p.truth + '</span></button>';
+    }
+    html += '<div class="pagenav"><button class="btn-back" data-histback="1">Back a page</button><button class="btn-turn" data-turn="' + p.next + '">Turn the page &rarr;</button></div>';
+  }
+  html += '<span class="pageno">' + p.no + '</span></div>';
+  return html;
+}
+function wirePage(id) {
+  var box = byId("page-current");
+  box.querySelectorAll("[data-turn]").forEach(function (b) {
+    b.addEventListener("click", function () { turnTo(b.getAttribute("data-turn"), "forward"); });
+  });
+  box.querySelectorAll("[data-histback]").forEach(function (b) {
+    b.addEventListener("click", goBack);
+  });
+  var flap = box.querySelector(".flap");
+  if (flap) {
+    flap.addEventListener("click", function () {
+      var open = flap.classList.toggle("open");
+      flap.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open && FLAP_PAGES.indexOf(id) !== -1 && state.flaps.indexOf(id) === -1) {
+        state.flaps.push(id);
+        save("flaps", JSON.stringify(state.flaps));
+        if (state.flaps.length >= FLAP_PAGES.length) { award("flaps", "Every flap peeled. You read between the lines."); }
+      }
+    });
+  }
+  var spot = box.querySelector(".pinkspot");
+  if (spot) {
+    function foundPink() {
+      var p = PAGES[id];
+      if (state.pinks.indexOf(id) === -1) {
+        state.pinks.push(id);
+        save("pinks", JSON.stringify(state.pinks));
+        var count = state.pinks.length;
+        showReward('"' + p.pinkLine + '" says Captain Inky. (' + count + ' of ' + PINK_PAGES.length + ' pink stowaways found)');
+        if (count >= PINK_PAGES.length) { award("pink", "All " + PINK_PAGES.length + " pink stowaways spotted!"); }
+      } else {
+        showReward("Already spotted that one. Sharp eyes.");
+      }
+    }
+    spot.addEventListener("click", foundPink);
+    spot.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); foundPink(); } });
+  }
+}
+function renderPage(id, direction) {
+  var box = byId("page-current");
+  var pagebox = byId("pagebox");
+  if (!reducedMotion && box.innerHTML && direction === "forward") {
+    var old = box.cloneNode(true);
+    old.removeAttribute("id");
+    old.classList.add("overlay");
+    old.classList.add("turn-out");
+    old.setAttribute("aria-hidden", "true");
+    pagebox.appendChild(old);
+    setTimeout(function () { if (old.parentNode) { old.parentNode.removeChild(old); } }, 520);
+  }
+  box.innerHTML = pageHtml(id);
+  if (!reducedMotion && direction === "back") {
+    box.classList.remove("turn-in");
+    void box.offsetWidth;
+    box.classList.add("turn-in");
+    setTimeout(function () { box.classList.remove("turn-in"); }, 520);
+  }
+  wirePage(id);
+  var p = PAGES[id];
+  var label = p.kind === "cover" ? "Front cover" : (p.kind === "back" ? "The last page" : "Page " + p.no);
+  byId("page-announce").textContent = label;
+}
+function turnTo(id, direction) {
+  if (state.page && state.page !== id && direction !== "back") {
+    state.history.push(state.page);
+    if (state.history.length > 60) { state.history.shift(); }
+    save("history", JSON.stringify(state.history));
+  }
+  state.page = id;
+  save("page", id);
+  renderPage(id, direction || "forward");
+  var p = PAGES[id];
+  if (p.kind === "ending" && state.endings.indexOf(p.ending) === -1) {
+    state.endings.push(p.ending);
+    save("endings", JSON.stringify(state.endings));
+    renderRibbons();
+    award("end-" + p.ending, "Ending found: " + ENDING_NAMES[p.ending]);
+  }
+}
+function goBack() {
+  if (!state.history.length) { turnTo("cover", "back"); return; }
+  var prev = state.history.pop();
+  save("history", JSON.stringify(state.history));
+  state.page = prev;
+  save("page", prev);
+  renderPage(prev, "back");
+}
+
+/* ---- the sign where the bottle usually floats ---- */
+var SIGN_LINES = [
+  "Looking for the bottle? It is in the book. Where it has been headed all week, really.",
+  "No bottle today. It is busy being the main character.",
+  "Try page 11. That is all I am saying."
+];
+var signCount = 0;
+function wireSign() {
+  byId("gone-sign").addEventListener("click", function () {
+    showReward('"' + SIGN_LINES[signCount % SIGN_LINES.length] + '" says Captain Inky.');
+    signCount += 1;
+  });
+}
+
+/* ---- boss: interrogate the author ---- */
+var BOSSQ = [
+  { id: "holiday", phrase: "I was left on the beach for a lovely seaside holiday.",
+    opts: ["It was washed out to sea by the tide.", "It was invited by the sea.", "It stayed on the beach and was fine."],
+    ans: 0, fb: "Right. 'Holiday' is doing a lot of work in that sentence. It was litter, and the tide took it." },
+  { id: "turtle", phrase: "An enormous turtle gave me a friendly lick.",
+    opts: ["The turtle was saying hello.", "The turtle was trying to eat it.", "The turtle was cleaning the beach."],
+    ans: 1, fb: "Right. Floating plastic looks like food. The friendliest word in the book hides the saddest fact." },
+  { id: "years", phrase: "I shall relax in the sea for exactly 450 years.",
+    opts: ["That number was carefully measured by scientists.", "Plastic disappears after one year.", "Nobody has actually measured that number; it lasts a very long time, but 450 is a guess that got repeated."],
+    ans: 2, fb: "Right. If you did Activity 1, you knew this one. The Phantom cannot even lie accurately." }
+];
+function renderBoss() {
+  var holder = byId("bossqs");
+  holder.innerHTML = "";
+  BOSSQ.forEach(function (q) {
+    var div = document.createElement("div");
+    div.className = "bossq";
+    div.innerHTML = '<div class="phrase">"' + q.phrase + '"</div><div class="opts"></div><div class="qfb"></div>';
+    var opts = div.querySelector(".opts");
+    var fb = div.querySelector(".qfb");
+    var done = state.boss[q.id];
+    q.opts.forEach(function (o, idx) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = o;
+      if (done !== undefined && idx === q.ans) { b.classList.add("right"); }
+      if (done !== undefined) { b.disabled = true; }
+      b.addEventListener("click", function () {
+        if (state.boss[q.id] !== undefined) { return; }
+        if (idx === q.ans) {
+          state.boss[q.id] = idx;
+          save("boss", JSON.stringify(state.boss));
+          fb.textContent = q.fb;
+          renderBoss();
+          if (Object.keys(state.boss).length >= BOSSQ.length) {
+            award("boss", "Author interrogated. Case closed.");
+          }
+        } else {
+          b.classList.add("wrong");
+          fb.textContent = "Not quite. Read the phrase again like a detective, not like a fan.";
+          setTimeout(function () { b.classList.remove("wrong"); }, 600);
+        }
+      });
+      opts.appendChild(b);
+    });
+    if (done !== undefined) { fb.textContent = q.fb; }
+    holder.appendChild(div);
+  });
+  byId("boss-verdict").hidden = Object.keys(state.boss).length < BOSSQ.length;
+}
+
+/* ---- drawing pad ---- */
+var PALETTE = ["#06243d", "#6b54c8", "#0fb6b6", "#2fa84f", "#ff9e2c", "#ff1e9c", "#8a6d4b"];
+var drawColour = PALETTE[0];
+function setupPad() {
+  var canvas = byId("pad");
+  var ctx = canvas.getContext("2d");
+  ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.lineWidth = 6;
+  var drawing = false;
+  function storeDrawing() { try { save("drawing", canvas.toDataURL("image/png")); } catch (e) {} }
+  var saved = load("drawing");
+  if (saved) { var img = new Image(); img.onload = function () { ctx.drawImage(img, 0, 0, canvas.width, canvas.height); }; img.src = saved; }
+  function pos(e) {
+    var r = canvas.getBoundingClientRect();
+    var t = e.touches ? e.touches[0] : e;
+    return { x: (t.clientX - r.left) * (canvas.width / r.width), y: (t.clientY - r.top) * (canvas.height / r.height) };
+  }
+  function start(e) { drawing = true; var p = pos(e); ctx.strokeStyle = drawColour; ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
+  function move(e) { if (!drawing) { return; } var p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); }
+  function end() { if (!drawing) { return; } drawing = false; storeDrawing(); }
+  canvas.addEventListener("mousedown", start);
+  canvas.addEventListener("mousemove", move);
+  window.addEventListener("mouseup", end);
+  canvas.addEventListener("touchstart", start, { passive: false });
+  canvas.addEventListener("touchmove", move, { passive: false });
+  canvas.addEventListener("touchend", end);
+  var box = byId("swatches");
+  PALETTE.forEach(function (col, i) {
+    var s = document.createElement("button");
+    s.type = "button";
+    s.className = "swatch" + (i === 0 ? " sel" : "");
+    s.style.background = col;
+    s.setAttribute("aria-label", "Colour " + (i + 1));
+    s.addEventListener("click", function () { drawColour = col; Array.prototype.forEach.call(box.children, function (c) { c.classList.remove("sel"); }); s.classList.add("sel"); });
+    box.appendChild(s);
+  });
+  byId("clear-pad").addEventListener("click", function () { ctx.clearRect(0, 0, canvas.width, canvas.height); save("drawing", ""); });
+  byId("dl-pad").addEventListener("click", function () {
+    var off = document.createElement("canvas");
+    off.width = canvas.width; off.height = canvas.height;
+    var c = off.getContext("2d");
+    c.fillStyle = "#ffffff";
+    c.fillRect(0, 0, off.width, off.height);
+    c.drawImage(canvas, 0, 0);
+    var a = document.createElement("a");
+    a.href = off.toDataURL("image/png");
+    a.download = "my-last-page.png";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  });
+}
+
+/* ---- desk text persistence ---- */
+function wireDeskText() {
+  ["last-line", "caption-line", "away-text"].forEach(function (id) {
+    var el = byId(id);
+    var existing = load("txt." + id);
+    if (existing) { el.value = existing; }
+    el.addEventListener("input", function () { save("txt." + id, el.value); });
+  });
+  var fav = byId("fav-ending");
+  var savedFav = load("fav");
+  if (savedFav) { fav.value = savedFav; }
+  fav.addEventListener("change", function () { save("fav", fav.value); });
+}
+
+/* ---- teachers and send ---- */
+var STAFF = [
+  { name: "Alex Ireland", email: "alex.ireland@chiltonbridgeschool.co.uk" },
+  { name: "Alice Ruckert", email: "alice.ruckert@chiltonbridgeschool.co.uk" },
+  { name: "Aliesha Tucker", email: "aliesha.tucker@chiltonbridgeschool.co.uk" },
+  { name: "Andrew Holmes", email: "andrew.holmes@chiltonbridgeschool.co.uk" },
+  { name: "Andrew Murphy", email: "andy.murphy@chiltonbridgeschool.co.uk" },
+  { name: "Angela Poole", email: "angela.poole@chiltonbridgeschool.co.uk" },
+  { name: "Anika Beard", email: "anika.beard@chiltonbridgeschool.co.uk" },
+  { name: "Anne-Marie Lock", email: "anne-marie.lock@chiltonbridgeschool.co.uk" },
+  { name: "Ashleigh Leeke-Coleman", email: "ashleigh.leeke-coleman@chiltonbridgeschool.co.uk" },
+  { name: "Daniel Smith", email: "dan.smith@chiltonbridgeschool.co.uk" },
+  { name: "David Wrathall", email: "david.wrathall@chiltonbridgeschool.co.uk" },
+  { name: "Hamish Kemp-Harington", email: "hamish.kemp-harington@chiltonbridgeschool.co.uk" },
+  { name: "Holly Jones", email: "holly.jones@chiltonbridgeschool.co.uk" },
+  { name: "James Rich", email: "james.rich@chiltonbridgeschool.co.uk" },
+  { name: "Jasmine Mann", email: "jasmine.mann@chiltonbridgeschool.co.uk" },
+  { name: "Jason Deelchand-Bee", email: "jason.deelchand-bee@chiltonbridgeschool.co.uk" },
+  { name: "Jay Raine", email: "jay.raine@chiltonbridgeschool.co.uk" },
+  { name: "Jennifer Wilson", email: "jennifer.wilson@chiltonbridgeschool.co.uk" },
+  { name: "Joanna Messenger", email: "joanna.messenger@chiltonbridgeschool.co.uk" },
+  { name: "Katie Duckworth", email: "katie.duckworth@chiltonbridgeschool.co.uk" },
+  { name: "Lewis Walls", email: "lewis.walls@chiltonbridgeschool.co.uk" },
+  { name: "Louise Hann", email: "louise.hann@chiltonbridgeschool.co.uk" },
+  { name: "Madeleine Stokes", email: "madeleine.stokes@chiltonbridgeschool.co.uk" },
+  { name: "Rebecca Divall", email: "rebecca.divall@chiltonbridgeschool.co.uk" },
+  { name: "Sally Layzell", email: "sally.layzell@chiltonbridgeschool.co.uk" },
+  { name: "Sarah Semyanik", email: "sarah.semyanik@chiltonbridgeschool.co.uk" },
+  { name: "Tara Russell", email: "tara.russell@chiltonbridgeschool.co.uk" },
+  { name: "Thomas Jackson", email: "thomas.jackson@chiltonbridgeschool.co.uk" },
+  { name: "William Pearse", email: "william.pearse@chiltonbridgeschool.co.uk" },
+  { name: "Willow White", email: "willow.white@chiltonbridgeschool.co.uk" }
+];
+function populateTeachers() {
+  var sel = byId("teacher");
+  STAFF.forEach(function (s) { var o = document.createElement("option"); o.value = s.email; o.textContent = s.name; sel.appendChild(o); });
+}
+function buildEvidence() {
+  var endingsFound = state.endings.map(function (e) { return ENDING_NAMES[e]; });
+  var lines = [
+    "Activity 5: The Story of a Bottle",
+    "",
+    "Stars earned: " + state.stars.length + "/" + TOTAL_STARS,
+    "Endings found: " + (endingsFound.length ? endingsFound.join(", ") : "none yet") + " (" + endingsFound.length + "/4)",
+    "Pink stowaways spotted: " + state.pinks.length + "/" + PINK_PAGES.length,
+    "Truth flaps opened: " + state.flaps.length + "/" + FLAP_PAGES.length,
+    "Author interrogation (boss): " + Object.keys(state.boss).length + "/" + BOSSQ.length + " phrases decoded",
+    "",
+    "The ending I chose: " + (byId("fav-ending").value || "still deciding"),
+    "The bottle's last diary line: " + (byId("last-line").value.trim() || "not written yet"),
+    "Captain Inky's closing caption: " + (byId("caption-line").value.trim() || "not written yet"),
+    "Where is away: " + (byId("away-text").value.trim() || "not written yet")
+  ];
+  return lines.join("\n");
+}
+function sendWork() {
+  var email = byId("teacher").value;
+  if (!email) {
+    byId("send-msg").textContent = "Pick a teacher first.";
+    byId("send-msg").className = "msg try";
+    return;
+  }
+  var body = "Hello,\n\nHere is my Plastic Free July work for Activity 5: The Story of a Bottle.\n\n" + buildEvidence() + "\n\nDrawing note: if I drew a final page, I can download it and attach it, or show it on my screen.\n\nFrom a student in Plastic Free July.";
+  var url = "https://mail.google.com/mail/?view=cm&fs=1"
+    + "&to=" + encodeURIComponent(email)
+    + "&su=" + encodeURIComponent("Plastic Free July - Activity 5")
+    + "&body=" + encodeURIComponent(body);
+  var opened = window.open(url, "_blank");
+  if (!opened) { window.location.href = url; }
+  byId("send-msg").textContent = "Email opened. Press send in the email.";
+  byId("send-msg").className = "msg good";
+  award("page", "Your page, written and sent. The book is finished properly now.");
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  renderStars();
+  renderRibbons();
+  renderBoss();
+  setupPad();
+  wireDeskText();
+  populateTeachers();
+  wireSign();
+  byId("send-btn").addEventListener("click", sendWork);
+  var startPage = PAGES[state.page] ? state.page : "cover";
+  state.page = startPage;
+  renderPage(startPage, null);
+});
+</script>
+</body>
+</html>
