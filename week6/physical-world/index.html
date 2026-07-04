@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Physical World &middot; Week 6 &middot; Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  :root {
+    --theme: #2f7d45;
+    --theme-deep: #215f33;
+    --theme-soft: #e6f4eb;
+    --cream: #fef8f4;
+    --ink: #1a1a1a;
+    --gold: #ffce2e;
+  }
+
+  .site-header { position: relative; background-color: var(--theme); padding: 2.2rem 2rem 3rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(254,248,244,0.14); border-radius: 50%; }
+  .leaf-shape { position: absolute; z-index: 1; opacity: 0.18; transform: rotate(-18deg); }
+  .leaf-one { left: 8%; bottom: 26px; width: 110px; height: 54px; border-radius: 100% 0 100% 0; background: #fef8f4; }
+  .leaf-two { right: 12%; top: 34px; width: 90px; height: 44px; border-radius: 100% 0 100% 0; background: #fef8f4; transform: rotate(24deg); }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: var(--cream); font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.88; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.85rem; font-weight: 700; color: #dff2e6; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  h1 { font-size: clamp(2rem, 6vw, 2.7rem); font-weight: 700; color: var(--cream); line-height: 1.2; }
+  .header-sub { font-size: 1.05rem; color: #dff2e6; margin-top: 0.5rem; max-width: 50ch; margin-left: auto; margin-right: auto; line-height: 1.55; }
+  .back-chip { display: inline-block; margin-top: 0.85rem; background: rgba(254,248,244,0.16); border: 1.5px solid rgba(254,248,244,0.5); border-radius: 999px; padding: 0.35rem 1rem; color: var(--cream); font-weight: 700; font-size: 0.88rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+
+  .main { max-width: 940px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--theme); margin-bottom: 1.25rem; }
+
+  .tiles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.1rem; margin-bottom: 2.5rem; }
+  .tiles-grid.single { grid-template-columns: minmax(240px, 470px); }
+  .tile { position: relative; background: #ffffff; border: 2px solid var(--c); border-radius: 16px; padding: 1.5rem 1.5rem 1.25rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.45rem; transition: transform 0.18s ease, box-shadow 0.18s ease; overflow: hidden; min-height: 230px; }
+  .tile::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--c); }
+  .tile:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 10px 26px var(--shadow); }
+  .tile-badge { width: 58px; height: 58px; border-radius: 50%; background: var(--bg); border: 2px solid var(--c); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; line-height: 1; margin-bottom: 0.4rem; }
+  .tile-day { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c); }
+  .tile-title { font-size: 1.25rem; font-weight: 700; color: var(--c); line-height: 1.3; }
+  .tile-desc { font-size: 0.92rem; color: #444; line-height: 1.55; flex-grow: 1; }
+  .tile-go { margin-top: 0.7rem; font-size: 0.85rem; font-weight: 700; color: var(--c); display: inline-flex; align-items: center; gap: 0.3rem; }
+  .tile-go .arrow { transition: transform 0.18s ease; }
+  .tile:hover .tile-go .arrow { transform: translateX(4px); }
+  .tile-num { position: absolute; top: 14px; right: 16px; font-size: 1.4rem; font-weight: 700; color: var(--c); opacity: 0.35; }
+  .tile-today { display: none; background: var(--c); color: #ffffff; font-weight: 700; border-radius: 8px; padding: 1px 12px; font-size: 0.76rem; width: fit-content; }
+  .tile.is-today { border-width: 4px; }
+  .tile.is-today .tile-today { display: inline-block; }
+  .tile-ext { font-size: 0.78rem; font-weight: 700; color: #777; }
+
+  .note { background: var(--theme-soft); border: 2px solid rgba(47,125,69,0.22); border-radius: 12px; padding: 0.85rem 1rem; font-size: 0.88rem; color: #31573d; line-height: 1.55; margin-top: -1.25rem; margin-bottom: 2.5rem; }
+
+  a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+  .header-back:focus-visible { outline: 3px solid var(--cream); }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media (max-width: 700px) {
+    .site-header { padding: 2.6rem 1.35rem 3rem; }
+    .header-back { left: 1rem; }
+    .tiles-grid.single { grid-template-columns: 1fr; }
+    .tile { min-height: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile, .tile-go .arrow { transition: none; }
+    .tile:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Week 6</a>
+  <span class="leaf-shape leaf-one" aria-hidden="true"></span>
+  <span class="leaf-shape leaf-two" aria-hidden="true"></span>
+  <div class="header-inner">
+    <p class="week-label">Week 6 &middot; Physical World</p>
+    <h1>Physical World</h1>
+    <p class="header-sub">Living things, habitats and how small changes can affect a whole ecosystem. One main session, plus two quick bonus games.</p>
+    <span class="back-chip">Biodiversity, food webs and protecting nature</span>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <p class="section-label">This week's session</p>
+  <div class="tiles-grid single">
+
+    <a class="tile" data-date="2026-07-08" style="--c:#2f7d45; --bg:#e6f4eb; --shadow:rgba(47,125,69,0.24);" href="1.html">
+      <span class="tile-num" aria-hidden="true">1</span>
+      <span class="tile-badge">&#127793;</span>
+      <span class="tile-day">Wednesday</span>
+      <span class="tile-title">Biodiversity and Ecosystems</span>
+      <span class="tile-desc">Explore producers, consumers, food webs, pollinators and what happens when one part of an ecosystem changes.</span>
+      <span class="tile-today">Today</span>
+      <span class="tile-go">Open session <span class="arrow">&#8594;</span></span>
+    </a>
+
+  </div>
+  <p class="section-label">Bonus activities</p>
+  <div class="tiles-grid">
+
+    <a class="tile" style="--c:#007291; --bg:#e6f5f8; --shadow:rgba(0,114,145,0.22);" href="https://wordwall.net/play/115820/269/798" target="_blank" rel="noopener">
+      <span class="tile-badge">&#127793;</span>
+      <span class="tile-day">Bonus</span>
+      <span class="tile-title">Whack the Producers</span>
+      <span class="tile-desc">A quick reaction game to help lock in which living things make their own food.</span>
+      <span class="tile-ext">Opens on Wordwall in a new tab</span>
+      <span class="tile-go">Play <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#6f4bb2; --bg:#efe8fb; --shadow:rgba(111,75,178,0.22);" href="https://wordwall.net/play/115820/287/893" target="_blank" rel="noopener">
+      <span class="tile-badge">&#128027;</span>
+      <span class="tile-day">Bonus</span>
+      <span class="tile-title">Whack the Consumers</span>
+      <span class="tile-desc">Spot the organisms that get energy by eating plants or other animals.</span>
+      <span class="tile-ext">Opens on Wordwall in a new tab</span>
+      <span class="tile-go">Play <span class="arrow">&#8594;</span></span>
+    </a>
+
+  </div>
+
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+(function () {
+  var now = new Date();
+  var today = now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+    String(now.getDate()).padStart(2, '0');
+  document.querySelectorAll('.tile[data-date]').forEach(function (tile) {
+    if (tile.getAttribute('data-date') === today) { tile.classList.add('is-today'); }
+  });
+})();
+</script>
+
+</body>
+</html>
