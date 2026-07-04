@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Monday | Week 6 | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: var(--day, #007291); padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.12); border-radius: 50%; }
+  .site-header .header-inner { position: relative; z-index: 2; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .week-label { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.82); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2.5rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
+  .site-header .header-sub { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-top: 0.5rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+  .b6a-hero-badge { display: none; margin: 0.6rem auto 0; }
+  .hero-greeting { color: #fef8f4; font-weight: 700; margin-top: 0.6rem; }
+
+  .main { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .back-link { display: inline-block; margin-bottom: 1.25rem; font-size: 0.9rem; font-weight: 700; color: var(--day, #007291); text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+
+  .ribbon { display: block; border-radius: 14px; padding: 0.85rem 1.4rem; text-align: center; text-decoration: none; font-size: 0.98rem; font-weight: 700; margin-bottom: 1.25rem; background: #ef7724; color: #fef8f4; transition: transform 0.12s ease, box-shadow 0.12s ease; }
+  .ribbon:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+
+  .today-banner { display: none; background: var(--day-soft, #fff3e8); border: 2px solid var(--day, #ef7724); border-radius: 12px; padding: 0.8rem 1.2rem; font-weight: 700; color: #1a1a1a; text-align: center; margin-bottom: 1.5rem; }
+  .today-banner.show { display: block; }
+
+  .day-note { font-size: 0.92rem; color: #555; line-height: 1.55; background: #fff; border: 1.5px solid #e8e0d8; border-radius: 12px; padding: 0.9rem 1.1rem; margin-bottom: 0.6rem; }
+  .day-progress { font-size: 0.85rem; font-weight: 700; color: var(--day, #007291); margin: 0 0.2rem 1.5rem; min-height: 1.2em; }
+
+  .b6-slots { display: flex; flex-direction: column; gap: 1rem; }
+  .b6-slot { position: relative; background: #fff; border: 2px solid var(--c); border-radius: 16px; padding: 1.25rem 1.4rem; overflow: hidden; }
+  .b6-slot::before { content: ""; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--c); }
+  .b6-slot.calm { border-style: dashed; border-color: #cdbfb3; background: #fdf6ef; }
+  .b6-slot.calm::before { display: none; }
+  .b6-slot-time { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #999; margin-bottom: 0.55rem; display: flex; align-items: center; gap: 0.6rem; }
+  .b6-slot.calm .b6-slot-time { color: #a08c78; }
+  .now-pill { display: none; background: var(--c, #ef7724); color: #ffffff; border-radius: 999px; padding: 1px 10px; font-size: 0.7rem; letter-spacing: 0.06em; }
+  .b6-slot.calm .now-pill { background: #a08c78; }
+  .b6-slot.is-now { box-shadow: 0 0 0 3px var(--soft, #fff3e8), 0 6px 18px rgba(0,0,0,0.1); }
+  .b6-slot.is-now .now-pill { display: inline-block; }
+  .b6-slot-main { display: flex; gap: 1rem; align-items: flex-start; }
+  .b6-slot-badge { width: 52px; height: 52px; border-radius: 50%; background: var(--soft, #f0ede8); border: 2px solid var(--c); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; line-height: 1; flex-shrink: 0; }
+  .b6-slot.calm .b6-slot-badge { border-color: #cdbfb3; background: #f6efe6; }
+  .b6-slot-body { flex: 1; min-width: 0; }
+  .b6-slot-name { font-size: 1.2rem; font-weight: 700; color: var(--c); line-height: 1.3; }
+  .b6-slot.calm .b6-slot-name { color: #7a6a59; }
+  .b6-slot-desc { font-size: 0.95rem; color: #555; line-height: 1.55; margin-top: 0.25rem; }
+  .b6-slot-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center; margin-top: 0.9rem; }
+  .b6-slot-link { font-size: 0.9rem; font-weight: 700; color: var(--c); text-decoration: none; }
+  .b6-slot-link:hover { text-decoration: underline; }
+  .b6-slot-link.soft { font-weight: 700; color: #999; font-size: 0.82rem; }
+  .b6-slot.calm .b6-slot-link { color: #0e7c93; }
+  .b6-done-btn { font-family: inherit; font-size: 0.88rem; font-weight: 700; color: var(--c); background: #fff; border: 2px solid var(--c); border-radius: 999px; padding: 0.4rem 1rem; cursor: pointer; transition: background 0.15s, color 0.15s; }
+  .b6-done-btn:hover { background: var(--soft, #f0ede8); }
+  .b6-done-btn.done { background: var(--c); color: #fff; }
+
+  .day-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.5rem; }
+  .day-nav a { font-size: 0.9rem; font-weight: 700; color: var(--day, #007291); text-decoration: none; }
+  .day-nav a:hover { text-decoration: underline; }
+
+  a:focus-visible, button:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .ribbon:focus-visible, .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+
+  @media (prefers-reduced-motion: reduce) { .ribbon { transition: none; } .b6-done-btn { transition: none; } }
+
+
+  .b6a-badge { position: relative; width: var(--b6a-size,64px); height: var(--b6a-size,64px); border-radius: 50%; background: var(--b6a-bg,#ffe9d6); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .b6a-creature { font-size: calc(var(--b6a-size,64px) * 0.6); line-height: 1; }
+  .b6a-acc { position: absolute; line-height: 1; pointer-events: none; }
+  .b6a-head { top: -10%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.5); }
+  .b6a-eyes { top: 28%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.42); }
+  .b6a-neck { bottom: 0%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.4); }
+  .b6a-friend { bottom: -8%; right: -12%; font-size: calc(var(--b6a-size,64px) * 0.42); }
+  .b6a-hand { bottom: -6%; left: -12%; font-size: calc(var(--b6a-size,64px) * 0.42); }
+  .b6a-cust-overlay { position: fixed; inset: 0; background: rgba(0,114,145,0.22); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 1000; }
+  .b6a-cust-card { position: relative; background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 18px; padding: 1.7rem 1.5rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.18); max-height: 88vh; overflow-y: auto; }
+  .b6a-eyebrow { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #ef7724; margin-bottom: 0.4rem; }
+  .b6a-creature-row { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .b6a-creature-opt { font-size: 1.7rem; line-height: 1; background: #fff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 0.4rem 0.5rem; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+  .b6a-creature-opt:hover { border-color: #007291; transform: translateY(-2px); }
+  .b6a-creature-opt.sel { border-color: #ef7724; background: #fff3e8; }
+  .b6a-close { position: absolute; top: 0.6rem; right: 0.8rem; font-size: 1.4rem; line-height: 1; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; }
+  .b6a-close:hover { color: #1a1a1a; }
+  .b6a-preview { display: flex; justify-content: center; margin-bottom: 0.6rem; }
+  .b6a-cust-initials { font-size: 1.1rem; font-weight: 700; color: #007291; margin-bottom: 0.3rem; }
+  .b6a-cust-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #007291; margin: 1rem 0 0.5rem; text-align: left; }
+  .b6a-slot { text-align: left; }
+  .b6a-opt-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .b6a-opt { font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #555; background: #fff; border: 2px solid #e0d8d0; border-radius: 10px; padding: 0.4rem 0.7rem; cursor: pointer; transition: border-color 0.15s; }
+  .b6a-opt:hover { border-color: #007291; }
+  .b6a-opt.sel { border-color: #ef7724; background: #fff3e8; color: #1a1a1a; }
+  .b6a-empty { font-size: 0.88rem; color: #555; line-height: 1.5; margin-top: 1rem; }
+  .b6a-chip { position: fixed; bottom: 1rem; right: 1rem; z-index: 900; display: inline-flex; align-items: center; gap: 0.45rem; font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #007291; background: #fff; border: 1.5px solid #007291; border-radius: 999px; padding: 0.3rem 0.8rem 0.3rem 0.35rem; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+  .b6a-chip:hover { background: #f0fafc; }
+  .b6a-toast { position: fixed; left: 50%; bottom: 1.2rem; transform: translateX(-50%); z-index: 1100; background: #007291; color: #fef8f4; font-family: inherit; font-size: 0.9rem; font-weight: 700; padding: 0.7rem 1.1rem; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.22); max-width: 90vw; cursor: pointer; }
+
+</style>
+</head>
+<body style="--day:#8d6e63; --day-soft:#f3ece9;">
+
+<div class="b6a-cust-overlay" id="b6a-cust" style="display:none;" role="dialog" aria-modal="true">
+  <div class="b6a-cust-card">
+    <button class="b6a-close" id="b6a-cust-close" aria-label="Close">&times;</button>
+    <p class="b6a-eyebrow">Your avatar</p>
+    <div class="b6a-preview"><span class="b6a-badge" id="b6a-cust-badge" style="--b6a-size:96px;"></span></div>
+    <p class="b6a-cust-initials" id="b6a-cust-initials">&nbsp;</p>
+    <div class="b6a-creature-row" id="b6a-creature-row"></div>
+    <div id="b6a-slots"></div>
+    <p class="b6a-empty" id="b6a-empty" style="display:none;">Do an activity this week to unlock things to wear.</p>
+  </div>
+</div>
+
+<button class="b6a-chip" id="b6a-chip" style="display:none;" aria-label="Your avatar">
+  <span class="b6a-badge" id="b6a-chip-badge" style="--b6a-size:30px;"></span>
+  <span id="b6a-chip-text">&nbsp;</span>
+</button>
+
+<div class="b6a-toast" id="b6a-toast" role="status" aria-live="polite" style="display:none;"></div>
+
+
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Week 6</a>
+  <div class="header-inner">
+    <p class="week-label">Week 6</p>
+    <h1>Monday</h1>
+    <p class="header-sub">Monday 6 July &middot; Human and Social is back today</p>
+    <span class="b6a-badge b6a-hero-badge" id="b6a-hero-badge" style="--b6a-size:54px;"></span>
+    <p class="hero-greeting" id="greeting" style="display:none;">&nbsp;</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main" id="day-root" data-date="2026-07-06">
+
+  <a class="back-link" href="index.html">Back to Week 6</a>
+
+  <a class="ribbon" href="initiate-explorer.html">Word of the Week: Initiate &#8594;</a>
+
+  <div class="today-banner" id="today-banner">This is today. Take it at your own pace.</div>
+
+  <div class="day-note">Here is how today looks. Go in order or skip about, whatever suits you. Anything you finish fills the ring on the Week 6 page and might unlock something for your avatar. There is no need to do them all.</div>
+  <p class="day-progress" id="day-progress" role="status"></p>
+
+  <div class="b6-slots">
+
+      <div class="b6-slot calm" data-start="09:30" data-end="10:00">
+        <div class="b6-slot-time"><span>9:30 to 10:00</span><span class="now-pill">Now</span></div>
+        <div class="b6-slot-main">
+          <span class="b6-slot-badge" aria-hidden="true">&#127788;&#65039;</span>
+          <div class="b6-slot-body">
+            <div class="b6-slot-name">Breathe In</div>
+            <div class="b6-slot-desc">A calm start to the day and the week. Take a few minutes to settle in. You could doodle while you arrive.</div>
+            <div class="b6-slot-actions"><a class="b6-slot-link" href="../tools/doodle-pad.html">Open the Doodle Pad &#8594;</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="b6-slot" data-start="10:00" data-end="11:00" style="--c:#005a72; --soft:#e3f1f5;">
+        <div class="b6-slot-time"><span>10:00 to 11:00</span><span class="now-pill">Now</span></div>
+        <div class="b6-slot-main">
+          <span class="b6-slot-badge" aria-hidden="true">&#128640;</span>
+          <div class="b6-slot-body">
+            <div class="b6-slot-name">Your Project</div>
+            <div class="b6-slot-desc">A morning hour on your own project. You know where yours is up to. If starting feels hard today, one tiny step counts, and this week's word has your back.</div>
+            <div class="b6-slot-actions">
+              <!-- EDIT: add a link to project/index.html when the project hub exists -->
+              <button class="b6-done-btn" type="button" data-id="project" aria-pressed="false" onclick="toggleDone('project', this)">Mark as done</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="b6-slot" data-start="11:00" data-end="12:00" style="--c:#007291; --soft:#e6f5f8;">
+        <div class="b6-slot-time"><span>11:00 to 12:00</span><span class="now-pill">Now</span></div>
+        <div class="b6-slot-main">
+          <span class="b6-slot-badge" aria-hidden="true">&#128208;</span>
+          <div class="b6-slot-body">
+            <div class="b6-slot-name">Maths: Area and Volume</div>
+            <div class="b6-slot-desc">How much space does something cover, and how much can it hold? Two different questions, and today is about telling them apart.</div>
+            <div class="b6-slot-actions">
+              <a class="b6-slot-link" href="maths/1.html">Open today's maths &#8594;</a>
+              <a class="b6-slot-link soft" href="maths/index.html">or see all of this week's maths</a>
+              <button class="b6-done-btn" type="button" data-id="maths" aria-pressed="false" onclick="toggleDone('maths', this)">Mark as done</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="b6-slot calm" data-start="12:00" data-end="12:30">
+        <div class="b6-slot-time"><span>12:00 to 12:30</span><span class="now-pill">Now</span></div>
+        <div class="b6-slot-main">
+          <span class="b6-slot-badge" aria-hidden="true">&#127869;&#65039;</span>
+          <div class="b6-slot-body">
+            <div class="b6-slot-name">Lunch</div>
+            <div class="b6-slot-desc">Food, a breather, and no screens required.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="b6-slot" data-start="12:30" data-end="13:15" style="--c:#ef7724; --soft:#fdeee0;">
+        <div class="b6-slot-time"><span>12:30 to 1:15</span><span class="now-pill">Now</span></div>
+        <div class="b6-slot-main">
+          <span class="b6-slot-badge" aria-hidden="true">&#128221;</span>
+          <div class="b6-slot-body">
+            <div class="b6-slot-name">English: Expressing Yourself Clearly</div>
+            <div class="b6-slot-desc">Saying what you actually mean, so the person reading gets it first time. Handier than it sounds, and today is all about it.</div>
+            <div class="b6-slot-actions">
+              <a class="b6-slot-link" href="english/1.html">Open today's English &#8594;</a>
+              <button class="b6-done-btn" type="button" data-id="english" aria-pressed="false" onclick="toggleDone('english', this)">Mark as done</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="b6-slot" data-start="13:15" data-end="14:00" style="--c:#8d6e63; --soft:#f3ece9;">
+        <div class="b6-slot-time"><span>1:15 to 2:00</span><span class="now-pill">Now</span></div>
+        <div class="b6-slot-main">
+          <span class="b6-slot-badge" aria-hidden="true">&#128220;</span>
+          <div class="b6-slot-body">
+            <div class="b6-slot-name">Human and Social: Evidence and Bias</div>
+            <div class="b6-slot-desc">Back after a couple of weeks away. How do we know what really happened, and how do we spot when a source is leaning one way? Detective work, basically.</div>
+            <div class="b6-slot-actions">
+              <a class="b6-slot-link" href="history/1.html">Open today's session &#8594;</a>
+              <button class="b6-done-btn" type="button" data-id="history" aria-pressed="false" onclick="toggleDone('history', this)">Mark as done</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="b6-slot calm" data-start="14:00" data-end="14:30">
+        <div class="b6-slot-time"><span>2:00 to 2:30</span><span class="now-pill">Now</span></div>
+        <div class="b6-slot-main">
+          <span class="b6-slot-badge" aria-hidden="true">&#127769;</span>
+          <div class="b6-slot-body">
+            <div class="b6-slot-name">Breathe Out</div>
+            <div class="b6-slot-desc">A calm finish. Slow down, and spend a little time with a book.</div>
+            <div class="b6-slot-actions"><a class="b6-slot-link" href="../tools/reading-record.html">Open the reading record &#8594;</a></div>
+          </div>
+        </div>
+      </div>
+
+  </div>
+
+  <div class="day-nav">
+    <a href="index.html">&larr; Week 6 home</a>
+    <a href="day2.html">Tuesday &rarr;</a>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+var DAY_NAME = "Monday";
+var DAY_NUM = 1;
+</script>
+<script>
+(function () {
+  var DAY_KEY = 'base6Done-week6-day' + DAY_NUM;
+  var TOTAL = 4;
+  function getDone(){ try { return JSON.parse(localStorage.getItem(DAY_KEY) || '[]'); } catch(e){ return []; } }
+  function setDone(a){ try { localStorage.setItem(DAY_KEY, JSON.stringify(a)); } catch(e){} }
+  function paintDone(){
+    var a = getDone();
+    document.querySelectorAll('.b6-done-btn').forEach(function(b){
+      var id = b.getAttribute('data-id');
+      var isDone = a.indexOf(id) !== -1;
+      if (isDone){ b.classList.add('done'); b.textContent = 'Done \u2713'; }
+      else { b.classList.remove('done'); b.textContent = 'Mark as done'; }
+      b.setAttribute('aria-pressed', isDone ? 'true' : 'false');
+    });
+    var prog = document.getElementById('day-progress');
+    if (prog){
+      if (a.length === 0){ prog.textContent = ''; }
+      else if (a.length >= TOTAL){ prog.textContent = 'All ' + TOTAL + ' done. The ring on the Week 6 page is glowing.'; }
+      else { prog.textContent = a.length + ' of ' + TOTAL + ' marked done. No pressure on the rest.'; }
+    }
+  }
+  window.toggleDone = function(id, btn){
+    var a = getDone(); var i = a.indexOf(id);
+    if (i === -1){ a.push(id); } else { a.splice(i, 1); }
+    setDone(a);
+    paintDone();
+    if (window.b6aOnActivityDone){ window.b6aOnActivityDone(); }
+  };
+  // Today banner and "Now" highlighting, only on the day itself
+  var root = document.getElementById('day-root');
+  if (root){
+    var d = root.getAttribute('data-date');
+    var now = new Date();
+    var t = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+    if (d === t){
+      var tb = document.getElementById('today-banner'); if (tb){ tb.classList.add('show'); }
+      var cur = now.getHours() * 60 + now.getMinutes();
+      function mins(s){ var p = s.split(':'); return parseInt(p[0],10) * 60 + parseInt(p[1],10); }
+      document.querySelectorAll('.b6-slot[data-start]').forEach(function(slot){
+        if (cur >= mins(slot.getAttribute('data-start')) && cur < mins(slot.getAttribute('data-end'))){
+          slot.classList.add('is-now');
+        }
+      });
+    }
+  }
+  paintDone();
+})();
+</script>
+<script>
+(function () {
+  var CREATURES = ['\ud83e\udd85','\ud83d\udc09','\ud83e\udd96','\ud83d\udc3a','\ud83e\udd84','\ud83e\udd8c','\ud83e\udda3','\ud83d\udc05','\ud83e\udd8e','\ud83e\udd8f'];
+  /* Week 6 cosmetics: must match the ITEMS list on the week 6 index exactly. */
+  var ITEMS = [
+    { id:'compass',    slot:'hand',   emoji:'\ud83e\udded',       label:'Compass' },
+    { id:'sunhat',     slot:'head',   emoji:'\ud83d\udc52',       label:'Sun Hat' },
+    { id:'garland',    slot:'neck',   emoji:'\ud83c\udf43',       label:'Leaf Garland' },
+    { id:'forest',     slot:'bg',     color:'#e6f0dd',             label:'Forest Floor' },
+    { id:'squirrel',   slot:'friend', emoji:'\ud83d\udc3f\ufe0f', label:'Squirrel' },
+    { id:'map',        slot:'hand',   emoji:'\ud83d\uddfa\ufe0f', label:'Trail Map' },
+    { id:'shades',     slot:'eyes',   emoji:'\ud83d\udd76\ufe0f', label:'Explorer Shades' },
+    { id:'ranger',     slot:'head',   emoji:'\ud83e\udd20',       label:'Ranger Hat' },
+    { id:'backpack',   slot:'neck',   emoji:'\ud83c\udf92',       label:'Backpack' },
+    { id:'ladybird',   slot:'friend', emoji:'\ud83d\udc1e',       label:'Ladybird' },
+    { id:'riversky',   slot:'bg',     color:'#ddeefa',             label:'River Sky' },
+    { id:'torch',      slot:'hand',   emoji:'\ud83d\udd26',       label:'Torch' },
+    { id:'owl',        slot:'friend', emoji:'\ud83e\udd89',       label:'Owl' },
+    { id:'lanyard',    slot:'neck',   emoji:'\ud83e\udea2',       label:'Knot Lanyard' },
+    { id:'telescope',  slot:'hand',   emoji:'\ud83d\udd2d',       label:'Telescope' },
+    { id:'campfire',   slot:'bg',     color:'#fdeada',             label:'Campfire Glow' },
+    { id:'crown',      slot:'head',   emoji:'\ud83d\udc51',       label:'Explorer Crown' },
+    { id:'souvenir',   slot:'hand',   emoji:'\ud83c\udf9f\ufe0f', label:'Trip Ticket' },
+    { id:'snail',      slot:'friend', emoji:'\ud83d\udc0c',       label:'Snail' },
+    { id:'conker',     slot:'friend', emoji:'\ud83c\udf30',       label:'Lucky Conker' }
+  ];
+  var SLOT_ORDER = ['head','eyes','neck','hand','friend','bg'];
+  var SLOT_LABELS = { head:'Head', eyes:'Eyes', neck:'Neck', hand:'Holding', friend:'Friend', bg:'Background' };
+  var WEEK_KEY = 'base6Avatar-week6';
+
+  function getProfile(){ try { return JSON.parse(localStorage.getItem('base6Profile') || 'null'); } catch(e){ return null; } }
+  function setProfile(p){ try { localStorage.setItem('base6Profile', JSON.stringify(p)); } catch(e){} }
+  function getWardrobe(){ try { return JSON.parse(localStorage.getItem(WEEK_KEY) || 'null') || { worn:{}, seen:[] }; } catch(e){ return { worn:{}, seen:[] }; } }
+  function setWardrobe(w){ try { localStorage.setItem(WEEK_KEY, JSON.stringify(w)); } catch(e){} }
+  function itemById(id){ for (var i=0;i<ITEMS.length;i++){ if (ITEMS[i].id===id) return ITEMS[i]; } return null; }
+
+  function totalDone(){
+    var t = 0;
+    for (var d=1; d<=5; d++){
+      try { var a = JSON.parse(localStorage.getItem('base6Done-week6-day'+d) || '[]'); if (a && a.length) t += a.length; } catch(e){}
+    }
+    return t;
+  }
+  function unlockedItems(){
+    var n = totalDone();
+    var w = getWardrobe(); var ex = Array.isArray(w.unlocked) ? w.unlocked : [];
+    return ITEMS.filter(function(it,i){ return (i+1) <= n || ex.indexOf(it.id) !== -1; });
+  }
+
+  function renderBadge(el, size){
+    var p = getProfile(); if (!p || !el) return;
+    var w = getWardrobe(); var worn = w.worn || {};
+    el.style.setProperty('--b6a-size', size + 'px');
+    var bg = '#ffe9d6';
+    if (worn.bg){ var b = itemById(worn.bg); if (b && b.color) bg = b.color; }
+    el.style.setProperty('--b6a-bg', bg);
+    var html = '<span class="b6a-creature" aria-hidden="true">' + (p.creature || CREATURES[0]) + '</span>';
+    ['head','eyes','neck','friend','hand'].forEach(function(slot){
+      var id = worn[slot]; if (!id) return; var it = itemById(id); if (!it || !it.emoji) return;
+      html += '<span class="b6a-acc b6a-' + slot + '" aria-hidden="true">' + it.emoji + '</span>';
+    });
+    el.innerHTML = html;
+  }
+
+  function updateGreeting(p){
+    var greet = document.getElementById('greeting');
+    var dn = (typeof DAY_NAME !== 'undefined') ? DAY_NAME : '';
+    if (p && p.initials){
+      if (greet){ greet.textContent = 'Hello ' + p.initials.toUpperCase() + (dn ? '. Welcome to ' + dn + '.' : '.'); greet.style.display = 'block'; }
+    } else if (greet){ greet.style.display = 'none'; }
+    var hb = document.getElementById('b6a-hero-badge');
+    if (hb){ if (p){ hb.style.display = 'inline-flex'; renderBadge(hb, 54); } else { hb.style.display = 'none'; } }
+  }
+
+  function refreshAll(){
+    var p = getProfile();
+    updateGreeting(p);
+    var chip = document.getElementById('b6a-chip');
+    if (p){
+      chip.style.display = 'inline-flex';
+      renderBadge(document.getElementById('b6a-chip-badge'), 30);
+      document.getElementById('b6a-chip-text').textContent = p.initials.toUpperCase();
+    } else { chip.style.display = 'none'; }
+  }
+
+  var toastTimer = null;
+  function showToast(msg){
+    var t = document.getElementById('b6a-toast');
+    t.textContent = msg; t.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.style.display = 'none'; }, 5500);
+  }
+  document.getElementById('b6a-toast').addEventListener('click', function(){ this.style.display = 'none'; });
+
+  function checkUnlocks(){
+    var p = getProfile(); if (!p) return;
+    var w = getWardrobe(); var unlocked = unlockedItems(); var seen = w.seen || [];
+    var fresh = unlocked.filter(function(it){ return seen.indexOf(it.id) === -1; });
+    if (fresh.length > 0){
+      w.seen = unlocked.map(function(it){ return it.id; }); setWardrobe(w);
+      showToast(fresh.length === 1
+        ? 'You found ' + fresh[0].label + '. Tap your avatar to add it.'
+        : 'You found ' + fresh.length + ' new things. Tap your avatar to add them.');
+    }
+  }
+
+  var custOverlay = document.getElementById('b6a-cust');
+  function openCust(){ buildCust(); custOverlay.style.display = 'flex'; }
+  function closeCust(){ custOverlay.style.display = 'none'; }
+  document.getElementById('b6a-cust-close').addEventListener('click', closeCust);
+
+  function buildCust(){
+    var p = getProfile(); if (!p) return;
+    var w = getWardrobe();
+    renderBadge(document.getElementById('b6a-cust-badge'), 96);
+    document.getElementById('b6a-cust-initials').textContent = p.initials.toUpperCase();
+
+    var cr = document.getElementById('b6a-creature-row'); cr.innerHTML = '';
+    CREATURES.forEach(function(c){
+      var b = document.createElement('button'); b.className = 'b6a-creature-opt' + (c === p.creature ? ' sel' : ''); b.textContent = c;
+      b.addEventListener('click', function(){ var pr = getProfile(); pr.creature = c; setProfile(pr); buildCust(); refreshAll(); });
+      cr.appendChild(b);
+    });
+
+    var unlocked = unlockedItems();
+    var slotsEl = document.getElementById('b6a-slots'); slotsEl.innerHTML = ''; var any = false;
+    SLOT_ORDER.forEach(function(slot){
+      var items = unlocked.filter(function(it){ return it.slot === slot; });
+      if (items.length === 0) return; any = true;
+      var wrap = document.createElement('div'); wrap.className = 'b6a-slot';
+      var lab = document.createElement('p'); lab.className = 'b6a-cust-label'; lab.textContent = SLOT_LABELS[slot]; wrap.appendChild(lab);
+      var row = document.createElement('div'); row.className = 'b6a-opt-row';
+      var none = document.createElement('button'); none.className = 'b6a-opt' + (!w.worn[slot] ? ' sel' : ''); none.textContent = 'None';
+      none.addEventListener('click', function(){ var ww = getWardrobe(); delete ww.worn[slot]; setWardrobe(ww); buildCust(); refreshAll(); });
+      row.appendChild(none);
+      items.forEach(function(it){
+        var b = document.createElement('button'); b.className = 'b6a-opt' + (w.worn[slot] === it.id ? ' sel' : '');
+        b.innerHTML = (it.emoji ? '<span aria-hidden="true">' + it.emoji + '</span> ' : '') + it.label;
+        b.addEventListener('click', function(){ var ww = getWardrobe(); ww.worn[slot] = it.id; setWardrobe(ww); buildCust(); refreshAll(); });
+        row.appendChild(b);
+      });
+      wrap.appendChild(row); slotsEl.appendChild(wrap);
+    });
+    document.getElementById('b6a-empty').style.display = any ? 'none' : 'block';
+  }
+
+  document.getElementById('b6a-chip').addEventListener('click', function(){ if (getProfile()) openCust(); });
+
+  // Hook so the day-page Done buttons can surface freshly unlocked cosmetics.
+  window.b6aOnActivityDone = function(){ refreshAll(); checkUnlocks(); };
+
+  refreshAll();
+  checkUnlocks();
+})();
+</script>
+
+</body>
+</html>
