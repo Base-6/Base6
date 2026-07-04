@@ -1,1440 +1,889 @@
 <!DOCTYPE html>
-<!-- Covered from the PDF: rectangle area, parallelogram area, triangle area, trapezium area, prism and cylinder volume, and the main problem solving questions. Left out: no parts left out, but the long worksheet practice has been grouped into shorter interactive tasks. -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Base 6 Area and Volume Lab</title>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap" rel="stylesheet">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Area and Volume | Maths | Week 6 | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0;
-    font-family: "Atkinson Hyperlegible", Arial, sans-serif;
-    background: #fef8f4;
-    color: #1a1a1a;
-    font-size: 1rem;
-    line-height: 1.55;
-  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --cream: #fef8f4;
     --ink: #1a1a1a;
+    --text-soft: #444;
     --teal: #007291;
     --teal-deep: #005a72;
-    --orange: #ef7724;
-    --orange-deep: #c05a10;
+    --teal-mid: #0f8eaa;
+    --teal-soft: #e6f5f8;
+    --teal-line: #bcdded;
+    --card-line: #d8c8b8;
+    --paper: #ffffff;
+    --warm: #f0e4d8;
+    --success: #2e7d32;
+    --success-soft: #f2f9f2;
     --gold: #ffce2e;
-    --soft: rgba(0, 0, 0, 0.12);
-    --dark: #10242d;
+    --dark: #1a1a1a;
   }
-  a, button, input, textarea, select, summary { font: inherit; }
-  button, summary { cursor: pointer; }
-  :focus-visible {
-    outline: 4px solid var(--gold);
-    outline-offset: 3px;
-  }
-  .wrap {
-    width: min(1120px, calc(100% - 28px));
-    margin: 0 auto;
-    padding: 18px 0 48px;
-  }
-  .hero {
-    position: relative;
-    overflow: hidden;
-    background: var(--teal);
-    color: white;
-    border-radius: 18px;
-    padding: 28px;
-    box-shadow: 0 12px 24px var(--soft);
-  }
-  .hero::after {
-    content: "";
-    position: absolute;
-    right: -80px;
-    bottom: -100px;
-    width: 260px;
-    height: 260px;
-    border-radius: 50%;
-    background: rgba(239, 119, 36, 0.36);
-  }
-  .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.16);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 999px;
-    padding: 6px 12px;
-    font-weight: 700;
-  }
-  h1, h2, h3 { line-height: 1.15; }
-  h1 {
-    margin: 18px 0 10px;
-    font-size: clamp(2rem, 6vw, 4rem);
-  }
-  h2 {
-    margin: 0 0 12px;
-    font-size: clamp(1.45rem, 3vw, 2.2rem);
-  }
-  h3 {
-    margin: 18px 0 8px;
-    font-size: 1.2rem;
-  }
-  .hero p { max-width: 760px; margin: 0; font-size: 1.08rem; }
-  .topbar {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
-    align-items: center;
-    margin: 16px 0;
-  }
-  .star-card, .progress-card {
-    background: white;
-    border: 2px solid var(--teal);
-    border-radius: 16px;
-    box-shadow: 0 8px 18px var(--soft);
-    padding: 12px;
-  }
-  .stars {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-  }
-  .star-label { font-weight: 700; margin-right: 4px; }
-  .star-svg {
-    width: 28px;
-    height: 28px;
-    flex: 0 0 auto;
-  }
-  .star-svg .shape { stroke: var(--teal-deep); stroke-width: 1.8; }
-  .star-svg.filled .shape { fill: var(--gold); }
-  .star-svg.empty .shape { fill: white; }
-  .progress-card { margin: 0 0 18px; }
-  .progress-dots {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-  }
-  .dot {
-    min-width: 44px;
-    min-height: 44px;
-    border-radius: 999px;
-    border: 2px solid var(--teal);
-    background: white;
-    color: var(--teal-deep);
-    font-weight: 700;
-  }
-  .dot.active {
-    background: var(--teal);
-    color: white;
-  }
-  .dot.done {
-    border-color: var(--orange-deep);
-    box-shadow: inset 0 -5px 0 rgba(239, 119, 36, 0.25);
-  }
-  .step {
-    display: none;
-    position: relative;
-    background: white;
-    border: 2px solid var(--teal);
-    border-radius: 16px;
-    box-shadow: 0 10px 22px var(--soft);
-    padding: 24px;
-    margin-bottom: 18px;
-    overflow: hidden;
-  }
-  .step::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: var(--orange);
-  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Atkinson Hyperlegible', Arial, sans-serif; background-color: var(--cream); color: var(--ink); min-height: 100vh; }
+  .site-header { position: relative; background-color: var(--teal); padding: 2rem 2rem 2.8rem; text-align: center; overflow: hidden; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 210px; height: 210px; background: rgba(254,248,244,0.14); border-radius: 50%; }
+  .site-header::before { content: ""; position: absolute; top: -70px; left: -70px; width: 180px; height: 180px; border: 16px solid rgba(254,248,244,0.12); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: var(--cream); font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.9; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.82rem; font-weight: 700; color: #d6f4fb; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  h1 { font-size: clamp(2rem, 6vw, 2.7rem); font-weight: 700; color: var(--cream); line-height: 1.15; }
+  .header-sub { font-size: 1.02rem; color: #d6f4fb; margin-top: 0.45rem; max-width: 48ch; margin-left: auto; margin-right: auto; line-height: 1.55; }
+  .header-icon { width: 74px; height: 74px; margin: 0.2rem auto 0.75rem; display: block; }
+  .starbar { display: flex; gap: 5px; justify-content: center; margin-top: 0.75rem; }
+  .starbar svg { width: 20px; height: 20px; display: block; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 36px; z-index: 1; }
+
+  .dots { display: flex; gap: 9px; justify-content: center; padding: 14px 0 0; }
+  .dots button { width: 15px; height: 15px; border-radius: 50%; padding: 0; cursor: pointer; background: var(--warm); border: 2px solid var(--card-line); }
+  .dots button.on { background: var(--teal); border-color: var(--teal-deep); box-shadow: 0 0 0 4px rgba(0,114,145,0.22); }
+  .dots button:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+  .main { max-width: 780px; margin: 0 auto; padding: 1.4rem 1.5rem 4rem; }
+  .step { display: none; }
   .step.active { display: block; }
-  .step-tag {
-    display: inline-block;
-    margin: 0 0 12px;
-    background: #eef7fa;
-    color: var(--teal-deep);
-    border: 2px solid var(--teal);
-    border-radius: 999px;
-    padding: 5px 12px;
-    font-weight: 700;
+  h2 { font-size: 1.35rem; color: var(--teal-deep); margin: 0 0 0.4rem; line-height: 1.25; }
+  h3 { font-size: 1.05rem; color: var(--teal-deep); margin: 0 0 0.45rem; line-height: 1.25; }
+  p { font-size: 1rem; line-height: 1.6; }
+  .lead { color: var(--text-soft); margin-bottom: 1rem; }
+  .keybox { background: var(--teal-soft); border: 2px solid var(--teal); border-radius: 12px; padding: 0.85rem 1.1rem; margin: 0.9rem 0 1.1rem; font-size: 0.95rem; }
+  .keybox strong { color: var(--teal-deep); }
+  .quietbox { background: #fff; border: 2px solid var(--teal-line); border-radius: 12px; padding: 0.85rem 1rem; margin: 0.9rem 0 1rem; }
+  .formula { display: inline-block; font-weight: 700; background: var(--teal-soft); color: var(--teal-deep); border: 2px solid var(--teal-line); border-radius: 10px; padding: 0.15rem 0.45rem; }
+
+  .nav { display: flex; gap: 0.7rem; margin-top: 1.4rem; flex-wrap: wrap; align-items: center; }
+  button, input, textarea, select, a { font-family: inherit; }
+  button { font-size: 0.95rem; font-weight: 700; cursor: pointer; border: none; border-radius: 999px; padding: 0.65rem 1.4rem; }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .btn-next, .send .sendbtn { background: var(--teal); color: #fff; box-shadow: 0 3px 0 var(--teal-deep); }
+  .btn-next:hover, .send .sendbtn:hover { background: var(--teal-deep); }
+  .btn-back { background: var(--warm); color: var(--ink); }
+  .btn-ghost { background: #fff; color: var(--ink); border: 2px solid var(--teal); }
+  .btn-link { text-decoration: none; display: inline-block; text-align: center; background: var(--teal); color: #fff; box-shadow: 0 3px 0 var(--teal-deep); border-radius: 999px; padding: 0.65rem 1.4rem; font-weight: 700; font-size: 0.95rem; }
+
+  .qcard, .task-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1rem 1.1rem; margin-bottom: 0.9rem; }
+  .qcard.solved, .task-card.solved { border-color: var(--success); background: var(--success-soft); }
+  .qcard .sent { font-size: 1.02rem; font-weight: 700; margin-bottom: 0.6rem; }
+  .qcard .opts { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .qcard .opts button { background: #fff; border: 2px solid var(--card-line); color: var(--ink); font-size: 0.9rem; padding: 0.45rem 0.95rem; }
+  .qcard .opts button.right { background: #e6f3e6; border-color: var(--success); color: #1c5e28; }
+  .qcard .opts button.wrong { background: var(--teal-soft); border-color: var(--teal); color: var(--teal-deep); }
+  .qcard .fb, .msg { font-weight: 700; font-size: 0.9rem; margin-top: 0.55rem; min-height: 1.3em; color: var(--teal-deep); }
+  .qcard.solved .fb { color: #1c5e28; }
+
+  .grid-wrap { display: grid; grid-template-columns: minmax(220px, 290px) 1fr; gap: 1rem; align-items: start; }
+  .area-grid { display: grid; grid-template-columns: repeat(4, 48px); grid-template-rows: repeat(3, 48px); border: 3px solid var(--teal-deep); background: #fff; width: fit-content; margin: 0.2rem auto 0.8rem; }
+  .area-grid span { width: 48px; height: 48px; border: 1px solid #80aab5; background: var(--teal-soft); }
+  .grid-caption { text-align: center; color: var(--text-soft); font-size: 0.9rem; }
+  label { display: block; font-size: 0.85rem; font-weight: 700; color: #555; margin: 0.7rem 0 0.3rem; }
+  input[type=text], input[type=number], select, textarea { width: 100%; padding: 0.6rem 0.85rem; font-family: inherit; font-size: 0.95rem; border: 2px solid var(--teal-line); border-radius: 10px; background: #fff; color: var(--ink); }
+  textarea { min-height: 86px; resize: vertical; line-height: 1.5; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible { outline-color: var(--teal); outline-offset: 1px; }
+  .input-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+  .answer-msg { min-height: 1.5em; font-weight: 700; color: var(--teal-deep); margin-top: 0.55rem; font-size: 0.9rem; }
+  .answer-msg.good { color: #1c5e28; }
+
+  .sort-card { background: #fff; border: 2px solid #e0d8d0; border-radius: 14px; padding: 1rem 1.1rem; margin-bottom: 0.75rem; display: grid; grid-template-columns: 1fr minmax(190px, 230px); gap: 0.75rem; align-items: center; }
+  .sort-card.solved { border-color: var(--success); background: var(--success-soft); }
+  .sort-title { font-weight: 700; color: var(--ink); }
+  .sort-rule { color: var(--text-soft); font-size: 0.93rem; margin-top: 0.2rem; }
+  .sort-feedback { grid-column: 1 / -1; min-height: 1.2em; font-size: 0.9rem; font-weight: 700; color: var(--teal-deep); }
+
+  .shape-demo { background: #fff; border: 2px solid var(--teal-line); border-radius: 14px; padding: 0.9rem 1rem; margin: 0.8rem 0; }
+  .shape-row { display: flex; gap: 0.9rem; align-items: center; flex-wrap: wrap; }
+  .shape-svg { width: 145px; height: 100px; flex: 0 0 auto; }
+  .shape-svg text { font-family: 'Atkinson Hyperlegible', Arial, sans-serif; font-size: 9px; font-weight: 700; fill: var(--teal-deep); }
+  .shape-svg .fill { fill: var(--teal-soft); stroke: var(--teal-deep); stroke-width: 3; }
+  .shape-svg .dash { stroke: var(--teal-mid); stroke-width: 2; stroke-dasharray: 4 3; }
+
+  .cuboid-card { background: #fff; border: 2px solid var(--teal-line); border-radius: 14px; padding: 1rem; }
+  .cuboid { position: relative; width: 270px; height: 180px; margin: 0.5rem auto 0.2rem; }
+  .cuboid .front { position: absolute; left: 28px; top: 58px; width: 92px; height: 86px; background: var(--teal-soft); border: 3px solid var(--teal-deep); }
+  .cuboid .back { position: absolute; left: 132px; top: 24px; width: 92px; height: 86px; background: #f7fdff; border: 3px solid var(--teal-deep); }
+  .cuboid .line { position: absolute; height: 3px; background: var(--teal-deep); transform-origin: left center; }
+  .cuboid .l1 { left: 120px; top: 58px; width: 109px; transform: rotate(-18deg); }
+  .cuboid .l2 { left: 120px; top: 144px; width: 109px; transform: rotate(-18deg); }
+  .cuboid .l3 { left: 28px; top: 58px; width: 109px; transform: rotate(-18deg); }
+  .cuboid .label { position: absolute; background: #fff; border: 2px solid var(--teal); border-radius: 999px; padding: 2px 7px; font-weight: 700; color: var(--teal-deep); font-size: 0.82rem; }
+  .cuboid .w { left: 31px; top: 146px; }
+  .cuboid .h { left: 0; top: 87px; }
+  .cuboid .len { left: 158px; top: 0; }
+  .tap-row { display: flex; flex-wrap: wrap; gap: 0.45rem; justify-content: center; }
+  .tap-row button { background: #fff; border: 2px solid var(--teal); color: var(--teal-deep); font-size: 0.87rem; padding: 0.45rem 0.9rem; }
+
+  .sequence-list { list-style: none; margin: 0.8rem 0; display: grid; gap: 0.55rem; }
+  .sequence-list li { display: grid; grid-template-columns: auto 1fr auto; gap: 0.65rem; align-items: center; background: #fff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 0.6rem; }
+  .num-badge { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--teal); color: #fff; font-weight: 700; }
+  .move-buttons { display: flex; gap: 0.25rem; }
+  .move-buttons button { min-width: 40px; padding: 0.4rem 0.55rem; background: var(--teal-soft); color: var(--teal-deep); border: 2px solid var(--teal-line); }
+
+  .send { margin-top: 1.6rem; background: var(--teal-soft); border: 2px solid var(--teal); border-radius: 14px; padding: 1.1rem 1.2rem; }
+  .send h3 { font-size: 1.05rem; color: var(--teal-deep); margin-bottom: 0.4rem; }
+  .send input[type=text] { max-width: 300px; }
+  .send .sendbtn { margin-top: 0.8rem; }
+
+  .boss { margin-top: 1.6rem; border-radius: 14px; overflow: hidden; border: 2px solid var(--dark); }
+  .boss-head { width: 100%; text-align: left; background: var(--dark); color: #fff; padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.7rem; cursor: pointer; border: none; border-radius: 0; font-family: inherit; font-size: 0.95rem; font-weight: 700; }
+  .boss-head .badge { background: var(--gold); color: var(--ink); padding: 0.15rem 0.6rem; border-radius: 6px; letter-spacing: 1px; font-size: 0.78rem; flex: 0 0 auto; }
+  .boss-head .sub { font-weight: 400; font-size: 0.82rem; opacity: 0.85; }
+  .boss-body { display: none; padding: 1rem 1.1rem; background: #2b2b33; color: #f0ede8; }
+  .boss.open .boss-body { display: block; }
+  .boss-body p { font-size: 0.95rem; }
+  .boss-body textarea { background: #fff; border-color: var(--gold); margin-top: 0.5rem; }
+  .boss-note { display: none; margin-top: 0.7rem; background: #443; border-left: 4px solid var(--gold); border-radius: 8px; padding: 0.6rem 0.9rem; font-weight: 700; font-size: 0.9rem; color: #ffdf75; }
+  .boss-note.show { display: block; }
+
+  .toast { position: fixed; left: 50%; bottom: 1.2rem; transform: translateX(-50%); z-index: 1100; background: var(--teal); color: var(--cream); font-size: 0.92rem; font-weight: 700; padding: 0.7rem 1.1rem; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.22); max-width: 90vw; display: none; align-items: center; gap: 0.6rem; }
+  .toast.show { display: flex; }
+  .toast svg { width: 22px; height: 22px; flex: 0 0 auto; }
+
+  .tiny-square { text-align: center; margin-top: 1.3rem; }
+  .tiny-square button { background: transparent; color: var(--teal-deep); text-decoration: underline; padding: 0.4rem 0.6rem; }
+  .tiny-square .note { display: none; max-width: 520px; margin: 0.5rem auto 0; background: #fff; border: 2px solid var(--teal-line); border-radius: 12px; padding: 0.7rem 0.9rem; color: var(--text-soft); }
+  .tiny-square.open .note { display: block; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+  @media (max-width: 760px) {
+    .main { padding-left: 1rem; padding-right: 1rem; }
+    .header-back { position: relative; top: auto; left: auto; display: inline-block; margin-bottom: 0.7rem; }
+    .grid-wrap, .input-row, .sort-card { grid-template-columns: 1fr; }
+    .area-grid { grid-template-columns: repeat(4, 40px); grid-template-rows: repeat(3, 40px); }
+    .area-grid span { width: 40px; height: 40px; }
+    .cuboid { transform: scale(0.92); transform-origin: center top; margin-bottom: -0.8rem; }
   }
-  .grid-two {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-  }
-  .mini-card {
-    background: #fffaf6;
-    border: 2px solid var(--orange);
-    border-radius: 14px;
-    padding: 16px;
-  }
-  .deep-link {
-    margin-top: 14px;
-    background: #eef7fa;
-    border-left: 6px solid var(--teal);
-    border-radius: 12px;
-    padding: 12px 14px;
-  }
-  .deep-link strong { color: var(--teal-deep); }
-  .button-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-    margin-top: 14px;
-  }
-  .btn {
-    min-height: 44px;
-    border: 0;
-    border-radius: 999px;
-    padding: 10px 18px;
-    background: var(--teal);
-    color: white;
-    font-weight: 700;
-    box-shadow: 0 4px 0 var(--teal-deep);
-  }
-  .btn:hover { background: var(--teal-deep); }
-  .btn.secondary {
-    background: var(--orange);
-    box-shadow: 0 4px 0 var(--orange-deep);
-  }
-  .btn.secondary:hover { background: var(--orange-deep); }
-  .btn.ghost {
-    background: white;
-    color: var(--teal-deep);
-    border: 2px solid var(--teal);
-    box-shadow: none;
-  }
-  .btn.dark {
-    background: var(--dark);
-    box-shadow: 0 4px 0 #000000;
-  }
-  .small-btn {
-    min-height: 44px;
-    border: 2px solid var(--teal);
-    border-radius: 999px;
-    padding: 8px 12px;
-    background: white;
-    color: var(--teal-deep);
-    font-weight: 700;
-  }
-  label {
-    display: block;
-    font-weight: 700;
-    margin: 12px 0 6px;
-  }
-  input, textarea, select {
-    width: 100%;
-    min-height: 44px;
-    border: 2px solid var(--teal);
-    border-radius: 12px;
-    padding: 10px 12px;
-    background: white;
-    color: var(--ink);
-  }
-  textarea { min-height: 130px; resize: vertical; }
-  .feedback {
-    min-height: 32px;
-    margin-top: 10px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    background: #f6f6f6;
-    border: 2px solid #d6d6d6;
-  }
-  .feedback.good {
-    background: #edf8ef;
-    border-color: #3f8b45;
-  }
-  .feedback.coach {
-    background: #fff8df;
-    border-color: var(--gold);
-  }
-  .hidden-panel {
-    display: none;
-    margin-top: 12px;
-    padding: 14px;
-    background: #eef7fa;
-    border: 2px solid var(--teal);
-    border-radius: 14px;
-  }
-  .hidden-panel.open { display: block; }
-  .grid-demo {
-    display: grid;
-    grid-template-columns: repeat(4, 56px);
-    grid-template-rows: repeat(3, 56px);
-    gap: 0;
-    width: fit-content;
-    border: 3px solid var(--teal-deep);
-    background: white;
-    margin: 14px 0;
-  }
-  .grid-demo span {
-    width: 56px;
-    height: 56px;
-    border: 1px solid #8096a0;
-    background: #dcecf3;
-  }
-  .rule-list, .quiz-list, .problem-list {
-    display: grid;
-    gap: 12px;
-    margin-top: 14px;
-  }
-  .rule-item, .quiz-item, .problem-item {
-    background: white;
-    border: 2px solid var(--teal);
-    border-radius: 14px;
-    padding: 14px;
-    box-shadow: 0 6px 14px var(--soft);
-  }
-  .choice-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
-    margin-top: 10px;
-  }
-  .choice {
-    min-height: 54px;
-    border: 2px solid var(--teal);
-    border-radius: 14px;
-    background: #f7fcff;
-    color: var(--teal-deep);
-    padding: 10px;
-    font-weight: 700;
-  }
-  .choice.selected {
-    background: var(--teal);
-    color: white;
-  }
-  .diagram-wrap {
-    display: grid;
-    grid-template-columns: minmax(240px, 360px) 1fr;
-    gap: 18px;
-    align-items: start;
-  }
-  .cuboid {
-    position: relative;
-    width: 260px;
-    height: 170px;
-    margin: 34px auto 16px;
-  }
-  .cuboid .front {
-    position: absolute;
-    left: 28px;
-    top: 52px;
-    width: 92px;
-    height: 86px;
-    background: #dcecf3;
-    border: 3px solid var(--teal-deep);
-  }
-  .cuboid .back {
-    position: absolute;
-    left: 132px;
-    top: 20px;
-    width: 92px;
-    height: 86px;
-    background: #f5fbfd;
-    border: 3px solid var(--teal-deep);
-  }
-  .cuboid .line {
-    position: absolute;
-    height: 3px;
-    background: var(--teal-deep);
-    transform-origin: left center;
-  }
-  .cuboid .l1 { left: 120px; top: 52px; width: 109px; transform: rotate(-17deg); }
-  .cuboid .l2 { left: 120px; top: 138px; width: 109px; transform: rotate(-17deg); }
-  .cuboid .l3 { left: 28px; top: 52px; width: 109px; transform: rotate(-17deg); }
-  .cuboid .label {
-    position: absolute;
-    background: white;
-    border: 2px solid var(--orange);
-    border-radius: 999px;
-    padding: 3px 8px;
-    font-weight: 700;
-  }
-  .cuboid .w { left: 26px; top: 140px; }
-  .cuboid .h { left: -4px; top: 78px; }
-  .cuboid .len { left: 156px; top: 0; }
-  .diagram-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-  }
-  .sequence-list {
-    list-style: none;
-    padding: 0;
-    margin: 12px 0;
-    display: grid;
-    gap: 10px;
-  }
-  .sequence-list li {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 10px;
-    align-items: center;
-    border: 2px solid var(--teal);
-    border-radius: 14px;
-    padding: 10px;
-    background: #f7fcff;
-  }
-  .num-badge {
-    display: inline-grid;
-    place-items: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 999px;
-    background: var(--teal);
-    color: white;
-    font-weight: 700;
-  }
-  .sequence-actions { display: flex; gap: 6px; }
-  .input-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-  }
-  .boss {
-    margin-top: 18px;
-    background: var(--dark);
-    color: white;
-    border: 2px solid #000000;
-    border-radius: 16px;
-    padding: 14px;
-  }
-  .boss summary {
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 700;
-  }
-  .boss-badge {
-    display: inline-block;
-    background: var(--gold);
-    color: #1a1a1a;
-    border-radius: 999px;
-    padding: 4px 10px;
-    font-weight: 700;
-  }
-  .boss textarea {
-    border-color: var(--gold);
-  }
-  .summary-box {
-    white-space: pre-wrap;
-    background: #f6f6f6;
-    border: 2px solid #d6d6d6;
-    border-radius: 14px;
-    padding: 12px;
-    max-height: 260px;
-    overflow: auto;
-  }
-  .toast {
-    position: fixed;
-    right: 18px;
-    bottom: 18px;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    max-width: min(420px, calc(100% - 36px));
-    background: white;
-    border: 2px solid var(--gold);
-    border-radius: 16px;
-    padding: 14px;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
-    transform: translateY(150%);
-    transition: transform 260ms ease;
-  }
-  .toast.show { transform: translateY(0); }
-  .toast svg { width: 34px; height: 34px; flex: 0 0 auto; }
-  .egg {
-    margin: 24px auto 0;
-    text-align: center;
-  }
-  .egg button {
-    border: 0;
-    background: transparent;
-    color: var(--teal-deep);
-    text-decoration: underline;
-    min-height: 44px;
-    padding: 8px 12px;
-  }
-  .egg-note {
-    display: none;
-    max-width: 520px;
-    margin: 8px auto 0;
-    background: white;
-    border: 2px solid var(--orange);
-    border-radius: 14px;
-    padding: 10px;
-  }
-  .egg-note.open { display: block; }
-  @media (max-width: 800px) {
-    .topbar, .grid-two, .diagram-wrap, .input-grid { grid-template-columns: 1fr; }
-    .choice-grid { grid-template-columns: 1fr; }
-    .grid-demo { grid-template-columns: repeat(4, 44px); grid-template-rows: repeat(3, 44px); }
-    .grid-demo span { width: 44px; height: 44px; }
-    .hero { padding: 22px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      scroll-behavior: auto !important;
-      transition: none !important;
-    }
-    .toast { transform: none; display: none; }
-    .toast.show { display: flex; }
-  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="hero">
-    <div class="eyebrow">Base 6 &middot; Monday Maths</div>
-    <h1>Area and Volume Lab</h1>
-    <p>This is a calm maths activity about space inside shapes. It usually takes about 30 to 40 minutes. You can jump around, stop early, come back later, or just try the bits that feel useful. Jay will be able to see what you send at the end.</p>
-  </header>
 
-  <div class="topbar" aria-label="Progress area">
-    <div class="star-card">
-      <div class="stars" id="starBar" aria-label="Stars earned"></div>
-    </div>
-    <button class="btn ghost" id="resetBtn" type="button">Reset saved progress</button>
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Week 6</a>
+  <div class="header-inner">
+    <svg class="header-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="50" cy="50" r="46" fill="#e6f5f8" stroke="#005a72" stroke-width="4"/>
+      <path d="M25 68 L25 25 L68 68 Z" fill="#ffce2e" stroke="#1a1a1a" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M31 59 L31 31" stroke="#1a1a1a" stroke-width="2"/>
+      <path d="M31 59 L59 59" stroke="#1a1a1a" stroke-width="2"/>
+      <path d="M34 36 L38 36 M34 42 L41 42 M34 48 L38 48 M34 54 L41 54" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+      <path d="M38 62 L38 66 M45 62 L45 66 M52 62 L52 66" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <p class="week-label">Week 6 &middot; Maths &middot; Monday</p>
+    <h1>Area and Volume</h1>
+    <p class="header-sub">How much space does something cover, and how much can it hold? Two different questions with two different answers.</p>
+    <div class="starbar" id="starbar" aria-label="0 of 6 stars earned"></div>
   </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
 
-  <div class="progress-card">
-    <div class="progress-dots" id="progressDots" aria-label="Jump to a step"></div>
-  </div>
-
-  <main>
-    <section class="step active" data-step="0" aria-labelledby="step0Title">
-      <span class="step-tag">Step 1 of 7</span>
-      <h2 id="step0Title">Set up the lab</h2>
-      <div class="grid-two">
-        <div>
-          <p>Area is the amount of flat space covered. Volume is the amount of 3D space inside something. This lab uses rectangles, triangles, trapezia and prisms.</p>
-          <p>Nothing here locks you in. If a question feels annoying, you can leave it and still send Jay what you did.</p>
-          <label for="studentInitials">Student initials</label>
-          <input id="studentInitials" data-save="input" autocomplete="off" maxlength="12" placeholder="Example: JT">
-        </div>
-        <div class="mini-card">
-          <h3>Today you could practise</h3>
-          <p>1. Counting squares and using width x height.</p>
-          <p>2. Spotting when a formula includes a half.</p>
-          <p>3. Using front face area x length for volume.</p>
-          <p>4. Choosing sensible units: cm&sup2;, m&sup2;, cm&sup3; or m&sup3;.</p>
-        </div>
-      </div>
-      <div class="deep-link"><strong>Deep link for older learners:</strong> a formula is just a shortcut for a repeated structure. The trick is spotting which structure you are looking at.</div>
-      <div class="button-row">
-        <button class="btn secondary complete-btn" type="button" data-complete="0">Mark this step as explored</button>
-        <button class="btn" type="button" data-next="1">Go to rectangles</button>
-      </div>
-    </section>
-
-    <section class="step" data-step="1" aria-labelledby="step1Title">
-      <span class="step-tag">Step 2 of 7 &middot; Predict first</span>
-      <h2 id="step1Title">Rectangle rescue</h2>
-      <p>Before revealing the rule, have a prediction. This rectangle is 4 squares wide and 3 squares tall.</p>
-      <div class="grid-two">
-        <div>
-          <div class="grid-demo" aria-label="A rectangle made from 4 columns and 3 rows of squares">
-            <span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span>
-          </div>
-          <label for="predictArea">Prediction: how many squares are covered?</label>
-          <input id="predictArea" data-save="input" inputmode="numeric" placeholder="Your prediction">
-          <div class="button-row">
-            <button class="btn ghost" id="revealAreaRule" type="button">Reveal the rule</button>
-          </div>
-          <div class="hidden-panel" id="areaRulePanel">
-            <p><strong>Rectangle rule:</strong> area = width x height.</p>
-            <p>Here that is 4 x 3 = 12 squares.</p>
-          </div>
-        </div>
-        <div class="mini-card">
-          <label for="rectAnswer">Now try it: a rectangle is 7 cm wide and 5 cm tall. What is its area?</label>
-          <input id="rectAnswer" data-save="input" inputmode="numeric" placeholder="Answer in cm2">
-          <div class="button-row">
-            <button class="btn" id="checkRect" type="button">Check rectangle</button>
-          </div>
-          <div class="feedback" id="rectFeedback" aria-live="polite"></div>
-        </div>
-      </div>
-      <div class="deep-link"><strong>Deep link for older learners:</strong> doubling the width doubles the area, as long as the height stays the same. Area changes fast because two directions matter.</div>
-      <div class="button-row">
-        <button class="btn secondary complete-btn" type="button" data-complete="1">Mark this step as explored</button>
-        <button class="btn ghost" type="button" data-prev="0">Back</button>
-        <button class="btn" type="button" data-next="2">Go to formula sorter</button>
-      </div>
-    </section>
-
-    <section class="step" data-step="2" aria-labelledby="step2Title">
-      <span class="step-tag">Step 3 of 7</span>
-      <h2 id="step2Title">Formula sorter</h2>
-      <p>Some shapes are simple multiply jobs. Some include a half or a divide by 2 because the shape is half of a larger shape. Sort each rule into the best bin.</p>
-      <div class="rule-list" id="sortList"></div>
-      <div class="deep-link"><strong>Deep link for older learners:</strong> triangles and trapezia often use a rectangle or parallelogram hiding in the background. The divide by 2 is not random; it corrects a doubled area.</div>
-      <div class="button-row">
-        <button class="btn" id="checkSort" type="button">Check sorter</button>
-        <button class="btn secondary complete-btn" type="button" data-complete="2">Mark this step as explored</button>
-        <button class="btn ghost" type="button" data-prev="1">Back</button>
-        <button class="btn" type="button" data-next="3">Go to shape workshop</button>
-      </div>
-      <div class="feedback" id="sortFeedback" aria-live="polite"></div>
-    </section>
-
-    <section class="step" data-step="3" aria-labelledby="step3Title">
-      <span class="step-tag">Step 4 of 7</span>
-      <h2 id="step3Title">Shape workshop</h2>
-      <p>Pick an answer card. If the first pick is not the one, the hint will show a calmer route through the problem.</p>
-      <div class="quiz-list" id="quizList"></div>
-      <div class="deep-link"><strong>Deep link for older learners:</strong> a reverse problem works backwards from the area. For a triangle, double the area first, then divide by the height to find the base.</div>
-      <div class="button-row">
-        <button class="btn secondary complete-btn" type="button" data-complete="3">Mark this step as explored</button>
-        <button class="btn ghost" type="button" data-prev="2">Back</button>
-        <button class="btn" type="button" data-next="4">Go to volume tunnel</button>
-      </div>
-    </section>
-
-    <section class="step" data-step="4" aria-labelledby="step4Title">
-      <span class="step-tag">Step 5 of 7</span>
-      <h2 id="step4Title">Volume tunnel</h2>
-      <p>Volume is space inside a 3D shape. For a prism, one reliable route is: area of the front face x length.</p>
-      <div class="diagram-wrap">
-        <div class="mini-card">
-          <div class="cuboid" aria-label="Cuboid diagram with width 3 cm, height 4 cm and length 10 cm">
-            <div class="back"></div>
-            <div class="front"></div>
-            <div class="line l1"></div>
-            <div class="line l2"></div>
-            <div class="line l3"></div>
-            <div class="label w">3 cm</div>
-            <div class="label h">4 cm</div>
-            <div class="label len">10 cm</div>
-          </div>
-          <div class="diagram-buttons">
-            <button class="small-btn" type="button" data-diagram="face">Tap front face</button>
-            <button class="small-btn" type="button" data-diagram="length">Tap length</button>
-            <button class="small-btn" type="button" data-diagram="volume">Tap volume</button>
-          </div>
-          <div class="feedback" id="diagramFeedback" aria-live="polite"></div>
-        </div>
-        <div class="mini-card">
-          <div class="input-grid">
-            <div>
-              <label for="frontArea">Front face: 3 x 4 =</label>
-              <input id="frontArea" data-save="input" inputmode="numeric" placeholder="cm2">
-            </div>
-            <div>
-              <label for="cuboidVolume">Total volume: front area x 10 =</label>
-              <input id="cuboidVolume" data-save="input" inputmode="numeric" placeholder="cm3">
-            </div>
-            <div>
-              <label for="triPrismVolume">Triangular prism: 15 x 8 =</label>
-              <input id="triPrismVolume" data-save="input" inputmode="numeric" placeholder="cm3">
-            </div>
-            <div>
-              <label for="cylinderVolume">Cylinder: 50 x 6 =</label>
-              <input id="cylinderVolume" data-save="input" inputmode="numeric" placeholder="cm3">
-            </div>
-          </div>
-          <div class="button-row">
-            <button class="btn" id="checkVolume" type="button">Check volume</button>
-          </div>
-          <div class="feedback" id="volumeFeedback" aria-live="polite"></div>
-        </div>
-      </div>
-      <div class="deep-link"><strong>Deep link for older learners:</strong> square units measure flat space. Cubic units measure layers of flat space stacked along a third direction.</div>
-      <div class="button-row">
-        <button class="btn secondary complete-btn" type="button" data-complete="4">Mark this step as explored</button>
-        <button class="btn ghost" type="button" data-prev="3">Back</button>
-        <button class="btn" type="button" data-next="5">Go to problem solving</button>
-      </div>
-    </section>
-
-    <section class="step" data-step="5" aria-labelledby="step5Title">
-      <span class="step-tag">Step 6 of 7</span>
-      <h2 id="step5Title">Problem solving workshop</h2>
-      <p>These are the more realistic questions. You can try one, a few, or all of them. Units are part of the thinking.</p>
-      <div class="grid-two">
-        <div class="mini-card">
-          <h3>Garden sequence</h3>
-          <p>A trapezium garden has parallel sides 12 m and 18 m, height 10 m, and grass seed costs &pound;2 for each 1 m&sup2;.</p>
-          <p>Put the steps in a sensible order.</p>
-          <ol class="sequence-list" id="sequenceList"></ol>
-          <div class="button-row">
-            <button class="btn" id="checkSequence" type="button">Check order</button>
-          </div>
-          <div class="feedback" id="sequenceFeedback" aria-live="polite"></div>
-        </div>
-        <div class="mini-card">
-          <h3>Garden numbers</h3>
-          <div class="input-grid">
-            <div><label for="gardenSum">12 + 18 =</label><input id="gardenSum" data-save="input" inputmode="numeric"></div>
-            <div><label for="gardenTimes">that answer x 10 =</label><input id="gardenTimes" data-save="input" inputmode="numeric"></div>
-            <div><label for="gardenArea">divide by 2 =</label><input id="gardenArea" data-save="input" inputmode="numeric" placeholder="m2"></div>
-            <div><label for="gardenCost">area x 2 = &pound;</label><input id="gardenCost" data-save="input" inputmode="numeric"></div>
-          </div>
-          <div class="button-row"><button class="btn" id="checkGarden" type="button">Check garden</button></div>
-          <div class="feedback" id="gardenFeedback" aria-live="polite"></div>
-        </div>
-      </div>
-      <div class="problem-list">
-        <div class="problem-item">
-          <h3>Pool volume</h3>
-          <p>A rectangular swimming pool is 25 m long, 10 m wide and 2 m deep.</p>
-          <label for="poolVolume">25 x 10 x 2 =</label>
-          <input id="poolVolume" data-save="input" inputmode="numeric" placeholder="m3">
-          <div class="button-row"><button class="btn" id="checkPool" type="button">Check pool</button></div>
-          <div class="feedback" id="poolFeedback" aria-live="polite"></div>
-        </div>
-        <div class="problem-item">
-          <h3>Flower bed compost</h3>
-          <p>A triangular flower bed has base 6 m and height 3 m. One bag of compost covers 3 m&sup2;.</p>
-          <div class="input-grid">
-            <div><label for="flowerArea">Triangle area =</label><input id="flowerArea" data-save="input" inputmode="numeric" placeholder="m2"></div>
-            <div><label for="flowerBags">Bags =</label><input id="flowerBags" data-save="input" inputmode="numeric"></div>
-          </div>
-          <div class="button-row"><button class="btn" id="checkFlower" type="button">Check flower bed</button></div>
-          <div class="feedback" id="flowerFeedback" aria-live="polite"></div>
-        </div>
-        <div class="problem-item">
-          <h3>Storage container</h3>
-          <p>The front face area is 12 m&sup2;. The container is 5 m long. It stores 2 large boxes in each 1 m&sup3;.</p>
-          <div class="input-grid">
-            <div><label for="containerVolume">12 x 5 =</label><input id="containerVolume" data-save="input" inputmode="numeric" placeholder="m3"></div>
-            <div><label for="containerBoxes">volume x 2 =</label><input id="containerBoxes" data-save="input" inputmode="numeric" placeholder="boxes"></div>
-          </div>
-          <div class="button-row"><button class="btn" id="checkContainer" type="button">Check container</button></div>
-          <div class="feedback" id="containerFeedback" aria-live="polite"></div>
-        </div>
-      </div>
-      <div class="deep-link"><strong>Deep link for older learners:</strong> word problems are not harder because the maths changes. They are harder because you decide which measurements belong together.</div>
-      <div class="button-row">
-        <button class="btn secondary complete-btn" type="button" data-complete="5">Mark this step as explored</button>
-        <button class="btn ghost" type="button" data-prev="4">Back</button>
-        <button class="btn" type="button" data-next="6">Go to reflection</button>
-      </div>
-    </section>
-
-    <section class="step" data-step="6" aria-labelledby="step6Title">
-      <span class="step-tag">Step 7 of 7</span>
-      <h2 id="step6Title">Reflection and send to Jay</h2>
-      <label for="reflection">One thing I want to remember is...</label>
-      <textarea id="reflection" data-save="input" placeholder="A formula, a unit, a mistake to avoid, or anything else you fancy saving."></textarea>
-
-      <details class="boss" id="bossDetails">
-        <summary><span class="boss-badge">BOSS LEVEL</span> Optional: for anyone who fancies a proper think</summary>
-        <p>A claim says: "A triangle with base 12 cm and height 5 cm has area 60 cm2 because 12 x 5 = 60." Analyse the claim. What is useful, what is missing, and what would the area be?</p>
-        <label for="bossAnswer">Boss level response</label>
-        <textarea id="bossAnswer" data-save="input" placeholder="You could argue both sides here."></textarea>
-        <div class="button-row"><button class="btn secondary" id="saveBoss" type="button">Save boss response</button></div>
-        <div class="feedback" id="bossFeedback" aria-live="polite"></div>
-      </details>
-
-      <h3>Preview</h3>
-      <pre class="summary-box" id="summaryPreview"></pre>
-      <div class="button-row">
-        <button class="btn secondary complete-btn" type="button" data-complete="6">Mark this step as explored</button>
-        <button class="btn" id="sendEmail" type="button">Open Gmail to send to Jay</button>
-        <button class="btn ghost" type="button" data-prev="5">Back</button>
-      </div>
-      <div class="feedback" id="emailFeedback" aria-live="polite"></div>
-    </section>
-  </main>
-
-  <div class="egg">
-    <button id="eggBtn" type="button" aria-expanded="false">There is a suspicious tiny square down here.</button>
-    <div class="egg-note" id="eggNote">A tiny grid goblin says: count the squares when your brain is buffering.</div>
-  </div>
-</div>
+<div class="dots" id="dots"></div>
 
 <div class="toast" id="toast" role="status" aria-live="polite">
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <polygon fill="#ffce2e" stroke="#1a1a1a" stroke-width="1.5" points="12,2 15,8.5 22,9.2 16.8,13.8 18.4,21 12,17.2 5.6,21 7.2,13.8 2,9.2 9,8.5"></polygon>
-  </svg>
-  <span id="toastText">Star earned.</span>
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#1a1a1a" stroke-width="3" stroke-linejoin="round"/></svg>
+  <span id="toast-text">Well done!</span>
 </div>
 
+<main class="main">
+
+  <section class="step active" id="s-intro">
+    <h2>Six calm rounds</h2>
+    <p class="lead">Start with squares, sort the formula shortcuts, solve some shape questions, move into volume, tackle real problems, then send your work to Jay. Do it in order or skip about. Nothing here is timed.</p>
+    <div class="keybox"><strong>Two words for today.</strong> <strong>Area</strong> measures flat space, so the units are squared, like cm&sup2; or m&sup2;. <strong>Volume</strong> measures space inside a 3D shape, so the units are cubed, like cm&sup3; or m&sup3;.</div>
+    <div class="quietbox"><strong>Quick idea:</strong> a formula is not magic. It is a shortcut for a shape pattern. The harder bit is choosing the right shortcut.</div>
+    <div class="nav"><button class="btn-next" data-go="1">Start</button><button class="btn-ghost" id="reset-btn" type="button">Reset saved progress</button></div>
+  </section>
+
+  <section class="step" id="s-area-start">
+    <h2>Round 1: Count the space</h2>
+    <p class="lead">This rectangle is 4 squares wide and 3 squares tall. Before using the formula, count or predict the number of squares it covers.</p>
+    <div class="grid-wrap">
+      <div class="quietbox">
+        <div class="area-grid" aria-label="A rectangle made from 4 columns and 3 rows of squares">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <p class="grid-caption">4 columns and 3 rows</p>
+      </div>
+      <div class="task-card" id="area-card">
+        <label for="predictArea">Prediction: how many squares are covered?</label>
+        <input id="predictArea" type="number" inputmode="numeric" placeholder="Type a number">
+        <div class="keybox"><strong>Rectangle rule:</strong> <span class="formula">area = width &times; height</span>. Here that means 4 &times; 3 = 12 squares.</div>
+        <label for="rectAnswer">Now try it: 7 cm wide and 5 cm tall. What is the area?</label>
+        <input id="rectAnswer" type="number" inputmode="numeric" placeholder="Answer in cm squared">
+        <div class="nav" style="margin-top:0.9rem;"><button class="btn-next" id="area-check" type="button">Check round 1</button></div>
+        <p class="answer-msg" id="area-msg" role="status"></p>
+      </div>
+    </div>
+    <div class="nav"><button class="btn-back" data-go="0">Back</button><button class="btn-next" data-go="2">Next</button></div>
+  </section>
+
+  <section class="step" id="s-formulas">
+    <h2>Round 2: Formula sorter</h2>
+    <p class="lead">Sort each rule by what kind of shortcut it is. The divide-by-2 rules are usually correcting a doubled shape.</p>
+    <div id="formula-list"></div>
+    <p class="msg" id="formula-msg" role="status"></p>
+    <div class="nav"><button class="btn-back" data-go="1">Back</button><button class="btn-next" id="formula-check" type="button">Check sorter</button><button class="btn-next" data-go="3">Next</button></div>
+  </section>
+
+  <section class="step" id="s-shapes">
+    <h2>Round 3: Shape workshop</h2>
+    <p class="lead">Choose the answer card. If the first pick is not the one, use the hint and have another go.</p>
+    <div class="shape-demo">
+      <div class="shape-row">
+        <svg class="shape-svg" viewBox="0 0 145 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path class="fill" d="M20 72 L76 72 L100 26 L44 26 Z"/>
+          <line class="dash" x1="44" y1="26" x2="44" y2="72"/>
+          <text x="36" y="21">height</text><text x="40" y="90">base</text>
+        </svg>
+        <p><strong>Base and height are a team.</strong> The height must go straight up, not slanted along the edge.</p>
+      </div>
+    </div>
+    <div id="shape-cards"></div>
+    <p class="msg" id="shape-msg" role="status"></p>
+    <div class="nav"><button class="btn-back" data-go="2">Back</button><button class="btn-next" data-go="4">Next</button></div>
+  </section>
+
+  <section class="step" id="s-volume">
+    <h2>Round 4: Volume tunnel</h2>
+    <p class="lead">Volume is space inside a 3D shape. For a prism, one reliable route is: <span class="formula">area of the front face &times; length</span>.</p>
+    <div class="grid-wrap">
+      <div class="cuboid-card">
+        <div class="cuboid" aria-label="Cuboid diagram with width 3 cm, height 4 cm and length 10 cm">
+          <div class="back"></div>
+          <div class="front"></div>
+          <div class="line l1"></div>
+          <div class="line l2"></div>
+          <div class="line l3"></div>
+          <div class="label w">3 cm</div>
+          <div class="label h">4 cm</div>
+          <div class="label len">10 cm</div>
+        </div>
+        <div class="tap-row">
+          <button type="button" data-tip="face">Tap front face</button>
+          <button type="button" data-tip="length">Tap length</button>
+          <button type="button" data-tip="volume">Tap volume</button>
+        </div>
+        <p class="answer-msg" id="tip-msg" role="status"></p>
+      </div>
+      <div class="task-card" id="volume-card">
+        <div class="input-row">
+          <div><label for="frontArea">Front face: 3 &times; 4 =</label><input id="frontArea" type="number" inputmode="numeric" placeholder="cm squared"></div>
+          <div><label for="cuboidVolume">Cuboid: front area &times; 10 =</label><input id="cuboidVolume" type="number" inputmode="numeric" placeholder="cm cubed"></div>
+          <div><label for="triPrismVolume">Triangular prism: 15 &times; 8 =</label><input id="triPrismVolume" type="number" inputmode="numeric" placeholder="cm cubed"></div>
+          <div><label for="cylinderVolume">Cylinder: 50 &times; 6 =</label><input id="cylinderVolume" type="number" inputmode="numeric" placeholder="cm cubed"></div>
+        </div>
+        <div class="nav" style="margin-top:0.9rem;"><button class="btn-next" id="volume-check" type="button">Check volume</button></div>
+        <p class="answer-msg" id="volume-msg" role="status"></p>
+      </div>
+    </div>
+    <div class="nav"><button class="btn-back" data-go="3">Back</button><button class="btn-next" data-go="5">Next</button></div>
+  </section>
+
+  <section class="step" id="s-problems">
+    <h2>Round 5: Problem solving workshop</h2>
+    <p class="lead">These are the questions where the maths is mixed into a real situation. The trick is deciding which measurements belong together.</p>
+
+    <div class="task-card" id="sequence-card">
+      <h3>Garden sequence</h3>
+      <p>A trapezium garden has parallel sides 12 m and 18 m, height 10 m, and grass seed costs &pound;2 for each 1 m&sup2;. Put the steps in a sensible order.</p>
+      <ol class="sequence-list" id="sequence-list"></ol>
+      <div class="nav" style="margin-top:0.8rem;"><button class="btn-next" id="sequence-check" type="button">Check order</button></div>
+      <p class="answer-msg" id="sequence-msg" role="status"></p>
+    </div>
+
+    <div class="task-card" id="garden-card">
+      <h3>Garden numbers</h3>
+      <div class="input-row">
+        <div><label for="gardenSum">12 + 18 =</label><input id="gardenSum" type="number" inputmode="numeric"></div>
+        <div><label for="gardenTimes">that answer &times; 10 =</label><input id="gardenTimes" type="number" inputmode="numeric"></div>
+        <div><label for="gardenArea">divide by 2 =</label><input id="gardenArea" type="number" inputmode="numeric" placeholder="m squared"></div>
+        <div><label for="gardenCost">area &times; 2 = &pound;</label><input id="gardenCost" type="number" inputmode="numeric"></div>
+      </div>
+      <div class="nav" style="margin-top:0.9rem;"><button class="btn-next" id="garden-check" type="button">Check garden</button></div>
+      <p class="answer-msg" id="garden-msg" role="status"></p>
+    </div>
+
+    <div class="task-card" id="pool-card">
+      <h3>Pool volume</h3>
+      <p>A rectangular swimming pool is 25 m long, 10 m wide and 2 m deep.</p>
+      <label for="poolVolume">25 &times; 10 &times; 2 =</label><input id="poolVolume" type="number" inputmode="numeric" placeholder="m cubed">
+      <div class="nav" style="margin-top:0.9rem;"><button class="btn-next" id="pool-check" type="button">Check pool</button></div>
+      <p class="answer-msg" id="pool-msg" role="status"></p>
+    </div>
+
+    <div class="task-card" id="flower-card">
+      <h3>Flower bed compost</h3>
+      <p>A triangular flower bed has base 6 m and height 3 m. One bag of compost covers 3 m&sup2;.</p>
+      <div class="input-row">
+        <div><label for="flowerArea">Triangle area =</label><input id="flowerArea" type="number" inputmode="numeric" placeholder="m squared"></div>
+        <div><label for="flowerBags">Bags needed =</label><input id="flowerBags" type="number" inputmode="numeric"></div>
+      </div>
+      <div class="nav" style="margin-top:0.9rem;"><button class="btn-next" id="flower-check" type="button">Check flower bed</button></div>
+      <p class="answer-msg" id="flower-msg" role="status"></p>
+    </div>
+
+    <div class="task-card" id="container-card">
+      <h3>Storage container</h3>
+      <p>The front face area is 12 m&sup2;. The container is 5 m long. It stores 2 large boxes in each 1 m&sup3;.</p>
+      <div class="input-row">
+        <div><label for="containerVolume">12 &times; 5 =</label><input id="containerVolume" type="number" inputmode="numeric" placeholder="m cubed"></div>
+        <div><label for="containerBoxes">volume &times; 2 =</label><input id="containerBoxes" type="number" inputmode="numeric" placeholder="boxes"></div>
+      </div>
+      <div class="nav" style="margin-top:0.9rem;"><button class="btn-next" id="container-check" type="button">Check container</button></div>
+      <p class="answer-msg" id="container-msg" role="status"></p>
+    </div>
+
+    <p class="msg" id="problem-msg" role="status"></p>
+    <div class="nav"><button class="btn-back" data-go="4">Back</button><button class="btn-next" data-go="6">Next</button></div>
+  </section>
+
+  <section class="step" id="s-finish">
+    <h2>Round 6: Lock in the learning</h2>
+    <p class="lead">One final thought is enough. A formula, a unit, a mistake to avoid, or a shortcut that made sense.</p>
+    <label for="reflection">One thing I want to remember is...</label>
+    <textarea id="reflection" placeholder="Write one useful thought from today's activity."></textarea>
+    <div class="nav" style="margin-top:0.9rem;"><button class="btn-next" id="reflection-check" type="button">Save reflection</button></div>
+    <p class="answer-msg" id="reflection-msg" role="status"></p>
+
+    <section class="boss" id="boss">
+      <button class="boss-head" id="boss-toggle" aria-expanded="false" aria-controls="boss-body">
+        <span class="badge">BOSS LEVEL</span>
+        <span class="sub">optional, explain the mistake in a claim</span>
+      </button>
+      <div class="boss-body" id="boss-body">
+        <p>A claim says: "A triangle with base 12 cm and height 5 cm has area 60 cm&sup2; because 12 &times; 5 = 60." Analyse the claim. What is useful, what is missing, and what would the area be?</p>
+        <label for="bossAnswer" style="color:#f0ede8;">Boss level response</label>
+        <textarea id="bossAnswer" placeholder="Useful part: 12 x 5. Missing part: divide by 2. Correct area: 30 cm squared."></textarea>
+        <div class="nav" style="margin-top:0.8rem;"><button class="btn-next" id="boss-save" type="button">Save boss response</button></div>
+        <div class="boss-note" id="boss-note">Boss response saved. That is the key judgement: a triangle is half of the matching rectangle.</div>
+      </div>
+    </section>
+
+    <div class="send">
+      <h3>Send your work to Jay</h3>
+      <p style="font-size:0.9rem; color:#555;">The email includes the answers, the reflection, the boss response if used, and how far you got.</p>
+      <label for="initials">Your initials</label>
+      <input type="text" id="initials" placeholder="Type your initials" maxlength="12">
+      <div><button class="sendbtn" id="send-btn" type="button">Send to Jay</button></div>
+      <p class="msg" id="send-msg" role="status"></p>
+    </div>
+
+    <div class="tiny-square" id="tiny-square">
+      <button type="button" id="tiny-square-btn" aria-expanded="false">There is a suspicious tiny square down here.</button>
+      <div class="note">Tiny square advice: if your brain buffers, draw the shape, label the measurements, then choose the unit last.</div>
+    </div>
+
+    <div class="nav"><button class="btn-back" data-go="5">Back</button><a class="btn-link" href="../index.html">All done</a></div>
+  </section>
+
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
 <script>
-(function () {
-  "use strict";
+"use strict";
 
-  var SLUG = "areavolume";
-  var PREFIX = "base6." + SLUG + ".";
-  var TOTAL_STEPS = 7;
-  var toastTimer = null;
+var NS = "base6.w6maths.area-volume.";
+function save(k, v) { try { localStorage.setItem(NS + k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(NS + k); } catch (e) { return null; } }
+function loadJSON(k, fb) { try { var v = localStorage.getItem(NS + k); return v ? JSON.parse(v) : fb; } catch (e) { return fb; } }
+function byId(id) { return document.getElementById(id); }
+function numberFrom(id) { var el = byId(id); var raw = el ? String(el.value).trim() : ""; if (!raw) { return NaN; } return Number(raw.replace(/[^0-9.\-]/g, "")); }
+function exact(id, value) { return numberFrom(id) === value; }
+function inputText(id) { var el = byId(id); return el ? el.value.trim() : ""; }
 
-  function storageSet(key, value) {
-    try {
-      window.localStorage.setItem(PREFIX + key, JSON.stringify(value));
-    } catch (error) {
-      return false;
-    }
-    return true;
+var quiet = false;
+var TOTAL_STARS = 6;
+var stars = loadJSON("stars", []);
+var problemSolved = loadJSON("problemSolved", []);
+
+function starSvg(f) {
+  return '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="' + (f ? '#ffce2e' : 'rgba(255,255,255,0.3)') + '" stroke="' + (f ? '#1a1a1a' : '#fef8f4') + '" stroke-width="3" stroke-linejoin="round"/></svg>';
+}
+function renderStars() {
+  var html = "";
+  for (var i = 0; i < TOTAL_STARS; i += 1) { html += starSvg(i < stars.length); }
+  byId("starbar").innerHTML = html;
+  byId("starbar").setAttribute("aria-label", stars.length + " of " + TOTAL_STARS + " stars earned");
+}
+function showToast(text) {
+  if (quiet) { return; }
+  var t = byId("toast");
+  byId("toast-text").textContent = text;
+  t.classList.add("show");
+  clearTimeout(t._t);
+  t._t = setTimeout(function () { t.classList.remove("show"); }, 3200);
+}
+function award(id, text) {
+  if (stars.indexOf(id) === -1) {
+    stars.push(id);
+    save("stars", JSON.stringify(stars));
+    renderStars();
+    showToast(text || "Star earned!");
   }
+}
+function markSolved(cardId) {
+  var card = byId(cardId);
+  if (card) { card.classList.add("solved"); }
+}
+function setMsg(id, text, good) {
+  var el = byId(id);
+  if (!el) { return; }
+  el.textContent = text;
+  el.classList.toggle("good", !!good);
+}
 
-  function storageGet(key, fallback) {
-    try {
-      var raw = window.localStorage.getItem(PREFIX + key);
-      if (raw === null) { return fallback; }
-      return JSON.parse(raw);
-    } catch (error) {
-      return fallback;
-    }
-  }
+/* ---------- steps ---------- */
+var STEPS = ["s-intro", "s-area-start", "s-formulas", "s-shapes", "s-volume", "s-problems", "s-finish"];
+function buildDots() {
+  var d = byId("dots");
+  STEPS.forEach(function (id, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", "Go to part " + (i + 1) + " of " + STEPS.length);
+    b.addEventListener("click", function () { goStep(i); });
+    d.appendChild(b);
+  });
+}
+function goStep(i) {
+  STEPS.forEach(function (id, n) {
+    byId(id).classList.toggle("active", n === i);
+    byId("dots").children[n].classList.toggle("on", n === i);
+  });
+  save("step", String(i));
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+function wireNav() {
+  document.querySelectorAll("[data-go]").forEach(function (b) {
+    b.addEventListener("click", function () { goStep(parseInt(b.getAttribute("data-go"), 10)); });
+  });
+}
 
-  function storageClearAll() {
-    try {
-      var keys = [];
-      for (var i = 0; i < window.localStorage.length; i += 1) {
-        var key = window.localStorage.key(i);
-        if (key && key.indexOf(PREFIX) === 0) { keys.push(key); }
-      }
-      keys.forEach(function (key) { window.localStorage.removeItem(key); });
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
+/* ---------- save fields ---------- */
+function wireSaveFields() {
+  document.querySelectorAll("input, textarea, select").forEach(function (el) {
+    var id = el.id;
+    if (!id) { return; }
+    var stored = load("field." + id);
+    if (stored !== null && el.type !== "button") { el.value = stored; }
+    el.addEventListener("input", function () { save("field." + id, el.value); });
+    el.addEventListener("change", function () { save("field." + id, el.value); });
+  });
+  try {
+    var profile = JSON.parse(localStorage.getItem("base6Profile") || "null");
+    if (profile && profile.initials && !byId("initials").value) { byId("initials").value = profile.initials; }
+  } catch (e) {}
+}
 
-  function byId(id) { return document.getElementById(id); }
-
-  function cleanNumber(value) {
-    var text = String(value || "").trim();
-    if (text === "") { return NaN; }
-    return Number(text.replace(/[^0-9.\-]/g, ""));
-  }
-
-  function setFeedback(id, text, kind) {
-    var box = byId(id);
-    if (!box) { return; }
-    box.textContent = text;
-    box.classList.remove("good", "coach");
-    if (kind) { box.classList.add(kind); }
-  }
-
-  function starSvg(filled, label) {
-    var cls = filled ? "filled" : "empty";
-    var title = label || (filled ? "Filled star" : "Empty star");
-    return "<svg class=\"star-svg " + cls + "\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"" + title + "\"><polygon class=\"shape\" points=\"12,2 15,8.5 22,9.2 16.8,13.8 18.4,21 12,17.2 5.6,21 7.2,13.8 2,9.2 9,8.5\"></polygon></svg>";
-  }
-
-  var state = {
-    currentStep: storageGet("currentStep", 0),
-    stars: storageGet("stars", []),
-    sort: storageGet("sort", {}),
-    quiz: storageGet("quiz", {}),
-    revealArea: storageGet("revealArea", false),
-    diagramTip: storageGet("diagramTip", ""),
-    sequence: storageGet("sequence", ["add", "height", "half", "cost"]),
-    bossOpen: storageGet("bossOpen", false),
-    eggOpen: storageGet("eggOpen", false)
-  };
-
-  if (!Array.isArray(state.stars)) { state.stars = []; }
-  if (!Array.isArray(state.sequence) || state.sequence.length !== 4) {
-    state.sequence = ["add", "height", "half", "cost"];
-  }
-  if (typeof state.currentStep !== "number" || state.currentStep < 0 || state.currentStep >= TOTAL_STEPS) {
-    state.currentStep = 0;
-  }
-
-  var stepNames = [
-    "Set up the lab",
-    "Rectangle rescue",
-    "Formula sorter",
-    "Shape workshop",
-    "Volume tunnel",
-    "Problem solving",
-    "Reflection"
-  ];
-
-  var sortItems = [
-    {
-      id: "rectangle",
-      title: "Rectangle area",
-      detail: "width x height",
-      correct: "multiply",
-      good: "Yes. A rectangle is rows and columns, so multiply the two straight lengths.",
-      coach: "Not that one. A rectangle does not use a half step; it is rows x columns."
-    },
-    {
-      id: "parallelogram",
-      title: "Parallelogram area",
-      detail: "base x straight height",
-      correct: "multiply",
-      good: "Yes. The straight height matters, not the sloping side. That is the classic trap.",
-      coach: "Close, but no half here. Imagine sliding the slanted bit across to make a rectangle."
-    },
-    {
-      id: "triangle",
-      title: "Triangle area",
-      detail: "1/2 x (base x straight height)",
-      correct: "half",
-      good: "Yes. A triangle is half of a matching rectangle or parallelogram.",
-      coach: "Not quite. A triangle uses base x height, then halves the result."
-    },
-    {
-      id: "trapezium",
-      title: "Trapezium area",
-      detail: "(a + b) x height, then divide by 2",
-      correct: "half",
-      good: "Yes. Adding the parallel sides makes a doubled strip, so the divide by 2 matters.",
-      coach: "Not quite. A trapezium rule has a divide by 2 step after adding the parallel sides."
-    },
-    {
-      id: "prism",
-      title: "Prism volume",
-      detail: "front face area x length",
-      correct: "multiply",
-      good: "Yes. A prism stacks the same front face along a length.",
-      coach: "Not that one. Prism volume uses a face area multiplied along the length."
-    }
-  ];
-
-  var quizItems = [
-    {
-      id: "tri12",
-      question: "A triangle has base 12 cm and straight height 5 cm. What is the area?",
-      options: [
-        { value: "60", text: "60 cm2", feedback: "That is base x height. For a triangle, halve it after multiplying." },
-        { value: "30", text: "30 cm2", feedback: "Yes. 12 x 5 = 60, then half is 30 cm2." },
-        { value: "17", text: "17 cm2", feedback: "That adds the numbers. Area uses multiplication, then a half for triangles." }
-      ],
-      correct: "30"
-    },
-    {
-      id: "trap10",
-      question: "A trapezium has parallel sides 10 cm and 14 cm, and height 8 cm. What is the area?",
-      options: [
-        { value: "192", text: "192 cm2", feedback: "That is 24 x 8. The final divide by 2 is still waiting." },
-        { value: "96", text: "96 cm2", feedback: "Yes. 10 + 14 = 24, 24 x 8 = 192, then half is 96 cm2." },
-        { value: "32", text: "32 cm2", feedback: "That looks like adding 10 + 14 + 8. Area needs multiply as well as add." }
-      ],
-      correct: "96"
-    },
-    {
-      id: "reverseTri",
-      question: "A triangle has area 20 cm2 and height 4 cm. What is its base?",
-      options: [
-        { value: "5", text: "5 cm", feedback: "That comes from 20 divided by 4. For a triangle, double the area first." },
-        { value: "10", text: "10 cm", feedback: "Yes. Double 20 to get 40, then 40 divided by 4 is 10 cm." },
-        { value: "80", text: "80 cm", feedback: "That multiplies 20 by 4. Reverse problems often undo with division." }
-      ],
-      correct: "10"
-    }
-  ];
-
-  var sequenceLabels = {
-    add: "Add the parallel sides: 12 + 18.",
-    height: "Multiply by the straight height: answer x 10.",
-    half: "Divide by 2 to get the trapezium area.",
-    cost: "Multiply the area by GBP 2 to find the seed cost."
-  };
-
-  function showToast(message) {
-    var toast = byId("toast");
-    byId("toastText").textContent = message;
-    if (toastTimer) { window.clearTimeout(toastTimer); }
-    toast.classList.add("show");
-    toastTimer = window.setTimeout(function () {
-      toast.classList.remove("show");
-    }, 3000);
-  }
-
-  function renderStars() {
-    var bar = byId("starBar");
-    var html = "<span class=\"star-label\">Stars</span>";
-    for (var i = 0; i < TOTAL_STEPS; i += 1) {
-      html += starSvg(state.stars.indexOf(i) !== -1, "Star for step " + (i + 1));
-    }
-    bar.innerHTML = html;
-  }
-
-  function earnStar(step, message) {
-    if (state.stars.indexOf(step) === -1) {
-      state.stars.push(step);
-      storageSet("stars", state.stars);
-      renderStars();
-      showToast(message);
-    }
-    renderProgressDots();
-    updateSummary();
-  }
-
-  function renderProgressDots() {
-    var dots = byId("progressDots");
-    dots.innerHTML = "";
-    for (var i = 0; i < TOTAL_STEPS; i += 1) {
-      var button = document.createElement("button");
-      button.type = "button";
-      button.className = "dot";
-      if (i === state.currentStep) { button.classList.add("active"); }
-      if (state.stars.indexOf(i) !== -1) { button.classList.add("done"); }
-      button.textContent = String(i + 1);
-      button.setAttribute("aria-label", "Jump to step " + (i + 1) + ": " + stepNames[i]);
-      button.setAttribute("data-jump", String(i));
-      dots.appendChild(button);
-    }
-  }
-
-  function showStep(step) {
-    state.currentStep = step;
-    storageSet("currentStep", state.currentStep);
-    document.querySelectorAll(".step").forEach(function (section) {
-      var sectionStep = Number(section.getAttribute("data-step"));
-      section.classList.toggle("active", sectionStep === state.currentStep);
-    });
-    renderProgressDots();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  function setupProgressClicks() {
-    byId("progressDots").addEventListener("click", function (event) {
-      var button = event.target.closest("button[data-jump]");
-      if (!button) { return; }
-      showStep(Number(button.getAttribute("data-jump")));
-    });
-  }
-
-  function restoreInputs() {
-    document.querySelectorAll("[data-save=\"input\"]").forEach(function (input) {
-      var saved = storageGet("input." + input.id, "");
-      if (typeof saved === "string" || typeof saved === "number") {
-        input.value = saved;
-      }
-      input.addEventListener("input", function () {
-        storageSet("input." + input.id, input.value);
-        updateSummary();
-      });
-    });
-  }
-
-  function setupStepButtons() {
-    document.querySelectorAll("[data-next]").forEach(function (button) {
-      button.addEventListener("click", function () {
-        showStep(Number(button.getAttribute("data-next")));
-      });
-    });
-    document.querySelectorAll("[data-prev]").forEach(function (button) {
-      button.addEventListener("click", function () {
-        showStep(Number(button.getAttribute("data-prev")));
-      });
-    });
-    document.querySelectorAll(".complete-btn").forEach(function (button) {
-      button.addEventListener("click", function () {
-        var step = Number(button.getAttribute("data-complete"));
-        earnStar(step, "Step " + (step + 1) + " saved. Nice bit of shape thinking.");
-      });
-    });
-  }
-
-  function setupArea() {
-    var panel = byId("areaRulePanel");
-    panel.classList.toggle("open", state.revealArea === true);
-    byId("revealAreaRule").addEventListener("click", function () {
-      state.revealArea = !state.revealArea;
-      storageSet("revealArea", state.revealArea);
-      panel.classList.toggle("open", state.revealArea === true);
-    });
-    byId("checkRect").addEventListener("click", function () {
-      var answer = cleanNumber(byId("rectAnswer").value);
-      if (answer === 35) {
-        setFeedback("rectFeedback", "Yes. 7 rows of 5, or 5 rows of 7, cover 35 cm2.", "good");
-      } else {
-        setFeedback("rectFeedback", "Not that one yet. Look at the two straight lengths first: 7 and 5. Multiply those, then use cm2.", "coach");
-      }
-      updateSummary();
-    });
-  }
-
-  function renderSort() {
-    var list = byId("sortList");
-    list.innerHTML = "";
-    sortItems.forEach(function (item) {
-      var wrap = document.createElement("div");
-      wrap.className = "rule-item";
-      var selected = state.sort[item.id] || "";
-      wrap.innerHTML = "<h3>" + item.title + "</h3><p>" + item.detail + "</p>" +
-        "<div class=\"choice-grid\">" +
-        "<button class=\"choice" + (selected === "multiply" ? " selected" : "") + "\" type=\"button\" data-sort=\"" + item.id + "\" data-choice=\"multiply\">Multiply straight measurements</button>" +
-        "<button class=\"choice" + (selected === "half" ? " selected" : "") + "\" type=\"button\" data-sort=\"" + item.id + "\" data-choice=\"half\">Includes a half step</button>" +
-        "<button class=\"choice" + (selected === "unsure" ? " selected" : "") + "\" type=\"button\" data-sort=\"" + item.id + "\" data-choice=\"unsure\">Not sure yet</button>" +
-        "</div><div class=\"feedback\" id=\"sortFb_" + item.id + "\" aria-live=\"polite\"></div>";
-      list.appendChild(wrap);
-    });
-    sortItems.forEach(function (item) {
-      var selected = state.sort[item.id] || "";
-      if (selected) { showSortFeedback(item, selected); }
-    });
-  }
-
-  function showSortFeedback(item, selected) {
-    if (!selected) { return; }
-    if (selected === item.correct) {
-      setFeedback("sortFb_" + item.id, item.good, "good");
-    } else if (selected === "unsure") {
-      setFeedback("sortFb_" + item.id, "Fair choice. Look for whether the rule has a divide by 2. That usually tells the story.", "coach");
+/* ---------- Round 1 ---------- */
+function wireAreaStart() {
+  byId("area-check").addEventListener("click", function () {
+    var prediction = numberFrom("predictArea");
+    var rect = numberFrom("rectAnswer");
+    if (prediction === 12 && rect === 35) {
+      markSolved("area-card");
+      setMsg("area-msg", "Good. 4 x 3 = 12 squares, and 7 x 5 = 35 cm squared.", true);
+      award("area", "Round 1 complete. Area counted.");
+    } else if (rect === 35) {
+      setMsg("area-msg", "The 7 by 5 answer is right. The grid has 4 rows? Check carefully: it is 4 across and 3 tall.", false);
     } else {
-      setFeedback("sortFb_" + item.id, item.coach, "coach");
+      setMsg("area-msg", "Use width x height. For the second one, multiply 7 by 5.", false);
     }
-  }
+  });
+}
 
-  function setupSort() {
-    renderSort();
-    byId("sortList").addEventListener("click", function (event) {
-      var button = event.target.closest("button[data-sort]");
-      if (!button) { return; }
-      var id = button.getAttribute("data-sort");
-      var choice = button.getAttribute("data-choice");
-      state.sort[id] = choice;
-      storageSet("sort", state.sort);
-      renderSort();
-      updateSummary();
+/* ---------- Round 2 ---------- */
+var FORMULAS = [
+  { id: "rect", title: "Rectangle area", rule: "width x height", ans: "multiply", fb: "Yes. It is a straight width times height job." },
+  { id: "para", title: "Parallelogram area", rule: "base x height", ans: "multiply", fb: "Yes. The slanted side is a distraction. Use base and vertical height." },
+  { id: "tri", title: "Triangle area", rule: "base x height, then divide by 2", ans: "half", fb: "Yes. A triangle is half of the matching rectangle or parallelogram." },
+  { id: "trap", title: "Trapezium area", rule: "add the parallel sides, multiply by height, then divide by 2", ans: "half", fb: "Yes. The divide by 2 corrects the doubled pair of parallel sides." },
+  { id: "prism", title: "Prism or cylinder volume", rule: "front face area x length", ans: "layers", fb: "Yes. Volume can be thought of as layers of area stacked through a length." }
+];
+function buildFormulaSorter() {
+  var list = byId("formula-list");
+  var saved = loadJSON("formula", {});
+  FORMULAS.forEach(function (f) {
+    var card = document.createElement("div");
+    card.className = "sort-card";
+    card.id = "formula-" + f.id;
+    card.innerHTML = '<div><div class="sort-title">' + f.title + '</div><div class="sort-rule">' + f.rule + '</div></div>' +
+      '<select aria-label="Sort ' + f.title + '"><option value="">Choose a bin</option><option value="multiply">straight multiply</option><option value="half">includes a half or divide by 2</option><option value="layers">area layers make volume</option></select><div class="sort-feedback"></div>';
+    var select = card.querySelector("select");
+    var fb = card.querySelector(".sort-feedback");
+    if (saved[f.id]) { select.value = saved[f.id]; }
+    select.addEventListener("change", function () {
+      saved[f.id] = select.value;
+      save("formula", JSON.stringify(saved));
+      fb.textContent = "";
+      card.classList.remove("solved");
     });
-    byId("checkSort").addEventListener("click", function () {
-      var attempted = 0;
-      var correct = 0;
-      sortItems.forEach(function (item) {
-        if (state.sort[item.id]) { attempted += 1; }
-        if (state.sort[item.id] === item.correct) { correct += 1; }
+    list.appendChild(card);
+  });
+  byId("formula-check").addEventListener("click", checkFormulaSorter);
+}
+function checkFormulaSorter() {
+  var saved = loadJSON("formula", {});
+  var correct = 0;
+  FORMULAS.forEach(function (f) {
+    var card = byId("formula-" + f.id);
+    var fb = card.querySelector(".sort-feedback");
+    if (saved[f.id] === f.ans) {
+      card.classList.add("solved");
+      fb.textContent = f.fb;
+      correct += 1;
+    } else {
+      card.classList.remove("solved");
+      fb.textContent = "Not quite yet. Ask: is it flat area, half of a shape, or area layers making volume?";
+    }
+  });
+  if (correct === FORMULAS.length) {
+    byId("formula-msg").textContent = "All sorted. The shortcuts are starting to behave.";
+    award("formula", "Formula sorter complete.");
+  } else {
+    byId("formula-msg").textContent = correct + " out of " + FORMULAS.length + " sorted. Tweak the others and check again.";
+  }
+}
+
+/* ---------- Round 3 ---------- */
+var SHAPES = [
+  { id: "s1", sent: "A rectangle is 7 cm wide and 5 cm tall. What is its area?", opts: ["12 cm squared", "35 cm squared", "24 cm squared"], ans: "35 cm squared", fb: "7 x 5 = 35. Area uses squared units.", hint: "A rectangle is width x height." },
+  { id: "s2", sent: "A parallelogram has base 9 cm and vertical height 4 cm. What is its area?", opts: ["36 cm squared", "26 cm squared", "18 cm squared"], ans: "36 cm squared", fb: "9 x 4 = 36. The vertical height is the important one.", hint: "Ignore any slanted side. Use base x vertical height." },
+  { id: "s3", sent: "A triangle has base 10 m and height 6 m. What is its area?", opts: ["60 m squared", "30 m squared", "16 m squared"], ans: "30 m squared", fb: "10 x 6 = 60, then divide by 2 = 30.", hint: "A triangle is half of a matching rectangle." },
+  { id: "s4", sent: "A trapezium has parallel sides 8 cm and 12 cm, and height 5 cm. What is its area?", opts: ["50 cm squared", "100 cm squared", "25 cm squared"], ans: "50 cm squared", fb: "8 + 12 = 20. 20 x 5 = 100. 100 divided by 2 = 50.", hint: "Add the parallel sides first, multiply by height, then halve." },
+  { id: "s5", sent: "A triangle has area 24 cm squared and height 6 cm. What is the base?", opts: ["4 cm", "8 cm", "12 cm"], ans: "8 cm", fb: "Reverse route: double 24 to make 48, then 48 divided by 6 = 8.", hint: "For reverse triangle questions, double the area first." }
+];
+function buildQuizCards(data, boxId, msgId, storeKey, awardId, awardText, finishedText) {
+  var box = byId(boxId);
+  var state = loadJSON(storeKey, []);
+  var solved = 0;
+  data.forEach(function (q) {
+    var card = document.createElement("div");
+    card.className = "qcard";
+    card.innerHTML = '<div class="sent">' + q.sent + '</div><div class="opts"></div><div class="fb"></div>';
+    var optbox = card.querySelector(".opts");
+    var fb = card.querySelector(".fb");
+    function solve(byUser) {
+      if (card.classList.contains("solved")) { return; }
+      card.classList.add("solved");
+      optbox.querySelectorAll("button").forEach(function (b) {
+        if (b.textContent === q.ans) { b.classList.add("right"); }
+        b.disabled = true;
       });
-      if (correct === sortItems.length) {
-        setFeedback("sortFeedback", "All sorted. You spotted the half-step shapes and the straight-multiply shapes.", "good");
-      } else {
-        setFeedback("sortFeedback", "You have " + correct + " out of " + sortItems.length + " in the strongest bins. Check whether the rule contains a divide by 2.", "coach");
+      fb.textContent = q.fb;
+      solved += 1;
+      if (solved >= data.length) {
+        byId(msgId).textContent = finishedText;
+        if (byUser) { award(awardId, awardText); }
       }
-    });
-  }
-
-  function renderQuiz() {
-    var list = byId("quizList");
-    list.innerHTML = "";
-    quizItems.forEach(function (item, index) {
-      var selected = state.quiz[item.id] || "";
-      var html = "<div class=\"quiz-item\"><h3>Card " + (index + 1) + "</h3><p>" + item.question + "</p><div class=\"choice-grid\">";
-      item.options.forEach(function (option) {
-        html += "<button class=\"choice" + (selected === option.value ? " selected" : "") + "\" type=\"button\" data-quiz=\"" + item.id + "\" data-answer=\"" + option.value + "\">" + option.text + "</button>";
-      });
-      html += "</div><div class=\"feedback\" id=\"quizFb_" + item.id + "\" aria-live=\"polite\"></div></div>";
-      list.insertAdjacentHTML("beforeend", html);
-    });
-    quizItems.forEach(function (item) {
-      var selected = state.quiz[item.id] || "";
-      if (selected) { showQuizFeedback(item, selected); }
-    });
-  }
-
-  function showQuizFeedback(item, selected) {
-    var option = item.options.filter(function (opt) { return opt.value === selected; })[0];
-    if (!option) { return; }
-    setFeedback("quizFb_" + item.id, option.feedback, selected === item.correct ? "good" : "coach");
-  }
-
-  function setupQuiz() {
-    renderQuiz();
-    byId("quizList").addEventListener("click", function (event) {
-      var button = event.target.closest("button[data-quiz]");
-      if (!button) { return; }
-      var id = button.getAttribute("data-quiz");
-      var answer = button.getAttribute("data-answer");
-      state.quiz[id] = answer;
-      storageSet("quiz", state.quiz);
-      renderQuiz();
-      updateSummary();
-    });
-  }
-
-  function setupVolume() {
-    var tips = {
-      face: "Front face: this flat rectangle is 3 cm by 4 cm, so its area is 12 cm2.",
-      length: "Length: the same front face is stretched or stacked 10 cm along the shape.",
-      volume: "Volume: multiply the front face area by the length, so 12 x 10 = 120 cm3."
-    };
-    if (state.diagramTip && tips[state.diagramTip]) {
-      setFeedback("diagramFeedback", tips[state.diagramTip], "good");
     }
-    document.querySelectorAll("[data-diagram]").forEach(function (button) {
-      button.addEventListener("click", function () {
-        state.diagramTip = button.getAttribute("data-diagram");
-        storageSet("diagramTip", state.diagramTip);
-        setFeedback("diagramFeedback", tips[state.diagramTip], "good");
-        updateSummary();
-      });
-    });
-    byId("checkVolume").addEventListener("click", function () {
-      var checks = [
-        { id: "frontArea", answer: 12, name: "front face" },
-        { id: "cuboidVolume", answer: 120, name: "cuboid volume" },
-        { id: "triPrismVolume", answer: 120, name: "triangular prism" },
-        { id: "cylinderVolume", answer: 300, name: "cylinder" }
-      ];
-      var correct = 0;
-      var missing = [];
-      checks.forEach(function (item) {
-        if (cleanNumber(byId(item.id).value) === item.answer) {
-          correct += 1;
+    q.opts.forEach(function (o) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = o;
+      b.addEventListener("click", function () {
+        if (card.classList.contains("solved")) { return; }
+        if (o === q.ans) {
+          if (state.indexOf(q.id) === -1) { state.push(q.id); save(storeKey, JSON.stringify(state)); }
+          solve(true);
         } else {
-          missing.push(item.name);
+          b.classList.add("wrong");
+          fb.textContent = q.hint;
+          setTimeout(function () { b.classList.remove("wrong"); }, 700);
         }
       });
-      if (correct === checks.length) {
-        setFeedback("volumeFeedback", "Strong volume work. You used the front face area and stretched it along the length.", "good");
-      } else {
-        setFeedback("volumeFeedback", "You have " + correct + " out of " + checks.length + ". Check: " + missing.join(", ") + ". Start with the front face, then multiply by length.", "coach");
-      }
-      updateSummary();
+      optbox.appendChild(b);
     });
-  }
+    box.appendChild(card);
+    if (state.indexOf(q.id) !== -1) { solve(false); }
+  });
+}
 
-  function renderSequence() {
-    var list = byId("sequenceList");
-    list.innerHTML = "";
-    state.sequence.forEach(function (id, index) {
-      var li = document.createElement("li");
-      li.innerHTML = "<span class=\"num-badge\">" + (index + 1) + "</span><span>" + sequenceLabels[id] + "</span><span class=\"sequence-actions\"><button class=\"small-btn\" type=\"button\" data-move=\"up\" data-id=\"" + id + "\">Up</button><button class=\"small-btn\" type=\"button\" data-move=\"down\" data-id=\"" + id + "\">Down</button></span>";
-      list.appendChild(li);
+/* ---------- Round 4 ---------- */
+function wireVolume() {
+  var tips = {
+    face: "The front face is a rectangle. 3 x 4 = 12 cm squared.",
+    length: "The length is the direction the face travels through: 10 cm.",
+    volume: "Volume is the front area repeated through the length: 12 x 10 = 120 cm cubed."
+  };
+  document.querySelectorAll("[data-tip]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var key = b.getAttribute("data-tip");
+      save("volumeTip", key);
+      setMsg("tip-msg", tips[key], false);
     });
-  }
+  });
+  var savedTip = load("volumeTip");
+  if (savedTip && tips[savedTip]) { setMsg("tip-msg", tips[savedTip], false); }
+  byId("volume-check").addEventListener("click", function () {
+    var correct = 0;
+    if (exact("frontArea", 12)) { correct += 1; }
+    if (exact("cuboidVolume", 120)) { correct += 1; }
+    if (exact("triPrismVolume", 120)) { correct += 1; }
+    if (exact("cylinderVolume", 300)) { correct += 1; }
+    if (correct === 4) {
+      markSolved("volume-card");
+      setMsg("volume-msg", "All four are right. Squared units are flat. Cubed units have depth.", true);
+      award("volume", "Volume tunnel complete.");
+    } else {
+      setMsg("volume-msg", correct + " out of 4 so far. Remember: face area times length.", false);
+    }
+  });
+}
 
-  function moveSequence(id, dir) {
-    var index = state.sequence.indexOf(id);
-    if (index === -1) { return; }
-    var newIndex = dir === "up" ? index - 1 : index + 1;
-    if (newIndex < 0 || newIndex >= state.sequence.length) { return; }
-    var temp = state.sequence[index];
-    state.sequence[index] = state.sequence[newIndex];
-    state.sequence[newIndex] = temp;
-    storageSet("sequence", state.sequence);
-    renderSequence();
-    updateSummary();
+/* ---------- Round 5 ---------- */
+var SEQ = [
+  { id: "add", text: "Add the two parallel sides: 12 + 18" },
+  { id: "height", text: "Multiply by the height: answer x 10" },
+  { id: "half", text: "Divide by 2 to get the trapezium area" },
+  { id: "cost", text: "Multiply the area by £2 for the seed cost" }
+];
+var sequenceOrder = loadJSON("sequence", ["height", "add", "cost", "half"]);
+function sequenceText(id) {
+  var found = SEQ.filter(function (x) { return x.id === id; })[0];
+  return found ? found.text : id;
+}
+function renderSequence() {
+  var list = byId("sequence-list");
+  list.innerHTML = "";
+  sequenceOrder.forEach(function (id, idx) {
+    var li = document.createElement("li");
+    li.innerHTML = '<span class="num-badge">' + (idx + 1) + '</span><span>' + sequenceText(id) + '</span><span class="move-buttons"><button type="button" aria-label="Move up">Up</button><button type="button" aria-label="Move down">Down</button></span>';
+    var buttons = li.querySelectorAll("button");
+    buttons[0].addEventListener("click", function () { moveSequence(idx, -1); });
+    buttons[1].addEventListener("click", function () { moveSequence(idx, 1); });
+    list.appendChild(li);
+  });
+}
+function moveSequence(index, dir) {
+  var next = index + dir;
+  if (next < 0 || next >= sequenceOrder.length) { return; }
+  var temp = sequenceOrder[index];
+  sequenceOrder[index] = sequenceOrder[next];
+  sequenceOrder[next] = temp;
+  save("sequence", JSON.stringify(sequenceOrder));
+  renderSequence();
+}
+function rememberProblem(id) {
+  if (problemSolved.indexOf(id) === -1) {
+    problemSolved.push(id);
+    save("problemSolved", JSON.stringify(problemSolved));
   }
-
-  function setupProblems() {
-    renderSequence();
-    byId("sequenceList").addEventListener("click", function (event) {
-      var button = event.target.closest("button[data-move]");
-      if (!button) { return; }
-      moveSequence(button.getAttribute("data-id"), button.getAttribute("data-move"));
-    });
-    byId("checkSequence").addEventListener("click", function () {
-      var correct = ["add", "height", "half", "cost"].join("|");
-      if (state.sequence.join("|") === correct) {
-        setFeedback("sequenceFeedback", "Yes. That order keeps the area work together before the cost step.", "good");
-      } else {
-        setFeedback("sequenceFeedback", "Not quite. The cost waits until the area is finished. For a trapezium: add, multiply by height, divide by 2.", "coach");
-      }
-    });
-    byId("checkGarden").addEventListener("click", function () {
-      var answers = [
-        cleanNumber(byId("gardenSum").value) === 30,
-        cleanNumber(byId("gardenTimes").value) === 300,
-        cleanNumber(byId("gardenArea").value) === 150,
-        cleanNumber(byId("gardenCost").value) === 300
-      ];
-      var correctCount = answers.filter(Boolean).length;
-      if (correctCount === 4) {
-        setFeedback("gardenFeedback", "Yes. The garden is 150 m2, so the seed cost is GBP 300.", "good");
-      } else {
-        setFeedback("gardenFeedback", "You have " + correctCount + " out of 4. Keep the order: add parallel sides, multiply by height, halve, then multiply the cost.", "coach");
-      }
-      updateSummary();
-    });
-    byId("checkPool").addEventListener("click", function () {
-      if (cleanNumber(byId("poolVolume").value) === 500) {
-        setFeedback("poolFeedback", "Yes. 25 x 10 gives the floor area, then x 2 gives 500 m3.", "good");
-      } else {
-        setFeedback("poolFeedback", "Not that one yet. A cuboid uses length x width x depth. Check the three numbers first.", "coach");
-      }
-      updateSummary();
-    });
-    byId("checkFlower").addEventListener("click", function () {
-      var area = cleanNumber(byId("flowerArea").value);
-      var bags = cleanNumber(byId("flowerBags").value);
-      if (area === 9 && bags === 3) {
-        setFeedback("flowerFeedback", "Yes. Half of 6 x 3 is 9 m2, and 9 divided by 3 gives 3 bags.", "good");
-      } else {
-        setFeedback("flowerFeedback", "Not quite yet. Find the triangle area first: 6 x 3, then half. After that, divide by what one bag covers.", "coach");
-      }
-      updateSummary();
-    });
-    byId("checkContainer").addEventListener("click", function () {
-      var volume = cleanNumber(byId("containerVolume").value);
-      var boxes = cleanNumber(byId("containerBoxes").value);
-      if (volume === 60 && boxes === 120) {
-        setFeedback("containerFeedback", "Yes. 12 x 5 = 60 m3, then 2 boxes for each m3 gives 120 boxes.", "good");
-      } else {
-        setFeedback("containerFeedback", "Not that one yet. First find the volume from front face area x length, then multiply by boxes per m3.", "coach");
-      }
-      updateSummary();
-    });
+  checkProblemStar();
+}
+function checkProblemStar() {
+  if (problemSolved.length >= 5) {
+    byId("problem-msg").textContent = "Problem workshop complete. That is a lot of real-world maths handled.";
+    award("problem", "Problem solving workshop complete.");
+  } else {
+    byId("problem-msg").textContent = problemSolved.length + " of 5 problem parts complete.";
   }
+}
+function wireProblems() {
+  renderSequence();
+  byId("sequence-check").addEventListener("click", function () {
+    if (sequenceOrder.join("|") === "add|height|half|cost") {
+      markSolved("sequence-card");
+      setMsg("sequence-msg", "Correct order. Work out area first, then cost.", true);
+      rememberProblem("sequence");
+    } else {
+      setMsg("sequence-msg", "Nearly. You need to make the area before you can work out the cost.", false);
+    }
+  });
+  byId("garden-check").addEventListener("click", function () {
+    var ok = exact("gardenSum", 30) && exact("gardenTimes", 300) && exact("gardenArea", 150) && exact("gardenCost", 300);
+    if (ok) { markSolved("garden-card"); setMsg("garden-msg", "Correct. The garden is 150 m squared and the seed costs £300.", true); rememberProblem("garden"); }
+    else { setMsg("garden-msg", "Use the trapezium route: add, multiply by height, divide by 2, then cost.", false); }
+  });
+  byId("pool-check").addEventListener("click", function () {
+    if (exact("poolVolume", 500)) { markSolved("pool-card"); setMsg("pool-msg", "Correct. 25 x 10 x 2 = 500 m cubed.", true); rememberProblem("pool"); }
+    else { setMsg("pool-msg", "Multiply the three measurements: length x width x depth.", false); }
+  });
+  byId("flower-check").addEventListener("click", function () {
+    if (exact("flowerArea", 9) && exact("flowerBags", 3)) { markSolved("flower-card"); setMsg("flower-msg", "Correct. Triangle area is 9 m squared, so 3 bags are needed.", true); rememberProblem("flower"); }
+    else { setMsg("flower-msg", "Triangle area is base x height divided by 2. Then divide the area by 3.", false); }
+  });
+  byId("container-check").addEventListener("click", function () {
+    if (exact("containerVolume", 60) && exact("containerBoxes", 120)) { markSolved("container-card"); setMsg("container-msg", "Correct. 60 m cubed and 120 boxes.", true); rememberProblem("container"); }
+    else { setMsg("container-msg", "Front face area times length gives volume. Then multiply by 2 boxes per m cubed.", false); }
+  });
+  ["sequence", "garden", "pool", "flower", "container"].forEach(function (id) { if (problemSolved.indexOf(id) !== -1) { markSolved(id + "-card"); } });
+  checkProblemStar();
+}
 
-  function setupBossAndEmail() {
-    var details = byId("bossDetails");
-    details.open = state.bossOpen === true;
-    details.addEventListener("toggle", function () {
-      state.bossOpen = details.open;
-      storageSet("bossOpen", state.bossOpen);
-    });
-    byId("saveBoss").addEventListener("click", function () {
-      var text = byId("bossAnswer").value.trim();
-      if (text.length > 0) {
-        setFeedback("bossFeedback", "Boss response saved. The strongest answers mention that 12 x 5 is useful, then divide by 2 for the triangle.", "good");
-        showToast("Boss level saved. That was a proper think.");
-      } else {
-        setFeedback("bossFeedback", "Blank is fine. If you add a thought, it will save as you type.", "coach");
-      }
-      updateSummary();
-    });
-    byId("sendEmail").addEventListener("click", function () {
-      var initials = byId("studentInitials").value.trim() || "unknown";
-      var subject = "Base 6 - Area and Volume - " + initials;
-      var body = buildSummary();
-      var url = "https://mail.google.com/mail/?view=cm&fs=1&to=jay.raine%40chiltonbridgeschool.co.uk&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-      window.open(url, "_blank");
-      setFeedback("emailFeedback", "Email opened. Press send in the email.", "good");
-    });
-  }
+/* ---------- Finish ---------- */
+function wireFinish() {
+  byId("reflection-check").addEventListener("click", function () {
+    var text = inputText("reflection");
+    if (text.length < 8) {
+      setMsg("reflection-msg", "Add one proper thought first. It can be short, but it needs to be useful.", false);
+      return;
+    }
+    setMsg("reflection-msg", "Reflection saved.", true);
+    award("reflect", "Reflection saved.");
+  });
+  var head = byId("boss-toggle");
+  var boss = byId("boss");
+  head.addEventListener("click", function () {
+    var open = boss.classList.toggle("open");
+    head.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  byId("boss-save").addEventListener("click", function () {
+    var text = inputText("bossAnswer").toLowerCase();
+    if (text.length < 20) {
+      byId("boss-note").textContent = "Add a bit more: what is useful, what is missing, and the correct area.";
+      byId("boss-note").classList.add("show");
+      return;
+    }
+    save("bossSaved", "yes");
+    byId("boss-note").textContent = "Boss response saved. The key judgement is that a triangle is half of the matching rectangle.";
+    byId("boss-note").classList.add("show");
+    showToast("Boss response saved.");
+  });
+  if (load("bossSaved") === "yes") { byId("boss-note").classList.add("show"); }
+  byId("tiny-square-btn").addEventListener("click", function () {
+    var box = byId("tiny-square");
+    var open = box.classList.toggle("open");
+    byId("tiny-square-btn").setAttribute("aria-expanded", open ? "true" : "false");
+  });
+}
 
-  function inputValue(id) {
-    var el = byId(id);
-    return el ? el.value.trim() : "";
-  }
+/* ---------- send ---------- */
+function sortChoiceText(id) {
+  var saved = loadJSON("formula", {});
+  var value = saved[id] || "not sorted";
+  if (value === "multiply") { return "straight multiply"; }
+  if (value === "half") { return "includes a half or divide by 2"; }
+  if (value === "layers") { return "area layers make volume"; }
+  return "not sorted";
+}
+function buildSummary(name) {
+  var lines = [
+    "BASE 6 - MATHS - AREA AND VOLUME (Week 6, Monday)",
+    "",
+    "Student: " + name,
+    "Date: " + new Date().toLocaleString("en-GB"),
+    "Stars earned: " + stars.length + "/" + TOTAL_STARS,
+    "",
+    "Round 1 - Count the space",
+    "Prediction for 4 by 3 grid: " + (inputText("predictArea") || "blank"),
+    "7 cm by 5 cm rectangle: " + (inputText("rectAnswer") || "blank"),
+    "",
+    "Round 2 - Formula sorter",
+    "Rectangle area: " + sortChoiceText("rect"),
+    "Parallelogram area: " + sortChoiceText("para"),
+    "Triangle area: " + sortChoiceText("tri"),
+    "Trapezium area: " + sortChoiceText("trap"),
+    "Prism or cylinder volume: " + sortChoiceText("prism"),
+    "",
+    "Round 3 - Shape workshop",
+    "Questions solved: " + loadJSON("shape", []).length + "/" + SHAPES.length,
+    "",
+    "Round 4 - Volume tunnel",
+    "Diagram tip explored: " + (load("volumeTip") || "none"),
+    "Front area: " + (inputText("frontArea") || "blank"),
+    "Cuboid volume: " + (inputText("cuboidVolume") || "blank"),
+    "Triangular prism volume: " + (inputText("triPrismVolume") || "blank"),
+    "Cylinder volume: " + (inputText("cylinderVolume") || "blank"),
+    "",
+    "Round 5 - Problem solving",
+    "Problem parts complete: " + problemSolved.length + "/5",
+    "Garden sequence: " + sequenceOrder.map(sequenceText).join(" | "),
+    "Garden sum: " + (inputText("gardenSum") || "blank"),
+    "Garden multiplied by height: " + (inputText("gardenTimes") || "blank"),
+    "Garden area: " + (inputText("gardenArea") || "blank"),
+    "Garden cost: " + (inputText("gardenCost") || "blank"),
+    "Pool volume: " + (inputText("poolVolume") || "blank"),
+    "Flower bed area: " + (inputText("flowerArea") || "blank"),
+    "Flower bed bags: " + (inputText("flowerBags") || "blank"),
+    "Container volume: " + (inputText("containerVolume") || "blank"),
+    "Container boxes: " + (inputText("containerBoxes") || "blank"),
+    "",
+    "Reflection",
+    inputText("reflection") || "blank",
+    "",
+    "Boss level",
+    inputText("bossAnswer") || "blank",
+    "",
+    "Sent automatically from Base 6"
+  ];
+  return lines.join("\n");
+}
+function wireSend() {
+  byId("send-btn").addEventListener("click", function () {
+    var name = inputText("initials");
+    if (!name) {
+      byId("send-msg").textContent = "Pop your initials in first.";
+      return;
+    }
+    try { localStorage.setItem("base6Profile", JSON.stringify({ initials: name })); } catch (e) {}
+    save("field.initials", name);
+    var subject = "Base 6 - Maths: Area and Volume - " + name;
+    var body = buildSummary(name);
+    var url = "https://mail.google.com/mail/?view=cm&fs=1"
+      + "&to=" + encodeURIComponent("jay.raine@chiltonbridgeschool.co.uk")
+      + "&su=" + encodeURIComponent(subject)
+      + "&body=" + encodeURIComponent(body);
+    var opened = window.open(url, "_blank");
+    if (!opened) { window.location.href = url; }
+    byId("send-msg").textContent = "Email opened. Press send in the email.";
+  });
+}
 
-  function quizChoiceText(id) {
-    var item = quizItems.filter(function (q) { return q.id === id; })[0];
-    if (!item) { return ""; }
-    var selected = state.quiz[id] || "";
-    var option = item.options.filter(function (opt) { return opt.value === selected; })[0];
-    return option ? option.text : "not answered";
-  }
+function wireReset() {
+  byId("reset-btn").addEventListener("click", function () {
+    if (!confirm("Reset this activity's saved progress?")) { return; }
+    try {
+      Object.keys(localStorage).forEach(function (key) {
+        if (key.indexOf(NS) === 0) { localStorage.removeItem(key); }
+      });
+    } catch (e) {}
+    window.location.reload();
+  });
+}
 
-  function sortChoiceText(id) {
-    var value = state.sort[id] || "not sorted";
-    if (value === "multiply") { return "multiply straight measurements"; }
-    if (value === "half") { return "includes a half step"; }
-    if (value === "unsure") { return "not sure yet"; }
-    return value;
-  }
+function restoreSolvedVisuals() {
+  if (stars.indexOf("area") !== -1) { markSolved("area-card"); }
+  if (stars.indexOf("volume") !== -1) { markSolved("volume-card"); }
+  var savedFormula = loadJSON("formula", {});
+  FORMULAS.forEach(function (f) {
+    var card = byId("formula-" + f.id);
+    if (card && savedFormula[f.id] === f.ans) { card.classList.add("solved"); card.querySelector(".sort-feedback").textContent = f.fb; }
+  });
+}
 
-  function buildSummary() {
-    var initials = inputValue("studentInitials") || "unknown";
-    var date = new Date().toLocaleString("en-GB");
-    var lines = [];
-    lines.push("Student initials: " + initials);
-    lines.push("Date: " + date);
-    lines.push("");
-    lines.push("Base 6 Area and Volume Lab");
-    lines.push("Stars earned: " + state.stars.length + " / " + TOTAL_STEPS);
-    lines.push("");
-    lines.push("Step 1 - Set up");
-    lines.push("Initials entered: " + initials);
-    lines.push("");
-    lines.push("Step 2 - Rectangle rescue");
-    lines.push("Prediction for 4 by 3 grid: " + (inputValue("predictArea") || "blank"));
-    lines.push("7 cm by 5 cm rectangle answer: " + (inputValue("rectAnswer") || "blank"));
-    lines.push("");
-    lines.push("Step 3 - Formula sorter");
-    sortItems.forEach(function (item) {
-      lines.push(item.title + ": " + sortChoiceText(item.id));
-    });
-    lines.push("");
-    lines.push("Step 4 - Shape workshop");
-    quizItems.forEach(function (item) {
-      lines.push(item.question + " Answer picked: " + quizChoiceText(item.id));
-    });
-    lines.push("");
-    lines.push("Step 5 - Volume tunnel");
-    lines.push("Diagram part explored: " + (state.diagramTip || "not tapped"));
-    lines.push("Front area: " + (inputValue("frontArea") || "blank"));
-    lines.push("Cuboid volume: " + (inputValue("cuboidVolume") || "blank"));
-    lines.push("Triangular prism volume: " + (inputValue("triPrismVolume") || "blank"));
-    lines.push("Cylinder volume: " + (inputValue("cylinderVolume") || "blank"));
-    lines.push("");
-    lines.push("Step 6 - Problem solving");
-    lines.push("Garden sequence: " + state.sequence.map(function (id) { return sequenceLabels[id]; }).join(" | "));
-    lines.push("Garden sum: " + (inputValue("gardenSum") || "blank"));
-    lines.push("Garden multiplied by height: " + (inputValue("gardenTimes") || "blank"));
-    lines.push("Garden area: " + (inputValue("gardenArea") || "blank"));
-    lines.push("Garden cost: " + (inputValue("gardenCost") || "blank"));
-    lines.push("Pool volume: " + (inputValue("poolVolume") || "blank"));
-    lines.push("Flower bed area: " + (inputValue("flowerArea") || "blank"));
-    lines.push("Flower bed bags: " + (inputValue("flowerBags") || "blank"));
-    lines.push("Container volume: " + (inputValue("containerVolume") || "blank"));
-    lines.push("Container boxes: " + (inputValue("containerBoxes") || "blank"));
-    lines.push("");
-    lines.push("Reflection");
-    lines.push(inputValue("reflection") || "blank");
-    lines.push("");
-    lines.push("Boss level");
-    lines.push(inputValue("bossAnswer") || "blank");
-    lines.push("");
-    lines.push("Sent automatically from Base 6");
-    return lines.join("\n");
-  }
-
-  function updateSummary() {
-    var preview = byId("summaryPreview");
-    if (preview) { preview.textContent = buildSummary(); }
-  }
-
-  function setupEgg() {
-    var btn = byId("eggBtn");
-    var note = byId("eggNote");
-    note.classList.toggle("open", state.eggOpen === true);
-    btn.setAttribute("aria-expanded", state.eggOpen === true ? "true" : "false");
-    btn.addEventListener("click", function () {
-      state.eggOpen = !state.eggOpen;
-      storageSet("eggOpen", state.eggOpen);
-      note.classList.toggle("open", state.eggOpen === true);
-      btn.setAttribute("aria-expanded", state.eggOpen === true ? "true" : "false");
-    });
-  }
-
-  function setupReset() {
-    byId("resetBtn").addEventListener("click", function () {
-      var okay = window.confirm("Clear the saved work on this device for this activity?");
-      if (!okay) { return; }
-      storageClearAll();
-      window.location.reload();
-    });
-  }
-
-  function init() {
-    renderStars();
-    renderProgressDots();
-    setupProgressClicks();
-    restoreInputs();
-    setupStepButtons();
-    setupArea();
-    setupSort();
-    setupQuiz();
-    setupVolume();
-    setupProblems();
-    setupBossAndEmail();
-    setupEgg();
-    setupReset();
-    showStep(state.currentStep);
-    updateSummary();
-  }
-
-  init();
-}());
+document.addEventListener("DOMContentLoaded", function () {
+  quiet = true;
+  renderStars();
+  buildDots();
+  buildFormulaSorter();
+  buildQuizCards(SHAPES, "shape-cards", "shape-msg", "shape", "shape", "Shape workshop complete.", "All five shape questions solved. Strong formula choosing.");
+  wireSaveFields();
+  wireNav();
+  wireAreaStart();
+  wireVolume();
+  wireProblems();
+  wireFinish();
+  wireSend();
+  wireReset();
+  restoreSolvedVisuals();
+  quiet = false;
+  var st = parseInt(load("step"), 10);
+  if (isNaN(st) || st < 0 || st >= STEPS.length) { st = 0; }
+  goStep(st);
+});
 </script>
+
 </body>
 </html>
