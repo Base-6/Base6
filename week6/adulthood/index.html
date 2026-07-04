@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Preparation for Adulthood &middot; Week 6 &middot; Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { position: relative; background-color: #0e8a9e; padding: 2.2rem 2rem 3rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(254,248,244,0.14); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.85rem; font-weight: 700; color: #d4eef2; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  h1 { font-size: 2.2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .header-sub { font-size: 1.05rem; color: #d4eef2; margin-top: 0.5rem; max-width: 46ch; margin-left: auto; margin-right: auto; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+
+  .main { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #0e8a9e; margin-bottom: 1.25rem; }
+
+  .tiles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.1rem; margin-bottom: 2.5rem; }
+  .tiles-grid.single { grid-template-columns: minmax(240px, 460px); }
+  .tile { position: relative; background: #ffffff; border: 2px solid var(--c); border-radius: 16px; padding: 1.5rem 1.5rem 1.25rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.45rem; transition: transform 0.18s ease, box-shadow 0.18s ease; overflow: hidden; }
+  .tile::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--c); }
+  .tile:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 10px 26px var(--shadow); }
+  .tile-badge { width: 56px; height: 56px; border-radius: 50%; background: var(--bg); border: 2px solid var(--c); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; line-height: 1; margin-bottom: 0.4rem; }
+  .tile-day { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c); }
+  .tile-title { font-size: 1.25rem; font-weight: 700; color: var(--c); line-height: 1.3; }
+  .tile-desc { font-size: 0.92rem; color: #444; line-height: 1.55; flex-grow: 1; }
+  .tile-go { margin-top: 0.7rem; font-size: 0.85rem; font-weight: 700; color: var(--c); display: inline-flex; align-items: center; gap: 0.3rem; }
+  .tile-go .arrow { transition: transform 0.18s ease; }
+  .tile:hover .tile-go .arrow { transform: translateX(4px); }
+  .tile-num { position: absolute; top: 14px; right: 16px; font-size: 1.4rem; font-weight: 700; color: var(--c); opacity: 0.35; }
+  .tile-today { display: none; background: var(--c); color: #ffffff; font-weight: 700; border-radius: 8px; padding: 1px 12px; font-size: 0.76rem; width: fit-content; }
+  .tile.is-today { border-width: 4px; }
+  .tile.is-today .tile-today { display: inline-block; }
+  .tile-ext { font-size: 0.78rem; font-weight: 700; color: #888; }
+
+  .note { font-size: 0.85rem; color: #555; line-height: 1.55; margin-top: -1.25rem; margin-bottom: 2.5rem; }
+
+  a:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile, .tile-go .arrow { transition: none; }
+    .tile:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Week 6</a>
+  <div class="header-inner">
+    <p class="week-label">Week 6 &middot; Preparation for Adulthood</p>
+    <h1>Real-Life Skills</h1>
+    <p class="header-sub">Useful things for everyday life. One session this week, plus something calming for whenever you fancy it.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <p class="section-label">This week's session</p>
+  <div class="tiles-grid single">
+
+    <a class="tile" data-date="2026-07-07" style="--c:#0e8a9e; --bg:#e2f3f6; --shadow:rgba(14,138,158,0.22);" href="1.html">
+      <span class="tile-num" aria-hidden="true">1</span>
+      <span class="tile-badge">&#127859;</span>
+      <span class="tile-day">Tuesday</span>
+      <span class="tile-title">Real-Life Skills</span>
+      <span class="tile-desc">The practical stuff that makes everyday life easier to manage. Tuesday afternoon this week.</span>
+      <span class="tile-today">Today</span>
+      <span class="tile-go">Open session <span class="arrow">&#8594;</span></span>
+    </a>
+
+  </div>
+  <p class="note">One session this week, on Tuesday afternoon. Looking after yourself counts as a real-life skill too, which is where the video below comes in.</p>
+
+  <p class="section-label">Wellbeing</p>
+  <div class="tiles-grid single">
+    <a class="tile" style="--c:#7b5ea7; --bg:#efe9f6; --shadow:rgba(123,94,167,0.22);" href="https://www.nhs.uk/live-well/exercise/pilates-and-yoga/yoga-with-lj/" target="_blank" rel="noopener">
+      <span class="tile-badge">&#129496;</span>
+      <span class="tile-day">Any time</span>
+      <span class="tile-title">Yoga with LJ</span>
+      <span class="tile-desc">A gentle follow-along yoga video from the NHS. Good for a calm moment, a stretch, or winding down. Go at your own pace, and skip anything that does not suit you.</span>
+      <span class="tile-ext">Opens the NHS website in a new tab</span>
+      <span class="tile-go">Watch <span class="arrow">&#8594;</span></span>
+    </a>
+  </div>
+
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+(function () {
+  var now = new Date();
+  var today = now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+    String(now.getDate()).padStart(2, '0');
+  document.querySelectorAll('.tile[data-date]').forEach(function (tile) {
+    if (tile.getAttribute('data-date') === today) { tile.classList.add('is-today'); }
+  });
+})();
+</script>
+
+</body>
+</html>
