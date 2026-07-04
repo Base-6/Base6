@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<!-- Covered from the PDF: Standard English matching, keeping to the point, expressing feelings with reasons, planning a short speech, and peer listening feedback. Left out: no parts left out, but the classroom partner task has been adapted into a flexible listening/tally panel. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base 6 Expressing Yourself Clearly</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "Atkinson Hyperlegible", Arial, sans-serif;
+    background: #fef8f4;
+    color: #1a1a1a;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+  :root {
+    --cream: #fef8f4;
+    --ink: #1a1a1a;
+    --teal: #007291;
+    --teal-deep: #005a72;
+    --orange: #ef7724;
+    --orange-deep: #c05a10;
+    --gold: #ffce2e;
+    --soft: rgba(0, 0, 0, 0.12);
+    --dark: #10242d;
+    --green: #2f7d45;
+  }
+  a, button, input, textarea, select, summary { font: inherit; }
+  button, summary { cursor: pointer; }
+  :focus-visible {
+    outline: 4px solid var(--gold);
+    outline-offset: 3px;
+  }
+  .wrap {
+    width: min(1120px, calc(100% - 28px));
+    margin: 0 auto;
+    padding: 18px 0 48px;
+  }
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--teal);
+    color: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 12px 24px var(--soft);
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    right: -90px;
+    bottom: -100px;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: rgba(239, 119, 36, 0.35);
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    left: -45px;
+    top: -50px;
+    width: 170px;
+    height: 170px;
+    border-radius: 28px;
+    border: 12px solid rgba(255, 255, 255, 0.14);
+    transform: rotate(12deg);
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-weight: 700;
+  }
+  h1, h2, h3 { line-height: 1.15; }
+  h1 {
+    margin: 18px 0 10px;
+    font-size: clamp(2rem, 6vw, 4rem);
+  }
+  h2 {
+    margin: 0 0 12px;
+    font-size: clamp(1.45rem, 3vw, 2.2rem);
+  }
+  h3 {
+    margin: 18px 0 8px;
+    font-size: 1.2rem;
+  }
+  .hero p { max-width: 790px; margin: 0; font-size: 1.08rem; }
+  .topbar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    margin: 16px 0;
+  }
+  .star-card, .progress-card {
+    background: white;
+    border: 2px solid var(--teal);
+    border-radius: 16px;
+    box-shadow: 0 8px 18px var(--soft);
+    padding: 12px;
+  }
+  .stars {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .star-label { font-weight: 700; margin-right: 4px; }
+  .star-svg {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+  }
+  .star-svg .shape { stroke: var(--teal-deep); stroke-width: 1.8; }
+  .star-svg.filled .shape { fill: var(--gold); }
+  .star-svg.empty .shape { fill: white; }
+  .progress-card { margin: 0 0 18px; }
+  .progress-dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  .dot {
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 999px;
+    border: 2px solid var(--teal);
+    background: white;
+    color: var(--teal-deep);
+    font-weight: 700;
+  }
+  .dot.active {
+    background: var(--teal);
+    color: white;
+  }
+  .dot.done {
+    border-color: var(--orange-deep);
+    box-shadow: inset 0 -5px 0 rgba(239, 119, 36, 0.25);
+  }
+  .step {
+    display: none;
+    position: relative;
+    background: white;
+    border: 2px solid var(--teal);
+    border-radius: 16px;
+    box-shadow: 0 10px 22px var(--soft);
+    padding: 24px;
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .step::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: var(--orange);
+  }
+  .step.active { display: block; }
+  .step-tag {
+    display: inline-block;
+    margin: 0 0 12px;
+    background: #eef7fa;
+    color: var(--teal-deep);
+    border: 2px solid var(--teal);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-weight: 700;
+  }
+  .grid-two {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .mini-card {
+    background: #fffaf6;
+    border: 2px solid var(--orange);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .deep-link {
+    margin-top: 14px;
+    background: #eef7fa;
+    border-left: 6px solid var(--teal);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .deep-link strong { color: var(--teal-deep); }
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 14px;
+  }
+  .btn {
+    min-height: 44px;
+    border: 0;
+    border-radius: 999px;
+    padding: 10px 18px;
+    background: var(--teal);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 0 var(--teal-deep);
+  }
+  .btn:hover { background: var(--teal-deep); }
+  .btn.secondary {
+    background: var(--orange);
+    box-shadow: 0 4px 0 var(--orange-deep);
+  }
+  .btn.secondary:hover { background: var(--orange-deep); }
+  .btn.ghost {
+    background: white;
+    color: var(--teal-deep);
+    border: 2px solid var(--teal);
+    box-shadow: none;
+  }
+  .btn.dark {
+    background: var(--dark);
+    box-shadow: 0 4px 0 #000000;
+  }
+  .small-btn {
+    min-height: 44px;
+    border: 2px solid var(--teal);
+    border-radius: 999px;
+    padding: 8px 12px;
+    background: white;
+    color: var(--teal-deep);
+    font-weight: 700;
+  }
+  label {
+    display: block;
+    font-weight: 700;
+    margin: 12px 0 6px;
+  }
+  input, textarea, select {
+    width: 100%;
+    min-height: 44px;
+    border: 2px solid var(--teal);
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: white;
+    color: var(--ink);
+  }
+  textarea { min-height: 130px; resize: vertical; }
+  .feedback {
+    min-height: 32px;
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #f6f6f6;
+    border: 2px solid #d6d6d6;
+  }
+  .feedback.good {
+    background: #edf8ef;
+    border-color: #3f8b45;
+  }
+  .feedback.coach {
+    background: #fff8df;
+    border-color: var(--gold);
+  }
+  .hidden-panel {
+    display: none;
+    margin-top: 12px;
+    padding: 14px;
+    background: #eef7fa;
+    border: 2px solid var(--teal);
+    border-radius: 14px;
+  }
+  .hidden-panel.open { display: block; }
+  .phrase-list, .detective-list, .emotion-list, .speech-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .phrase-item, .detective-item, .emotion-item, .speech-item {
+    background: white;
+    border: 2px solid var(--teal);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 6px 14px var(--soft);
+  }
+  .choice-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .choice-grid.three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .choice {
+    min-height: 54px;
+    border: 2px solid var(--teal);
+    border-radius: 14px;
+    background: #f7fcff;
+    color: var(--teal-deep);
+    padding: 10px;
+    font-weight: 700;
+    text-align: left;
+  }
+  .choice.selected {
+    background: var(--teal);
+    color: white;
+  }
+  .choice.good-choice {
+    border-color: var(--green);
+    box-shadow: inset 0 -6px 0 rgba(47, 125, 69, 0.2);
+  }
+  .sentence-card {
+    background: #f7fcff;
+    border: 2px solid var(--teal);
+    border-radius: 14px;
+    padding: 14px;
+  }
+  .sentence-card.off-topic {
+    border-color: var(--orange);
+    background: #fff4ea;
+  }
+  .sentence-number {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    background: var(--teal);
+    color: white;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  .word-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .word-pill {
+    min-height: 44px;
+    border: 2px solid var(--teal);
+    border-radius: 999px;
+    background: white;
+    color: var(--teal-deep);
+    padding: 8px 14px;
+    font-weight: 700;
+  }
+  .word-pill.used {
+    background: var(--teal);
+    color: white;
+  }
+  .input-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .speech-preview {
+    white-space: pre-wrap;
+    background: #f6f6f6;
+    border: 2px solid #d6d6d6;
+    border-radius: 14px;
+    padding: 12px;
+    min-height: 160px;
+  }
+  .tally-box {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .tally-card {
+    border: 2px solid var(--teal);
+    border-radius: 14px;
+    padding: 14px;
+    background: #f7fcff;
+    text-align: center;
+  }
+  .tally-number {
+    display: block;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--teal-deep);
+    line-height: 1;
+    margin: 8px 0;
+  }
+  .boss {
+    margin-top: 18px;
+    background: var(--dark);
+    color: white;
+    border: 2px solid #000000;
+    border-radius: 16px;
+    padding: 14px;
+  }
+  .boss summary {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+  }
+  .boss-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: #1a1a1a;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-weight: 700;
+  }
+  .boss textarea { border-color: var(--gold); }
+  .summary-box {
+    white-space: pre-wrap;
+    background: #f6f6f6;
+    border: 2px solid #d6d6d6;
+    border-radius: 14px;
+    padding: 12px;
+    max-height: 260px;
+    overflow: auto;
+  }
+  .toast {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: min(420px, calc(100% - 36px));
+    background: white;
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+    transform: translateY(150%);
+    transition: transform 260ms ease;
+  }
+  .toast.show { transform: translateY(0); }
+  .toast svg { width: 34px; height: 34px; flex: 0 0 auto; }
+  .egg {
+    margin: 24px auto 0;
+    text-align: center;
+  }
+  .egg button {
+    border: 0;
+    background: transparent;
+    color: var(--teal-deep);
+    text-decoration: underline;
+    min-height: 44px;
+    padding: 8px 12px;
+  }
+  .egg-note {
+    display: none;
+    max-width: 560px;
+    margin: 8px auto 0;
+    background: white;
+    border: 2px solid var(--orange);
+    border-radius: 14px;
+    padding: 10px;
+  }
+  .egg-note.open { display: block; }
+  @media (max-width: 820px) {
+    .topbar, .grid-two, .input-grid, .tally-box { grid-template-columns: 1fr; }
+    .choice-grid, .choice-grid.three { grid-template-columns: 1fr; }
+    .hero { padding: 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition: none !important;
+    }
+    .toast { transform: none; display: none; }
+    .toast.show { display: flex; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Base 6 &middot; Monday English</div>
+    <h1>Expressing Yourself Clearly</h1>
+    <p>This activity is about saying what you mean in a clear way. It covers Standard English, staying on topic, explaining feelings, and building a short speech. It usually takes about 30 to 40 minutes. You can jump around, skip bits, stop early, or come back later. Jay can check whatever you choose to send.</p>
+  </header>
+
+  <div class="topbar" aria-label="Progress area">
+    <div class="star-card">
+      <div class="stars" id="starBar" aria-label="Stars earned"></div>
+    </div>
+    <button class="btn ghost" id="resetBtn" type="button">Reset saved progress</button>
+  </div>
+
+  <div class="progress-card">
+    <div class="progress-dots" id="progressDots" aria-label="Jump to a step"></div>
+  </div>
+
+  <main>
+    <section class="step active" data-step="0" aria-labelledby="step0Title">
+      <span class="step-tag">Step 1 of 7</span>
+      <h2 id="step0Title">Set up the speaking lab</h2>
+      <div class="grid-two">
+        <div>
+          <p>Standard English is formal language. It is useful in school, work, presentations, interviews, emails, and moments where being understood matters.</p>
+          <p>Informal language is not bad. It just fits different situations. A group chat and a school presentation do not always want the same voice. Annoying, but true.</p>
+          <label for="studentInitials">Student initials</label>
+          <input id="studentInitials" data-save="input" autocomplete="off" maxlength="12" placeholder="Example: JT">
+        </div>
+        <div class="mini-card">
+          <h3>Today you could practise</h3>
+          <p>1. Swapping informal phrases into Standard English.</p>
+          <p>2. Spotting an off-topic sentence.</p>
+          <p>3. Explaining feelings with reasons.</p>
+          <p>4. Planning a short speech with a clear opinion.</p>
+        </div>
+      </div>
+      <div class="deep-link"><strong>Deep link for older learners:</strong> clarity is partly about audience. Strong communicators adjust their style without pretending to be someone else.</div>
+      <div class="button-row">
+        <button class="btn secondary complete-btn" type="button" data-complete="0">Mark this step as explored</button>
+        <button class="btn" type="button" data-next="1">Go to phrase swap</button>
+      </div>
+    </section>
+
+    <section class="step" data-step="1" aria-labelledby="step1Title">
+      <span class="step-tag">Step 2 of 7 &middot; Predict first</span>
+      <h2 id="step1Title">Phrase swap</h2>
+      <p>Before the matching game, predict one. What would be a clearer Standard English version of: "I dunno what you mean"?</p>
+      <label for="predictStandard">Prediction</label>
+      <input id="predictStandard" data-save="input" placeholder="Type your best version here">
+      <div class="button-row">
+        <button class="btn ghost" id="revealStandardTip" type="button">Reveal a useful clue</button>
+      </div>
+      <div class="hidden-panel" id="standardTipPanel">
+        <p><strong>Clue:</strong> Standard English usually avoids slang and shortened informal words. "Dunno" becomes "do not know".</p>
+      </div>
+
+      <h3>Match each informal phrase to a Standard English version</h3>
+      <div class="phrase-list" id="phraseList"></div>
+      <div class="button-row">
+        <button class="btn" id="checkPhrases" type="button">Check phrase swaps</button>
+        <button class="btn secondary complete-btn" type="button" data-complete="1">Mark this step as explored</button>
+        <button class="btn ghost" type="button" data-prev="0">Back</button>
+        <button class="btn" type="button" data-next="2">Go to off-topic detective</button>
+      </div>
+      <div class="feedback" id="phraseFeedback" aria-live="polite"></div>
+      <div class="deep-link"><strong>Deep link for older learners:</strong> Standard English is not about being posh. It is about choosing language that works across more audiences.</div>
+    </section>
+
+    <section class="step" data-step="2" aria-labelledby="step2Title">
+      <span class="step-tag">Step 3 of 7</span>
+      <h2 id="step2Title">Off-topic detective</h2>
+      <p>Keeping to the point means staying with the main topic. This mini speech is about school uniforms. One sentence wanders off for a little shopping trip.</p>
+      <div class="detective-list" id="detectiveList"></div>
+      <h3>Why does that sentence not fit?</h3>
+      <div class="choice-grid three" id="reasonChoices">
+        <button class="choice" type="button" data-reason="long">It is too long.</button>
+        <button class="choice" type="button" data-reason="topic">It has nothing to do with school uniforms.</button>
+        <button class="choice" type="button" data-reason="standard">It is not in Standard English.</button>
+      </div>
+      <div class="button-row">
+        <button class="btn" id="checkDetective" type="button">Check detective work</button>
+        <button class="btn secondary complete-btn" type="button" data-complete="2">Mark this step as explored</button>
+        <button class="btn ghost" type="button" data-prev="1">Back</button>
+        <button class="btn" type="button" data-next="3">Go to feelings and reasons</button>
+      </div>
+      <div class="feedback" id="detectiveFeedback" aria-live="polite"></div>
+      <div class="deep-link"><strong>Deep link for older learners:</strong> a sentence can be grammatically fine and still weaken a speech if it does not support the point.</div>
+    </section>
+
+    <section class="step" data-step="3" aria-labelledby="step3Title">
+      <span class="step-tag">Step 4 of 7</span>
+      <h2 id="step3Title">Feelings and reasons</h2>
+      <p>Clear opinions often include a feeling and a reason. Pick a useful feeling word, then add your own "because" sentence.</p>
+      <div class="word-bank" aria-label="Word bank">
+        <button class="word-pill" type="button" data-word="proud">proud</button>
+        <button class="word-pill" type="button" data-word="frustrated">frustrated</button>
+        <button class="word-pill" type="button" data-word="confused">confused</button>
+        <button class="word-pill" type="button" data-word="excited">excited</button>
+      </div>
+      <div class="emotion-list" id="emotionList"></div>
+      <div class="button-row">
+        <button class="btn" id="checkEmotions" type="button">Check feeling words</button>
+        <button class="btn secondary complete-btn" type="button" data-complete="3">Mark this step as explored</button>
+        <button class="btn ghost" type="button" data-prev="2">Back</button>
+        <button class="btn" type="button" data-next="4">Go to speech planner</button>
+      </div>
+      <div class="feedback" id="emotionFeedback" aria-live="polite"></div>
+      <div class="deep-link"><strong>Deep link for older learners:</strong> feelings become clearer when you link them to evidence. "I felt proud because..." is stronger than just "I felt proud."</div>
+    </section>
+
+    <section class="step" data-step="4" aria-labelledby="step4Title">
+      <span class="step-tag">Step 5 of 7</span>
+      <h2 id="step4Title">Short speech planner</h2>
+      <p>Choose one topic, then build a short speech. The sentence starters are there as scaffolding. You can use them, change them, or ignore them if you already have a better route.</p>
+      <div class="choice-grid">
+        <button class="choice topic-choice" type="button" data-topic="weekends">Weekends should be three days long.</button>
+        <button class="choice topic-choice" type="button" data-topic="cooking">All students should learn how to cook at school.</button>
+      </div>
+      <div class="speech-list">
+        <div class="speech-item">
+          <label for="speechIntro">Introduction: I strongly believe that...</label>
+          <textarea id="speechIntro" data-save="input" placeholder="Say your opinion clearly."></textarea>
+        </div>
+        <div class="speech-item">
+          <label for="speechReason">Main reason: One reason I think this is because...</label>
+          <textarea id="speechReason" data-save="input" placeholder="Give one reason why."></textarea>
+        </div>
+        <div class="speech-item">
+          <label for="speechConclusion">Conclusion: In conclusion, I think...</label>
+          <textarea id="speechConclusion" data-save="input" placeholder="Finish the speech."></textarea>
+        </div>
+      </div>
+      <div class="button-row">
+        <button class="btn" id="buildSpeech" type="button">Build speech preview</button>
+        <button class="btn secondary complete-btn" type="button" data-complete="4">Mark this step as explored</button>
+        <button class="btn ghost" type="button" data-prev="3">Back</button>
+        <button class="btn" type="button" data-next="5">Go to listening panel</button>
+      </div>
+      <h3>Speech preview</h3>
+      <div class="speech-preview" id="speechPreview" aria-live="polite"></div>
+      <div class="feedback" id="speechFeedback" aria-live="polite"></div>
+      <div class="deep-link"><strong>Deep link for older learners:</strong> a strong speech usually has a claim, a reason, and a closing line that brings the listener back to the main idea.</div>
+    </section>
+
+    <section class="step" data-step="5" aria-labelledby="step5Title">
+      <span class="step-tag">Step 6 of 7</span>
+      <h2 id="step5Title">Listening panel</h2>
+      <p>This can be used with a partner, Jay, or as a self-check. Add a tally when you notice clear speaking, Standard English, or a sentence starter.</p>
+      <div class="tally-box">
+        <div class="tally-card">
+          <h3>Clear speaking</h3>
+          <span class="tally-number" id="tallyClear">0</span>
+          <div class="button-row">
+            <button class="small-btn" type="button" data-tally="clear" data-change="1">Add</button>
+            <button class="small-btn" type="button" data-tally="clear" data-change="-1">Remove</button>
+          </div>
+        </div>
+        <div class="tally-card">
+          <h3>Standard English</h3>
+          <span class="tally-number" id="tallyStandard">0</span>
+          <div class="button-row">
+            <button class="small-btn" type="button" data-tally="standard" data-change="1">Add</button>
+            <button class="small-btn" type="button" data-tally="standard" data-change="-1">Remove</button>
+          </div>
+        </div>
+        <div class="tally-card">
+          <h3>Sentence starter</h3>
+          <span class="tally-number" id="tallyStarter">0</span>
+          <div class="button-row">
+            <button class="small-btn" type="button" data-tally="starter" data-change="1">Add</button>
+            <button class="small-btn" type="button" data-tally="starter" data-change="-1">Remove</button>
+          </div>
+        </div>
+      </div>
+      <label for="partnerFeedback">One nice thing someone did well, or one thing you noticed</label>
+      <textarea id="partnerFeedback" data-save="input" placeholder="Example: They spoke clearly and stayed on topic."></textarea>
+      <div class="button-row">
+        <button class="btn secondary complete-btn" type="button" data-complete="5">Mark this step as explored</button>
+        <button class="btn ghost" type="button" data-prev="4">Back</button>
+        <button class="btn" type="button" data-next="6">Go to reflection</button>
+      </div>
+      <div class="deep-link"><strong>Deep link for older learners:</strong> useful feedback is specific. "Your reason matched your opinion" helps more than "good job."</div>
+    </section>
+
+    <section class="step" data-step="6" aria-labelledby="step6Title">
+      <span class="step-tag">Step 7 of 7</span>
+      <h2 id="step6Title">Reflection and send to Jay</h2>
+      <label for="reflection">One thing I want to remember is...</label>
+      <textarea id="reflection" data-save="input" placeholder="A phrase, a speech tip, a feeling word, or anything else you fancy saving."></textarea>
+
+      <details class="boss" id="bossDetails">
+        <summary><span class="boss-badge">BOSS LEVEL</span> Optional: for anyone who fancies a proper think</summary>
+        <p>A student says: "Standard English is always better than informal language." Analyse the claim. When might Standard English help? When might informal language be the better fit?</p>
+        <label for="bossAnswer">Boss level response</label>
+        <textarea id="bossAnswer" data-save="input" placeholder="You could argue both sides here."></textarea>
+        <div class="button-row"><button class="btn secondary" id="saveBoss" type="button">Save boss response</button></div>
+        <div class="feedback" id="bossFeedback" aria-live="polite"></div>
+      </details>
+
+      <h3>Preview</h3>
+      <pre class="summary-box" id="summaryPreview"></pre>
+      <div class="button-row">
+        <button class="btn secondary complete-btn" type="button" data-complete="6">Mark this step as explored</button>
+        <button class="btn" id="sendEmail" type="button">Open Gmail to send to Jay</button>
+        <button class="btn ghost" type="button" data-prev="5">Back</button>
+      </div>
+      <div class="feedback" id="emailFeedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div class="egg">
+    <button id="eggBtn" type="button" aria-expanded="false">Tiny sentence gremlin hiding under the page.</button>
+    <div class="egg-note" id="eggNote">The sentence gremlin says: "Stay on topic." Then immediately starts talking about crisps. Classic gremlin behaviour.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <polygon fill="#ffce2e" stroke="#1a1a1a" stroke-width="1.5" points="12,2 15,8.5 22,9.2 16.8,13.8 18.4,21 12,17.2 5.6,21 7.2,13.8 2,9.2 9,8.5"></polygon>
+  </svg>
+  <span id="toastText">Star earned.</span>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var SLUG = "clearenglish";
+  var PREFIX = "base6." + SLUG + ".";
+  var TOTAL_STEPS = 7;
+  var toastTimer = null;
+
+  function storageSet(key, value) {
+    try {
+      window.localStorage.setItem(PREFIX + key, JSON.stringify(value));
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  function storageGet(key, fallback) {
+    try {
+      var raw = window.localStorage.getItem(PREFIX + key);
+      if (raw === null) { return fallback; }
+      return JSON.parse(raw);
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function storageClearAll() {
+    try {
+      var keys = [];
+      for (var i = 0; i < window.localStorage.length; i += 1) {
+        var key = window.localStorage.key(i);
+        if (key && key.indexOf(PREFIX) === 0) { keys.push(key); }
+      }
+      keys.forEach(function (key) { window.localStorage.removeItem(key); });
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  function byId(id) { return document.getElementById(id); }
+
+  function setFeedback(id, text, kind) {
+    var box = byId(id);
+    if (!box) { return; }
+    box.textContent = text;
+    box.classList.remove("good", "coach");
+    if (kind) { box.classList.add(kind); }
+  }
+
+  function starSvg(filled, label) {
+    var cls = filled ? "filled" : "empty";
+    var title = label || (filled ? "Filled star" : "Empty star");
+    return "<svg class=\"star-svg " + cls + "\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"" + title + "\"><polygon class=\"shape\" points=\"12,2 15,8.5 22,9.2 16.8,13.8 18.4,21 12,17.2 5.6,21 7.2,13.8 2,9.2 9,8.5\"></polygon></svg>";
+  }
+
+  var state = {
+    currentStep: storageGet("currentStep", 0),
+    stars: storageGet("stars", []),
+    revealStandardTip: storageGet("revealStandardTip", false),
+    phrases: storageGet("phrases", {}),
+    detectiveSentence: storageGet("detectiveSentence", ""),
+    detectiveReason: storageGet("detectiveReason", ""),
+    emotions: storageGet("emotions", {}),
+    topic: storageGet("topic", ""),
+    tally: storageGet("tally", { clear: 0, standard: 0, starter: 0 }),
+    bossOpen: storageGet("bossOpen", false),
+    eggOpen: storageGet("eggOpen", false)
+  };
+
+  if (!Array.isArray(state.stars)) { state.stars = []; }
+  if (typeof state.currentStep !== "number" || state.currentStep < 0 || state.currentStep >= TOTAL_STEPS) {
+    state.currentStep = 0;
+  }
+  if (!state.tally || typeof state.tally !== "object") {
+    state.tally = { clear: 0, standard: 0, starter: 0 };
+  }
+
+  var stepNames = [
+    "Set up the speaking lab",
+    "Phrase swap",
+    "Off-topic detective",
+    "Feelings and reasons",
+    "Short speech planner",
+    "Listening panel",
+    "Reflection"
+  ];
+
+  var phraseItems = [
+    {
+      id: "dunno",
+      informal: "\"I dunno what you mean.\"",
+      correct: "know",
+      options: [
+        { id: "know", text: "\"I do not know what you mean.\"", feedback: "Yes. \"Dunno\" becomes \"do not know\", which is clearer in formal situations." },
+        { id: "good", text: "\"That is very good.\"", feedback: "Not this one. Look for the version that keeps the meaning about not understanding." },
+        { id: "late", text: "\"I am going to be late.\"", feedback: "Not this one. This answer is about time, not meaning." }
+      ]
+    },
+    {
+      id: "wellgood",
+      informal: "\"That is well good.\"",
+      correct: "good",
+      options: [
+        { id: "late", text: "\"I am going to be late.\"", feedback: "Not this one. The original phrase is judging something as good." },
+        { id: "good", text: "\"That is very good.\"", feedback: "Yes. \"Well good\" becomes \"very good\" in Standard English." },
+        { id: "notdoing", text: "\"I am not doing that.\"", feedback: "Not this one. This answer changes the meaning completely." }
+      ]
+    },
+    {
+      id: "gonna",
+      informal: "\"I am gonna be late.\"",
+      correct: "late",
+      options: [
+        { id: "know", text: "\"I do not know what you mean.\"", feedback: "Not this one. Look for the answer about being late." },
+        { id: "notdoing", text: "\"I am not doing that.\"", feedback: "Not this one. That answer is about refusing, not arriving late." },
+        { id: "late", text: "\"I am going to be late.\"", feedback: "Yes. \"Gonna\" becomes \"going to\" in Standard English." }
+      ]
+    },
+    {
+      id: "aint",
+      informal: "\"I ain't doing that.\"",
+      correct: "notdoing",
+      options: [
+        { id: "notdoing", text: "\"I am not doing that.\"", feedback: "Yes. \"Ain't\" is replaced with \"am not\" here." },
+        { id: "good", text: "\"That is very good.\"", feedback: "Not this one. Keep the meaning about not doing something." },
+        { id: "late", text: "\"I am going to be late.\"", feedback: "Not this one. The original is not about time." }
+      ]
+    }
+  ];
+
+  var detectiveSentences = [
+    { id: "1", text: "I think school uniforms are a good idea.", good: "This fits because it gives the main opinion about school uniforms." },
+    { id: "2", text: "They make everyone look the same, so no one feels left out.", good: "This fits because it gives a reason linked to school uniforms." },
+    { id: "3", text: "I bought some blue trainers on Saturday at the shops.", good: "Yes. This is the off-topic sentence because trainers and shopping are not supporting the uniform argument." },
+    { id: "4", text: "Uniforms also save time in the morning because you know what to wear.", good: "This fits because it gives another reason linked to uniforms." }
+  ];
+
+  var emotionItems = [
+    {
+      id: "instructions",
+      stem: "I felt ______ when I could not understand the game instructions.",
+      correct: ["confused", "frustrated"],
+      reasonId: "reasonInstructions",
+      reasonLabel: "This is because..."
+    },
+    {
+      id: "hardwork",
+      stem: "I feel ______ when I finally finish a hard piece of work.",
+      correct: ["proud"],
+      reasonId: "reasonHardwork",
+      reasonLabel: "This is because..."
+    },
+    {
+      id: "trip",
+      stem: "I am very ______ about the school trip next week.",
+      correct: ["excited"],
+      reasonId: "reasonTrip",
+      reasonLabel: "This is because..."
+    }
+  ];
+
+  function showToast(message) {
+    var toast = byId("toast");
+    byId("toastText").textContent = message;
+    if (toastTimer) { window.clearTimeout(toastTimer); }
+    toast.classList.add("show");
+    toastTimer = window.setTimeout(function () {
+      toast.classList.remove("show");
+    }, 3000);
+  }
+
+  function renderStars() {
+    var bar = byId("starBar");
+    var html = "<span class=\"star-label\">Stars</span>";
+    for (var i = 0; i < TOTAL_STEPS; i += 1) {
+      html += starSvg(state.stars.indexOf(i) !== -1, "Star for step " + (i + 1));
+    }
+    bar.innerHTML = html;
+  }
+
+  function earnStar(step, message) {
+    if (state.stars.indexOf(step) === -1) {
+      state.stars.push(step);
+      storageSet("stars", state.stars);
+      renderStars();
+      showToast(message);
+    }
+    renderProgressDots();
+    updateSummary();
+  }
+
+  function renderProgressDots() {
+    var dots = byId("progressDots");
+    dots.innerHTML = "";
+    for (var i = 0; i < TOTAL_STEPS; i += 1) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "dot";
+      if (i === state.currentStep) { button.classList.add("active"); }
+      if (state.stars.indexOf(i) !== -1) { button.classList.add("done"); }
+      button.textContent = String(i + 1);
+      button.setAttribute("aria-label", "Jump to step " + (i + 1) + ": " + stepNames[i]);
+      button.setAttribute("data-jump", String(i));
+      dots.appendChild(button);
+    }
+  }
+
+  function showStep(step) {
+    state.currentStep = step;
+    storageSet("currentStep", state.currentStep);
+    document.querySelectorAll(".step").forEach(function (section) {
+      var sectionStep = Number(section.getAttribute("data-step"));
+      section.classList.toggle("active", sectionStep === state.currentStep);
+    });
+    renderProgressDots();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function setupProgressClicks() {
+    byId("progressDots").addEventListener("click", function (event) {
+      var button = event.target.closest("button[data-jump]");
+      if (!button) { return; }
+      showStep(Number(button.getAttribute("data-jump")));
+    });
+  }
+
+  function restoreInputs() {
+    document.querySelectorAll("[data-save=\"input\"]").forEach(function (input) {
+      var saved = storageGet("input." + input.id, "");
+      if (typeof saved === "string" || typeof saved === "number") {
+        input.value = saved;
+      }
+      input.addEventListener("input", function () {
+        storageSet("input." + input.id, input.value);
+        updateSpeechPreview();
+        updateSummary();
+      });
+    });
+  }
+
+  function setupStepButtons() {
+    document.querySelectorAll("[data-next]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        showStep(Number(button.getAttribute("data-next")));
+      });
+    });
+    document.querySelectorAll("[data-prev]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        showStep(Number(button.getAttribute("data-prev")));
+      });
+    });
+    document.querySelectorAll(".complete-btn").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var step = Number(button.getAttribute("data-complete"));
+        earnStar(step, "Step " + (step + 1) + " saved. Clear communication points collected.");
+      });
+    });
+  }
+
+  function setupStandardTip() {
+    var panel = byId("standardTipPanel");
+    panel.classList.toggle("open", state.revealStandardTip === true);
+    byId("revealStandardTip").addEventListener("click", function () {
+      state.revealStandardTip = !state.revealStandardTip;
+      storageSet("revealStandardTip", state.revealStandardTip);
+      panel.classList.toggle("open", state.revealStandardTip === true);
+    });
+  }
+
+  function renderPhrases() {
+    var list = byId("phraseList");
+    list.innerHTML = "";
+    phraseItems.forEach(function (item, index) {
+      var selected = state.phrases[item.id] || "";
+      var html = "<div class=\"phrase-item\"><h3>Phrase " + (index + 1) + "</h3><p><strong>Informal:</strong> " + item.informal + "</p><div class=\"choice-grid\">";
+      item.options.forEach(function (option) {
+        html += "<button class=\"choice" + (selected === option.id ? " selected" : "") + "\" type=\"button\" data-phrase=\"" + item.id + "\" data-answer=\"" + option.id + "\">" + option.text + "</button>";
+      });
+      html += "</div><div class=\"feedback\" id=\"phraseFb_" + item.id + "\" aria-live=\"polite\"></div></div>";
+      list.insertAdjacentHTML("beforeend", html);
+    });
+    phraseItems.forEach(function (item) {
+      var selected = state.phrases[item.id] || "";
+      if (selected) { showPhraseFeedback(item, selected); }
+    });
+  }
+
+  function showPhraseFeedback(item, selected) {
+    var option = item.options.filter(function (opt) { return opt.id === selected; })[0];
+    if (!option) { return; }
+    setFeedback("phraseFb_" + item.id, option.feedback, selected === item.correct ? "good" : "coach");
+  }
+
+  function setupPhrases() {
+    renderPhrases();
+    byId("phraseList").addEventListener("click", function (event) {
+      var button = event.target.closest("button[data-phrase]");
+      if (!button) { return; }
+      var id = button.getAttribute("data-phrase");
+      var answer = button.getAttribute("data-answer");
+      state.phrases[id] = answer;
+      storageSet("phrases", state.phrases);
+      renderPhrases();
+      updateSummary();
+    });
+    byId("checkPhrases").addEventListener("click", function () {
+      var correct = 0;
+      phraseItems.forEach(function (item) {
+        if (state.phrases[item.id] === item.correct) { correct += 1; }
+      });
+      if (correct === phraseItems.length) {
+        setFeedback("phraseFeedback", "All four phrase swaps are clear. You kept the meaning and changed the register.", "good");
+      } else {
+        setFeedback("phraseFeedback", "You have " + correct + " out of " + phraseItems.length + ". Match the meaning first, then check the formal wording.", "coach");
+      }
+    });
+  }
+
+  function renderDetective() {
+    var list = byId("detectiveList");
+    list.innerHTML = "";
+    detectiveSentences.forEach(function (item) {
+      var selected = state.detectiveSentence === item.id;
+      var card = document.createElement("button");
+      card.type = "button";
+      card.className = "choice sentence-card" + (selected ? " selected" : "");
+      card.setAttribute("data-sentence", item.id);
+      card.innerHTML = "<span class=\"sentence-number\">" + item.id + "</span>" + item.text;
+      list.appendChild(card);
+    });
+    document.querySelectorAll("#reasonChoices .choice").forEach(function (button) {
+      button.classList.toggle("selected", button.getAttribute("data-reason") === state.detectiveReason);
+    });
+  }
+
+  function setupDetective() {
+    renderDetective();
+    byId("detectiveList").addEventListener("click", function (event) {
+      var button = event.target.closest("button[data-sentence]");
+      if (!button) { return; }
+      state.detectiveSentence = button.getAttribute("data-sentence");
+      storageSet("detectiveSentence", state.detectiveSentence);
+      renderDetective();
+      if (state.detectiveSentence === "3") {
+        setFeedback("detectiveFeedback", "Good spot. Sentence 3 is about trainers and shopping, not the uniform argument.", "good");
+      } else {
+        var chosen = detectiveSentences.filter(function (item) { return item.id === state.detectiveSentence; })[0];
+        setFeedback("detectiveFeedback", chosen.good + " Look for the sentence that does not support school uniforms.", "coach");
+      }
+      updateSummary();
+    });
+    byId("reasonChoices").addEventListener("click", function (event) {
+      var button = event.target.closest("button[data-reason]");
+      if (!button) { return; }
+      state.detectiveReason = button.getAttribute("data-reason");
+      storageSet("detectiveReason", state.detectiveReason);
+      renderDetective();
+      updateSummary();
+    });
+    byId("checkDetective").addEventListener("click", function () {
+      if (state.detectiveSentence === "3" && state.detectiveReason === "topic") {
+        setFeedback("detectiveFeedback", "Yes. Sentence 3 is off-topic because it has nothing to do with school uniforms.", "good");
+      } else if (state.detectiveSentence === "3") {
+        setFeedback("detectiveFeedback", "Sentence 3 is the right off-topic sentence. Now choose the reason about it not linking to school uniforms.", "coach");
+      } else {
+        setFeedback("detectiveFeedback", "Not that one yet. Ask: which sentence could be deleted without damaging the school uniform argument?", "coach");
+      }
+    });
+  }
+
+  function renderEmotions() {
+    var list = byId("emotionList");
+    list.innerHTML = "";
+    emotionItems.forEach(function (item, index) {
+      var selected = state.emotions[item.id] || "";
+      var sentence = item.stem.replace("______", selected ? "<strong>" + selected + "</strong>" : "______");
+      var html = "<div class=\"emotion-item\"><h3>Feeling " + (index + 1) + "</h3><p>" + sentence + "</p>" +
+        "<div class=\"choice-grid\">" +
+        "<button class=\"choice" + (selected === "proud" ? " selected" : "") + "\" type=\"button\" data-emotion=\"" + item.id + "\" data-word=\"proud\">proud</button>" +
+        "<button class=\"choice" + (selected === "frustrated" ? " selected" : "") + "\" type=\"button\" data-emotion=\"" + item.id + "\" data-word=\"frustrated\">frustrated</button>" +
+        "<button class=\"choice" + (selected === "confused" ? " selected" : "") + "\" type=\"button\" data-emotion=\"" + item.id + "\" data-word=\"confused\">confused</button>" +
+        "<button class=\"choice" + (selected === "excited" ? " selected" : "") + "\" type=\"button\" data-emotion=\"" + item.id + "\" data-word=\"excited\">excited</button>" +
+        "</div><label for=\"" + item.reasonId + "\">" + item.reasonLabel + "</label>" +
+        "<textarea id=\"" + item.reasonId + "\" data-save=\"input\" placeholder=\"Add a reason in your own words.\"></textarea>" +
+        "<div class=\"feedback\" id=\"emotionFb_" + item.id + "\" aria-live=\"polite\"></div></div>";
+      list.insertAdjacentHTML("beforeend", html);
+    });
+    restoreDynamicTextareas();
+    emotionItems.forEach(function (item) {
+      var selected = state.emotions[item.id] || "";
+      if (selected) { showEmotionFeedback(item, selected); }
+    });
+  }
+
+  function restoreDynamicTextareas() {
+    emotionItems.forEach(function (item) {
+      var input = byId(item.reasonId);
+      if (!input) { return; }
+      var saved = storageGet("input." + input.id, "");
+      if (typeof saved === "string" || typeof saved === "number") {
+        input.value = saved;
+      }
+      input.addEventListener("input", function () {
+        storageSet("input." + input.id, input.value);
+        updateSummary();
+      });
+    });
+  }
+
+  function showEmotionFeedback(item, selected) {
+    if (item.correct.indexOf(selected) !== -1) {
+      setFeedback("emotionFb_" + item.id, "That word fits. The reason box can show what caused the feeling.", "good");
+    } else {
+      setFeedback("emotionFb_" + item.id, "Not the strongest fit yet. Look at the situation first, then choose the feeling it would probably cause.", "coach");
+    }
+  }
+
+  function setupEmotions() {
+    renderEmotions();
+    byId("emotionList").addEventListener("click", function (event) {
+      var button = event.target.closest("button[data-emotion]");
+      if (!button) { return; }
+      var id = button.getAttribute("data-emotion");
+      var word = button.getAttribute("data-word");
+      state.emotions[id] = word;
+      storageSet("emotions", state.emotions);
+      renderEmotions();
+      updateSummary();
+    });
+    document.querySelectorAll(".word-pill").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var word = button.getAttribute("data-word");
+        showToast("Word bank tap: " + word + ". Fancy little vocabulary moment.");
+      });
+    });
+    byId("checkEmotions").addEventListener("click", function () {
+      var correct = 0;
+      emotionItems.forEach(function (item) {
+        if (item.correct.indexOf(state.emotions[item.id]) !== -1) { correct += 1; }
+      });
+      if (correct === emotionItems.length) {
+        setFeedback("emotionFeedback", "The feeling words fit the situations. Reasons make the answers clearer.", "good");
+      } else {
+        setFeedback("emotionFeedback", "You have " + correct + " out of " + emotionItems.length + ". Match the feeling to what happened in the sentence.", "coach");
+      }
+    });
+  }
+
+  function setupSpeech() {
+    document.querySelectorAll(".topic-choice").forEach(function (button) {
+      button.classList.toggle("selected", button.getAttribute("data-topic") === state.topic);
+      button.addEventListener("click", function () {
+        state.topic = button.getAttribute("data-topic");
+        storageSet("topic", state.topic);
+        document.querySelectorAll(".topic-choice").forEach(function (btn) {
+          btn.classList.toggle("selected", btn.getAttribute("data-topic") === state.topic);
+        });
+        updateSpeechPreview();
+        updateSummary();
+      });
+    });
+    byId("buildSpeech").addEventListener("click", function () {
+      updateSpeechPreview();
+      var intro = byId("speechIntro").value.trim();
+      var reason = byId("speechReason").value.trim();
+      var conclusion = byId("speechConclusion").value.trim();
+      if (intro && reason && conclusion) {
+        setFeedback("speechFeedback", "Speech preview built. It has an opinion, a reason, and a conclusion.", "good");
+      } else {
+        setFeedback("speechFeedback", "The preview is ready. A full version usually has an opinion, one reason, and a closing line.", "coach");
+      }
+    });
+    updateSpeechPreview();
+  }
+
+  function topicText() {
+    if (state.topic === "weekends") { return "Weekends should be three days long."; }
+    if (state.topic === "cooking") { return "All students should learn how to cook at school."; }
+    return "No topic chosen yet.";
+  }
+
+  function updateSpeechPreview() {
+    var preview = byId("speechPreview");
+    if (!preview) { return; }
+    var lines = [];
+    lines.push("Topic: " + topicText());
+    lines.push("");
+    lines.push("Introduction:");
+    lines.push(byId("speechIntro") ? byId("speechIntro").value.trim() || "blank" : "blank");
+    lines.push("");
+    lines.push("Main reason:");
+    lines.push(byId("speechReason") ? byId("speechReason").value.trim() || "blank" : "blank");
+    lines.push("");
+    lines.push("Conclusion:");
+    lines.push(byId("speechConclusion") ? byId("speechConclusion").value.trim() || "blank" : "blank");
+    preview.textContent = lines.join("\n");
+  }
+
+  function setupTally() {
+    renderTally();
+    document.querySelectorAll("[data-tally]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var key = button.getAttribute("data-tally");
+        var change = Number(button.getAttribute("data-change"));
+        if (typeof state.tally[key] !== "number") { state.tally[key] = 0; }
+        state.tally[key] = Math.max(0, state.tally[key] + change);
+        storageSet("tally", state.tally);
+        renderTally();
+        updateSummary();
+      });
+    });
+  }
+
+  function renderTally() {
+    byId("tallyClear").textContent = String(state.tally.clear || 0);
+    byId("tallyStandard").textContent = String(state.tally.standard || 0);
+    byId("tallyStarter").textContent = String(state.tally.starter || 0);
+  }
+
+  function setupBossAndEmail() {
+    var details = byId("bossDetails");
+    details.open = state.bossOpen === true;
+    details.addEventListener("toggle", function () {
+      state.bossOpen = details.open;
+      storageSet("bossOpen", state.bossOpen);
+    });
+    byId("saveBoss").addEventListener("click", function () {
+      var text = byId("bossAnswer").value.trim();
+      if (text.length > 0) {
+        setFeedback("bossFeedback", "Boss response saved. Strong answers usually mention audience, purpose, and situation.", "good");
+        showToast("Boss level saved. Nicely argued.");
+      } else {
+        setFeedback("bossFeedback", "Blank is fine. If you add a thought, it will save as you type.", "coach");
+      }
+      updateSummary();
+    });
+    byId("sendEmail").addEventListener("click", function () {
+      var initials = byId("studentInitials").value.trim() || "unknown";
+      var subject = "Base 6 - Expressing Yourself Clearly - " + initials;
+      var body = buildSummary();
+      var url = "https://mail.google.com/mail/?view=cm&fs=1&to=jay.raine%40chiltonbridgeschool.co.uk&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+      window.open(url, "_blank");
+      setFeedback("emailFeedback", "Email opened. Press send in the email.", "good");
+    });
+  }
+
+  function inputValue(id) {
+    var el = byId(id);
+    return el ? el.value.trim() : "";
+  }
+
+  function phraseChoiceText(id) {
+    var item = phraseItems.filter(function (p) { return p.id === id; })[0];
+    if (!item) { return "not answered"; }
+    var selected = state.phrases[id] || "";
+    var option = item.options.filter(function (opt) { return opt.id === selected; })[0];
+    return option ? option.text : "not answered";
+  }
+
+  function emotionChoiceText(id) {
+    return state.emotions[id] || "not answered";
+  }
+
+  function buildSummary() {
+    var initials = inputValue("studentInitials") || "unknown";
+    var date = new Date().toLocaleString("en-GB");
+    var lines = [];
+    lines.push("Student initials: " + initials);
+    lines.push("Date: " + date);
+    lines.push("");
+    lines.push("Base 6 Expressing Yourself Clearly");
+    lines.push("Stars earned: " + state.stars.length + " / " + TOTAL_STEPS);
+    lines.push("");
+    lines.push("Step 1 - Set up");
+    lines.push("Initials entered: " + initials);
+    lines.push("");
+    lines.push("Step 2 - Phrase swap");
+    lines.push("Prediction for Standard English version: " + (inputValue("predictStandard") || "blank"));
+    phraseItems.forEach(function (item) {
+      lines.push(item.informal + " -> " + phraseChoiceText(item.id));
+    });
+    lines.push("");
+    lines.push("Step 3 - Off-topic detective");
+    lines.push("Off-topic sentence chosen: " + (state.detectiveSentence || "not answered"));
+    lines.push("Reason chosen: " + (state.detectiveReason || "not answered"));
+    lines.push("");
+    lines.push("Step 4 - Feelings and reasons");
+    emotionItems.forEach(function (item) {
+      lines.push(item.stem + " Word chosen: " + emotionChoiceText(item.id));
+      lines.push("Reason: " + (inputValue(item.reasonId) || "blank"));
+    });
+    lines.push("");
+    lines.push("Step 5 - Speech planner");
+    lines.push("Topic: " + topicText());
+    lines.push("Introduction: " + (inputValue("speechIntro") || "blank"));
+    lines.push("Main reason: " + (inputValue("speechReason") || "blank"));
+    lines.push("Conclusion: " + (inputValue("speechConclusion") || "blank"));
+    lines.push("");
+    lines.push("Step 6 - Listening panel");
+    lines.push("Clear speaking tally: " + String(state.tally.clear || 0));
+    lines.push("Standard English tally: " + String(state.tally.standard || 0));
+    lines.push("Sentence starter tally: " + String(state.tally.starter || 0));
+    lines.push("Feedback note: " + (inputValue("partnerFeedback") || "blank"));
+    lines.push("");
+    lines.push("Reflection");
+    lines.push(inputValue("reflection") || "blank");
+    lines.push("");
+    lines.push("Boss level");
+    lines.push(inputValue("bossAnswer") || "blank");
+    lines.push("");
+    lines.push("Sent automatically from Base 6");
+    return lines.join("\n");
+  }
+
+  function updateSummary() {
+    var preview = byId("summaryPreview");
+    if (preview) { preview.textContent = buildSummary(); }
+  }
+
+  function setupEgg() {
+    var btn = byId("eggBtn");
+    var note = byId("eggNote");
+    note.classList.toggle("open", state.eggOpen === true);
+    btn.setAttribute("aria-expanded", state.eggOpen === true ? "true" : "false");
+    btn.addEventListener("click", function () {
+      state.eggOpen = !state.eggOpen;
+      storageSet("eggOpen", state.eggOpen);
+      note.classList.toggle("open", state.eggOpen === true);
+      btn.setAttribute("aria-expanded", state.eggOpen === true ? "true" : "false");
+    });
+  }
+
+  function setupReset() {
+    byId("resetBtn").addEventListener("click", function () {
+      var okay = window.confirm("Clear the saved work on this device for this activity?");
+      if (!okay) { return; }
+      storageClearAll();
+      window.location.reload();
+    });
+  }
+
+  function init() {
+    renderStars();
+    renderProgressDots();
+    setupProgressClicks();
+    restoreInputs();
+    setupStepButtons();
+    setupStandardTip();
+    setupPhrases();
+    setupDetective();
+    setupEmotions();
+    setupSpeech();
+    setupTally();
+    setupBossAndEmail();
+    setupEgg();
+    setupReset();
+    showStep(state.currentStep);
+    updateSpeechPreview();
+    updateSummary();
+  }
+
+  init();
+}());
+</script>
+</body>
+</html>
