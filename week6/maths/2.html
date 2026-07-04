@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<!-- Covered from the PDF: average vocabulary, mode, median, range, mean, outliers, bar charts, pie charts, pictograms, and interpreting why one average may be more useful than another. Left out: no parts left out, but the worksheet questions have been grouped into shorter interactive tasks. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base 6 Understanding Data and Averages</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "Atkinson Hyperlegible", Arial, sans-serif;
+    background: #fef8f4;
+    color: #1a1a1a;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+  :root {
+    --cream: #fef8f4;
+    --ink: #1a1a1a;
+    --teal: #007291;
+    --teal-deep: #005a72;
+    --orange: #ef7724;
+    --orange-deep: #c05a10;
+    --gold: #ffce2e;
+    --soft: rgba(0, 0, 0, 0.12);
+    --dark: #10242d;
+    --green: #2f7d45;
+    --paper: #fffaf6;
+  }
+  a, button, input, textarea, select, summary { font: inherit; }
+  button, summary { cursor: pointer; }
+  :focus-visible {
+    outline: 4px solid var(--gold);
+    outline-offset: 3px;
+  }
+  .wrap {
+    width: min(1120px, calc(100% - 28px));
+    margin: 0 auto;
+    padding: 18px 0 48px;
+  }
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--teal);
+    color: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 12px 24px var(--soft);
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    right: -90px;
+    bottom: -120px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: rgba(239, 119, 36, 0.36);
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    left: -55px;
+    top: -55px;
+    width: 190px;
+    height: 190px;
+    border-radius: 30px;
+    border: 14px solid rgba(255, 255, 255, 0.14);
+    transform: rotate(12deg);
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-weight: 700;
+  }
+  h1, h2, h3 { line-height: 1.15; }
+  h1 {
+    margin: 18px 0 10px;
+    font-size: clamp(2rem, 6vw, 4rem);
+  }
+  h2 {
+    margin: 0 0 12px;
+    font-size: clamp(1.45rem, 3vw, 2.2rem);
+  }
+  h3 {
+    margin: 18px 0 8px;
+    font-size: 1.2rem;
+  }
+  .hero p { max-width: 790px; margin: 0; font-size: 1.08rem; }
+  .topbar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    margin: 16px 0;
+  }
+  .star-card, .progress-card {
+    background: white;
+    border: 2px solid var(--teal);
+    border-radius: 16px;
+    box-shadow: 0 8px 18px var(--soft);
+    padding: 12px;
+  }
+  .stars {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .star-label { font-weight: 700; margin-right: 4px; }
+  .star-svg {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+  }
+  .star-svg .shape { stroke: var(--teal-deep); stroke-width: 1.8; }
+  .star-svg.filled .shape { fill: var(--gold); }
+  .star-svg.empty .shape { fill: white; }
+  .progress-card { margin: 0 0 18px; }
+  .progress-dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  .dot {
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 999px;
+    border: 2px solid var(--teal);
+    background: white;
+    color: var(--teal-deep);
+    font-weight: 700;
+  }
+  .dot.active {
+    background: var(--teal);
+    color: white;
+  }
+  .dot.done {
+    border-color: var(--orange-deep);
+    box-shadow: inset 0 -5px 0 rgba(239, 119, 36, 0.25);
+  }
+  .step {
+    display: none;
+    position: relative;
+    background: white;
+    border: 2px solid var(--teal);
+    border-radius: 16px;
+    box-shadow: 0 10px 22px var(--soft);
+    padding: 24px;
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .step::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: var(--orange);
+  }
+  .step.active { display: block; }
+  .step-tag {
+    display: inline-block;
+    margin: 0 0 12px;
+    background: #eef7fa;
+    color: var(--teal-deep);
+    border: 2px solid var(--teal);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-weight: 700;
+  }
+  .grid-two {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .mini-card {
+    background: var(--paper);
+    border: 2px solid var(--orange);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .deep-link {
+    margin-top: 14px;
+    background: #eef7fa;
+    border-left: 6px solid var(--teal);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .deep-link strong { color: var(--teal-deep); }
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 14px;
+  }
+  .btn {
+    min-height: 44px;
+    border: 0;
+    border-radius: 999px;
+    padding: 10px 18px;
+    background: var(--teal);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 0 var(--teal-deep);
+  }
+  .btn:hover { background: var(--teal-deep); }
+  .btn.secondary {
+    background: var(--orange);
+    box-shadow: 0 4px 0 var(--orange-deep);
+  }
+  .btn.secondary:hover { background: var(--orange-deep); }
+  .btn.ghost {
+    background: white;
+    color: var(--teal-deep);
+    border: 2px solid var(--teal);
+    box-shadow: none;
+  }
+  .small-btn {
+    min-height: 44px;
+    border: 2px solid var(--teal);
+    border-radius: 999px;
+    padding: 8px 12px;
+    background: white;
+    color: var(--teal-deep);
+    font-weight: 700;
+  }
+  label {
+    display: block;
+    font-weight: 700;
+    margin: 12px 0 6px;
+  }
+  input, textarea, select {
+    width: 100%;
+    min-height: 44px;
+    border: 2px solid var(--teal);
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: white;
+    color: var(--ink);
+  }
+  textarea { min-height: 130px; resize: vertical; }
+  .feedback {
+    min-height: 32px;
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #f6f6f6;
+    border: 2px solid #d6d6d6;
+  }
+  .feedback.good {
+    background: #edf8ef;
+    border-color: #3f8b45;
+  }
+  .feedback.coach {
+    background: #fff8df;
+    border-color: var(--gold);
+  }
+  .hidden-panel {
+    display: none;
+    margin-top: 12px;
+    padding: 14px;
+    background: #eef7fa;
+    border: 2px solid var(--teal);
+    border-radius: 14px;
+  }
+  .hidden-panel.open { display: block; }
+  .match-list, .task-list, .chart-list, .pictogram-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .match-item, .task-card, .chart-card, .pictogram-card {
+    background: white;
+    border: 2px solid var(--teal);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 6px 14px var(--soft);
+  }
+  .choice-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .choice-grid.three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .choice {
+    min-height: 54px;
+    border: 2px solid var(--teal);
+    border-radius: 14px;
+    background: #f7fcff;
+    color: var(--teal-deep);
+    padding: 10px;
+    font-weight: 700;
+    text-align: left;
+  }
+  .choice.selected {
+    background: var(--teal);
+    color: white;
+  }
+  .score-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 14px 0;
+  }
+  .score-chip {
+    min-width: 48px;
+    min-height: 48px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 999px;
+    border: 2px solid var(--teal);
+    background: #eef7fa;
+    color: var(--teal-deep);
+    font-weight: 700;
+  }
+  .score-chip.outlier {
+    border-color: var(--orange);
+    background: #fff3e8;
+    color: var(--orange-deep);
+  }
+  .mean-machine {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 12px;
+    align-items: center;
+    margin: 14px 0;
+  }
+  .mean-box {
+    background: #f7fcff;
+    border: 2px solid var(--teal);
+    border-radius: 14px;
+    padding: 14px;
+    min-height: 88px;
+  }
+  .mean-arrow {
+    font-weight: 700;
+    color: var(--teal-deep);
+  }
+  .bar-chart {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    gap: 10px;
+    align-items: end;
+    min-height: 260px;
+    margin: 14px 0;
+  }
+  .y-axis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 220px;
+    color: #555;
+    font-size: 0.85rem;
+    text-align: right;
+  }
+  .bars {
+    height: 220px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    align-items: end;
+    border-left: 3px solid var(--teal-deep);
+    border-bottom: 3px solid var(--teal-deep);
+    padding: 0 8px;
+    background: repeating-linear-gradient(to top, transparent 0, transparent 21px, rgba(0, 114, 145, 0.18) 22px);
+  }
+  .bar-wrap {
+    display: grid;
+    gap: 6px;
+    justify-items: center;
+    align-items: end;
+  }
+  .bar {
+    width: min(56px, 100%);
+    border: 2px solid var(--teal-deep);
+    border-radius: 10px 10px 0 0;
+    background: var(--teal);
+  }
+  .bar.orange { background: var(--orange); border-color: var(--orange-deep); }
+  .bar-label { font-weight: 700; font-size: 0.9rem; text-align: center; }
+  .pie-wrap {
+    display: grid;
+    grid-template-columns: minmax(210px, 280px) 1fr;
+    gap: 18px;
+    align-items: center;
+  }
+  .pie {
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    border: 4px solid var(--teal-deep);
+    background: conic-gradient(var(--teal) 0 50%, #7fb9c7 50% 75%, var(--orange) 75% 87.5%, #ffd3b4 87.5% 100%);
+    position: relative;
+    margin: 0 auto;
+  }
+  .pie::after {
+    content: "";
+    position: absolute;
+    inset: 50%;
+    width: 4px;
+    height: 4px;
+    background: var(--ink);
+    border-radius: 50%;
+  }
+  .legend {
+    display: grid;
+    gap: 8px;
+  }
+  .legend-item {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-weight: 700;
+  }
+  .swatch {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+  }
+  .swatch.pop { background: var(--teal); }
+  .swatch.rap { background: #7fb9c7; }
+  .swatch.rock { background: var(--orange); }
+  .swatch.dance { background: #ffd3b4; }
+  .pictogram {
+    display: grid;
+    grid-template-columns: 95px 1fr;
+    border: 2px solid var(--teal-deep);
+    border-radius: 14px;
+    overflow: hidden;
+    background: white;
+    margin: 14px 0;
+  }
+  .pic-label, .pic-row {
+    border-bottom: 2px solid var(--teal-deep);
+    min-height: 74px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+  }
+  .pic-label:last-of-type, .pic-row:last-of-type { border-bottom: 0; }
+  .pic-label {
+    font-weight: 700;
+    background: #eef7fa;
+  }
+  .pic-row {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .circle, .half-circle {
+    width: 42px;
+    height: 42px;
+    border: 3px solid var(--teal-deep);
+    border-radius: 50%;
+    background: white;
+  }
+  .half-circle {
+    width: 22px;
+    border-radius: 42px 0 0 42px;
+    border-right: 0;
+  }
+  .key-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 2px solid var(--teal);
+    border-radius: 14px;
+    padding: 10px;
+    font-weight: 700;
+    background: #f7fcff;
+  }
+  .boss {
+    margin-top: 18px;
+    background: var(--dark);
+    color: white;
+    border: 2px solid #000000;
+    border-radius: 16px;
+    padding: 14px;
+  }
+  .boss summary {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+  }
+  .boss-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: #1a1a1a;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-weight: 700;
+  }
+  .boss textarea { border-color: var(--gold); }
+  .summary-box {
+    white-space: pre-wrap;
+    background: #f6f6f6;
+    border: 2px solid #d6d6d6;
+    border-radius: 14px;
+    padding: 12px;
+    max-height: 260px;
+    overflow: auto;
+  }
+  .toast {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: min(420px, calc(100% - 36px));
+    background: white;
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+    transform: translateY(150%);
+    transition: transform 260ms ease;
+  }
+  .toast.show { transform: translateY(0); }
+  .toast svg { width: 34px; height: 34px; flex: 0 0 auto; }
+  .egg {
+    margin: 24px auto 0;
+    text-align: center;
+  }
+  .egg button {
+    border: 0;
+    background: transparent;
+    color: var(--teal-deep);
+    text-decoration: underline;
+    min-height: 44px;
+    padding: 8px 12px;
+  }
+  .egg-note {
+    display: none;
+    max-width: 560px;
+    margin: 8px auto 0;
+    background: white;
+    border: 2px solid var(--orange);
+    border-radius: 14px;
+    padding: 10px;
+  }
+  .egg-note.open { display: block; }
+  @media (max-width: 840px) {
+    .topbar, .grid-two, .pie-wrap, .mean-machine { grid-template-columns: 1fr; }
+    .choice-grid, .choice-grid.three { grid-template-columns: 1fr; }
+    .mean-arrow { text-align: center; }
+    .hero { padding: 22px; }
+    .bar-chart { grid-template-columns: 36px 1fr; }
+    .bars { gap: 6px; padding: 0 5px; }
+    .bar-label { font-size: 0.78rem; }
+    .pictogram { grid-template-columns: 82px 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition: none !important;
+    }
+    .toast { transform: none; display: none; }
+    .toast.show { display: flex; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Base 6 &middot; Tuesday Maths</div>
+    <h1>Understanding Data and Averages</h1>
+    <p>This activity is about finding useful numbers from a set of data. It covers mean, median, mode, range, outliers, bar charts, pie charts and pictograms. It usually takes about 35 to 45 minutes. You can jump around, stop early, or come back later. Jay can check whatever you choose to send.</p>
+  </header>
+
+  <div class="topbar" aria-label="Progress area">
+    <div class="star-card">
+      <div class="stars" id="starBar" aria-label="Stars earned"></div>
+    </div>
+    <button class="btn ghost" id="resetBtn" type="button">Reset saved progress</button>
+  </div>
+
+  <div class="progress-card">
+    <div class="progress-dots" id="progressDots" aria-label="Jump to a step"></div>
+  </div>
+
+  <main>
+    <section class="step active" data-step="0" aria-labelledby="step0Title">
+      <span class="step-tag">Step 1 of 7</span>
+      <h2 id="step0Title">Set up the data lab</h2>
+      <div class="grid-two">
+        <div>
+          <p>Averages help turn a list of numbers into one number that gives a quick idea of the group. Different averages tell different stories.</p>
+          <p>The mean can be useful, but an outlier can pull it around like a tiny maths tractor. Suspiciously powerful for one number.</p>
+          <label for="studentInitials">Student initials</label>
+          <input id="studentInitials" data-save="input" autocomplete="off" maxlength="12" placeholder="Example: JT">
+        </div>
+        <div class="mini-card">
+          <h3>Today you could practise</h3>
+          <p>1. Matching average words to meanings.</p>
+          <p>2. Finding mode, median, range and mean.</p>
+          <p>3. Spotting an outlier.</p>
+          <p>4. Reading bar charts, pie charts and pictograms.</p>
+        </div>
+      </div>
+      <div class="deep-link"><strong>Deep link for older learners:</strong> there is not always one "best" average. The best choice depends on the question and the shape of the data.</div>
+      <div class="button-row">
+        <button class="btn secondary complete-btn" type="button" data-complete="0">Mark this step as explored</button>
+        <button class="btn" type="button" data-next="1">Go to memory match</button>
+      </div>
+    </section>
+
+    <section class="step" data-step="1" aria-labelledby="step1Title">
+      <span class="step-tag">Step 2 of 7 &middot; Predict first</span>
+      <h2 id="step1Title">Average memory match</h2>
+      <p>Before matching the words, predict one: what might an outlier be in a set of data?</p>
+      <label for="predictOutlier">Prediction</label>
+      <input id="predictOutlier" data-save="input" placeholder="Type your best idea here">
+      <div class="button-row">
+        <button class="btn ghost" id="revealOutlierTip" type="button">Reveal a useful clue</button>
+      </div>
+      <div class="hidden-panel" id="outlierTipPanel">
+        <p><strong>Clue:</strong> an outlier is a value that is much bigger or much smaller than most of the others.</p>
+      </div>
+
+      <h3>Match each word to its meaning</h3>
+      <div class="match-list" id="matchList"></div>
+      <div class="button-row">
+        <button class="btn" id="checkMatches" type="button">Check matches</button>
+        <button class="btn secondary complete-btn" type="button" data-complete="1">Mark this step as explored</button>
+        <button class="btn ghost" type="button" data-prev="0">Back</button>
+        <button class="btn" type="button" data-next="2">Go to gaming scores</button>
+      </div>
+      <div class="feedback" id="matchFeedback" aria-live="polite"></div>
+      <div class="deep-link"><strong>Deep link for older learners:</strong> the mean uses every value, so it is sensitive to outliers. The median only cares about the middle position.</div>
+    </section>
+
+    <section class="step" data-step="2" aria-labelledby="step2Title">
+      <span class="step-tag">Step 3 of 7</span>
+      <h2 id="step2Title">Gaming tournament data</h2>
+      <p>Seven friends played a video game. Their scores are already in order.</p>
+      <div class="score-strip" aria-label="Scores in order">
+        <span class="score-chip">5</span>
+        <span class="score-chip">5</span>
+        <span class="score-chip">5</span>
+        <span class="score-chip">7</span>
+        <span class="score-chip">8</span>
+        <span class="score-chip">10</span>
+        <span class="score-chip outlier">44</span>
+      </div>
+
+      <div class="grid-two">
+        <div class="mini-card">
+          <label for="scoreMode">Mode: which score appears most often?</label>
+          <input id="scoreMode" data-save="input" inputmode="numeric" placeholder="Mode">
+          <label for="scoreMedian">Median: which score is in the middle?</label>
+          <input id="scoreMedian" data-save="input" inputmode="numeric" placeholder="Median">
+          <label for="scoreRange">Range: biggest minus smallest</label>
+          <input id="scoreRange" data-save="input" inputmode="numeric" placeholder="Range">
+        </div>
+        <div class="mini-card">
+          <label for="scoreMean">Mean: 84 divided by 7</label>
+          <input id="scoreMean" data-save="input" inputmode="numeric" placeholder="Mean">
+          <label for="scoreOutlier">Which score is the outlier?</label>
+          <input id="scoreOutlier" data-save="input" inputmode="numeric" placeholder="Outlier">
+          <label for="outlierExplain">Why can removing 44 make the mean more useful for this group?</label>
+          <textarea id="outlierExplain" data-save="input" placeholder="The score of 44 is much higher than the others, so it makes the mean look..."></textarea>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn" id="checkScores" type="button">Check gaming scores</button>
+        <button class="btn secondary complete-btn" type="button" data-complete="2">Mark this step as explored</button>
+        <button class="btn ghost" type="button" data-prev="1">Back</button>
+        <button class="btn" type="button" data-next="3">Go to mean machine</button>
+      </div>
+      <div class="feedback" id="scoreFeedback" aria-live="polite"></div>
+      <div class="deep-link"><strong>Deep link for older learners:</strong> after removing 44, the new mean is about 6.6. That better represents most of the scores because most players scored between 5 and 10.</div>
+    </section>
+
+    <section class="step" data-step="3" aria-labelledby="step3Title">
+      <span class="step-tag">Step 4 of 7</span>
+      <h2 id="step3Title">Mean machine: with and without the outlier</h2>
+      <p>Tap the button to compare the mean with 44 included and with 44 removed. This is a quick way to see how one unusual number can change the story.</p>
+      <div class="mean-machine">
+        <div class="mean-box">
+          <h3>All scores</h3>
+          <p>5, 5, 5, 7, 8, 10, 44</p>
+          <p><strong>Mean: 12</strong></p>
+        </div>
+        <div class="mean-arrow">&rarr;</div>
+        <div class="mean-box">
+          <h3>Without 44</h3>
+          <p>5, 5, 5, 7, 8, 10</p>
+          <p><strong>Mean: about 6.6</strong></p>
+        </div>
+      </div>
+      <div class="choice-grid">
+        <button class="choice" type="button" data-meanclaim="meanbest">The mean of 12 is always the best number.</button>
+        <button class="choice" type="button" data-meanclaim="outlierpulls">The 44 pulls the mean higher than most scores.</button>
+        <button class="choice" type="button" data-meanclaim="rangeonly">The range tells us the middle score.</button>
+        <button class="choice" type="button" data-meanclaim="medianstable">The median can stay more stable when one score is unusual.</button>
+      </div>
+      <div class="button-row">
+        <button class="btn" id="checkMeanClaims" type="button">Check chosen ideas</button>
+        <button class="btn secondary complete-btn" type="button" data-complete="3">Mark this step as explored</button>
+        <button class="btn ghost" type="button" data-prev="2">Back</button>
+        <button class="btn" type="button" data-next="4">Go to breakfast chart</button>
+      </div>
+      <div class="feedback" id="meanClaimFeedback" aria-live="polite"></div>
+      <div class="deep-link"><strong>Deep link for older learners:</strong> a statistic can be accurate and still slightly misleading if it hides the shape of the data.</div>
+    </section>
+
+    <section class="step" data-step="4" aria-labelledby="step4Title">
+      <span class="step-tag">Step 5 of 7</span>
+      <h2 id="step4Title">Breakfast club bar chart</h2>
+      <p>The bar chart shows choices at breakfast club. Bar charts are useful when comparing separate categories.</p>
+      <div class="grid-two">
+        <div class="mini-card">
+          <div class="bar-chart" aria-label="Bar chart showing Toast 12, Cereal 15, Fruit 8, Pastry 5">
+            <div class="y-axis">
+              <span>16</span>
+              <span>12</span>
+              <span>8</span>
+              <span>4</span>
+              <span>0</span>
+            </div>
+            <div class="bars">
+              <div class="bar-wrap"><div class="bar" style="height:165px;"></div><span class="bar-label">Toast</span></div>
+              <div class="bar-wrap"><div class="bar orange" style="height:206px;"></div><span class="bar-label">Cereal</span></div>
+              <div class="bar-wrap"><div class="bar" style="height:110px;"></div><span class="bar-label">Fruit</span></div>
+              <div class="bar-wrap"><div class="bar orange" style="height:69px;"></div><span class="bar-label">Pastry</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="mini-card">
+          <label for="toastCount">How many students chose Toast?</label>
+          <input id="toastCount" data-save="input" inputmode="numeric" placeholder="Toast">
+          <h3>Which item is the mode?</h3>
+          <div class="choice-grid" id="barModeChoices">
+            <button class="choice" type="button" data-barmode="Toast">Toast</button>
+            <button class="choice" type="button" data-barmode="Cereal">Cereal</button>
+            <button class="choice" type="button" data-barmode="Fruit">Fruit</button>
+            <button class="choice" type="button" data-barmode="Pastry">Pastry</button>
+          </div>
+          <label for="cerealFruitDiff">How many more chose Cereal than Fruit?</label>
+          <input id="cerealFruitDiff" data-save="input" inputmode="numeric" placeholder="15 - 8">
+          <label for="breakfastTotal">Total students: 12 + 15 + 8 + 5</label>
+          <input id="breakfastTotal" data-save="input" inputmode="numeric" placeholder="Total">
+        </div>
+      </div>
+      <div class="button-row">
+        <button class="btn" id="checkBar" type="button">Check bar chart</button>
+        <button class="btn secondary complete-btn" type="button" data-complete="4">Mark this step as explored</button>
+        <button class="btn ghost" type="button" data-prev="3">Back</button>
+        <button class="btn" type="button" data-next="5">Go to charts and pictures</button>
+      </div>
+      <div class="feedback" id="barFeedback" aria-live="polite"></div>
+      <div class="deep-link"><strong>Deep link for older learners:</strong> the mode in a bar chart is the tallest bar because it shows the most common category.</div>
+    </section>
+
+    <section class="step" data-step="5" aria-labelledby="step5Title">
+      <span class="step-tag">Step 6 of 7</span>
+      <h2 id="step5Title">Pie chart and pictogram lab</h2>
+      <div class="chart-list">
+        <div class="chart-card">
+          <h3>Music choices pie chart</h3>
+          <p>A school asked 40 students about their favourite music. The pie chart shows parts of the whole group.</p>
+          <div class="pie-wrap">
+            <div class="pie" aria-label="Pie chart with Pop half, Rap quarter, Rock eighth and Dance eighth"></div>
+            <div class="legend">
+              <div class="legend-item"><span class="swatch pop"></span>Pop: 1/2</div>
+              <div class="legend-item"><span class="swatch rap"></span>Rap: 1/4</div>
+              <div class="legend-item"><span class="swatch rock"></span>Rock: 1/8</div>
+              <div class="legend-item"><span class="swatch dance"></span>Dance: 1/8</div>
+            </div>
+          </div>
+          <div class="grid-two">
+            <div>
+              <label for="quarterMusic">Which music is exactly 1/4 of the chart?</label>
+              <input id="quarterMusic" data-save="input" placeholder="Music type">
+            </div>
+            <div>
+              <label for="halfOfForty">Half of 40 is...</label>
+              <input id="halfOfForty" data-save="input" inputmode="numeric" placeholder="40 / 2">
+            </div>
+          </div>
+          <h3>Why is a pie chart useful here?</h3>
+          <div class="choice-grid" id="pieReasonChoices">
+            <button class="choice" type="button" data-piereason="exact">It always shows the exact number in each group.</button>
+            <button class="choice" type="button" data-piereason="whole">It makes it easy to compare each part with the whole.</button>
+          </div>
+        </div>
+
+        <div class="pictogram-card">
+          <h3>Favourite fruits pictogram</h3>
+          <p>Each full circle represents 4 students. A half circle represents half of 4.</p>
+          <div class="key-box"><span class="circle" aria-hidden="true"></span><span>= 4 students</span></div>
+          <div class="pictogram" aria-label="Pictogram showing Apple 3 full circles, Banana 2 full circles and 1 half circle, Orange 1 full circle">
+            <div class="pic-label">Apple</div>
+            <div class="pic-row"><span class="circle"></span><span class="circle"></span><span class="circle"></span></div>
+            <div class="pic-label">Banana</div>
+            <div class="pic-row"><span class="circle"></span><span class="circle"></span><span class="half-circle"></span></div>
+            <div class="pic-label">Orange</div>
+            <div class="pic-row"><span class="circle"></span></div>
+          </div>
+          <div class="grid-two">
+            <div>
+              <label for="halfCircle">How many students does a half circle represent?</label>
+              <input id="halfCircle" data-save="input" inputmode="numeric" placeholder="4 / 2">
+            </div>
+            <div>
+              <label for="appleCount">How many students chose Apple?</label>
+              <input id="appleCount" data-save="input" inputmode="numeric" placeholder="3 x 4">
+            </div>
+            <div>
+              <label for="bananaCount">How many students chose Banana?</label>
+              <input id="bananaCount" data-save="input" inputmode="numeric" placeholder="8 + 2">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="button-row">
+        <button class="btn" id="checkPictureCharts" type="button">Check chart lab</button>
+        <button class="btn secondary complete-btn" type="button" data-complete="5">Mark this step as explored</button>
+        <button class="btn ghost" type="button" data-prev="4">Back</button>
+        <button class="btn" type="button" data-next="6">Go to reflection</button>
+      </div>
+      <div class="feedback" id="pictureChartFeedback" aria-live="polite"></div>
+      <div class="deep-link"><strong>Deep link for older learners:</strong> pie charts are good for proportions, while pictograms are good for quick counting if the key is clear.</div>
+    </section>
+
+    <section class="step" data-step="6" aria-labelledby="step6Title">
+      <span class="step-tag">Step 7 of 7</span>
+      <h2 id="step6Title">Reflection and send to Jay</h2>
+      <label for="reflection">One thing I want to remember is...</label>
+      <textarea id="reflection" data-save="input" placeholder="A word, a method, a chart clue, or anything else you fancy saving."></textarea>
+
+      <details class="boss" id="bossDetails">
+        <summary><span class="boss-badge">BOSS LEVEL</span> Optional: for anyone who fancies a proper think</summary>
+        <p>A claim says: "The mean is always the best average because it uses all the numbers." Analyse the claim. When is the mean useful? When might the median or mode tell a fairer story?</p>
+        <label for="bossAnswer">Boss level response</label>
+        <textarea id="bossAnswer" data-save="input" placeholder="You could argue both sides here."></textarea>
+        <div class="button-row"><button class="btn secondary" id="saveBoss" type="button">Save boss response</button></div>
+        <div class="feedback" id="bossFeedback" aria-live="polite"></div>
+      </details>
+
+      <h3>Preview</h3>
+      <pre class="summary-box" id="summaryPreview"></pre>
+      <div class="button-row">
+        <button class="btn secondary complete-btn" type="button" data-complete="6">Mark this step as explored</button>
+        <button class="btn" id="sendEmail" type="button">Open Gmail to send to Jay</button>
+        <button class="btn ghost" type="button" data-prev="5">Back</button>
+      </div>
+      <div class="feedback" id="emailFeedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div class="egg">
+    <button id="eggBtn" type="button" aria-expanded="false">A tiny outlier is hiding under the chart.</button>
+    <div class="egg-note" id="eggNote">The tiny outlier says: "I am not ruining the mean. I am adding drama." Suspicious behaviour.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <polygon fill="#ffce2e" stroke="#1a1a1a" stroke-width="1.5" points="12,2 15,8.5 22,9.2 16.8,13.8 18.4,21 12,17.2 5.6,21 7.2,13.8 2,9.2 9,8.5"></polygon>
+  </svg>
+  <span id="toastText">Star earned.</span>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var SLUG = "dataaverages";
+  var PREFIX = "base6." + SLUG + ".";
+  var TOTAL_STEPS = 7;
+  var toastTimer = null;
+
+  function storageSet(key, value) {
+    try {
+      window.localStorage.setItem(PREFIX + key, JSON.stringify(value));
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  function storageGet(key, fallback) {
+    try {
+      var raw = window.localStorage.getItem(PREFIX + key);
+      if (raw === null) { return fallback; }
+      return JSON.parse(raw);
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function storageClearAll() {
+    try {
+      var keys = [];
+      for (var i = 0; i < window.localStorage.length; i += 1) {
+        var key = window.localStorage.key(i);
+        if (key && key.indexOf(PREFIX) === 0) { keys.push(key); }
+      }
+      keys.forEach(function (key) { window.localStorage.removeItem(key); });
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  function byId(id) { return document.getElementById(id); }
+
+  function cleanNumber(value) {
+    var text = String(value || "").trim();
+    if (text === "") { return NaN; }
+    return Number(text.replace(/[^0-9.\-]/g, ""));
+  }
+
+  function setFeedback(id, text, kind) {
+    var box = byId(id);
+    if (!box) { return; }
+    box.textContent = text;
+    box.classList.remove("good", "coach");
+    if (kind) { box.classList.add(kind); }
+  }
+
+  function starSvg(filled, label) {
+    var cls = filled ? "filled" : "empty";
+    var title = label || (filled ? "Filled star" : "Empty star");
+    return "<svg class=\"star-svg " + cls + "\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"" + title + "\"><polygon class=\"shape\" points=\"12,2 15,8.5 22,9.2 16.8,13.8 18.4,21 12,17.2 5.6,21 7.2,13.8 2,9.2 9,8.5\"></polygon></svg>";
+  }
+
+  var state = {
+    currentStep: storageGet("currentStep", 0),
+    stars: storageGet("stars", []),
+    revealOutlierTip: storageGet("revealOutlierTip", false),
+    matches: storageGet("matches", {}),
+    meanClaims: storageGet("meanClaims", []),
+    barMode: storageGet("barMode", ""),
+    pieReason: storageGet("pieReason", ""),
+    bossOpen: storageGet("bossOpen", false),
+    eggOpen: storageGet("eggOpen", false)
+  };
+
+  if (!Array.isArray(state.stars)) { state.stars = []; }
+  if (!Array.isArray(state.meanClaims)) { state.meanClaims = []; }
+  if (typeof state.currentStep !== "number" || state.currentStep < 0 || state.currentStep >= TOTAL_STEPS) {
+    state.currentStep = 0;
+  }
+
+  var stepNames = [
+    "Set up the data lab",
+    "Average memory match",
+    "Gaming tournament data",
+    "Mean machine",
+    "Breakfast bar chart",
+    "Pie chart and pictogram lab",
+    "Reflection"
+  ];
+
+  var matchItems = [
+    {
+      id: "mean",
+      term: "Mean",
+      correct: "total",
+      meanings: [
+        { id: "middle", text: "The middle value when numbers are in order.", feedback: "Not that one. The middle value is the median." },
+        { id: "total", text: "The total of all values divided by how many there are.", feedback: "Yes. Mean is add them up, then share fairly." },
+        { id: "often", text: "The value that appears most often.", feedback: "Not that one. Most often is the mode." }
+      ]
+    },
+    {
+      id: "median",
+      term: "Median",
+      correct: "middle",
+      meanings: [
+        { id: "middle", text: "The middle value when numbers are in order.", feedback: "Yes. Median means line them up, then find the middle." },
+        { id: "bigminus", text: "The biggest value minus the smallest value.", feedback: "Not that one. Biggest minus smallest is the range." },
+        { id: "oddone", text: "A value much bigger or smaller than the rest.", feedback: "Not that one. That describes an outlier." }
+      ]
+    },
+    {
+      id: "mode",
+      term: "Mode",
+      correct: "often",
+      meanings: [
+        { id: "total", text: "The total divided by how many values there are.", feedback: "Not that one. That describes the mean." },
+        { id: "often", text: "The value that appears most often.", feedback: "Yes. Mode means most common." },
+        { id: "middle", text: "The middle value when numbers are in order.", feedback: "Not that one. That describes the median." }
+      ]
+    },
+    {
+      id: "range",
+      term: "Range",
+      correct: "bigminus",
+      meanings: [
+        { id: "bigminus", text: "The biggest value minus the smallest value.", feedback: "Yes. Range shows the spread from low to high." },
+        { id: "oddone", text: "A value much bigger or smaller than the rest.", feedback: "Not that one. That describes an outlier." },
+        { id: "often", text: "The value that appears most often.", feedback: "Not that one. That describes the mode." }
+      ]
+    },
+    {
+      id: "outlier",
+      term: "Outlier",
+      correct: "oddone",
+      meanings: [
+        { id: "middle", text: "The middle value when numbers are in order.", feedback: "Not that one. The middle value is the median." },
+        { id: "bigminus", text: "The biggest value minus the smallest value.", feedback: "Not that one. That is the range calculation." },
+        { id: "oddone", text: "A value much bigger or smaller than the rest.", feedback: "Yes. Outliers can change how the data looks." }
+      ]
+    }
+  ];
+
+  function showToast(message) {
+    var toast = byId("toast");
+    byId("toastText").textContent = message;
+    if (toastTimer) { window.clearTimeout(toastTimer); }
+    toast.classList.add("show");
+    toastTimer = window.setTimeout(function () {
+      toast.classList.remove("show");
+    }, 3000);
+  }
+
+  function renderStars() {
+    var bar = byId("starBar");
+    var html = "<span class=\"star-label\">Stars</span>";
+    for (var i = 0; i < TOTAL_STEPS; i += 1) {
+      html += starSvg(state.stars.indexOf(i) !== -1, "Star for step " + (i + 1));
+    }
+    bar.innerHTML = html;
+  }
+
+  function earnStar(step, message) {
+    if (state.stars.indexOf(step) === -1) {
+      state.stars.push(step);
+      storageSet("stars", state.stars);
+      renderStars();
+      showToast(message);
+    }
+    renderProgressDots();
+    updateSummary();
+  }
+
+  function renderProgressDots() {
+    var dots = byId("progressDots");
+    dots.innerHTML = "";
+    for (var i = 0; i < TOTAL_STEPS; i += 1) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "dot";
+      if (i === state.currentStep) { button.classList.add("active"); }
+      if (state.stars.indexOf(i) !== -1) { button.classList.add("done"); }
+      button.textContent = String(i + 1);
+      button.setAttribute("aria-label", "Jump to step " + (i + 1) + ": " + stepNames[i]);
+      button.setAttribute("data-jump", String(i));
+      dots.appendChild(button);
+    }
+  }
+
+  function showStep(step) {
+    state.currentStep = step;
+    storageSet("currentStep", state.currentStep);
+    document.querySelectorAll(".step").forEach(function (section) {
+      var sectionStep = Number(section.getAttribute("data-step"));
+      section.classList.toggle("active", sectionStep === state.currentStep);
+    });
+    renderProgressDots();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function setupProgressClicks() {
+    byId("progressDots").addEventListener("click", function (event) {
+      var button = event.target.closest("button[data-jump]");
+      if (!button) { return; }
+      showStep(Number(button.getAttribute("data-jump")));
+    });
+  }
+
+  function restoreInputs() {
+    document.querySelectorAll("[data-save=\"input\"]").forEach(function (input) {
+      var saved = storageGet("input." + input.id, "");
+      if (typeof saved === "string" || typeof saved === "number") {
+        input.value = saved;
+      }
+      input.addEventListener("input", function () {
+        storageSet("input." + input.id, input.value);
+        updateSummary();
+      });
+      input.addEventListener("change", function () {
+        storageSet("input." + input.id, input.value);
+        updateSummary();
+      });
+    });
+  }
+
+  function setupStepButtons() {
+    document.querySelectorAll("[data-next]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        showStep(Number(button.getAttribute("data-next")));
+      });
+    });
+    document.querySelectorAll("[data-prev]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        showStep(Number(button.getAttribute("data-prev")));
+      });
+    });
+    document.querySelectorAll(".complete-btn").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var step = Number(button.getAttribute("data-complete"));
+        earnStar(step, "Step " + (step + 1) + " saved. Data brain doing its thing.");
+      });
+    });
+  }
+
+  function setupOutlierTip() {
+    var panel = byId("outlierTipPanel");
+    panel.classList.toggle("open", state.revealOutlierTip === true);
+    byId("revealOutlierTip").addEventListener("click", function () {
+      state.revealOutlierTip = !state.revealOutlierTip;
+      storageSet("revealOutlierTip", state.revealOutlierTip);
+      panel.classList.toggle("open", state.revealOutlierTip === true);
+    });
+  }
+
+  function renderMatches() {
+    var list = byId("matchList");
+    list.innerHTML = "";
+    matchItems.forEach(function (item, index) {
+      var selected = state.matches[item.id] || "";
+      var html = "<div class=\"match-item\"><h3>" + (index + 1) + ". " + item.term + "</h3><div class=\"choice-grid\">";
+      item.meanings.forEach(function (meaning) {
+        html += "<button class=\"choice" + (selected === meaning.id ? " selected" : "") + "\" type=\"button\" data-match=\"" + item.id + "\" data-answer=\"" + meaning.id + "\">" + meaning.text + "</button>";
+      });
+      html += "</div><div class=\"feedback\" id=\"matchFb_" + item.id + "\" aria-live=\"polite\"></div></div>";
+      list.insertAdjacentHTML("beforeend", html);
+    });
+    matchItems.forEach(function (item) {
+      var selected = state.matches[item.id] || "";
+      if (selected) { showMatchFeedback(item, selected); }
+    });
+  }
+
+  function showMatchFeedback(item, selected) {
+    var meaning = item.meanings.filter(function (m) { return m.id === selected; })[0];
+    if (!meaning) { return; }
+    setFeedback("matchFb_" + item.id, meaning.feedback, selected === item.correct ? "good" : "coach");
+  }
+
+  function setupMatches() {
+    renderMatches();
+    byId("matchList").addEventListener("click", function (event) {
+      var button = event.target.closest("button[data-match]");
+      if (!button) { return; }
+      var id = button.getAttribute("data-match");
+      var answer = button.getAttribute("data-answer");
+      state.matches[id] = answer;
+      storageSet("matches", state.matches);
+      renderMatches();
+      updateSummary();
+    });
+    byId("checkMatches").addEventListener("click", function () {
+      var correct = 0;
+      matchItems.forEach(function (item) {
+        if (state.matches[item.id] === item.correct) { correct += 1; }
+      });
+      if (correct === matchItems.length) {
+        setFeedback("matchFeedback", "All matched. You have the average vocabulary ready.", "good");
+      } else {
+        setFeedback("matchFeedback", "You have " + correct + " out of " + matchItems.length + ". Try checking whether the word is about the middle, the most common, the spread, or an unusual value.", "coach");
+      }
+    });
+  }
+
+  function setupScores() {
+    byId("checkScores").addEventListener("click", function () {
+      var checks = [
+        { id: "scoreMode", answer: 5, label: "mode" },
+        { id: "scoreMedian", answer: 7, label: "median" },
+        { id: "scoreRange", answer: 39, label: "range" },
+        { id: "scoreMean", answer: 12, label: "mean" },
+        { id: "scoreOutlier", answer: 44, label: "outlier" }
+      ];
+      var correct = 0;
+      var missing = [];
+      checks.forEach(function (item) {
+        if (cleanNumber(byId(item.id).value) === item.answer) {
+          correct += 1;
+        } else {
+          missing.push(item.label);
+        }
+      });
+      var explanation = inputValue("outlierExplain").toLowerCase();
+      var hasExplanation = explanation.indexOf("higher") !== -1 || explanation.indexOf("mean") !== -1 || explanation.indexOf("average") !== -1 || explanation.indexOf("most") !== -1;
+      if (correct === checks.length && hasExplanation) {
+        setFeedback("scoreFeedback", "Strong work. You found the averages and explained why 44 changes the mean.", "good");
+      } else if (correct === checks.length) {
+        setFeedback("scoreFeedback", "The number answers are there. A strong explanation says that 44 is much higher than most scores, so it pulls the mean up.", "coach");
+      } else {
+        setFeedback("scoreFeedback", "You have " + correct + " out of " + checks.length + ". Check: " + missing.join(", ") + ". For range, subtract 5 from 44. For median, count into the middle.", "coach");
+      }
+      updateSummary();
+    });
+  }
+
+  function renderMeanClaims() {
+    document.querySelectorAll("[data-meanclaim]").forEach(function (button) {
+      var id = button.getAttribute("data-meanclaim");
+      button.classList.toggle("selected", state.meanClaims.indexOf(id) !== -1);
+    });
+  }
+
+  function setupMeanClaims() {
+    renderMeanClaims();
+    document.querySelectorAll("[data-meanclaim]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var id = button.getAttribute("data-meanclaim");
+        var index = state.meanClaims.indexOf(id);
+        if (index === -1) {
+          state.meanClaims.push(id);
+        } else {
+          state.meanClaims.splice(index, 1);
+        }
+        storageSet("meanClaims", state.meanClaims);
+        renderMeanClaims();
+        updateSummary();
+      });
+    });
+    byId("checkMeanClaims").addEventListener("click", function () {
+      var hasOutlier = state.meanClaims.indexOf("outlierpulls") !== -1;
+      var hasMedian = state.meanClaims.indexOf("medianstable") !== -1;
+      var hasWrong = state.meanClaims.indexOf("meanbest") !== -1 || state.meanClaims.indexOf("rangeonly") !== -1;
+      if (hasOutlier && hasMedian && !hasWrong) {
+        setFeedback("meanClaimFeedback", "Yes. Those ideas explain why the outlier changes the mean and why the median can be useful.", "good");
+      } else if (hasOutlier || hasMedian) {
+        setFeedback("meanClaimFeedback", "Part of the thinking is there. The strongest pair says that 44 pulls the mean up, and the median can stay more stable.", "coach");
+      } else {
+        setFeedback("meanClaimFeedback", "Not those yet. Compare 12 with the scores. Most players did not score near 12 because 44 pulled the mean up.", "coach");
+      }
+    });
+  }
+
+  function setupBar() {
+    document.querySelectorAll("[data-barmode]").forEach(function (button) {
+      button.classList.toggle("selected", button.getAttribute("data-barmode") === state.barMode);
+      button.addEventListener("click", function () {
+        state.barMode = button.getAttribute("data-barmode");
+        storageSet("barMode", state.barMode);
+        document.querySelectorAll("[data-barmode]").forEach(function (btn) {
+          btn.classList.toggle("selected", btn.getAttribute("data-barmode") === state.barMode);
+        });
+        updateSummary();
+      });
+    });
+    byId("checkBar").addEventListener("click", function () {
+      var checks = [
+        cleanNumber(byId("toastCount").value) === 12,
+        state.barMode === "Cereal",
+        cleanNumber(byId("cerealFruitDiff").value) === 7,
+        cleanNumber(byId("breakfastTotal").value) === 40
+      ];
+      var correct = checks.filter(Boolean).length;
+      if (correct === 4) {
+        setFeedback("barFeedback", "Strong chart reading. Cereal is the mode because it has the tallest bar.", "good");
+      } else {
+        setFeedback("barFeedback", "You have " + correct + " out of 4. Try reading the top of each bar: Toast 12, Cereal 15, Fruit 8, Pastry 5.", "coach");
+      }
+      updateSummary();
+    });
+  }
+
+  function setupPictureCharts() {
+    document.querySelectorAll("[data-piereason]").forEach(function (button) {
+      button.classList.toggle("selected", button.getAttribute("data-piereason") === state.pieReason);
+      button.addEventListener("click", function () {
+        state.pieReason = button.getAttribute("data-piereason");
+        storageSet("pieReason", state.pieReason);
+        document.querySelectorAll("[data-piereason]").forEach(function (btn) {
+          btn.classList.toggle("selected", btn.getAttribute("data-piereason") === state.pieReason);
+        });
+        updateSummary();
+      });
+    });
+    byId("checkPictureCharts").addEventListener("click", function () {
+      var quarter = inputValue("quarterMusic").toLowerCase();
+      var checks = [
+        quarter === "rap",
+        cleanNumber(byId("halfOfForty").value) === 20,
+        state.pieReason === "whole",
+        cleanNumber(byId("halfCircle").value) === 2,
+        cleanNumber(byId("appleCount").value) === 12,
+        cleanNumber(byId("bananaCount").value) === 10
+      ];
+      var correct = checks.filter(Boolean).length;
+      if (correct === 6) {
+        setFeedback("pictureChartFeedback", "Strong chart lab work. You used fractions, keys, and comparison with the whole.", "good");
+      } else {
+        setFeedback("pictureChartFeedback", "You have " + correct + " out of 6. For the pictogram, each full circle is 4, so each half circle is 2.", "coach");
+      }
+      updateSummary();
+    });
+  }
+
+  function setupBossAndEmail() {
+    var details = byId("bossDetails");
+    details.open = state.bossOpen === true;
+    details.addEventListener("toggle", function () {
+      state.bossOpen = details.open;
+      storageSet("bossOpen", state.bossOpen);
+    });
+    byId("saveBoss").addEventListener("click", function () {
+      var text = inputValue("bossAnswer");
+      if (text.length > 0) {
+        setFeedback("bossFeedback", "Boss response saved. Strong answers usually mention outliers and what question the average is trying to answer.", "good");
+        showToast("Boss level saved. The mean has been placed under polite suspicion.");
+      } else {
+        setFeedback("bossFeedback", "Blank is fine. If you add a thought, it will save as you type.", "coach");
+      }
+      updateSummary();
+    });
+    byId("sendEmail").addEventListener("click", function () {
+      var initials = inputValue("studentInitials") || "unknown";
+      var subject = "Base 6 - Understanding Data and Averages - " + initials;
+      var body = buildSummary();
+      var url = "https://mail.google.com/mail/?view=cm&fs=1&to=jay.raine%40chiltonbridgeschool.co.uk&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+      window.open(url, "_blank");
+      setFeedback("emailFeedback", "Email opened. Press send in the email.", "good");
+    });
+  }
+
+  function setupEgg() {
+    var btn = byId("eggBtn");
+    var note = byId("eggNote");
+    note.classList.toggle("open", state.eggOpen === true);
+    btn.setAttribute("aria-expanded", state.eggOpen === true ? "true" : "false");
+    btn.addEventListener("click", function () {
+      state.eggOpen = !state.eggOpen;
+      storageSet("eggOpen", state.eggOpen);
+      note.classList.toggle("open", state.eggOpen === true);
+      btn.setAttribute("aria-expanded", state.eggOpen === true ? "true" : "false");
+    });
+  }
+
+  function setupReset() {
+    byId("resetBtn").addEventListener("click", function () {
+      var okay = window.confirm("Clear the saved work on this device for this activity?");
+      if (!okay) { return; }
+      storageClearAll();
+      window.location.reload();
+    });
+  }
+
+  function inputValue(id) {
+    var el = byId(id);
+    return el ? el.value.trim() : "";
+  }
+
+  function matchChoiceText(id) {
+    var item = matchItems.filter(function (m) { return m.id === id; })[0];
+    if (!item) { return "not answered"; }
+    var selected = state.matches[id] || "";
+    var meaning = item.meanings.filter(function (m) { return m.id === selected; })[0];
+    return meaning ? meaning.text : "not answered";
+  }
+
+  function meanClaimText() {
+    if (!state.meanClaims.length) { return "none selected"; }
+    var map = {
+      meanbest: "The mean of 12 is always the best number.",
+      outlierpulls: "The 44 pulls the mean higher than most scores.",
+      rangeonly: "The range tells us the middle score.",
+      medianstable: "The median can stay more stable when one score is unusual."
+    };
+    return state.meanClaims.map(function (id) { return map[id] || id; }).join(" | ");
+  }
+
+  function buildSummary() {
+    var initials = inputValue("studentInitials") || "unknown";
+    var date = new Date().toLocaleString("en-GB");
+    var lines = [];
+    lines.push("Student initials: " + initials);
+    lines.push("Date: " + date);
+    lines.push("");
+    lines.push("Base 6 Understanding Data and Averages");
+    lines.push("Stars earned: " + state.stars.length + " / " + TOTAL_STEPS);
+    lines.push("");
+    lines.push("Step 1 - Set up");
+    lines.push("Initials entered: " + initials);
+    lines.push("");
+    lines.push("Step 2 - Average memory match");
+    lines.push("Outlier prediction: " + (inputValue("predictOutlier") || "blank"));
+    matchItems.forEach(function (item) {
+      lines.push(item.term + ": " + matchChoiceText(item.id));
+    });
+    lines.push("");
+    lines.push("Step 3 - Gaming tournament data");
+    lines.push("Mode: " + (inputValue("scoreMode") || "blank"));
+    lines.push("Median: " + (inputValue("scoreMedian") || "blank"));
+    lines.push("Range: " + (inputValue("scoreRange") || "blank"));
+    lines.push("Mean: " + (inputValue("scoreMean") || "blank"));
+    lines.push("Outlier: " + (inputValue("scoreOutlier") || "blank"));
+    lines.push("Outlier explanation: " + (inputValue("outlierExplain") || "blank"));
+    lines.push("");
+    lines.push("Step 4 - Mean machine");
+    lines.push("Chosen ideas: " + meanClaimText());
+    lines.push("");
+    lines.push("Step 5 - Breakfast bar chart");
+    lines.push("Toast count: " + (inputValue("toastCount") || "blank"));
+    lines.push("Mode item: " + (state.barMode || "not answered"));
+    lines.push("Cereal minus Fruit: " + (inputValue("cerealFruitDiff") || "blank"));
+    lines.push("Breakfast total: " + (inputValue("breakfastTotal") || "blank"));
+    lines.push("");
+    lines.push("Step 6 - Pie chart and pictogram lab");
+    lines.push("Quarter music: " + (inputValue("quarterMusic") || "blank"));
+    lines.push("Half of 40: " + (inputValue("halfOfForty") || "blank"));
+    lines.push("Pie chart reason: " + (state.pieReason || "not answered"));
+    lines.push("Half circle value: " + (inputValue("halfCircle") || "blank"));
+    lines.push("Apple count: " + (inputValue("appleCount") || "blank"));
+    lines.push("Banana count: " + (inputValue("bananaCount") || "blank"));
+    lines.push("");
+    lines.push("Reflection");
+    lines.push(inputValue("reflection") || "blank");
+    lines.push("");
+    lines.push("Boss level");
+    lines.push(inputValue("bossAnswer") || "blank");
+    lines.push("");
+    lines.push("Sent automatically from Base 6");
+    return lines.join("\n");
+  }
+
+  function updateSummary() {
+    var preview = byId("summaryPreview");
+    if (preview) { preview.textContent = buildSummary(); }
+  }
+
+  function init() {
+    renderStars();
+    renderProgressDots();
+    setupProgressClicks();
+    restoreInputs();
+    setupStepButtons();
+    setupOutlierTip();
+    setupMatches();
+    setupScores();
+    setupMeanClaims();
+    setupBar();
+    setupPictureCharts();
+    setupBossAndEmail();
+    setupEgg();
+    setupReset();
+    showStep(state.currentStep);
+    updateSummary();
+  }
+
+  init();
+}());
+</script>
+</body>
+</html>
