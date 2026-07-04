@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Initiate | Word of the Week | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: #007291; padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(239,119,36,0.18); border-radius: 50%; }
+  .site-header .header-inner { position: relative; z-index: 2; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .week-label { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.82); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2.6rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
+  .site-header .header-sub { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-top: 0.5rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 1; }
+
+  .main { max-width: 640px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .back-link { display: inline-block; margin-bottom: 1.5rem; font-size: 0.9rem; font-weight: 700; color: #007291; text-decoration: none; }
+  .back-link:hover { text-decoration: underline; }
+
+  .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin-bottom: 2.25rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
+  .intro h2 { font-size: 1.3rem; color: #c05a10; margin-bottom: 0.5rem; }
+  .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
+  .intro p + p { margin-top: 0.6rem; }
+  .intro .roots { font-size: 0.92rem; color: #666; }
+  .intro .roots strong { color: #007291; }
+  .intro .say-it { display: inline-block; margin-top: 0.75rem; font-size: 0.9rem; font-weight: 700; color: #007291; background: #e6f5f8; border-radius: 999px; padding: 0.3rem 0.9rem; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1rem; }
+
+  .game-card { background: #ffffff; border: 2px solid #007291; border-radius: 18px; padding: 1.5rem; text-align: center; box-shadow: 0 4px 14px rgba(0,114,145,0.08); }
+  .game-how { font-size: 0.95rem; color: #555; line-height: 1.55; margin-bottom: 1.25rem; }
+
+  .ladder { display: flex; gap: 0.6rem; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap; }
+  .rung { flex: 1 1 0; min-width: 92px; max-width: 150px; background: #fef8f4; border: 2px solid #e0d8d0; border-radius: 14px; padding: 0.7rem 0.5rem; cursor: pointer; font-family: inherit; text-align: center; transition: border-color 0.15s, transform 0.1s, background 0.15s; }
+  .rung:hover:not(:disabled) { transform: translateY(-2px); }
+  .rung:disabled { opacity: 0.5; cursor: default; }
+  .rung.current { border-color: #007291; background: #e6f5f8; }
+  .rung.cleared { border-color: #2e8b57; }
+  .rung-face { font-size: 1.7rem; line-height: 1; }
+  .rung-name { font-size: 0.85rem; font-weight: 700; color: #1a1a1a; margin-top: 0.25rem; }
+  .rung-state { font-size: 0.72rem; font-weight: 700; color: #888; margin-top: 0.1rem; }
+  .rung.cleared .rung-state { color: #2e8b57; }
+  .rung.current .rung-state { color: #007291; }
+
+  .goal-line { font-size: 0.92rem; font-weight: 700; color: #c05a10; margin-bottom: 1.1rem; min-height: 1.3em; }
+  .ladder-done { display: none; background: #e6f5e6; border: 2px solid #2e8b57; border-radius: 12px; padding: 0.9rem 1rem; font-weight: 700; color: #1f6b3a; margin-bottom: 1.1rem; }
+  .ladder-done.show { display: block; }
+
+  .status { font-size: 1.05rem; font-weight: 700; color: #007291; min-height: 1.5em; margin-bottom: 1rem; }
+  .status.win { color: #2e8b57; }
+  .status.gap { color: #c05a10; }
+
+  .stage { position: relative; width: 100%; margin: 0 auto 0.6rem; }
+  .stage svg { width: 100%; height: auto; display: block; border-radius: 14px; background: #f7fbfc; border: 2px solid #cfe6ec; }
+
+  .slot-rect { fill: rgba(0,114,145,0.05); stroke: #9dc7d4; stroke-width: 2; stroke-dasharray: 5 4; }
+  .slot-rect.target { stroke: #ef7724; fill: rgba(239,119,36,0.08); }
+  .slot-hit { fill: transparent; cursor: pointer; }
+
+  .tile-body { transition: transform 0.42s cubic-bezier(0.55,0.06,0.68,0.19); transform-box: fill-box; transform-origin: bottom center; }
+  .tile-piece.fallen .tile-body { transform: rotate(var(--dir, 74deg)); }
+  .filled-tile { cursor: pointer; }
+  .spark { fill: #ffce2e; opacity: 0; }
+  .spark.go { animation: sparkle 0.5s ease-out; }
+  @keyframes sparkle { 0% { opacity: 0; transform: scale(0.2); } 40% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0; transform: scale(1.6); } }
+  .gap-marker { fill: none; stroke: #d64545; stroke-width: 3; opacity: 0; }
+  .gap-marker.show { opacity: 1; animation: gappulse 1s ease-in-out infinite; }
+  @keyframes gappulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+  .tray-label { font-size: 0.82rem; font-weight: 700; color: #007291; margin: 0.4rem 0 0.5rem; }
+  .tray { display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap; min-height: 66px; padding: 0.6rem; background: #f0ede8; border-radius: 12px; margin-bottom: 1.1rem; align-items: center; }
+  .tray.empty::after { content: "Tray empty. Every domino is placed."; font-size: 0.85rem; font-weight: 700; color: #999; }
+  .tray-tile { width: 30px; height: 58px; border-radius: 5px; background: #007291; border: 2px solid #0a5a72; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; padding: 0; transition: transform 0.1s, box-shadow 0.15s; }
+  .tray-tile:hover { transform: translateY(-3px); }
+  .tray-tile.sel { border-color: #ef7724; box-shadow: 0 0 0 3px rgba(239,119,36,0.4); background: #0a6f8c; }
+  .tray-tile .pip { width: 5px; height: 5px; border-radius: 50%; background: #fff; }
+
+  .btn-row { margin-bottom: 0.4rem; }
+  .start-btn { font-family: inherit; font-size: 1.05rem; font-weight: 700; padding: 0.8rem 1.8rem; background: #ef7724; color: #ffffff; border: none; border-radius: 999px; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+  .start-btn:hover:not(:disabled) { background: #c05a10; }
+  .start-btn:active:not(:disabled) { transform: scale(0.97); }
+  .start-btn:disabled { background: #cbb9a8; cursor: default; }
+  .replay-btn { font-family: inherit; font-size: 0.95rem; font-weight: 700; padding: 0.7rem 1.4rem; background: #fff; color: #007291; border: 2px solid #007291; border-radius: 999px; cursor: pointer; margin-left: 0.5rem; }
+  .replay-btn:hover { background: #f0fafc; }
+
+  .reflect { display: none; font-size: 0.95rem; color: #555; line-height: 1.55; background: #fff3e8; border-radius: 12px; padding: 0.8rem 1rem; margin-top: 1.1rem; }
+  .reflect.show { display: block; }
+
+  .close-card { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 16px; padding: 1.4rem 1.5rem; margin-top: 2rem; }
+  .close-card h3 { font-size: 1.1rem; color: #c05a10; margin-bottom: 0.4rem; }
+  .close-card p { font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 0.6rem; }
+  .close-card label { display: block; font-size: 0.82rem; font-weight: 700; color: #555; margin: 0.6rem 0 0.3rem; }
+  .close-card input[type=text], .close-card textarea { width: 100%; font-family: inherit; font-size: 0.95rem; padding: 0.6rem 0.85rem; border: 2px solid #e0d8d0; border-radius: 10px; background: #fff; }
+  .close-card textarea { min-height: 70px; resize: vertical; line-height: 1.5; }
+  .close-card input:focus-visible, .close-card textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 1px; }
+  .close-card .send { margin-top: 0.8rem; font-family: inherit; font-size: 0.92rem; font-weight: 700; padding: 0.6rem 1.4rem; background: #ef7724; color: #fff; border: none; border-radius: 999px; cursor: pointer; }
+  .close-card .send:hover { background: #c05a10; }
+  .close-card .msg { min-height: 1.3em; font-weight: 700; font-size: 0.88rem; margin-top: 0.5rem; color: #1f6b3a; }
+
+  .closing { text-align: center; margin-top: 2rem; font-size: 1rem; font-weight: 700; color: #007291; line-height: 1.5; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .slot-hit:focus-visible { outline: 3px solid #ef7724; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rung, .start-btn, .tray-tile { transition: none; }
+    .tile-body { transition: none; }
+    .spark.go, .gap-marker.show { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Week 6</a>
+  <div class="header-inner">
+    <p class="week-label">Word of the Week</p>
+    <h1>Initiate</h1>
+    <p class="header-sub">To make the first move and get something started.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <a class="back-link" href="index.html">Back to Week 6</a>
+
+  <div class="intro">
+    <h2>Meet the word: Initiate</h2>
+    <p>To initiate means to make the first move and get something going. When you initiate, you are the one who starts it: the first message, the first step, the first push. Everything else follows from that.</p>
+    <p>Here is the useful secret. Starting is nearly always the hardest part. Once something is moving, it tends to keep moving. So the whole trick is often just the first push.</p>
+    <p class="roots">Word roots: initiate comes from the Latin <strong>initium</strong>, meaning a beginning. It shares that root with <strong>initial</strong> (the first letter) and <strong>initiation</strong> (a start or a joining).</p>
+    <span class="say-it">Say it: in-ish-ee-ate</span>
+  </div>
+
+  <p class="section-label">Build the Domino Run</p>
+  <div class="game-card">
+    <p class="game-how">Each run has gaps in the chain. Fill them from the tray: tap a domino in the tray, then tap a dashed gap to drop it in. When your chain looks joined up, initiate the run and watch it go. If it stops short, you have found a gap. Fill it and set it off again.</p>
+
+    <div class="ladder" id="ladder"></div>
+    <div class="goal-line" id="goal-line"></div>
+    <div class="ladder-done" id="ladder-done">Every run built and set off. You did not just watch these, you made them. That is the difference between a run that happens and a run you initiate.</div>
+
+    <div class="status" id="status" role="status" aria-live="polite">Fill the gaps, then initiate.</div>
+
+    <div class="stage" id="stage"></div>
+
+    <p class="tray-label">Your dominoes</p>
+    <div class="tray" id="tray"></div>
+
+    <div class="btn-row">
+      <button class="start-btn" id="start-btn" type="button">Initiate the run</button>
+      <button class="replay-btn" id="replay-btn" type="button" style="display:none;">Build it again</button>
+    </div>
+
+    <div class="reflect" id="reflect"></div>
+  </div>
+
+  <div class="close-card">
+    <h3>Your turn to initiate</h3>
+    <p>Building a run is the easy version. The real one is out here. What is one thing you would like to start this week, and what could the very first push be? One line is plenty. You could send it to Jay, or just keep it for yourself.</p>
+    <label for="c-name">Your initials</label>
+    <input type="text" id="c-name" placeholder="Type your initials">
+    <label for="c-first">My first push could be...</label>
+    <textarea id="c-first" placeholder="Even a tiny one counts. Finding the thing, sending the message, or just deciding."></textarea>
+    <button class="send" id="c-send" type="button">Send to Jay</button>
+    <p class="msg" id="c-msg" role="status"></p>
+  </div>
+
+  <p class="closing">You cannot always control how something goes. You can nearly always control whether it starts.</p>
+
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+"use strict";
+
+var NS = "base6.w6initiate.";
+function save(k, v) { try { localStorage.setItem(NS + k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(NS + k); } catch (e) { return null; } }
+function loadJSON(k, fb) { try { var v = localStorage.getItem(NS + k); return v ? JSON.parse(v) : fb; } catch (e) { return fb; } }
+
+var REFLECTIONS = [
+  'You built that, then set it off. Both halves were you.',
+  'The chain did the work. You just made sure it could start.',
+  'Notice the hard part was joining it up and pressing go. After that, it ran itself.',
+  'One push, once the path was ready. That is initiating.',
+  'A run that is set up but never started does nothing. You started it.'
+];
+
+/* Each level: tiles have x,y, whether anchored (pre-placed) or a slot to fill,
+   and a "next" list of tiles they topple. The cascade travels only to placed
+   tiles. A run succeeds when it reaches the finish tile. */
+var LEVELS = [
+  {
+    id: 0, name: 'Mind the Gap', face: '\uD83E\uDDE9', tag: 'Warm-up',
+    blurb: 'One gap in the middle. Pop a domino in, then initiate.',
+    start: 0, finish: 4, tray: 1,
+    tiles: [
+      { x: 70,  y: 150, anchored: true,  next: [1] },
+      { x: 120, y: 150, anchored: true,  next: [2] },
+      { x: 170, y: 150, anchored: false, next: [3] },
+      { x: 220, y: 150, anchored: true,  next: [4] },
+      { x: 285, y: 150, anchored: true,  next: [], finishEmoji: '\uD83C\uDF89' }
+    ]
+  },
+  {
+    id: 1, name: 'Bridge It', face: '\uD83C\uDF09', tag: 'Longer',
+    blurb: 'Three gaps to bridge. Fill them all, then set it going.',
+    start: 0, finish: 6, tray: 3,
+    tiles: [
+      { x: 50,  y: 150, anchored: true,  next: [1] },
+      { x: 95,  y: 150, anchored: false, next: [2] },
+      { x: 140, y: 150, anchored: true,  next: [3] },
+      { x: 185, y: 150, anchored: false, next: [4] },
+      { x: 230, y: 150, anchored: false, next: [5] },
+      { x: 275, y: 150, anchored: true,  next: [6] },
+      { x: 335, y: 150, anchored: true,  next: [], finishEmoji: '\uD83C\uDF89' }
+    ]
+  },
+  {
+    id: 2, name: 'The Fork', face: '\uD83C\uDF86', tag: 'Branching',
+    blurb: 'This one splits in two. Fill the junction, and a single push sets off both lines at once. Join up both arms to reach the trophy.',
+    start: 0, finish: 7, tray: 4,
+    tiles: [
+      { x: 45,  y: 155, anchored: true,  next: [1] },
+      { x: 95,  y: 155, anchored: false, next: [2] },
+      { x: 150, y: 155, anchored: true,  next: [3, 5] },
+      { x: 205, y: 120, anchored: false, next: [4] },
+      { x: 258, y: 95,  anchored: false, next: [7] },
+      { x: 205, y: 195, anchored: false, next: [6] },
+      { x: 258, y: 218, anchored: true,  next: [], finishEmoji: '\uD83C\uDF31' },
+      { x: 318, y: 82,  anchored: true,  next: [], finishEmoji: '\uD83C\uDFC6' }
+    ]
+  }
+];
+
+var currentLevel = 0;
+var cleared = [false, false, false];
+var unlocked = [true, false, false];
+var placed = {};
+var traySelected = false;
+var trayRemaining = 0;
+var running = false;
+var fallTimers = [];
+
+var stageEl = document.getElementById('stage');
+var trayEl = document.getElementById('tray');
+var statusEl = document.getElementById('status');
+var reflectEl = document.getElementById('reflect');
+var startBtn = document.getElementById('start-btn');
+var replayBtn = document.getElementById('replay-btn');
+var ladderEl = document.getElementById('ladder');
+var goalEl = document.getElementById('goal-line');
+var doneEl = document.getElementById('ladder-done');
+
+var SVGNS = 'http://www.w3.org/2000/svg';
+function el(name, attrs) {
+  var e = document.createElementNS(SVGNS, name);
+  for (var k in attrs) { if (attrs.hasOwnProperty(k)) { e.setAttribute(k, attrs[k]); } }
+  return e;
+}
+function prefersReduced() {
+  return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+function isPlaced(i) {
+  var t = LEVELS[currentLevel].tiles[i];
+  return t.anchored || placed[i];
+}
+
+function drawTileBody(parent, t, colour) {
+  var body = el('g', { 'class': 'tile-body' });
+  var w = 16, h = 54;
+  body.appendChild(el('rect', { x: t.x - w / 2, y: t.y - h + 27, width: w, height: h, rx: 3,
+    fill: colour, stroke: '#0a5a72', 'stroke-width': 2 }));
+  body.appendChild(el('circle', { cx: t.x, cy: t.y - h + 27 + 15, r: 2.6, fill: '#fff' }));
+  body.appendChild(el('circle', { cx: t.x, cy: t.y - h + 27 + 38, r: 2.6, fill: '#fff' }));
+  parent.appendChild(body);
+  return body;
+}
+
+function buildStage() {
+  var lv = LEVELS[currentLevel];
+  stageEl.innerHTML = '';
+  var svg = el('svg', { viewBox: '0 0 400 300', role: 'img', 'aria-label': 'A domino run with gaps to fill.' });
+  svg.appendChild(el('line', { x1: 20, y1: 262, x2: 380, y2: 262, stroke: '#cfe6ec', 'stroke-width': 3 }));
+
+  var s = lv.tiles[lv.start];
+  svg.appendChild(el('rect', { x: s.x - 26, y: s.y - 34, width: 8, height: 60, rx: 3, fill: '#ef7724' }));
+  var hand = el('text', { x: s.x - 22, y: s.y - 40, 'text-anchor': 'middle', 'font-size': 16 });
+  hand.textContent = '\uD83D\uDC46';
+  svg.appendChild(hand);
+
+  lv.tiles.forEach(function (t, i) {
+    if (t.finishEmoji) {
+      var ft = el('text', { x: t.x, y: t.y + 8, 'text-anchor': 'middle', 'font-size': 26, id: 'finish-' + i });
+      ft.textContent = t.finishEmoji;
+      svg.appendChild(ft);
+    }
+    if (t.anchored) {
+      var g = el('g', { 'class': 'tile-piece', 'data-i': i });
+      drawTileBody(g, t, '#007291');
+      svg.appendChild(g);
+    } else if (placed[i]) {
+      var gp = el('g', { 'class': 'tile-piece filled-tile', 'data-i': i });
+      drawTileBody(gp, t, '#0a6f8c');
+      (function (idx) { gp.addEventListener('click', function () { if (!running) { unplace(idx); } }); })(i);
+      svg.appendChild(gp);
+    } else {
+      var w = 20, h = 58;
+      var slot = el('rect', { x: t.x - w / 2, y: t.y - h + 25, width: w, height: h, rx: 3, 'class': 'slot-rect' + (traySelected ? ' target' : '') });
+      svg.appendChild(slot);
+      var hit = el('rect', { x: t.x - 16, y: t.y - h + 20, width: 32, height: h + 10, 'class': 'slot-hit', tabindex: 0, role: 'button' });
+      hit.setAttribute('aria-label', 'Empty gap. Select a domino from the tray, then activate to place it.');
+      (function (idx) {
+        hit.addEventListener('click', function () { placeAt(idx); });
+        hit.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); placeAt(idx); } });
+      })(i);
+      svg.appendChild(hit);
+    }
+    svg.appendChild(el('circle', { cx: t.x, cy: t.y - 40, r: 9, 'class': 'spark', 'data-spark': i }));
+  });
+
+  var gm = el('circle', { r: 20, 'class': 'gap-marker', id: 'gap-marker' });
+  svg.appendChild(gm);
+  stageEl.appendChild(svg);
+}
+
+function buildTray() {
+  trayEl.innerHTML = '';
+  trayEl.classList.toggle('empty', trayRemaining <= 0);
+  for (var n = 0; n < trayRemaining; n++) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tray-tile' + (traySelected && n === 0 ? ' sel' : '');
+    b.setAttribute('aria-label', 'A domino. Tap to pick it up, then tap a gap in the run.');
+    b.innerHTML = '<span class="pip"></span><span class="pip"></span>';
+    b.addEventListener('click', function () {
+      traySelected = !traySelected;
+      buildTray();
+      stageEl.querySelectorAll('.slot-rect').forEach(function (s) { s.classList.toggle('target', traySelected); });
+      setStatus(traySelected ? 'Now tap a dashed gap to drop it in.' : 'Fill the gaps, then initiate.');
+    });
+    trayEl.appendChild(b);
+  }
+}
+
+function placeAt(i) {
+  if (running) { return; }
+  if (!traySelected) { setStatus('Tap a domino in the tray first, then tap a gap.'); return; }
+  if (isPlaced(i)) { return; }
+  placed[i] = true;
+  trayRemaining -= 1;
+  traySelected = false;
+  buildStage();
+  buildTray();
+  var gaps = countGaps();
+  if (gaps === 0) { setStatus('Chain looks joined up. Press initiate when you are ready.'); }
+  else { setStatus(gaps === 1 ? 'One more gap to fill.' : gaps + ' gaps left to fill.'); }
+}
+
+function unplace(i) {
+  if (running || !placed[i]) { return; }
+  delete placed[i];
+  trayRemaining += 1;
+  buildStage();
+  buildTray();
+  setStatus('Picked that one back up. Place it wherever you like.');
+}
+
+function countGaps() {
+  var lv = LEVELS[currentLevel];
+  var g = 0;
+  lv.tiles.forEach(function (t, i) { if (!t.anchored && !placed[i]) { g++; } });
+  return g;
+}
+
+function computeCascade() {
+  var lv = LEVELS[currentLevel];
+  var step = prefersReduced() ? 0 : 240;
+  var delay = {};
+  var queue = [];
+  var gapEdge = null;
+  delay[lv.start] = 0;
+  queue.push(lv.start);
+  while (queue.length) {
+    var cur = queue.shift();
+    var t = lv.tiles[cur];
+    t.next.forEach(function (nx) {
+      if (isPlaced(nx)) {
+        var d = delay[cur] + step;
+        if (delay[nx] === undefined || d < delay[nx]) { delay[nx] = d; queue.push(nx); }
+      } else if (!gapEdge) {
+        gapEdge = [cur, nx];
+      }
+    });
+  }
+  var order = Object.keys(delay).map(function (k) {
+    var i = parseInt(k, 10);
+    return { i: i, delay: delay[i], dir: dirFor(i) };
+  });
+  order.sort(function (a, b) { return a.delay - b.delay; });
+  return { order: order, reachedFinish: delay[lv.finish] !== undefined, gapEdge: gapEdge };
+}
+
+function dirFor(i) {
+  var t = LEVELS[currentLevel].tiles[i];
+  if (t.y < 140) { return '64deg'; }
+  if (t.y > 165) { return '84deg'; }
+  return '74deg';
+}
+
+function clearTimers() {
+  for (var i = 0; i < fallTimers.length; i++) { clearTimeout(fallTimers[i]); }
+  fallTimers = [];
+}
+
+function go() {
+  if (running) { return; }
+  running = true;
+  startBtn.disabled = true;
+  traySelected = false;
+  buildTray();
+  var res = computeCascade();
+  setStatus('Off it goes...');
+
+  var last = 0;
+  res.order.forEach(function (o) {
+    if (o.delay > last) { last = o.delay; }
+    var tm = setTimeout(function () {
+      var g = stageEl.querySelector('.tile-piece[data-i="' + o.i + '"]');
+      if (g) { g.classList.add('fallen'); g.querySelector('.tile-body').style.setProperty('--dir', o.dir); }
+      var sp = stageEl.querySelector('.spark[data-spark="' + o.i + '"]');
+      if (sp) { sp.classList.add('go'); }
+    }, o.delay);
+    fallTimers.push(tm);
+  });
+  var endTm = setTimeout(function () { finish(res); }, last + 520);
+  fallTimers.push(endTm);
+}
+
+function finish(res) {
+  running = false;
+  replayBtn.style.display = 'inline-block';
+  if (res.reachedFinish) {
+    var lv = LEVELS[currentLevel];
+    var fin = document.getElementById('finish-' + lv.finish);
+    if (fin) { fin.setAttribute('font-size', '38'); }
+    setStatus('The whole chain went, from one push. You built that.', 'win');
+    if (!cleared[currentLevel]) {
+      cleared[currentLevel] = true;
+      if (currentLevel + 1 < LEVELS.length) { unlocked[currentLevel + 1] = true; }
+      if (cleared[0] && cleared[1] && cleared[2]) { doneEl.classList.add('show'); }
+      saveProgress();
+    }
+    reflectEl.textContent = REFLECTIONS[Math.floor(Math.random() * REFLECTIONS.length)];
+    reflectEl.classList.add('show');
+  } else {
+    setStatus('The run stopped short. There is still a gap in the chain.', 'gap');
+    if (res.gapEdge) {
+      var to = LEVELS[currentLevel].tiles[res.gapEdge[1]];
+      var gm = document.getElementById('gap-marker');
+      if (gm && to) { gm.setAttribute('cx', to.x); gm.setAttribute('cy', to.y - 4); gm.classList.add('show'); }
+    }
+  }
+  renderLadder();
+  updateGoalLine();
+}
+
+function setStatus(text, cls) {
+  statusEl.textContent = text;
+  statusEl.className = 'status' + (cls ? ' ' + cls : '');
+}
+
+function renderLadder() {
+  ladderEl.innerHTML = '';
+  LEVELS.forEach(function (r) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'rung' + (r.id === currentLevel ? ' current' : '') + (cleared[r.id] ? ' cleared' : '');
+    btn.disabled = !unlocked[r.id];
+    var state = cleared[r.id] ? 'Done \u2713' : (unlocked[r.id] ? (r.id === currentLevel ? 'Building' : 'Ready') : 'Locked');
+    btn.innerHTML = '<div class="rung-face" aria-hidden="true">' + r.face + '</div>' +
+                    '<div class="rung-name">' + r.name + '</div>' +
+                    '<div class="rung-state">' + state + '</div>';
+    btn.setAttribute('aria-label', r.name + ', ' + r.tag + ', ' + state);
+    (function (rid) {
+      btn.addEventListener('click', function () {
+        if (!unlocked[rid]) { return; }
+        currentLevel = rid;
+        setupLevel();
+      });
+    })(r.id);
+    ladderEl.appendChild(btn);
+  });
+}
+
+function updateGoalLine() {
+  if (cleared[0] && cleared[1] && cleared[2]) {
+    goalEl.textContent = 'All three built and run. Rebuild any of them for the joy of it.';
+    return;
+  }
+  if (cleared[currentLevel] && currentLevel + 1 < LEVELS.length && !cleared[currentLevel + 1]) {
+    goalEl.textContent = 'Built it. Tap ' + LEVELS[currentLevel + 1].name + ' above for a trickier run.';
+    return;
+  }
+  goalEl.textContent = LEVELS[currentLevel].blurb;
+}
+
+function saveProgress() {
+  save('cleared', JSON.stringify(cleared));
+  save('unlocked', JSON.stringify(unlocked));
+}
+
+function setupLevel() {
+  clearTimers();
+  running = false;
+  placed = {};
+  traySelected = false;
+  trayRemaining = LEVELS[currentLevel].tray;
+  startBtn.disabled = false;
+  replayBtn.style.display = 'none';
+  reflectEl.classList.remove('show');
+  buildStage();
+  buildTray();
+  setStatus('Fill the gaps, then initiate.');
+  renderLadder();
+  updateGoalLine();
+}
+
+startBtn.addEventListener('click', go);
+replayBtn.addEventListener('click', setupLevel);
+
+(function () {
+  var name = document.getElementById('c-name');
+  var first = document.getElementById('c-first');
+  try {
+    var profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+    if (profile && profile.initials && !name.value) { name.value = profile.initials; }
+  } catch (e) {}
+  var savedFirst = load('first'); if (savedFirst) { first.value = savedFirst; }
+  first.addEventListener('input', function () { save('first', first.value); });
+
+  document.getElementById('c-send').addEventListener('click', function () {
+    var n = name.value.trim();
+    var f = first.value.trim();
+    var msg = document.getElementById('c-msg');
+    if (!n) { msg.style.color = '#c05a10'; msg.textContent = 'Pop your initials in first.'; name.focus(); return; }
+    if (!f) { msg.style.color = '#c05a10'; msg.textContent = 'Add your first push, then send.'; first.focus(); return; }
+    try { localStorage.setItem('base6Profile', JSON.stringify({ initials: n })); } catch (e) {}
+    var body = 'BASE 6 - WORD OF THE WEEK - INITIATE\n\n'
+      + 'Student: ' + n + '\n'
+      + 'Date: ' + new Date().toLocaleDateString('en-GB') + '\n\n'
+      + 'One thing I would like to start, and my first push:\n' + f + '\n\n'
+      + '-\nSent automatically from Base 6';
+    var url = 'https://mail.google.com/mail/?view=cm&fs=1'
+      + '&to=' + encodeURIComponent('jay.raine@chiltonbridgeschool.co.uk')
+      + '&su=' + encodeURIComponent('Base 6 - Word of the Week: Initiate - ' + n)
+      + '&body=' + encodeURIComponent(body);
+    var opened = window.open(url, '_blank');
+    if (!opened) { window.location.href = url; }
+    msg.style.color = '#1f6b3a';
+    msg.textContent = 'Email opened. Press send in the email.';
+  });
+})();
+
+(function () {
+  var c = loadJSON('cleared', null);
+  var u = loadJSON('unlocked', null);
+  if (Array.isArray(c) && c.length === 3) { cleared = c; }
+  if (Array.isArray(u) && u.length === 3) { unlocked = u; }
+  if (cleared[0] && cleared[1] && cleared[2]) { doneEl.classList.add('show'); }
+})();
+
+setupLevel();
+</script>
+
+</body>
+</html>
