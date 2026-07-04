@@ -1,1419 +1,410 @@
 <!DOCTYPE html>
-<!-- Covered from the PDF: evidence terms, fact and opinion, bias in a factory owner source, artefact analysis using a medieval coin, differing interpretations of the Peasants' Revolt, and matching types of historical evidence. Left out: no parts left out, but the worksheet questions have been grouped into shorter interactive tasks. -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Base 6 Historical Evidence and Bias</title>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap" rel="stylesheet">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Evidence and Bias | Human and Social | Week 6 | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0;
-    font-family: "Atkinson Hyperlegible", Arial, sans-serif;
-    background: #fef8f4;
-    color: #1a1a1a;
-    font-size: 1rem;
-    line-height: 1.55;
-  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --cream: #fef8f4;
     --ink: #1a1a1a;
+    --tile: #927266;
+    --tile-deep: #6f5148;
+    --tile-soft: #efe3dc;
+    --tile-pale: #f8f0eb;
+    --line: #dfd0c7;
     --teal: #007291;
     --teal-deep: #005a72;
-    --orange: #ef7724;
-    --orange-deep: #c05a10;
+    --green: #2e7d32;
+    --green-soft: #e9f6ea;
     --gold: #ffce2e;
-    --soft: rgba(0, 0, 0, 0.12);
-    --dark: #10242d;
-    --green: #2f7d45;
-    --paper: #fffaf6;
+    --red-soft: #f9e7e1;
+    --dark: #241b18;
   }
-  a, button, input, textarea, select, summary { font: inherit; }
-  button, summary { cursor: pointer; }
-  :focus-visible {
-    outline: 4px solid var(--gold);
-    outline-offset: 3px;
-  }
-  .wrap {
-    width: min(1120px, calc(100% - 28px));
-    margin: 0 auto;
-    padding: 18px 0 48px;
-  }
-  .hero {
-    position: relative;
-    overflow: hidden;
-    background: var(--teal);
-    color: white;
-    border-radius: 18px;
-    padding: 28px;
-    box-shadow: 0 12px 24px var(--soft);
-  }
-  .hero::after {
-    content: "";
-    position: absolute;
-    right: -90px;
-    bottom: -120px;
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    background: rgba(239, 119, 36, 0.36);
-  }
-  .hero::before {
-    content: "";
-    position: absolute;
-    left: -55px;
-    top: -55px;
-    width: 190px;
-    height: 190px;
-    border-radius: 50%;
-    border: 14px solid rgba(255, 255, 255, 0.14);
-  }
-  .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.16);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 999px;
-    padding: 6px 12px;
-    font-weight: 700;
-  }
-  h1, h2, h3 { line-height: 1.15; }
-  h1 {
-    margin: 18px 0 10px;
-    font-size: clamp(2rem, 6vw, 4rem);
-  }
-  h2 {
-    margin: 0 0 12px;
-    font-size: clamp(1.45rem, 3vw, 2.2rem);
-  }
-  h3 {
-    margin: 18px 0 8px;
-    font-size: 1.2rem;
-  }
-  .hero p { max-width: 790px; margin: 0; font-size: 1.08rem; }
-  .topbar {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
-    align-items: center;
-    margin: 16px 0;
-  }
-  .star-card, .progress-card {
-    background: white;
-    border: 2px solid var(--teal);
-    border-radius: 16px;
-    box-shadow: 0 8px 18px var(--soft);
-    padding: 12px;
-  }
-  .stars {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-  }
-  .star-label { font-weight: 700; margin-right: 4px; }
-  .star-svg {
-    width: 28px;
-    height: 28px;
-    flex: 0 0 auto;
-  }
-  .star-svg .shape { stroke: var(--teal-deep); stroke-width: 1.8; }
-  .star-svg.filled .shape { fill: var(--gold); }
-  .star-svg.empty .shape { fill: white; }
-  .progress-card { margin: 0 0 18px; }
-  .progress-dots {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-  }
-  .dot {
-    min-width: 44px;
-    min-height: 44px;
-    border-radius: 999px;
-    border: 2px solid var(--teal);
-    background: white;
-    color: var(--teal-deep);
-    font-weight: 700;
-  }
-  .dot.active {
-    background: var(--teal);
-    color: white;
-  }
-  .dot.done {
-    border-color: var(--orange-deep);
-    box-shadow: inset 0 -5px 0 rgba(239, 119, 36, 0.25);
-  }
-  .step {
-    display: none;
-    position: relative;
-    background: white;
-    border: 2px solid var(--teal);
-    border-radius: 16px;
-    box-shadow: 0 10px 22px var(--soft);
-    padding: 24px;
-    margin-bottom: 18px;
-    overflow: hidden;
-  }
-  .step::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: var(--orange);
-  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Atkinson Hyperlegible', Arial, sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+  .site-header { position: relative; background: var(--tile); padding: 2rem 2rem 2.8rem; text-align: center; overflow: hidden; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 210px; height: 210px; background: rgba(254,248,244,0.15); border-radius: 50%; }
+  .site-header::before { content: ""; position: absolute; top: -70px; left: -70px; width: 190px; height: 190px; border: 14px solid rgba(254,248,244,0.13); border-radius: 30px; transform: rotate(12deg); }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: var(--cream); font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.92; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.82rem; font-weight: 700; color: #f9e6dc; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  h1 { font-size: clamp(2rem, 6vw, 3.35rem); font-weight: 700; color: var(--cream); line-height: 1.1; }
+  .header-sub { font-size: 1.02rem; color: #f9e6dc; margin: 0.55rem auto 0; max-width: 52ch; line-height: 1.55; }
+  .starbar { display: flex; gap: 5px; justify-content: center; margin-top: 0.75rem; }
+  .starbar svg { width: 20px; height: 20px; display: block; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 36px; z-index: 1; }
+
+  .dots { display: flex; gap: 10px; justify-content: center; padding: 14px 0 0; }
+  .dots button { width: 18px; height: 18px; min-width: 18px; min-height: 18px; padding: 0; border-radius: 50%; line-height: 1; display: inline-block; cursor: pointer; background: #f0e4d8; border: 2px solid #d8c8b8; }
+  .dots button.on { background: #d9f0f5; border-color: var(--teal); box-shadow: 0 0 0 4px rgba(0,114,145,0.2); }
+  .dots button.done { background: var(--tile); border-color: var(--tile-deep); }
+  .dots button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+  .main { max-width: 820px; margin: 0 auto; padding: 1.35rem 1.5rem 4rem; }
+  .step { display: none; }
   .step.active { display: block; }
-  .step-tag {
-    display: inline-block;
-    margin: 0 0 12px;
-    background: #eef7fa;
-    color: var(--teal-deep);
-    border: 2px solid var(--teal);
-    border-radius: 999px;
-    padding: 5px 12px;
-    font-weight: 700;
-  }
-  .grid-two {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-  }
-  .mini-card {
-    background: var(--paper);
-    border: 2px solid var(--orange);
-    border-radius: 14px;
-    padding: 16px;
-  }
-  .deep-link {
-    margin-top: 14px;
-    background: #eef7fa;
-    border-left: 6px solid var(--teal);
-    border-radius: 12px;
-    padding: 12px 14px;
-  }
-  .deep-link strong { color: var(--teal-deep); }
-  .button-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-    margin-top: 14px;
-  }
-  .btn {
-    min-height: 44px;
-    border: 0;
-    border-radius: 999px;
-    padding: 10px 18px;
-    background: var(--teal);
-    color: white;
-    font-weight: 700;
-    box-shadow: 0 4px 0 var(--teal-deep);
-  }
-  .btn:hover { background: var(--teal-deep); }
-  .btn.secondary {
-    background: var(--orange);
-    box-shadow: 0 4px 0 var(--orange-deep);
-  }
-  .btn.secondary:hover { background: var(--orange-deep); }
-  .btn.ghost {
-    background: white;
-    color: var(--teal-deep);
-    border: 2px solid var(--teal);
-    box-shadow: none;
-  }
-  .small-btn {
-    min-height: 44px;
-    border: 2px solid var(--teal);
-    border-radius: 999px;
-    padding: 8px 12px;
-    background: white;
-    color: var(--teal-deep);
-    font-weight: 700;
-  }
-  label {
-    display: block;
-    font-weight: 700;
-    margin: 12px 0 6px;
-  }
-  input, textarea, select {
-    width: 100%;
-    min-height: 44px;
-    border: 2px solid var(--teal);
-    border-radius: 12px;
-    padding: 10px 12px;
-    background: white;
-    color: var(--ink);
-  }
-  textarea { min-height: 130px; resize: vertical; }
-  .feedback {
-    min-height: 32px;
-    margin-top: 10px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    background: #f6f6f6;
-    border: 2px solid #d6d6d6;
-  }
-  .feedback.good {
-    background: #edf8ef;
-    border-color: #3f8b45;
-  }
-  .feedback.coach {
-    background: #fff8df;
-    border-color: var(--gold);
-  }
-  .hidden-panel {
-    display: none;
-    margin-top: 12px;
-    padding: 14px;
-    background: #eef7fa;
-    border: 2px solid var(--teal);
-    border-radius: 14px;
-  }
-  .hidden-panel.open { display: block; }
-  .match-list, .source-list, .artifact-list, .interp-list, .evidence-list {
-    display: grid;
-    gap: 12px;
-    margin-top: 14px;
-  }
-  .match-item, .source-card, .artifact-card, .interp-card, .evidence-card {
-    background: white;
-    border: 2px solid var(--teal);
-    border-radius: 14px;
-    padding: 14px;
-    box-shadow: 0 6px 14px var(--soft);
-  }
-  .choice-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    margin-top: 10px;
-  }
-  .choice-grid.three {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .choice {
-    min-height: 54px;
-    border: 2px solid var(--teal);
-    border-radius: 14px;
-    background: #f7fcff;
-    color: var(--teal-deep);
-    padding: 10px;
-    font-weight: 700;
-    text-align: left;
-  }
-  .choice.selected {
-    background: var(--teal);
-    color: white;
-  }
-  .quote-box {
-    position: relative;
-    background: #f2f7f9;
-    border: 2px solid var(--teal);
-    border-radius: 14px;
-    padding: 16px;
-    margin: 14px 0;
-  }
-  .quote-box p { margin: 0 0 10px; }
-  .quote-box .source-line {
-    font-weight: 700;
-    color: var(--teal-deep);
-  }
-  .quote-chip {
-    display: inline-block;
-    border: 2px solid var(--teal);
-    border-radius: 999px;
-    padding: 6px 10px;
-    background: white;
-    color: var(--teal-deep);
-    font-weight: 700;
-    margin: 4px;
-  }
-  .coin-wrap {
-    display: grid;
-    place-items: center;
-    min-height: 280px;
-    background: #f7fcff;
-    border: 2px solid var(--teal);
-    border-radius: 14px;
-    padding: 12px;
-  }
-  .coin-svg {
-    width: min(260px, 100%);
-    height: auto;
-  }
-  .coin-part {
-    min-height: 44px;
-    border: 2px solid var(--teal);
-    border-radius: 999px;
-    padding: 8px 12px;
-    background: white;
-    color: var(--teal-deep);
-    font-weight: 700;
-  }
-  .coin-part.selected {
-    background: var(--teal);
-    color: white;
-  }
-  .input-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-  }
-  .source-compare {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-    margin: 14px 0;
-  }
-  .source-panel {
-    background: #f7fcff;
-    border: 2px solid var(--teal);
-    border-radius: 14px;
-    padding: 14px;
-  }
-  .source-panel h3 { margin-top: 0; }
-  .evidence-icon {
-    display: grid;
-    place-items: center;
-    height: 120px;
-    border: 2px solid var(--teal);
-    border-radius: 14px;
-    background: #f7fcff;
-    margin-bottom: 10px;
-  }
-  .simple-svg {
-    width: 92px;
-    height: 92px;
-  }
-  .boss {
-    margin-top: 18px;
-    background: var(--dark);
-    color: white;
-    border: 2px solid #000000;
-    border-radius: 16px;
-    padding: 14px;
-  }
-  .boss summary {
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 700;
-  }
-  .boss-badge {
-    display: inline-block;
-    background: var(--gold);
-    color: #1a1a1a;
-    border-radius: 999px;
-    padding: 4px 10px;
-    font-weight: 700;
-  }
-  .boss textarea { border-color: var(--gold); }
-  .summary-box {
-    white-space: pre-wrap;
-    background: #f6f6f6;
-    border: 2px solid #d6d6d6;
-    border-radius: 14px;
-    padding: 12px;
-    max-height: 260px;
-    overflow: auto;
-  }
-  .toast {
-    position: fixed;
-    right: 18px;
-    bottom: 18px;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    max-width: min(420px, calc(100% - 36px));
-    background: white;
-    border: 2px solid var(--gold);
-    border-radius: 16px;
-    padding: 14px;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
-    transform: translateY(150%);
-    transition: transform 260ms ease;
-  }
-  .toast.show { transform: translateY(0); }
-  .toast svg { width: 34px; height: 34px; flex: 0 0 auto; }
-  .egg {
-    margin: 24px auto 0;
-    text-align: center;
-  }
-  .egg button {
-    border: 0;
-    background: transparent;
-    color: var(--teal-deep);
-    text-decoration: underline;
-    min-height: 44px;
-    padding: 8px 12px;
-  }
-  .egg-note {
-    display: none;
-    max-width: 560px;
-    margin: 8px auto 0;
-    background: white;
-    border: 2px solid var(--orange);
-    border-radius: 14px;
-    padding: 10px;
-  }
-  .egg-note.open { display: block; }
-  @media (max-width: 840px) {
-    .topbar, .grid-two, .input-grid, .source-compare { grid-template-columns: 1fr; }
+  h2 { font-size: 1.45rem; color: var(--tile-deep); margin: 0 0 0.45rem; line-height: 1.15; }
+  h3 { font-size: 1.06rem; color: var(--tile-deep); margin: 0 0 0.55rem; line-height: 1.25; }
+  p { font-size: 1rem; line-height: 1.6; }
+  .lead { color: #444; margin-bottom: 1rem; }
+  .keybox { background: var(--tile-pale); border: 2px solid var(--tile); border-radius: 14px; padding: 0.9rem 1.05rem; margin: 0.95rem 0 1.1rem; font-size: 0.95rem; }
+  .keybox strong { color: var(--tile-deep); }
+  .teacher-note { background: #e6f5f8; border-left: 5px solid var(--teal); border-radius: 12px; padding: 0.75rem 0.95rem; margin: 0.85rem 0; color: #223; }
+  .teacher-note strong { color: var(--teal-deep); }
+
+  .nav { display: flex; gap: 0.7rem; margin-top: 1.25rem; flex-wrap: wrap; align-items: center; }
+  button, .fake-button { font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer; border: none; border-radius: 999px; padding: 0.65rem 1.25rem; }
+  button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+  .btn-next { background: var(--tile); color: #fff; box-shadow: 0 3px 0 var(--tile-deep); }
+  .btn-next:hover { background: var(--tile-deep); }
+  .btn-back { background: #f0e4d8; color: var(--ink); }
+  .btn-ghost { background: #fff; color: var(--tile-deep); border: 2px solid var(--tile); }
+  .btn-teal { background: var(--teal); color: #fff; box-shadow: 0 3px 0 var(--teal-deep); }
+  .btn-danger { background: #fff; color: var(--tile-deep); border: 2px solid var(--tile); }
+
+  .grid-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.85rem; }
+  .qcard, .source-card, .visual-card, .send { background: #fff; border: 2px solid var(--line); border-radius: 16px; padding: 1rem 1.1rem; margin-bottom: 0.9rem; box-shadow: 0 7px 18px rgba(80,55,45,0.08); }
+  .qcard.solved { border-color: var(--green); background: var(--green-soft); }
+  .qcard .sent { font-size: 1.02rem; font-weight: 700; margin-bottom: 0.6rem; }
+  .tag { display: inline-block; background: var(--tile-pale); color: var(--tile-deep); border: 2px solid var(--tile); border-radius: 999px; padding: 0.25rem 0.65rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; margin-bottom: 0.6rem; }
+  .opts { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .opts button, .choice { background: #fff; border: 2px solid #d8c8b8; color: var(--ink); font-size: 0.9rem; padding: 0.45rem 0.9rem; box-shadow: none; }
+  .opts button.selected, .choice.selected { background: var(--tile); color: #fff; border-color: var(--tile-deep); }
+  .opts button.right, .choice.right { background: #e6f3e6; border-color: var(--green); color: #1c5e28; }
+  .opts button.wrong, .choice.wrong { background: var(--red-soft); border-color: var(--tile); color: var(--tile-deep); }
+  .fb, .msg { min-height: 1.4em; font-weight: 700; font-size: 0.9rem; margin-top: 0.55rem; color: #555; line-height: 1.45; }
+  .msg.good, .fb.good { color: #1c5e28; }
+  .msg.coach, .fb.coach { color: var(--tile-deep); }
+  label { display: block; font-size: 0.88rem; font-weight: 700; color: #555; margin: 0.75rem 0 0.3rem; }
+  input[type=text], textarea, select { width: 100%; font-family: inherit; font-size: 0.96rem; border: 2px solid #d8c8b8; border-radius: 12px; background: #fff; color: var(--ink); padding: 0.68rem 0.8rem; min-height: 44px; }
+  textarea { min-height: 92px; resize: vertical; line-height: 1.5; }
+  textarea:focus, input:focus, select:focus { border-color: var(--tile); }
+
+  .quote { background: #f8f9fa; border: 2px solid #bac9cc; border-left: 6px solid var(--tile); border-radius: 14px; padding: 1rem; margin: 0.8rem 0; font-size: 1rem; line-height: 1.55; }
+  .quote cite { display: block; margin-top: 0.5rem; color: #555; }
+  .source-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+  .source-card { border-color: #bfd3d7; background: #fbfefe; }
+  .source-card strong { color: var(--tile-deep); }
+  .source-card .byline { color: #555; margin-top: 0.55rem; font-size: 0.9rem; }
+
+  .match-row { display: grid; grid-template-columns: minmax(100px, 150px) 1fr; gap: 0.8rem; align-items: start; margin-bottom: 0.85rem; }
+  .term-pill { background: var(--tile-pale); border: 2px solid var(--tile); border-radius: 14px; padding: 0.75rem; font-weight: 700; color: var(--tile-deep); text-align: center; }
+  .choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.45rem; }
+  .choice-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  .coin-layout { display: grid; grid-template-columns: minmax(210px, 300px) 1fr; gap: 1rem; align-items: start; }
+  .coin-svg, .artefact-svg { width: 100%; height: auto; display: block; }
+  .visual-card { background: #fffaf6; border-color: var(--tile); }
+  .mini-note { color: #555; font-size: 0.88rem; line-height: 1.45; margin-top: 0.45rem; }
+  .evidence-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.8rem; }
+  .artefact-card { background: #fff; border: 2px dashed var(--tile); border-radius: 14px; padding: 0.75rem; display: grid; gap: 0.55rem; }
+  .artefact-card select { font-size: 0.9rem; }
+
+  .checks { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0.75rem 0; }
+  .checks button { background: #fff; border: 2px solid #d8c8b8; color: #555; font-size: 0.85rem; padding: 0.4rem 0.85rem; box-shadow: none; }
+  .checks button.on { background: var(--green-soft); border-color: var(--green); color: #1c5e28; }
+
+  .boss { margin-top: 1.45rem; border-radius: 14px; overflow: hidden; border: 2px solid var(--dark); background: var(--dark); color: var(--cream); }
+  .boss-head { width: 100%; text-align: left; background: var(--dark); color: var(--cream); padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.7rem; cursor: pointer; border: none; border-radius: 0; font-size: 0.95rem; font-weight: 700; box-shadow: none; }
+  .boss-head .badge { background: var(--gold); color: var(--ink); padding: 0.15rem 0.6rem; border-radius: 6px; letter-spacing: 1px; font-size: 0.78rem; flex: 0 0 auto; }
+  .boss-head .sub { font-weight: 400; font-size: 0.84rem; color: #eadbd2; }
+  .boss-body { display: none; padding: 1rem 1.1rem; background: #322724; color: var(--cream); }
+  .boss.open .boss-body { display: block; }
+  .boss-body p, .boss-body label { color: var(--cream); }
+  .boss-body textarea { border-color: var(--gold); background: #fff; color: var(--ink); }
+  .boss-body .teacher-note { background: #463832; border-left-color: var(--gold); color: var(--cream); }
+  .boss-body .teacher-note strong { color: #ffe086; }
+
+  .send { margin-top: 1.2rem; background: var(--tile-pale); border-color: var(--tile); }
+  .send h3 { color: var(--tile-deep); }
+  .summary-box { white-space: pre-wrap; background: #fff; border: 2px solid #d8c8b8; border-radius: 14px; padding: 0.85rem; max-height: 280px; overflow: auto; margin-top: 0.65rem; font-size: 0.9rem; line-height: 1.45; }
+
+  .toast { position: fixed; left: 50%; bottom: 1.2rem; transform: translateX(-50%); z-index: 1100; background: var(--tile); color: var(--cream); font-size: 0.92rem; font-weight: 700; padding: 0.7rem 1.1rem; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.22); max-width: 90vw; display: none; align-items: center; gap: 0.6rem; }
+  .toast.show { display: flex; }
+  .toast svg { width: 22px; height: 22px; flex: 0 0 auto; }
+  .tiny-link { display: block; text-align: center; color: var(--tile-deep); margin: 1.4rem 0 0; font-size: 0.9rem; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+  @media (max-width: 820px) {
+    .main { padding-left: 1rem; padding-right: 1rem; }
+    .grid-two, .source-grid, .coin-layout, .match-row { grid-template-columns: 1fr; }
     .choice-grid, .choice-grid.three { grid-template-columns: 1fr; }
-    .hero { padding: 22px; }
+    .evidence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      scroll-behavior: auto !important;
-      transition: none !important;
-    }
-    .toast { transform: none; display: none; }
-    .toast.show { display: flex; }
+  @media (max-width: 520px) {
+    .evidence-grid { grid-template-columns: 1fr; }
+    .site-header { padding-left: 1rem; padding-right: 1rem; }
+    .header-back { position: relative; display: inline-block; top: auto; left: auto; margin-bottom: 0.7rem; }
   }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="hero">
-    <div class="eyebrow">Base 6 &middot; Monday History</div>
-    <h1>Historical Evidence and Bias</h1>
-    <p>This activity is about being a history detective: checking what a source is, who made it, what it says, and what it might be hiding. It usually takes about 35 to 45 minutes. You can jump around, skip a section, stop early, or come back later. Jay can check whatever you choose to send.</p>
-  </header>
-
-  <div class="topbar" aria-label="Progress area">
-    <div class="star-card">
-      <div class="stars" id="starBar" aria-label="Stars earned"></div>
-    </div>
-    <button class="btn ghost" id="resetBtn" type="button">Reset saved progress</button>
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Week 6</a>
+  <div class="header-inner">
+    <p class="week-label">Week 6 &middot; Human and Social &middot; Monday</p>
+    <h1>Evidence and Bias</h1>
+    <p class="header-sub">How do we know what really happened? Today is detective work with sources, artefacts and quiet one-sided clues.</p>
+    <div class="starbar" id="starbar" aria-label="0 of 7 stars earned"></div>
   </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
 
-  <div class="progress-card">
-    <div class="progress-dots" id="progressDots" aria-label="Jump to a step"></div>
-  </div>
-
-  <main>
-    <section class="step active" data-step="0" aria-labelledby="step0Title">
-      <span class="step-tag">Step 1 of 7</span>
-      <h2 id="step0Title">Set up the history lab</h2>
-      <div class="grid-two">
-        <div>
-          <p>Historians do not just ask, "What happened?" They also ask, "Who said this?", "Can it be checked?", and "Who benefits if people believe it?"</p>
-          <p>A source can be useful and biased at the same time. That is inconvenient, which is how history likes to behave.</p>
-          <label for="studentInitials">Student initials</label>
-          <input id="studentInitials" data-save="input" autocomplete="off" maxlength="12" placeholder="Example: JT">
-        </div>
-        <div class="mini-card">
-          <h3>Today you could practise</h3>
-          <p>1. Matching source vocabulary.</p>
-          <p>2. Sorting fact from opinion.</p>
-          <p>3. Spotting bias in a factory owner source.</p>
-          <p>4. Reading a coin as evidence.</p>
-          <p>5. Comparing two interpretations.</p>
-        </div>
-      </div>
-      <div class="deep-link"><strong>Deep link for older learners:</strong> biased sources are not useless. They can reveal what someone wanted others to believe.</div>
-      <div class="button-row">
-        <button class="btn secondary complete-btn" type="button" data-complete="0">Mark this step as explored</button>
-        <button class="btn" type="button" data-next="1">Go to evidence words</button>
-      </div>
-    </section>
-
-    <section class="step" data-step="1" aria-labelledby="step1Title">
-      <span class="step-tag">Step 2 of 7 &middot; Predict first</span>
-      <h2 id="step1Title">Evidence word match</h2>
-      <p>Before the matching game, predict this one: what does "bias" mean in history?</p>
-      <label for="predictBias">Prediction</label>
-      <input id="predictBias" data-save="input" placeholder="Type your best idea here">
-      <div class="button-row">
-        <button class="btn ghost" id="revealBiasTip" type="button">Reveal a useful clue</button>
-      </div>
-      <div class="hidden-panel" id="biasTipPanel">
-        <p><strong>Clue:</strong> bias is when a source unfairly favours one side, person, group, or argument.</p>
-      </div>
-
-      <h3>Match each term to its meaning</h3>
-      <div class="match-list" id="matchList"></div>
-      <div class="button-row">
-        <button class="btn" id="checkMatches" type="button">Check matches</button>
-        <button class="btn secondary complete-btn" type="button" data-complete="1">Mark this step as explored</button>
-        <button class="btn ghost" type="button" data-prev="0">Back</button>
-        <button class="btn" type="button" data-next="2">Go to fact and opinion</button>
-      </div>
-      <div class="feedback" id="matchFeedback" aria-live="polite"></div>
-      <div class="deep-link"><strong>Deep link for older learners:</strong> "primary" does not automatically mean "more accurate"; it means closer in time to the event.</div>
-    </section>
-
-    <section class="step" data-step="2" aria-labelledby="step2Title">
-      <span class="step-tag">Step 3 of 7</span>
-      <h2 id="step2Title">Fact, opinion, and the factory owner</h2>
-      <p>A fact can be checked. An opinion shows what someone thinks or feels. Bias often appears when opinions are dressed up to sound like facts.</p>
-
-      <div class="source-list">
-        <div class="source-card">
-          <h3>Quick sort</h3>
-          <p>"The factory was built in the year 1842."</p>
-          <div class="choice-grid">
-            <button class="choice" type="button" data-factopinion="factorybuilt" data-answer="fact">Fact</button>
-            <button class="choice" type="button" data-factopinion="factorybuilt" data-answer="opinion">Opinion</button>
-          </div>
-          <div class="feedback" id="factOpinionFb_factorybuilt" aria-live="polite"></div>
-        </div>
-        <div class="source-card">
-          <h3>Quick sort</h3>
-          <p>"The King was a terrible leader who ruined the country."</p>
-          <div class="choice-grid">
-            <button class="choice" type="button" data-factopinion="terribleking" data-answer="fact">Fact</button>
-            <button class="choice" type="button" data-factopinion="terribleking" data-answer="opinion">Opinion</button>
-          </div>
-          <div class="feedback" id="factOpinionFb_terribleking" aria-live="polite"></div>
-        </div>
-      </div>
-
-      <div class="quote-box">
-        <p>"My factory is a wonderful place for children to work. The air is warm and clean. The children are happy and sing songs while they spin cotton. They are lucky I give them a job."</p>
-        <p class="source-line">Written by Mr. Thomas Grind, Factory Owner, 1832.</p>
-      </div>
-
-      <div class="grid-two">
-        <div class="mini-card">
-          <label for="factoryAuthor">Who wrote this source?</label>
-          <input id="factoryAuthor" data-save="input" placeholder="Name or role">
-          <label for="factoryType">Is this primary or secondary?</label>
-          <select id="factoryType" data-save="input">
-            <option value="">Choose one if you fancy</option>
-            <option value="primary">Primary source</option>
-            <option value="secondary">Secondary source</option>
-            <option value="unsure">Not sure yet</option>
-          </select>
-          <label for="factoryOpinion">One opinion from the quote</label>
-          <input id="factoryOpinion" data-save="input" placeholder="Example: wonderful place">
-        </div>
-        <div class="mini-card">
-          <label for="factoryBias">Why might Mr. Grind be biased?</label>
-          <textarea id="factoryBias" data-save="input" placeholder="Think about money, reputation, and factory rules."></textarea>
-          <label for="childAccount">Would a child worker write a different account?</label>
-          <textarea id="childAccount" data-save="input" placeholder="Explain your answer if you fancy it."></textarea>
-          <div class="button-row">
-            <button class="btn" id="checkFactory" type="button">Check source thinking</button>
-          </div>
-          <div class="feedback" id="factoryFeedback" aria-live="polite"></div>
-        </div>
-      </div>
-      <div class="button-row">
-        <button class="btn secondary complete-btn" type="button" data-complete="2">Mark this step as explored</button>
-        <button class="btn ghost" type="button" data-prev="1">Back</button>
-        <button class="btn" type="button" data-next="3">Go to coin evidence</button>
-      </div>
-      <div class="deep-link"><strong>Deep link for older learners:</strong> Mr. Grind's account is useful because it shows how an owner wanted factory work to appear, not because it proves factories were pleasant.</div>
-    </section>
-
-    <section class="step" data-step="3" aria-labelledby="step3Title">
-      <span class="step-tag">Step 4 of 7</span>
-      <h2 id="step3Title">Artefact analysis: the coin</h2>
-      <p>Artefacts are objects from the past. A coin can send a message, especially when a king controls the design.</p>
-      <div class="grid-two">
-        <div class="coin-wrap">
-          <svg class="coin-svg" viewBox="0 0 300 300" role="img" aria-label="Drawing of a medieval coin showing a king holding a sword and a cross">
-            <circle cx="150" cy="150" r="135" fill="#d7e6ea" stroke="#005a72" stroke-width="8"></circle>
-            <circle cx="150" cy="150" r="112" fill="#eef7fa" stroke="#ef7724" stroke-width="6"></circle>
-            <circle cx="150" cy="83" r="24" fill="#f7d2b3" stroke="#1a1a1a" stroke-width="4"></circle>
-            <path d="M112 112 Q150 92 188 112 L200 204 Q150 226 100 204 Z" fill="#ffffff" stroke="#1a1a1a" stroke-width="4"></path>
-            <path d="M125 72 L136 50 L150 70 L164 50 L175 72 Z" fill="#ffce2e" stroke="#1a1a1a" stroke-width="4"></path>
-            <line x1="95" y1="114" x2="58" y2="58" stroke="#1a1a1a" stroke-width="8" stroke-linecap="round"></line>
-            <line x1="52" y1="52" x2="72" y2="72" stroke="#1a1a1a" stroke-width="8" stroke-linecap="round"></line>
-            <line x1="205" y1="116" x2="244" y2="60" stroke="#1a1a1a" stroke-width="7" stroke-linecap="round"></line>
-            <line x1="230" y1="62" x2="258" y2="62" stroke="#1a1a1a" stroke-width="7" stroke-linecap="round"></line>
-            <line x1="244" y1="48" x2="244" y2="76" stroke="#1a1a1a" stroke-width="7" stroke-linecap="round"></line>
-            <path d="M118 170 Q150 190 182 170" fill="none" stroke="#1a1a1a" stroke-width="4"></path>
-            <text x="150" y="269" text-anchor="middle" font-size="20" fill="#005a72" font-weight="700">KINGLY MESSAGE</text>
-          </svg>
-        </div>
-        <div class="mini-card">
-          <p>Tap parts of the coin to collect clues.</p>
-          <div class="button-row">
-            <button class="coin-part" type="button" data-coin="sword">Sword</button>
-            <button class="coin-part" type="button" data-coin="cross">Cross</button>
-            <button class="coin-part" type="button" data-coin="face">Perfect face</button>
-            <button class="coin-part" type="button" data-coin="crown">Crown</button>
-          </div>
-          <div class="feedback" id="coinFeedback" aria-live="polite"></div>
-          <label for="coinObjects">What two objects is the king holding?</label>
-          <input id="coinObjects" data-save="input" placeholder="Object 1 and object 2">
-          <label for="coinSword">What message might the sword send?</label>
-          <textarea id="coinSword" data-save="input" placeholder="Think about power, enemies, and fighting."></textarea>
-          <label for="coinLooks">Why might the coin not show what the king really looked like?</label>
-          <textarea id="coinLooks" data-save="input" placeholder="Think about propaganda and looking impressive."></textarea>
-          <div class="button-row">
-            <button class="btn" id="checkCoin" type="button">Check coin thinking</button>
-          </div>
-          <div class="feedback" id="coinCheckFeedback" aria-live="polite"></div>
-        </div>
-      </div>
-      <div class="button-row">
-        <button class="btn secondary complete-btn" type="button" data-complete="3">Mark this step as explored</button>
-        <button class="btn ghost" type="button" data-prev="2">Back</button>
-        <button class="btn" type="button" data-next="4">Go to interpretations</button>
-      </div>
-      <div class="deep-link"><strong>Deep link for older learners:</strong> objects can be propaganda. They show what powerful people wanted to communicate, not a neutral photograph of reality.</div>
-    </section>
-
-    <section class="step" data-step="4" aria-labelledby="step4Title">
-      <span class="step-tag">Step 5 of 7</span>
-      <h2 id="step4Title">Two versions of the same event</h2>
-      <p>Different people can tell the story of the same event in very different ways. That does not always mean one is lying; it can mean they have different evidence, values, fears, or interests.</p>
-      <div class="source-compare">
-        <div class="source-panel">
-          <h3>Source A</h3>
-          <p>"The peasants were wicked rebels. They acted like wild dogs, destroying everything and murdering good, rich men."</p>
-          <p><strong>Written by an English monk who owned a lot of land, 1381.</strong></p>
-        </div>
-        <div class="source-panel">
-          <h3>Source B</h3>
-          <p>"The poor workers were starving and angry. The unfair taxes forced them to march to London to ask the King for help."</p>
-          <p><strong>Written by a modern historian, 2015.</strong></p>
-        </div>
-      </div>
-      <div class="interp-list">
-        <div class="interp-card">
-          <h3>Source A</h3>
-          <label for="sourceADescribe">How does Source A describe the peasants? Include a short quote if you fancy.</label>
-          <textarea id="sourceADescribe" data-save="input" placeholder="Example: It calls them..."></textarea>
-        </div>
-        <div class="interp-card">
-          <h3>Source B</h3>
-          <label for="sourceBReason">How does Source B explain why the peasants marched to London?</label>
-          <textarea id="sourceBReason" data-save="input" placeholder="Example: It says they were..."></textarea>
-        </div>
-        <div class="interp-card">
-          <h3>Bias check</h3>
-          <label for="monkBias">Why might the monk have a negative view of the peasants?</label>
-          <textarea id="monkBias" data-save="input" placeholder="Think about land, money, fear, and who was being attacked."></textarea>
-          <label for="secondarySource">Which source is secondary, and how can you tell?</label>
-          <textarea id="secondarySource" data-save="input" placeholder="Look at who wrote it and when."></textarea>
-          <div class="button-row">
-            <button class="btn" id="checkInterpretations" type="button">Check interpretation thinking</button>
-          </div>
-          <div class="feedback" id="interpretationFeedback" aria-live="polite"></div>
-        </div>
-      </div>
-      <div class="button-row">
-        <button class="btn secondary complete-btn" type="button" data-complete="4">Mark this step as explored</button>
-        <button class="btn ghost" type="button" data-prev="3">Back</button>
-        <button class="btn" type="button" data-next="5">Go to evidence matching</button>
-      </div>
-      <div class="deep-link"><strong>Deep link for older learners:</strong> the monk's source is primary but highly hostile. Source B is secondary but may use lots of evidence to explain causes.</div>
-    </section>
-
-    <section class="step" data-step="5" aria-labelledby="step5Title">
-      <span class="step-tag">Step 6 of 7</span>
-      <h2 id="step5Title">Matching historical evidence</h2>
-      <p>Match each evidence object to the best label. The drawings are simple on purpose; the thinking is the important bit.</p>
-      <div class="evidence-list" id="evidenceList"></div>
-      <div class="button-row">
-        <button class="btn" id="checkEvidence" type="button">Check evidence matches</button>
-        <button class="btn secondary complete-btn" type="button" data-complete="5">Mark this step as explored</button>
-        <button class="btn ghost" type="button" data-prev="4">Back</button>
-        <button class="btn" type="button" data-next="6">Go to reflection</button>
-      </div>
-      <div class="feedback" id="evidenceFeedback" aria-live="polite"></div>
-      <div class="deep-link"><strong>Deep link for older learners:</strong> the type of evidence changes the questions you ask. A diary might reveal feelings; a castle might reveal defence, wealth, or control.</div>
-    </section>
-
-    <section class="step" data-step="6" aria-labelledby="step6Title">
-      <span class="step-tag">Step 7 of 7</span>
-      <h2 id="step6Title">Reflection and send to Jay</h2>
-      <label for="reflection">One thing I want to remember is...</label>
-      <textarea id="reflection" data-save="input" placeholder="A source word, a bias clue, a question historians ask, or anything else you fancy saving."></textarea>
-
-      <details class="boss" id="bossDetails">
-        <summary><span class="boss-badge">BOSS LEVEL</span> Optional: for anyone who fancies a proper think</summary>
-        <p>A claim says: "Source A is better because it was written in 1381, so it is primary." Analyse the claim. What is useful about Source A? What is risky about trusting it too much?</p>
-        <label for="bossAnswer">Boss level response</label>
-        <textarea id="bossAnswer" data-save="input" placeholder="You could argue both sides here."></textarea>
-        <div class="button-row"><button class="btn secondary" id="saveBoss" type="button">Save boss response</button></div>
-        <div class="feedback" id="bossFeedback" aria-live="polite"></div>
-      </details>
-
-      <h3>Preview</h3>
-      <pre class="summary-box" id="summaryPreview"></pre>
-      <div class="button-row">
-        <button class="btn secondary complete-btn" type="button" data-complete="6">Mark this step as explored</button>
-        <button class="btn" id="sendEmail" type="button">Open Gmail to send to Jay</button>
-        <button class="btn ghost" type="button" data-prev="5">Back</button>
-      </div>
-      <div class="feedback" id="emailFeedback" aria-live="polite"></div>
-    </section>
-  </main>
-
-  <div class="egg">
-    <button id="eggBtn" type="button" aria-expanded="false">A suspicious monk has left a tiny note here.</button>
-    <div class="egg-note" id="eggNote">The note says: "I am completely unbiased." It is written in gold ink on a giant pile of land deeds. Hmm.</div>
-  </div>
-</div>
+<div class="dots" id="dots"></div>
 
 <div class="toast" id="toast" role="status" aria-live="polite">
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <polygon fill="#ffce2e" stroke="#1a1a1a" stroke-width="1.5" points="12,2 15,8.5 22,9.2 16.8,13.8 18.4,21 12,17.2 5.6,21 7.2,13.8 2,9.2 9,8.5"></polygon>
-  </svg>
-  <span id="toastText">Star earned.</span>
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#1a1a1a" stroke-width="3" stroke-linejoin="round"/></svg>
+  <span id="toast-text">Well done.</span>
 </div>
 
+<main class="main">
+  <section class="step active" id="s-intro">
+    <h2>Round 1: Source words</h2>
+    <p class="lead">Historians do not just ask, "What does this say?" They ask who made it, when it was made, and whether it might be leaning one way.</p>
+    <div class="keybox"><strong>Key idea:</strong> evidence is useful, but it still needs checking. A source can be true, false, useful, biased, or a mixture of all of those annoying things.</div>
+    <div id="vocab-match"></div>
+    <p class="msg" id="vocab-msg" role="status"></p>
+    <div class="nav"><button class="btn-next" id="vocab-check">Check source words</button><button class="btn-next" data-go="1">Next</button></div>
+  </section>
+
+  <section class="step" id="s-fact-opinion">
+    <h2>Round 2: Fact or opinion?</h2>
+    <p class="lead">A fact can be checked. An opinion is what someone thinks or feels. Both can appear in historical sources.</p>
+    <div id="fact-cards"></div>
+    <p class="msg" id="fact-msg" role="status"></p>
+    <div class="nav"><button class="btn-back" data-go="0">Back</button><button class="btn-next" data-go="2">Next</button></div>
+  </section>
+
+  <section class="step" id="s-factory">
+    <h2>Round 3: The suspicious factory owner</h2>
+    <p class="lead">Read the source. It was written during the Industrial Revolution by a factory owner in 1832.</p>
+    <div class="quote">"My factory is a wonderful place for children to work. The air is warm and clean. The children are happy and sing songs while they spin cotton. They are lucky I give them a job."<cite>- Written by Mr. Thomas Grind, Factory Owner, 1832</cite></div>
+    <div class="grid-two">
+      <div class="qcard">
+        <span class="tag">Fast checks</span>
+        <label for="factoryAuthor">Who wrote this source?</label>
+        <select id="factoryAuthor" data-save="factoryAuthor">
+          <option value="">Choose...</option><option value="grind">Mr Thomas Grind, the factory owner</option><option value="child">A child worker</option><option value="historian">A modern historian</option>
+        </select>
+        <label for="factoryType">Is this primary or secondary?</label>
+        <select id="factoryType" data-save="factoryType">
+          <option value="">Choose...</option><option value="primary">Primary source</option><option value="secondary">Secondary source</option>
+        </select>
+        <label for="factoryOpinion">One opinion from the source</label>
+        <input type="text" id="factoryOpinion" data-save="factoryOpinion" placeholder="Example: wonderful place">
+      </div>
+      <div class="qcard">
+        <span class="tag">Bias thinking</span>
+        <label for="factoryBias">Why might Mr Grind be biased?</label>
+        <textarea id="factoryBias" data-save="factoryBias" placeholder="He might be biased because..."></textarea>
+        <label for="factoryChild">Would a child worker write a different account?</label>
+        <textarea id="factoryChild" data-save="factoryChild" placeholder="A child might say..."></textarea>
+      </div>
+    </div>
+    <div class="teacher-note"><strong>Sentence frame:</strong> This source may be biased because the writer is a _____ and wants people to think _____.</div>
+    <p class="msg" id="factory-msg" role="status"></p>
+    <div class="nav"><button class="btn-teal" id="factory-check">Check factory source</button><button class="btn-back" data-go="1">Back</button><button class="btn-next" data-go="3">Next</button></div>
+  </section>
+
+  <section class="step" id="s-coin">
+    <h2>Round 4: Artefact detective</h2>
+    <p class="lead">Objects from the past can be sources too. This medieval coin shows a king sending a message about himself.</p>
+    <div class="coin-layout">
+      <div class="visual-card">
+        <svg class="coin-svg" viewBox="0 0 320 320" role="img" aria-label="Medieval coin showing a king holding a sword and a cross">
+          <defs>
+            <radialGradient id="coinGlow" cx="50%" cy="42%" r="60%"><stop offset="0" stop-color="#f2efe6"/><stop offset="0.75" stop-color="#c7b38c"/><stop offset="1" stop-color="#8f7f5f"/></radialGradient>
+          </defs>
+          <circle cx="160" cy="160" r="138" fill="url(#coinGlow)" stroke="#4f5042" stroke-width="8"/>
+          <circle cx="160" cy="160" r="116" fill="none" stroke="#5a8b7b" stroke-width="12"/>
+          <path d="M82 98 C122 74 198 74 238 98" fill="none" stroke="#4f5042" stroke-width="7" stroke-linecap="round"/>
+          <path d="M112 232 C122 184 112 145 133 116 C145 98 176 98 188 116 C209 145 198 184 208 232 Z" fill="#e6e1d1" stroke="#3f3c35" stroke-width="5"/>
+          <circle cx="160" cy="108" r="31" fill="#ead7b2" stroke="#3f3c35" stroke-width="5"/>
+          <path d="M128 82 L142 62 L158 82 L176 62 L192 82 Z" fill="#d6a93f" stroke="#3f3c35" stroke-width="5"/>
+          <line x1="95" y1="96" x2="95" y2="222" stroke="#6a6a70" stroke-width="8" stroke-linecap="round"/>
+          <path d="M95 62 L83 104 L107 104 Z" fill="#d7d7dc" stroke="#3f3c35" stroke-width="4"/>
+          <line x1="224" y1="89" x2="224" y2="218" stroke="#6f4a2d" stroke-width="8" stroke-linecap="round"/>
+          <line x1="204" y1="118" x2="244" y2="118" stroke="#6f4a2d" stroke-width="8" stroke-linecap="round"/>
+          <text x="160" y="276" text-anchor="middle" font-family="Atkinson Hyperlegible, Arial" font-size="21" font-weight="700" fill="#3f3c35">KING'S COIN</text>
+        </svg>
+        <p class="mini-note">Visual support: a simplified redrawing of the worksheet coin so the key clues are visible.</p>
+      </div>
+      <div>
+        <div class="qcard">
+          <label for="coinObjects">What two objects is the king holding?</label>
+          <input type="text" id="coinObjects" data-save="coinObjects" placeholder="He is holding...">
+          <label for="coinSword">What does the sword suggest?</label>
+          <textarea id="coinSword" data-save="coinSword" placeholder="The sword suggests he wanted to be seen as..."></textarea>
+          <label for="coinReality">Why might the coin not show exactly what the king looked like?</label>
+          <textarea id="coinReality" data-save="coinReality" placeholder="It might not be exact because..."></textarea>
+        </div>
+      </div>
+    </div>
+    <p class="msg" id="coin-msg" role="status"></p>
+    <div class="nav"><button class="btn-teal" id="coin-check">Check artefact thinking</button><button class="btn-back" data-go="2">Back</button><button class="btn-next" data-go="4">Next</button></div>
+  </section>
+
+  <section class="step" id="s-interpret">
+    <h2>Round 5: Two versions of one event</h2>
+    <p class="lead">Historians compare sources because different people can tell the same event in completely different ways.</p>
+    <div class="source-grid">
+      <div class="source-card"><h3>Source A</h3><p>"The peasants were wicked rebels. They acted like wild dogs, destroying everything and murdering good, rich men."</p><p class="byline">Written by an English monk who owned a lot of land, 1381.</p></div>
+      <div class="source-card"><h3>Source B</h3><p>"The poor workers were starving and angry. The unfair taxes forced them to march to London to ask the King for help."</p><p class="byline">Written by a modern historian, 2015.</p></div>
+    </div>
+    <div class="qcard">
+      <label>How does Source A describe the peasants?</label>
+      <div class="opts" id="sourceA-opts">
+        <button type="button" data-source-a="wicked rebels">wicked rebels</button>
+        <button type="button" data-source-a="kind helpers">kind helpers</button>
+        <button type="button" data-source-a="wild dogs">wild dogs</button>
+      </div>
+      <label for="sourceBWhy">How does Source B explain why they marched?</label>
+      <textarea id="sourceBWhy" data-save="sourceBWhy" placeholder="Source B says..."></textarea>
+      <label for="monkBias">Why might the monk have a negative view?</label>
+      <textarea id="monkBias" data-save="monkBias" placeholder="The monk might think this because..."></textarea>
+      <label>Which source is secondary?</label>
+      <div class="opts" id="secondary-opts">
+        <button type="button" data-secondary="A">Source A</button>
+        <button type="button" data-secondary="B">Source B</button>
+      </div>
+      <label for="secondaryExplain">Explain how you know.</label>
+      <textarea id="secondaryExplain" data-save="secondaryExplain" placeholder="I know because..."></textarea>
+    </div>
+    <p class="msg" id="interpret-msg" role="status"></p>
+    <div class="nav"><button class="btn-teal" id="interpret-check">Check interpretations</button><button class="btn-back" data-go="3">Back</button><button class="btn-next" data-go="5">Next</button></div>
+  </section>
+
+  <section class="step" id="s-evidence-gallery">
+    <h2>Round 6: Evidence gallery</h2>
+    <p class="lead">Match each historical evidence picture to the word bank: Coin, Diary, Castle, Newspaper.</p>
+    <div class="evidence-grid" id="gallery">
+      <div class="artefact-card" data-art="coin">
+        <svg class="artefact-svg" viewBox="0 0 160 120" aria-label="Coin"><circle cx="80" cy="58" r="42" fill="#c7b38c" stroke="#4f5042" stroke-width="5"/><circle cx="80" cy="58" r="30" fill="none" stroke="#5a8b7b" stroke-width="5"/><path d="M62 80 C66 62 61 47 70 36 C76 29 88 29 94 36 C103 47 98 62 102 80 Z" fill="#eee5cf" stroke="#3f3c35" stroke-width="3"/><text x="80" y="112" text-anchor="middle" font-size="13" font-weight="700" fill="#6f5148">Image 1</text></svg>
+        <select id="art_coin" data-save="art_coin"><option value="">Choose...</option><option>Coin</option><option>Diary</option><option>Castle</option><option>Newspaper</option></select>
+      </div>
+      <div class="artefact-card" data-art="diary">
+        <svg class="artefact-svg" viewBox="0 0 160 120" aria-label="Diary"><path d="M46 20 H113 Q122 20 122 29 V92 Q122 100 113 100 H47 Q37 100 37 90 V30 Q37 20 46 20 Z" fill="#965938" stroke="#4f2f22" stroke-width="5"/><path d="M52 22 V98" stroke="#2c6b66" stroke-width="6"/><text x="88" y="60" text-anchor="middle" font-size="14" font-weight="700" fill="#4f2f22">DIARY</text><text x="80" y="112" text-anchor="middle" font-size="13" font-weight="700" fill="#6f5148">Image 2</text></svg>
+        <select id="art_diary" data-save="art_diary"><option value="">Choose...</option><option>Coin</option><option>Diary</option><option>Castle</option><option>Newspaper</option></select>
+      </div>
+      <div class="artefact-card" data-art="castle">
+        <svg class="artefact-svg" viewBox="0 0 160 120" aria-label="Castle"><path d="M36 92 V48 H52 V36 H68 V48 H92 V36 H108 V48 H124 V92 Z" fill="#adb8c5" stroke="#48515b" stroke-width="4"/><path d="M68 92 V70 Q80 58 92 70 V92" fill="#6f5148"/><path d="M52 36 L60 22 L68 36 M92 36 L100 22 L108 36" fill="#b9554a" stroke="#48515b" stroke-width="4"/><text x="80" y="112" text-anchor="middle" font-size="13" font-weight="700" fill="#6f5148">Image 3</text></svg>
+        <select id="art_castle" data-save="art_castle"><option value="">Choose...</option><option>Coin</option><option>Diary</option><option>Castle</option><option>Newspaper</option></select>
+      </div>
+      <div class="artefact-card" data-art="newspaper">
+        <svg class="artefact-svg" viewBox="0 0 160 120" aria-label="Newspaper"><rect x="30" y="18" width="100" height="80" rx="4" fill="#ead8ba" stroke="#6f5148" stroke-width="4"/><rect x="42" y="32" width="76" height="10" fill="#6f5148"/><rect x="42" y="50" width="28" height="22" fill="#b4c9d6"/><path d="M78 51 H116 M78 59 H116 M78 67 H116 M42 80 H116 M42 88 H90" stroke="#6f5148" stroke-width="4"/><text x="80" y="112" text-anchor="middle" font-size="13" font-weight="700" fill="#6f5148">Image 4</text></svg>
+        <select id="art_newspaper" data-save="art_newspaper"><option value="">Choose...</option><option>Coin</option><option>Diary</option><option>Castle</option><option>Newspaper</option></select>
+      </div>
+    </div>
+    <p class="msg" id="gallery-msg" role="status"></p>
+    <div class="nav"><button class="btn-teal" id="gallery-check">Check evidence gallery</button><button class="btn-back" data-go="4">Back</button><button class="btn-next" data-go="6">Next</button></div>
+  </section>
+
+  <section class="step" id="s-finish">
+    <h2>Finish: What would a historian do?</h2>
+    <p class="lead">A useful historian does not just believe the loudest source. They compare, question and explain.</p>
+    <div class="qcard">
+      <label for="reflection">One thing I want to remember about evidence or bias is...</label>
+      <textarea id="reflection" data-save="reflection" placeholder="I want to remember..."></textarea>
+      <label for="sourceWarning">A warning sign that a source might be biased is...</label>
+      <textarea id="sourceWarning" data-save="sourceWarning" placeholder="A source might be biased when..."></textarea>
+    </div>
+
+    <section class="boss" id="boss">
+      <button class="boss-head" id="boss-toggle" aria-expanded="false" aria-controls="boss-body">
+        <span class="badge">BOSS LEVEL</span>
+        <span class="sub">optional, explain a judgement like a historian</span>
+      </button>
+      <div class="boss-body" id="boss-body">
+        <p>A new source says: "The king was perfect and everyone loved him." It was written by someone who worked for the king. How useful is this source? What might it tell us, and what might it hide?</p>
+        <div class="teacher-note"><strong>Useful structure:</strong> This source is useful because... However, it might be biased because... I would compare it with...</div>
+        <label for="bossAnswer">Boss level response</label>
+        <textarea id="bossAnswer" data-save="bossAnswer" placeholder="This source is useful because..."></textarea>
+        <p class="msg" id="boss-msg" role="status"></p>
+        <div class="nav"><button class="btn-teal" id="boss-save">Save boss response</button></div>
+      </div>
+    </section>
+
+    <div class="send">
+      <h3>Send your evidence to Jay</h3>
+      <p style="font-size:0.92rem; color:#555;">This gathers choices, written answers, progress and reflection into one evidence note.</p>
+      <label for="initials">Your initials</label>
+      <input type="text" id="initials" data-save="initials" placeholder="Type your initials">
+      <pre class="summary-box" id="summary"></pre>
+      <div class="nav">
+        <button class="btn-next" id="send-btn">Open Gmail to send to Jay</button>
+        <button class="btn-ghost" id="download-btn">Download evidence text</button>
+        <button class="btn-danger" id="reset-btn">Reset saved progress</button>
+      </div>
+      <p class="msg" id="send-msg" role="status"></p>
+    </div>
+    <div class="nav"><button class="btn-back" data-go="5">Back</button><a class="btn-next fake-button" href="../index.html" style="text-decoration:none; display:inline-block;">All done</a></div>
+  </section>
+
+  <button class="tiny-link" id="tiny-scroll" type="button" aria-expanded="false">A tiny rolled-up scroll is hiding down here.</button>
+  <p class="teacher-note" id="tiny-note" style="display:none; text-align:center;">The tiny scroll says: if a source sounds too perfect, start asking who benefits.</p>
+</main>
+
+<footer>Base 6 &middot; Chilton Bridge School</footer>
+
 <script>
-(function () {
-  "use strict";
-
-  var SLUG = "historybias";
-  var PREFIX = "base6." + SLUG + ".";
-  var TOTAL_STEPS = 7;
-  var toastTimer = null;
-
-  function storageSet(key, value) {
-    try {
-      window.localStorage.setItem(PREFIX + key, JSON.stringify(value));
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  function storageGet(key, fallback) {
-    try {
-      var raw = window.localStorage.getItem(PREFIX + key);
-      if (raw === null) { return fallback; }
-      return JSON.parse(raw);
-    } catch (error) {
-      return fallback;
-    }
-  }
-
-  function storageClearAll() {
-    try {
-      var keys = [];
-      for (var i = 0; i < window.localStorage.length; i += 1) {
-        var key = window.localStorage.key(i);
-        if (key && key.indexOf(PREFIX) === 0) { keys.push(key); }
-      }
-      keys.forEach(function (key) { window.localStorage.removeItem(key); });
-    } catch (error) {
-      return false;
-    }
-    return true;
-  }
-
-  function byId(id) { return document.getElementById(id); }
-
-  function setFeedback(id, text, kind) {
-    var box = byId(id);
-    if (!box) { return; }
-    box.textContent = text;
-    box.classList.remove("good", "coach");
-    if (kind) { box.classList.add(kind); }
-  }
-
-  function starSvg(filled, label) {
-    var cls = filled ? "filled" : "empty";
-    var title = label || (filled ? "Filled star" : "Empty star");
-    return "<svg class=\"star-svg " + cls + "\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"" + title + "\"><polygon class=\"shape\" points=\"12,2 15,8.5 22,9.2 16.8,13.8 18.4,21 12,17.2 5.6,21 7.2,13.8 2,9.2 9,8.5\"></polygon></svg>";
-  }
-
-  var state = {
-    currentStep: storageGet("currentStep", 0),
-    stars: storageGet("stars", []),
-    revealBiasTip: storageGet("revealBiasTip", false),
-    matches: storageGet("matches", {}),
-    factOpinion: storageGet("factOpinion", {}),
-    coinParts: storageGet("coinParts", []),
-    evidence: storageGet("evidence", {}),
-    bossOpen: storageGet("bossOpen", false),
-    eggOpen: storageGet("eggOpen", false)
-  };
-
-  if (!Array.isArray(state.stars)) { state.stars = []; }
-  if (!Array.isArray(state.coinParts)) { state.coinParts = []; }
-  if (typeof state.currentStep !== "number" || state.currentStep < 0 || state.currentStep >= TOTAL_STEPS) {
-    state.currentStep = 0;
-  }
-
-  var stepNames = [
-    "Set up the history lab",
-    "Evidence word match",
-    "Fact, opinion, and the factory owner",
-    "Artefact analysis",
-    "Two versions of the same event",
-    "Matching historical evidence",
-    "Reflection"
-  ];
-
-  var matchItems = [
-    {
-      id: "primary",
-      term: "Primary source",
-      correct: "time",
-      meanings: [
-        { id: "time", text: "Evidence from the time of the event.", feedback: "Yes. Primary means from the time or directly connected to the event." },
-        { id: "after", text: "Information created after the event by someone who was not there.", feedback: "Not that one. That describes a secondary source." },
-        { id: "favours", text: "When a source unfairly favours one side.", feedback: "Not that one. That describes bias." }
-      ]
-    },
-    {
-      id: "secondary",
-      term: "Secondary source",
-      correct: "after",
-      meanings: [
-        { id: "prove", text: "A statement that can be proven true.", feedback: "Not that one. That describes a fact." },
-        { id: "after", text: "Information created after the event by someone who was not there.", feedback: "Yes. Secondary sources are created later, often using other evidence." },
-        { id: "feels", text: "What someone thinks or feels about something.", feedback: "Not that one. That describes an opinion." }
-      ]
-    },
-    {
-      id: "fact",
-      term: "Fact",
-      correct: "prove",
-      meanings: [
-        { id: "prove", text: "A statement that can be proven true.", feedback: "Yes. A fact can be checked against evidence." },
-        { id: "feels", text: "What someone thinks or feels about something.", feedback: "Not that one. That describes an opinion." },
-        { id: "time", text: "Evidence from the time of the event.", feedback: "Not that one. That describes a primary source." }
-      ]
-    },
-    {
-      id: "opinion",
-      term: "Opinion",
-      correct: "feels",
-      meanings: [
-        { id: "after", text: "Information created after the event by someone who was not there.", feedback: "Not that one. That describes a secondary source." },
-        { id: "favours", text: "When a source unfairly favours one side.", feedback: "Not that one. That describes bias." },
-        { id: "feels", text: "What someone thinks or feels about something.", feedback: "Yes. Opinions can be powerful, but they are not automatically facts." }
-      ]
-    },
-    {
-      id: "bias",
-      term: "Bias",
-      correct: "favours",
-      meanings: [
-        { id: "favours", text: "When a source unfairly favours one side over another.", feedback: "Yes. Bias means the source is leaning in a particular direction." },
-        { id: "prove", text: "A statement that can be proven true.", feedback: "Not that one. That describes a fact." },
-        { id: "time", text: "Evidence from the time of the event.", feedback: "Not that one. That describes a primary source." }
-      ]
-    }
-  ];
-
-  var factOpinionItems = {
-    factorybuilt: {
-      correct: "fact",
-      factText: "Yes. The year 1842 can be checked with evidence.",
-      opinionText: "Not that one. A date can be checked, so this is working like a fact."
-    },
-    terribleking: {
-      correct: "opinion",
-      factText: "Not that one. Words like \"terrible\" and \"ruined\" show judgement, so this is an opinion.",
-      opinionText: "Yes. This is a judgement about the King, not a neutral checkable statement."
-    }
-  };
-
-  var coinTips = {
-    sword: "Sword: this suggests strength, defence, fighting power, and a warning to enemies.",
-    cross: "Cross: this suggests religion and the idea that the king is connected to Christian authority.",
-    face: "Perfect face: the artist could make the king look stronger or more impressive than real life.",
-    crown: "Crown: this signals royal power and reminds people who is in charge."
-  };
-
-  var evidenceItems = [
-    {
-      id: "coin",
-      title: "Object 1",
-      correct: "Coin",
-      svg: "<svg class=\"simple-svg\" viewBox=\"0 0 100 100\" role=\"img\" aria-label=\"Coin\"><circle cx=\"50\" cy=\"50\" r=\"39\" fill=\"#d7e6ea\" stroke=\"#005a72\" stroke-width=\"6\"></circle><circle cx=\"50\" cy=\"50\" r=\"26\" fill=\"#eef7fa\" stroke=\"#ef7724\" stroke-width=\"4\"></circle><path d=\"M38 64 Q50 72 62 64\" fill=\"none\" stroke=\"#1a1a1a\" stroke-width=\"4\"></path><circle cx=\"50\" cy=\"41\" r=\"10\" fill=\"#f7d2b3\" stroke=\"#1a1a1a\" stroke-width=\"3\"></circle></svg>"
-    },
-    {
-      id: "diary",
-      title: "Object 2",
-      correct: "Diary",
-      svg: "<svg class=\"simple-svg\" viewBox=\"0 0 100 100\" role=\"img\" aria-label=\"Diary\"><rect x=\"22\" y=\"12\" width=\"56\" height=\"76\" rx=\"7\" fill=\"#a85d2d\" stroke=\"#1a1a1a\" stroke-width=\"5\"></rect><line x1=\"34\" y1=\"12\" x2=\"34\" y2=\"88\" stroke=\"#005a72\" stroke-width=\"5\"></line><line x1=\"44\" y1=\"35\" x2=\"68\" y2=\"35\" stroke=\"#1a1a1a\" stroke-width=\"3\"></line><line x1=\"44\" y1=\"48\" x2=\"68\" y2=\"48\" stroke=\"#1a1a1a\" stroke-width=\"3\"></line></svg>"
-    },
-    {
-      id: "castle",
-      title: "Object 3",
-      correct: "Castle",
-      svg: "<svg class=\"simple-svg\" viewBox=\"0 0 100 100\" role=\"img\" aria-label=\"Castle\"><rect x=\"18\" y=\"40\" width=\"64\" height=\"42\" fill=\"#b9c8cf\" stroke=\"#1a1a1a\" stroke-width=\"4\"></rect><rect x=\"24\" y=\"24\" width=\"16\" height=\"58\" fill=\"#d7e6ea\" stroke=\"#1a1a1a\" stroke-width=\"4\"></rect><rect x=\"60\" y=\"24\" width=\"16\" height=\"58\" fill=\"#d7e6ea\" stroke=\"#1a1a1a\" stroke-width=\"4\"></rect><path d=\"M24 24 L32 10 L40 24 Z\" fill=\"#ef7724\" stroke=\"#1a1a1a\" stroke-width=\"4\"></path><path d=\"M60 24 L68 10 L76 24 Z\" fill=\"#ef7724\" stroke=\"#1a1a1a\" stroke-width=\"4\"></path><rect x=\"44\" y=\"58\" width=\"12\" height=\"24\" fill=\"#005a72\"></rect></svg>"
-    },
-    {
-      id: "newspaper",
-      title: "Object 4",
-      correct: "Newspaper",
-      svg: "<svg class=\"simple-svg\" viewBox=\"0 0 100 100\" role=\"img\" aria-label=\"Newspaper\"><rect x=\"14\" y=\"18\" width=\"72\" height=\"64\" fill=\"#fffaf6\" stroke=\"#1a1a1a\" stroke-width=\"4\"></rect><rect x=\"22\" y=\"28\" width=\"56\" height=\"10\" fill=\"#d7e6ea\" stroke=\"#005a72\" stroke-width=\"3\"></rect><line x1=\"22\" y1=\"48\" x2=\"48\" y2=\"48\" stroke=\"#1a1a1a\" stroke-width=\"3\"></line><line x1=\"22\" y1=\"58\" x2=\"48\" y2=\"58\" stroke=\"#1a1a1a\" stroke-width=\"3\"></line><line x1=\"54\" y1=\"48\" x2=\"78\" y2=\"48\" stroke=\"#1a1a1a\" stroke-width=\"3\"></line><line x1=\"54\" y1=\"58\" x2=\"78\" y2=\"58\" stroke=\"#1a1a1a\" stroke-width=\"3\"></line><line x1=\"22\" y1=\"68\" x2=\"78\" y2=\"68\" stroke=\"#1a1a1a\" stroke-width=\"3\"></line></svg>"
-    }
-  ];
-
-  function showToast(message) {
-    var toast = byId("toast");
-    byId("toastText").textContent = message;
-    if (toastTimer) { window.clearTimeout(toastTimer); }
-    toast.classList.add("show");
-    toastTimer = window.setTimeout(function () {
-      toast.classList.remove("show");
-    }, 3000);
-  }
-
-  function renderStars() {
-    var bar = byId("starBar");
-    var html = "<span class=\"star-label\">Stars</span>";
-    for (var i = 0; i < TOTAL_STEPS; i += 1) {
-      html += starSvg(state.stars.indexOf(i) !== -1, "Star for step " + (i + 1));
-    }
-    bar.innerHTML = html;
-  }
-
-  function earnStar(step, message) {
-    if (state.stars.indexOf(step) === -1) {
-      state.stars.push(step);
-      storageSet("stars", state.stars);
-      renderStars();
-      showToast(message);
-    }
-    renderProgressDots();
-    updateSummary();
-  }
-
-  function renderProgressDots() {
-    var dots = byId("progressDots");
-    dots.innerHTML = "";
-    for (var i = 0; i < TOTAL_STEPS; i += 1) {
-      var button = document.createElement("button");
-      button.type = "button";
-      button.className = "dot";
-      if (i === state.currentStep) { button.classList.add("active"); }
-      if (state.stars.indexOf(i) !== -1) { button.classList.add("done"); }
-      button.textContent = String(i + 1);
-      button.setAttribute("aria-label", "Jump to step " + (i + 1) + ": " + stepNames[i]);
-      button.setAttribute("data-jump", String(i));
-      dots.appendChild(button);
-    }
-  }
-
-  function showStep(step) {
-    state.currentStep = step;
-    storageSet("currentStep", state.currentStep);
-    document.querySelectorAll(".step").forEach(function (section) {
-      var sectionStep = Number(section.getAttribute("data-step"));
-      section.classList.toggle("active", sectionStep === state.currentStep);
-    });
-    renderProgressDots();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  function setupProgressClicks() {
-    byId("progressDots").addEventListener("click", function (event) {
-      var button = event.target.closest("button[data-jump]");
-      if (!button) { return; }
-      showStep(Number(button.getAttribute("data-jump")));
-    });
-  }
-
-  function restoreInputs() {
-    document.querySelectorAll("[data-save=\"input\"]").forEach(function (input) {
-      var saved = storageGet("input." + input.id, "");
-      if (typeof saved === "string" || typeof saved === "number") {
-        input.value = saved;
-      }
-      input.addEventListener("input", function () {
-        storageSet("input." + input.id, input.value);
-        updateSummary();
-      });
-      input.addEventListener("change", function () {
-        storageSet("input." + input.id, input.value);
-        updateSummary();
-      });
-    });
-  }
-
-  function setupStepButtons() {
-    document.querySelectorAll("[data-next]").forEach(function (button) {
-      button.addEventListener("click", function () {
-        showStep(Number(button.getAttribute("data-next")));
-      });
-    });
-    document.querySelectorAll("[data-prev]").forEach(function (button) {
-      button.addEventListener("click", function () {
-        showStep(Number(button.getAttribute("data-prev")));
-      });
-    });
-    document.querySelectorAll(".complete-btn").forEach(function (button) {
-      button.addEventListener("click", function () {
-        var step = Number(button.getAttribute("data-complete"));
-        earnStar(step, "Step " + (step + 1) + " saved. Historical suspicion increased.");
-      });
-    });
-  }
-
-  function setupBiasTip() {
-    var panel = byId("biasTipPanel");
-    panel.classList.toggle("open", state.revealBiasTip === true);
-    byId("revealBiasTip").addEventListener("click", function () {
-      state.revealBiasTip = !state.revealBiasTip;
-      storageSet("revealBiasTip", state.revealBiasTip);
-      panel.classList.toggle("open", state.revealBiasTip === true);
-    });
-  }
-
-  function renderMatches() {
-    var list = byId("matchList");
-    list.innerHTML = "";
-    matchItems.forEach(function (item, index) {
-      var selected = state.matches[item.id] || "";
-      var html = "<div class=\"match-item\"><h3>" + (index + 1) + ". " + item.term + "</h3><div class=\"choice-grid\">";
-      item.meanings.forEach(function (meaning) {
-        html += "<button class=\"choice" + (selected === meaning.id ? " selected" : "") + "\" type=\"button\" data-match=\"" + item.id + "\" data-answer=\"" + meaning.id + "\">" + meaning.text + "</button>";
-      });
-      html += "</div><div class=\"feedback\" id=\"matchFb_" + item.id + "\" aria-live=\"polite\"></div></div>";
-      list.insertAdjacentHTML("beforeend", html);
-    });
-    matchItems.forEach(function (item) {
-      var selected = state.matches[item.id] || "";
-      if (selected) { showMatchFeedback(item, selected); }
-    });
-  }
-
-  function showMatchFeedback(item, selected) {
-    var meaning = item.meanings.filter(function (m) { return m.id === selected; })[0];
-    if (!meaning) { return; }
-    setFeedback("matchFb_" + item.id, meaning.feedback, selected === item.correct ? "good" : "coach");
-  }
-
-  function setupMatches() {
-    renderMatches();
-    byId("matchList").addEventListener("click", function (event) {
-      var button = event.target.closest("button[data-match]");
-      if (!button) { return; }
-      var id = button.getAttribute("data-match");
-      var answer = button.getAttribute("data-answer");
-      state.matches[id] = answer;
-      storageSet("matches", state.matches);
-      renderMatches();
-      updateSummary();
-    });
-    byId("checkMatches").addEventListener("click", function () {
-      var correct = 0;
-      matchItems.forEach(function (item) {
-        if (state.matches[item.id] === item.correct) { correct += 1; }
-      });
-      if (correct === matchItems.length) {
-        setFeedback("matchFeedback", "All matched. You have the source vocabulary toolkit ready.", "good");
-      } else {
-        setFeedback("matchFeedback", "You have " + correct + " out of " + matchItems.length + ". Check whether the word is about time, proof, feeling, or unfair leaning.", "coach");
-      }
-    });
-  }
-
-  function setupFactOpinion() {
-    document.querySelectorAll("[data-factopinion]").forEach(function (button) {
-      var id = button.getAttribute("data-factopinion");
-      var answer = button.getAttribute("data-answer");
-      button.classList.toggle("selected", state.factOpinion[id] === answer);
-      button.addEventListener("click", function () {
-        state.factOpinion[id] = answer;
-        storageSet("factOpinion", state.factOpinion);
-        document.querySelectorAll("[data-factopinion=\"" + id + "\"]").forEach(function (btn) {
-          btn.classList.toggle("selected", btn.getAttribute("data-answer") === answer);
-        });
-        var item = factOpinionItems[id];
-        if (answer === item.correct && answer === "fact") {
-          setFeedback("factOpinionFb_" + id, item.factText, "good");
-        } else if (answer === item.correct && answer === "opinion") {
-          setFeedback("factOpinionFb_" + id, item.opinionText, "good");
-        } else if (answer === "fact") {
-          setFeedback("factOpinionFb_" + id, item.factText, "coach");
-        } else {
-          setFeedback("factOpinionFb_" + id, item.opinionText, "coach");
-        }
-        updateSummary();
-      });
-    });
-  }
-
-  function setupFactory() {
-    byId("checkFactory").addEventListener("click", function () {
-      var author = inputValue("factoryAuthor").toLowerCase();
-      var type = inputValue("factoryType");
-      var opinion = inputValue("factoryOpinion").toLowerCase();
-      var bias = inputValue("factoryBias").toLowerCase();
-      var child = inputValue("childAccount").toLowerCase();
-      var score = 0;
-      if (author.indexOf("grind") !== -1 || author.indexOf("factory") !== -1 || author.indexOf("owner") !== -1) { score += 1; }
-      if (type === "primary") { score += 1; }
-      if (opinion.indexOf("wonderful") !== -1 || opinion.indexOf("happy") !== -1 || opinion.indexOf("lucky") !== -1 || opinion.indexOf("clean") !== -1) { score += 1; }
-      if (bias.indexOf("money") !== -1 || bias.indexOf("profit") !== -1 || bias.indexOf("owner") !== -1 || bias.indexOf("good") !== -1 || bias.indexOf("reputation") !== -1) { score += 1; }
-      if (child.indexOf("yes") !== -1 || child.indexOf("danger") !== -1 || child.indexOf("tired") !== -1 || child.indexOf("hours") !== -1 || child.indexOf("pay") !== -1) { score += 1; }
-      if (score >= 4) {
-        setFeedback("factoryFeedback", "Strong source thinking. You checked who wrote it, when, and why the account might be one-sided.", "good");
-      } else {
-        setFeedback("factoryFeedback", "Some useful thinking is here. A strong answer mentions that Mr. Grind owned the factory and had a reason to make it sound safe and happy.", "coach");
-      }
-      updateSummary();
-    });
-  }
-
-  function setupCoin() {
-    document.querySelectorAll("[data-coin]").forEach(function (button) {
-      var part = button.getAttribute("data-coin");
-      button.classList.toggle("selected", state.coinParts.indexOf(part) !== -1);
-      button.addEventListener("click", function () {
-        if (state.coinParts.indexOf(part) === -1) {
-          state.coinParts.push(part);
-        }
-        storageSet("coinParts", state.coinParts);
-        document.querySelectorAll("[data-coin]").forEach(function (btn) {
-          btn.classList.toggle("selected", state.coinParts.indexOf(btn.getAttribute("data-coin")) !== -1);
-        });
-        setFeedback("coinFeedback", coinTips[part], "good");
-        updateSummary();
-      });
-    });
-    byId("checkCoin").addEventListener("click", function () {
-      var objects = inputValue("coinObjects").toLowerCase();
-      var sword = inputValue("coinSword").toLowerCase();
-      var looks = inputValue("coinLooks").toLowerCase();
-      var score = 0;
-      if (objects.indexOf("sword") !== -1 && objects.indexOf("cross") !== -1) { score += 1; }
-      if (sword.indexOf("strong") !== -1 || sword.indexOf("power") !== -1 || sword.indexOf("warrior") !== -1 || sword.indexOf("fight") !== -1 || sword.indexOf("enemy") !== -1) { score += 1; }
-      if (looks.indexOf("propaganda") !== -1 || looks.indexOf("perfect") !== -1 || looks.indexOf("impress") !== -1 || looks.indexOf("artist") !== -1 || looks.indexOf("strong") !== -1) { score += 1; }
-      if (score === 3) {
-        setFeedback("coinCheckFeedback", "Strong artefact analysis. You have read the coin as a message, not just a picture.", "good");
-      } else {
-        setFeedback("coinCheckFeedback", "There is useful thinking here. A strong answer mentions the sword and cross, then explains that coins can make kings look powerful or perfect.", "coach");
-      }
-      updateSummary();
-    });
-  }
-
-  function setupInterpretations() {
-    byId("checkInterpretations").addEventListener("click", function () {
-      var a = inputValue("sourceADescribe").toLowerCase();
-      var b = inputValue("sourceBReason").toLowerCase();
-      var monk = inputValue("monkBias").toLowerCase();
-      var secondary = inputValue("secondarySource").toLowerCase();
-      var score = 0;
-      if (a.indexOf("wicked") !== -1 || a.indexOf("wild dogs") !== -1 || a.indexOf("rebels") !== -1) { score += 1; }
-      if (b.indexOf("starving") !== -1 || b.indexOf("angry") !== -1 || b.indexOf("tax") !== -1 || b.indexOf("help") !== -1) { score += 1; }
-      if (monk.indexOf("land") !== -1 || monk.indexOf("rich") !== -1 || monk.indexOf("threat") !== -1 || monk.indexOf("tax") !== -1 || monk.indexOf("rent") !== -1) { score += 1; }
-      if (secondary.indexOf("source b") !== -1 || secondary.indexOf("2015") !== -1 || secondary.indexOf("modern") !== -1 || secondary.indexOf("later") !== -1) { score += 1; }
-      if (score >= 3) {
-        setFeedback("interpretationFeedback", "Strong comparison. You noticed language, cause, bias, and the date of the secondary source.", "good");
-      } else {
-        setFeedback("interpretationFeedback", "Some useful thinking is here. Check the loaded words in Source A, then check the date and author for Source B.", "coach");
-      }
-      updateSummary();
-    });
-  }
-
-  function renderEvidence() {
-    var list = byId("evidenceList");
-    list.innerHTML = "";
-    evidenceItems.forEach(function (item, index) {
-      var selected = state.evidence[item.id] || "";
-      var html = "<div class=\"evidence-card\"><h3>" + item.title + "</h3><div class=\"evidence-icon\">" + item.svg + "</div>" +
-        "<label for=\"evidence_" + item.id + "\">Choose the best label</label>" +
-        "<select id=\"evidence_" + item.id + "\" data-evidence=\"" + item.id + "\">" +
-        "<option value=\"\">Choose one if you fancy</option>" +
-        "<option value=\"Coin\">A. Coin</option>" +
-        "<option value=\"Diary\">B. Diary</option>" +
-        "<option value=\"Castle\">C. Castle</option>" +
-        "<option value=\"Newspaper\">D. Newspaper</option>" +
-        "</select><div class=\"feedback\" id=\"evidenceFb_" + item.id + "\" aria-live=\"polite\"></div></div>";
-      list.insertAdjacentHTML("beforeend", html);
-      byId("evidence_" + item.id).value = selected;
-    });
-  }
-
-  function setupEvidence() {
-    renderEvidence();
-    byId("evidenceList").addEventListener("change", function (event) {
-      var select = event.target.closest("select[data-evidence]");
-      if (!select) { return; }
-      var id = select.getAttribute("data-evidence");
-      state.evidence[id] = select.value;
-      storageSet("evidence", state.evidence);
-      var item = evidenceItems.filter(function (e) { return e.id === id; })[0];
-      if (select.value === item.correct) {
-        setFeedback("evidenceFb_" + id, "Yes. That label fits the evidence object.", "good");
-      } else if (select.value) {
-        setFeedback("evidenceFb_" + id, "Not that one. Look at the shape and purpose of the object before choosing the label.", "coach");
-      }
-      updateSummary();
-    });
-    byId("checkEvidence").addEventListener("click", function () {
-      var correct = 0;
-      evidenceItems.forEach(function (item) {
-        if (state.evidence[item.id] === item.correct) { correct += 1; }
-      });
-      if (correct === evidenceItems.length) {
-        setFeedback("evidenceFeedback", "All four evidence objects matched. Tiny museum successfully organised.", "good");
-      } else {
-        setFeedback("evidenceFeedback", "You have " + correct + " out of " + evidenceItems.length + ". Look for clues: round metal object, personal writing book, defensive building, printed news page.", "coach");
-      }
-    });
-  }
-
-  function setupBossAndEmail() {
-    var details = byId("bossDetails");
-    details.open = state.bossOpen === true;
-    details.addEventListener("toggle", function () {
-      state.bossOpen = details.open;
-      storageSet("bossOpen", state.bossOpen);
-    });
-    byId("saveBoss").addEventListener("click", function () {
-      var text = inputValue("bossAnswer");
-      if (text.length > 0) {
-        setFeedback("bossFeedback", "Boss response saved. Strong answers usually say primary sources are useful, but bias still matters.", "good");
-        showToast("Boss level saved. Proper historian behaviour.");
-      } else {
-        setFeedback("bossFeedback", "Blank is fine. If you add a thought, it will save as you type.", "coach");
-      }
-      updateSummary();
-    });
-    byId("sendEmail").addEventListener("click", function () {
-      var initials = inputValue("studentInitials") || "unknown";
-      var subject = "Base 6 - Historical Evidence and Bias - " + initials;
-      var body = buildSummary();
-      var url = "https://mail.google.com/mail/?view=cm&fs=1&to=jay.raine%40chiltonbridgeschool.co.uk&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-      window.open(url, "_blank");
-      setFeedback("emailFeedback", "Email opened. Press send in the email.", "good");
-    });
-  }
-
-  function setupEgg() {
-    var btn = byId("eggBtn");
-    var note = byId("eggNote");
-    note.classList.toggle("open", state.eggOpen === true);
-    btn.setAttribute("aria-expanded", state.eggOpen === true ? "true" : "false");
-    btn.addEventListener("click", function () {
-      state.eggOpen = !state.eggOpen;
-      storageSet("eggOpen", state.eggOpen);
-      note.classList.toggle("open", state.eggOpen === true);
-      btn.setAttribute("aria-expanded", state.eggOpen === true ? "true" : "false");
-    });
-  }
-
-  function setupReset() {
-    byId("resetBtn").addEventListener("click", function () {
-      var okay = window.confirm("Clear the saved work on this device for this activity?");
-      if (!okay) { return; }
-      storageClearAll();
-      window.location.reload();
-    });
-  }
-
-  function inputValue(id) {
-    var el = byId(id);
-    return el ? el.value.trim() : "";
-  }
-
-  function matchChoiceText(id) {
-    var item = matchItems.filter(function (m) { return m.id === id; })[0];
-    if (!item) { return "not answered"; }
-    var selected = state.matches[id] || "";
-    var meaning = item.meanings.filter(function (m) { return m.id === selected; })[0];
-    return meaning ? meaning.text : "not answered";
-  }
-
-  function factOpinionText(id) {
-    return state.factOpinion[id] || "not answered";
-  }
-
-  function evidenceText(id) {
-    return state.evidence[id] || "not answered";
-  }
-
-  function buildSummary() {
-    var initials = inputValue("studentInitials") || "unknown";
-    var date = new Date().toLocaleString("en-GB");
-    var lines = [];
-    lines.push("Student initials: " + initials);
-    lines.push("Date: " + date);
-    lines.push("");
-    lines.push("Base 6 Historical Evidence and Bias");
-    lines.push("Stars earned: " + state.stars.length + " / " + TOTAL_STEPS);
-    lines.push("");
-    lines.push("Step 1 - Set up");
-    lines.push("Initials entered: " + initials);
-    lines.push("");
-    lines.push("Step 2 - Evidence word match");
-    lines.push("Bias prediction: " + (inputValue("predictBias") || "blank"));
-    matchItems.forEach(function (item) {
-      lines.push(item.term + ": " + matchChoiceText(item.id));
-    });
-    lines.push("");
-    lines.push("Step 3 - Fact, opinion, and factory source");
-    lines.push("Factory built sentence: " + factOpinionText("factorybuilt"));
-    lines.push("Terrible king sentence: " + factOpinionText("terribleking"));
-    lines.push("Factory author: " + (inputValue("factoryAuthor") || "blank"));
-    lines.push("Factory source type: " + (inputValue("factoryType") || "blank"));
-    lines.push("Opinion from quote: " + (inputValue("factoryOpinion") || "blank"));
-    lines.push("Why Mr. Grind might be biased: " + (inputValue("factoryBias") || "blank"));
-    lines.push("Would a child worker write differently: " + (inputValue("childAccount") || "blank"));
-    lines.push("");
-    lines.push("Step 4 - Artefact analysis");
-    lines.push("Coin clues tapped: " + (state.coinParts.length ? state.coinParts.join(", ") : "none"));
-    lines.push("Objects held: " + (inputValue("coinObjects") || "blank"));
-    lines.push("Sword message: " + (inputValue("coinSword") || "blank"));
-    lines.push("Why coin might not show real appearance: " + (inputValue("coinLooks") || "blank"));
-    lines.push("");
-    lines.push("Step 5 - Differing interpretations");
-    lines.push("Source A describes peasants: " + (inputValue("sourceADescribe") || "blank"));
-    lines.push("Source B explanation: " + (inputValue("sourceBReason") || "blank"));
-    lines.push("Monk bias: " + (inputValue("monkBias") || "blank"));
-    lines.push("Secondary source answer: " + (inputValue("secondarySource") || "blank"));
-    lines.push("");
-    lines.push("Step 6 - Matching historical evidence");
-    evidenceItems.forEach(function (item) {
-      lines.push(item.title + ": " + evidenceText(item.id));
-    });
-    lines.push("");
-    lines.push("Reflection");
-    lines.push(inputValue("reflection") || "blank");
-    lines.push("");
-    lines.push("Boss level");
-    lines.push(inputValue("bossAnswer") || "blank");
-    lines.push("");
-    lines.push("Sent automatically from Base 6");
-    return lines.join("\n");
-  }
-
-  function updateSummary() {
-    var preview = byId("summaryPreview");
-    if (preview) { preview.textContent = buildSummary(); }
-  }
-
-  function init() {
-    renderStars();
-    renderProgressDots();
-    setupProgressClicks();
-    restoreInputs();
-    setupStepButtons();
-    setupBiasTip();
-    setupMatches();
-    setupFactOpinion();
-    setupFactory();
-    setupCoin();
-    setupInterpretations();
-    setupEvidence();
-    setupBossAndEmail();
-    setupEgg();
-    setupReset();
-    showStep(state.currentStep);
-    updateSummary();
-  }
-
-  init();
-}());
+"use strict";
+var NS = "base6.w6hs1.";
+var TOTAL_STARS = 7;
+var stepIds = ["s-intro", "s-fact-opinion", "s-factory", "s-coin", "s-interpret", "s-evidence-gallery", "s-finish"];
+var stepNames = ["Source words", "Fact or opinion", "Factory owner", "Artefact detective", "Interpretations", "Evidence gallery", "Finish"];
+var quiet = false;
+function byId(id) { return document.getElementById(id); }
+function save(k, v) { try { localStorage.setItem(NS + k, JSON.stringify(v)); } catch (e) {} }
+function load(k, fb) { try { var v = localStorage.getItem(NS + k); return v ? JSON.parse(v) : fb; } catch (e) { return fb; } }
+function text(id) { var el = byId(id); return el ? el.value.trim() : ""; }
+function norm(v) { return String(v || "").toLowerCase(); }
+function hasAny(value, words) { var v = norm(value); return words.some(function (w) { return v.indexOf(w) !== -1; }); }
+function setMsg(id, msg, kind) { var el = byId(id); if (!el) { return; } el.textContent = msg; el.className = "msg" + (kind ? " " + kind : ""); }
+var state = load("state", { step: 0, stars: [], vocab: {}, fact: {}, sourceA: [], secondary: "", tiny: false, bossOpen: false });
+if (!Array.isArray(state.stars)) { state.stars = []; }
+if (!Array.isArray(state.sourceA)) { state.sourceA = []; }
+function persist() { save("state", state); updateSummary(); }
+function starSvg(f) { return '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="' + (f ? '#ffce2e' : 'rgba(255,255,255,0.3)') + '" stroke="' + (f ? '#1a1a1a' : '#fef8f4') + '" stroke-width="3" stroke-linejoin="round"/></svg>'; }
+function renderStars() { var html = ""; for (var i = 0; i < TOTAL_STARS; i += 1) { html += starSvg(i < state.stars.length); } byId("starbar").innerHTML = html; byId("starbar").setAttribute("aria-label", state.stars.length + " of " + TOTAL_STARS + " stars earned"); }
+function showToast(msg) { if (quiet) { return; } var t = byId("toast"); byId("toast-text").textContent = msg; t.classList.add("show"); clearTimeout(t._timer); t._timer = setTimeout(function () { t.classList.remove("show"); }, 2600); }
+function award(id, msg) { if (state.stars.indexOf(id) === -1) { state.stars.push(id); persist(); renderStars(); renderDots(); showToast(msg || "Progress saved."); } }
+function renderDots() { var dots = byId("dots"); dots.innerHTML = ""; stepIds.forEach(function (id, i) { var b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", "Jump to round " + (i + 1) + ": " + stepNames[i]); b.className = (i === state.step ? "on " : "") + (state.stars.indexOf(i) !== -1 ? "done" : ""); b.addEventListener("click", function () { go(i); }); dots.appendChild(b); }); }
+function go(i) { state.step = Math.max(0, Math.min(stepIds.length - 1, i)); stepIds.forEach(function (id, idx) { byId(id).classList.toggle("active", idx === state.step); }); persist(); renderDots(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+function setupNav() { document.querySelectorAll("[data-go]").forEach(function (b) { b.addEventListener("click", function () { go(Number(b.getAttribute("data-go"))); }); }); }
+function setupInputs() { document.querySelectorAll("[data-save]").forEach(function (el) { var key = el.getAttribute("data-save"); var val = load("input." + key, ""); if (val !== null && val !== undefined && val !== "") { el.value = val; } el.addEventListener("input", function () { save("input." + key, el.value); updateSummary(); }); el.addEventListener("change", function () { save("input." + key, el.value); updateSummary(); }); }); }
+var vocab = [
+  { id: "primary", term: "Primary source", correct: "C", choices: { A: "Information created after the event by someone who was not there.", B: "When a source unfairly favours one side over another.", C: "Evidence from the time of the event.", D: "A statement that can be proven true.", E: "What someone thinks or feels." } },
+  { id: "secondary", term: "Secondary source", correct: "A", choices: { A: "Information created after the event by someone who was not there.", B: "When a source unfairly favours one side over another.", C: "Evidence from the time of the event.", D: "A statement that can be proven true.", E: "What someone thinks or feels." } },
+  { id: "fact", term: "Fact", correct: "D", choices: { A: "Information created after the event by someone who was not there.", B: "When a source unfairly favours one side over another.", C: "Evidence from the time of the event.", D: "A statement that can be proven true.", E: "What someone thinks or feels." } },
+  { id: "opinion", term: "Opinion", correct: "E", choices: { A: "Information created after the event by someone who was not there.", B: "When a source unfairly favours one side over another.", C: "Evidence from the time of the event.", D: "A statement that can be proven true.", E: "What someone thinks or feels." } },
+  { id: "bias", term: "Bias", correct: "B", choices: { A: "Information created after the event by someone who was not there.", B: "When a source unfairly favours one side over another.", C: "Evidence from the time of the event.", D: "A statement that can be proven true.", E: "What someone thinks or feels." } }
+];
+function renderVocab() { var box = byId("vocab-match"); box.innerHTML = ""; vocab.forEach(function (item) { var row = document.createElement("div"); row.className = "qcard match-row"; var html = '<div class="term-pill">' + item.term + '</div><div class="choice-grid">'; Object.keys(item.choices).forEach(function (letter) { var sel = state.vocab[item.id] === letter ? " selected" : ""; html += '<button type="button" class="choice' + sel + '" data-vocab="' + item.id + '" data-letter="' + letter + '">' + letter + '. ' + item.choices[letter] + '</button>'; }); html += '</div>'; row.innerHTML = html; box.appendChild(row); }); }
+function setupVocab() { renderVocab(); byId("vocab-match").addEventListener("click", function (e) { var b = e.target.closest("button[data-vocab]"); if (!b) { return; } state.vocab[b.getAttribute("data-vocab")] = b.getAttribute("data-letter"); persist(); renderVocab(); }); byId("vocab-check").addEventListener("click", function () { var correct = vocab.filter(function (item) { return state.vocab[item.id] === item.correct; }).length; if (correct === vocab.length) { setMsg("vocab-msg", "All five matched. That is the source toolkit ready.", "good"); award(0, "Source words secured."); } else { setMsg("vocab-msg", "You have " + correct + " out of " + vocab.length + ". Check whether the word is about time, proof, opinion or one-sidedness.", "coach"); } }); }
+var facts = [
+  { id: "f1", text: "The factory was built in the year 1842.", answer: "Fact", why: "A year can be checked." },
+  { id: "f2", text: "The King was a terrible leader who ruined the country.", answer: "Opinion", why: "Terrible is someone's judgement." }
+];
+function renderFactCards() { var wrap = byId("fact-cards"); wrap.innerHTML = ""; facts.forEach(function (q) { var choice = state.fact[q.id] || ""; var card = document.createElement("div"); card.className = "qcard" + (choice === q.answer ? " solved" : ""); card.innerHTML = '<div class="sent">"' + q.text + '"</div><div class="opts"><button type="button" data-fact="' + q.id + '" data-answer="Fact" class="' + (choice === 'Fact' ? 'selected' : '') + '">Fact</button><button type="button" data-fact="' + q.id + '" data-answer="Opinion" class="' + (choice === 'Opinion' ? 'selected' : '') + '">Opinion</button></div><div class="fb">' + (choice ? (choice === q.answer ? 'Correct. ' + q.why : 'Not quite. ' + q.why) : '') + '</div>'; wrap.appendChild(card); }); }
+function setupFactCards() { renderFactCards(); byId("fact-cards").addEventListener("click", function (e) { var b = e.target.closest("button[data-fact]"); if (!b) { return; } state.fact[b.getAttribute("data-fact")] = b.getAttribute("data-answer"); persist(); renderFactCards(); var correct = facts.filter(function (q) { return state.fact[q.id] === q.answer; }).length; if (correct === facts.length) { setMsg("fact-msg", "Two for two. You can separate checkable detail from judgement.", "good"); award(1, "Fact and opinion sorted."); } else { setMsg("fact-msg", correct + " out of " + facts.length + ". One is checkable; one is a judgement.", "coach"); } }); }
+function setupFactory() { byId("factory-check").addEventListener("click", function () { var correct = 0; if (text("factoryAuthor") === "grind") { correct += 1; } if (text("factoryType") === "primary") { correct += 1; } if (hasAny(text("factoryOpinion"), ["wonderful", "happy", "lucky", "warm", "clean"])) { correct += 1; } if (hasAny(text("factoryBias"), ["money", "factory", "owner", "good", "job", "government", "law", "shut"])) { correct += 1; } if (hasAny(text("factoryChild"), ["long", "danger", "tired", "poor", "pay", "work", "different", "machine", "hard"])) { correct += 1; } if (correct >= 4) { setMsg("factory-msg", "Strong source analysis. You spotted author, time and possible motive.", "good"); award(2, "Factory source analysed."); } else { setMsg("factory-msg", "You have " + correct + " useful parts out of 5. Try mentioning owner, money, and what a child might experience.", "coach"); } }); }
+function setupCoin() { byId("coin-check").addEventListener("click", function () { var correct = 0; var obj = text("coinObjects"); if (hasAny(obj, ["sword"]) && hasAny(obj, ["cross"])) { correct += 1; } if (hasAny(text("coinSword"), ["strong", "power", "warrior", "fight", "defend", "enemy"])) { correct += 1; } if (hasAny(text("coinReality"), ["propaganda", "perfect", "strong", "artist", "impress", "not exact", "message"])) { correct += 1; } if (correct === 3) { setMsg("coin-msg", "Good artefact thinking. You used the objects as clues and questioned the message.", "good"); award(3, "Artefact clues cracked."); } else { setMsg("coin-msg", "You have " + correct + " out of 3. Look for: sword + cross, powerful warrior, and propaganda/perfect image.", "coach"); } }); }
+function renderToggles() { document.querySelectorAll("[data-source-a]").forEach(function (b) { var v = b.getAttribute("data-source-a"); b.classList.toggle("selected", state.sourceA.indexOf(v) !== -1); }); document.querySelectorAll("[data-secondary]").forEach(function (b) { b.classList.toggle("selected", state.secondary === b.getAttribute("data-secondary")); }); }
+function setupInterpret() { renderToggles(); byId("sourceA-opts").addEventListener("click", function (e) { var b = e.target.closest("button[data-source-a]"); if (!b) { return; } var v = b.getAttribute("data-source-a"); var idx = state.sourceA.indexOf(v); if (idx === -1) { state.sourceA.push(v); } else { state.sourceA.splice(idx, 1); } persist(); renderToggles(); }); byId("secondary-opts").addEventListener("click", function (e) { var b = e.target.closest("button[data-secondary]"); if (!b) { return; } state.secondary = b.getAttribute("data-secondary"); persist(); renderToggles(); }); byId("interpret-check").addEventListener("click", function () { var correct = 0; if (state.sourceA.indexOf("wicked rebels") !== -1 || state.sourceA.indexOf("wild dogs") !== -1) { correct += 1; } if (hasAny(text("sourceBWhy"), ["starving", "angry", "tax", "unfair", "help"])) { correct += 1; } if (hasAny(text("monkBias"), ["rich", "land", "owned", "threat", "tax", "rent", "peasants"])) { correct += 1; } if (state.secondary === "B" && hasAny(text("secondaryExplain"), ["2015", "modern", "after", "hundreds", "later", "not there"])) { correct += 1; } if (correct === 4) { setMsg("interpret-msg", "Excellent comparing. You used quote, cause, point of view and date.", "good"); award(4, "Interpretations compared."); } else { setMsg("interpret-msg", "You have " + correct + " out of 4. Check the writer, date and whose side each source might favour.", "coach"); } }); }
+function setupGallery() { byId("gallery-check").addEventListener("click", function () { var checks = [text("art_coin") === "Coin", text("art_diary") === "Diary", text("art_castle") === "Castle", text("art_newspaper") === "Newspaper"]; var correct = checks.filter(Boolean).length; if (correct === 4) { setMsg("gallery-msg", "All four matched. Those are useful historical evidence types.", "good"); award(5, "Evidence gallery matched."); } else { setMsg("gallery-msg", "You have " + correct + " out of 4. Use the word bank: Coin, Diary, Castle, Newspaper.", "coach"); } }); }
+function setupBossSend() { var boss = byId("boss"); var toggle = byId("boss-toggle"); boss.classList.toggle("open", state.bossOpen === true); toggle.setAttribute("aria-expanded", state.bossOpen ? "true" : "false"); toggle.addEventListener("click", function () { state.bossOpen = !state.bossOpen; boss.classList.toggle("open", state.bossOpen); toggle.setAttribute("aria-expanded", state.bossOpen ? "true" : "false"); persist(); }); byId("boss-save").addEventListener("click", function () { if (text("bossAnswer").length > 20) { setMsg("boss-msg", "Boss response saved. Strong historian energy.", "good"); showToast("Boss response saved."); } else { setMsg("boss-msg", "Add a little more if you want this to count as a proper judgement.", "coach"); } updateSummary(); }); byId("send-btn").addEventListener("click", function () { var initials = text("initials") || "unknown"; var subject = "Base 6 - Evidence and Bias - " + initials; var body = buildSummary(); var url = "https://mail.google.com/mail/?view=cm&fs=1&to=jay.raine%40chiltonbridgeschool.co.uk&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body); window.open(url, "_blank"); setMsg("send-msg", "Gmail opened. Press send in the email.", "good"); award(6, "Evidence ready to send."); }); byId("download-btn").addEventListener("click", function () { var blob = new Blob([buildSummary()], { type: "text/plain;charset=utf-8" }); var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "base6-evidence-and-bias-evidence.txt"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000); setMsg("send-msg", "Evidence text downloaded.", "good"); }); byId("reset-btn").addEventListener("click", function () { if (!confirm("Reset saved work for this activity on this device?")) { return; } Object.keys(localStorage).forEach(function (key) { if (key.indexOf(NS) === 0) { localStorage.removeItem(key); } }); location.reload(); }); }
+function setupTiny() { var btn = byId("tiny-scroll"); var note = byId("tiny-note"); note.style.display = state.tiny ? "block" : "none"; btn.setAttribute("aria-expanded", state.tiny ? "true" : "false"); btn.addEventListener("click", function () { state.tiny = !state.tiny; note.style.display = state.tiny ? "block" : "none"; btn.setAttribute("aria-expanded", state.tiny ? "true" : "false"); persist(); }); }
+function buildSummary() { var lines = []; lines.push("BASE 6 - EVIDENCE AND BIAS"); lines.push("Student initials: " + (text("initials") || "unknown")); lines.push("Date: " + new Date().toLocaleString("en-GB")); lines.push("Stars earned: " + state.stars.length + " / " + TOTAL_STARS); lines.push(""); lines.push("ROUND 1 - SOURCE WORDS"); vocab.forEach(function (item) { lines.push(item.term + ": " + (state.vocab[item.id] || "blank") + " (correct " + item.correct + ")"); }); lines.push(""); lines.push("ROUND 2 - FACT OR OPINION"); facts.forEach(function (q) { lines.push(q.text + " -> " + (state.fact[q.id] || "blank")); }); lines.push(""); lines.push("ROUND 3 - FACTORY SOURCE"); lines.push("Author: " + (text("factoryAuthor") || "blank")); lines.push("Type: " + (text("factoryType") || "blank")); lines.push("Opinion example: " + (text("factoryOpinion") || "blank")); lines.push("Why biased: " + (text("factoryBias") || "blank")); lines.push("Child account: " + (text("factoryChild") || "blank")); lines.push(""); lines.push("ROUND 4 - ARTEFACT ANALYSIS"); lines.push("Objects: " + (text("coinObjects") || "blank")); lines.push("Sword suggests: " + (text("coinSword") || "blank")); lines.push("Coin not exact because: " + (text("coinReality") || "blank")); lines.push(""); lines.push("ROUND 5 - DIFFERING INTERPRETATIONS"); lines.push("Source A quote(s): " + (state.sourceA.length ? state.sourceA.join(", ") : "blank")); lines.push("Source B why: " + (text("sourceBWhy") || "blank")); lines.push("Monk bias: " + (text("monkBias") || "blank")); lines.push("Secondary source: " + (state.secondary || "blank")); lines.push("Secondary explanation: " + (text("secondaryExplain") || "blank")); lines.push(""); lines.push("ROUND 6 - EVIDENCE GALLERY"); lines.push("Image 1: " + (text("art_coin") || "blank")); lines.push("Image 2: " + (text("art_diary") || "blank")); lines.push("Image 3: " + (text("art_castle") || "blank")); lines.push("Image 4: " + (text("art_newspaper") || "blank")); lines.push(""); lines.push("REFLECTION"); lines.push(text("reflection") || "blank"); lines.push("Warning sign: " + (text("sourceWarning") || "blank")); lines.push(""); lines.push("BOSS LEVEL"); lines.push(text("bossAnswer") || "blank"); lines.push(""); lines.push("Sent automatically from Base 6."); return lines.join("\n"); }
+function updateSummary() { var box = byId("summary"); if (box) { box.textContent = buildSummary(); } }
+function init() { renderStars(); renderDots(); setupNav(); setupInputs(); setupVocab(); setupFactCards(); setupFactory(); setupCoin(); setupInterpret(); setupGallery(); setupBossSend(); setupTiny(); go(state.step || 0); updateSummary(); }
+init();
 </script>
 </body>
 </html>
