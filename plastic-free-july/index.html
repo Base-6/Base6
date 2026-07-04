@@ -196,6 +196,22 @@
   footer { margin-top: 26px; padding: 22px 0 200px; color: #eaf6fb; font-size: 0.98rem; }
   footer .wrap { border-top: 2px solid rgba(255,255,255,0.3); padding-top: 16px; }
 
+  /* ---- bonus quizzes ---- */
+  .extras { padding: 6px 0 12px; }
+  .extras .sheet { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 18px 22px; box-shadow: 0 8px 22px rgba(3,30,50,0.25); }
+  .extras h2 { font-size: 1.35rem; margin: 0 0 4px; }
+  .extras p.exp { font-size: 1.02rem; margin: 0 0 12px; color: var(--ink-soft); }
+  .quiz-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+  .quiz { display: flex; align-items: center; gap: 12px; background: #ffffff; border: 3px solid; border-radius: 16px; padding: 12px 14px; text-decoration: none; color: var(--ink); box-shadow: 0 4px 10px rgba(3,30,50,0.14); transition: transform 0.14s ease; }
+  .quiz:hover, .quiz:focus-visible { transform: translateY(-3px); outline: none; }
+  .quiz:focus-visible { outline: 4px solid var(--sun); outline-offset: 3px; }
+  .quiz.q1 { border-color: var(--turq); }
+  .quiz.q2 { border-color: var(--coral); }
+  .quiz svg { width: 44px; height: 44px; flex: 0 0 auto; }
+  .quiz strong { display: block; font-size: 1.04rem; line-height: 1.2; }
+  .quiz .ext { font-size: 0.88rem; color: var(--ink-soft); font-weight: 700; }
+  @media (prefers-reduced-motion: reduce) { .quiz { transition: none; } }
+
   @media (prefers-reduced-motion: reduce) {
     .bub { display: none; }
     .kelp { animation: none; }
@@ -335,6 +351,25 @@
           <div class="body"><p>A cheerful little picture book about one happy plastic bottle. Or is it?</p><div class="progress" data-act="5"></div><span class="bosschip">BOSS LEVEL INSIDE</span><span class="go">Start</span></div>
         </a>
 
+      </div>
+    </div>
+  </section>
+
+  <section class="extras">
+    <div class="wrap">
+      <div class="sheet">
+        <h2>Bonus round: two quick quizzes</h2>
+        <p class="exp">Fancy a fast one? These two open on Wordwall in a new tab. No stars for these, just bragging rights.</p>
+        <div class="quiz-row">
+          <a class="quiz q1" href="https://wordwall.net/play/115768/539/165" target="_blank" rel="noopener">
+            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="32" cy="32" r="26" fill="#15c2c2" stroke="#06243d" stroke-width="3"/><path d="M20 32 L28 40 L44 24" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span><strong>Plastic and the environment: true or false?</strong><span class="ext">Quiz &middot; opens on Wordwall in a new tab</span></span>
+          </a>
+          <a class="quiz q2" href="https://wordwall.net/play/115807/289/473" target="_blank" rel="noopener">
+            <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="8" y="14" width="48" height="32" rx="6" fill="#ff7a3d" stroke="#06243d" stroke-width="3"/><circle cx="20" cy="30" r="5" fill="#ffce2e" stroke="#06243d" stroke-width="2.4"/><circle cx="34" cy="30" r="5" fill="#ffce2e" stroke="#06243d" stroke-width="2.4"/><circle cx="48" cy="30" r="5" fill="#ffce2e" stroke="#06243d" stroke-width="2.4"/><rect x="26" y="46" width="12" height="8" fill="#06243d"/><rect x="18" y="54" width="28" height="4" rx="2" fill="#06243d"/></svg>
+            <span><strong>Plastic gameshow quiz</strong><span class="ext">Quiz &middot; opens on Wordwall in a new tab</span></span>
+          </a>
+        </div>
       </div>
     </div>
   </section>
