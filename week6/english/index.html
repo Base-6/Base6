@@ -27,6 +27,7 @@
   .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
 
   .tiles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.1rem; margin-bottom: 2.5rem; }
+  .tiles-grid.single { grid-template-columns: minmax(240px, 460px); }
 
   .tile {
     position: relative;
@@ -71,6 +72,7 @@
   .tile-today { display: none; background: var(--c); color: #ffffff; font-weight: 700; border-radius: 8px; padding: 1px 12px; font-size: 0.76rem; width: fit-content; }
   .tile.is-today { border-width: 4px; }
   .tile.is-today .tile-today { display: inline-block; }
+  .tile-ext { font-size: 0.78rem; font-weight: 700; color: #888; }
 
   .note { font-size: 0.85rem; color: #555; line-height: 1.55; margin-top: -1.25rem; margin-bottom: 2.5rem; }
 
@@ -138,6 +140,18 @@
   </div>
 
   <p class="note">No English sessions are listed for Tuesday or Thursday. Conveniently, the verbs will probably survive until Friday.</p>
+
+  <p class="section-label">Bonus round</p>
+  <div class="tiles-grid single">
+    <a class="tile" style="--c:#c2185b; --bg:#fbe7ee; --shadow:rgba(194,24,91,0.22);" href="https://wordwall.net/play/115819/811/604" target="_blank" rel="noopener">
+      <span class="tile-badge">&#9889;</span>
+      <span class="tile-day">Any time</span>
+      <span class="tile-title">Verb Tenses Game</span>
+      <span class="tile-desc">A quick game to practise past, present and future. Good after Friday's session, or any time you fancy testing whether the tenses stuck.</span>
+      <span class="tile-ext">Opens on Wordwall in a new tab</span>
+      <span class="tile-go">Play <span class="arrow">&#8594;</span></span>
+    </a>
+  </div>
 
 </main>
 
