@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Forces in Action | Science | Week 6 | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: #2e8b57; padding: 2rem 2rem 2.8rem; text-align: center; overflow: hidden; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(254,248,244,0.14); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.9; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.82rem; font-weight: 700; color: #d8efe1; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .header-sub { font-size: 1.02rem; color: #d8efe1; margin-top: 0.45rem; max-width: 46ch; margin-left: auto; margin-right: auto; }
+  .starbar { display: flex; gap: 5px; justify-content: center; margin-top: 0.7rem; }
+  .starbar svg { width: 20px; height: 20px; display: block; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 36px; z-index: 1; }
+
+  .dots { display: flex; gap: 9px; justify-content: center; padding: 14px 0 0; }
+  .dots button { width: 15px; height: 15px; border-radius: 50%; padding: 0; cursor: pointer; background: #e0ede6; border: 2px solid #b8d4c4; }
+  .dots button.on { background: #2e8b57; border-color: #1f6b3a; box-shadow: 0 0 0 4px rgba(46,139,87,0.22); }
+  .dots button:focus-visible { outline: 3px solid #1a1a1a; outline-offset: 2px; }
+
+  .main { max-width: 760px; margin: 0 auto; padding: 1.4rem 1.5rem 4rem; }
+  .step { display: none; }
+  .step.active { display: block; }
+  h2 { font-size: 1.35rem; color: #1f6b3a; margin: 0 0 0.4rem; }
+  p { font-size: 1rem; line-height: 1.6; }
+  .lead { color: #444; margin-bottom: 1rem; }
+  .keybox { background: #e9f5ee; border: 2px solid #2e8b57; border-radius: 12px; padding: 0.85rem 1.1rem; margin: 0.9rem 0 1.1rem; font-size: 0.95rem; }
+  .keybox strong { color: #1f6b3a; }
+
+  .nav { display: flex; gap: 0.7rem; margin-top: 1.4rem; flex-wrap: wrap; }
+  button { font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer; border: none; border-radius: 999px; padding: 0.65rem 1.4rem; }
+  button:focus-visible, a:focus-visible { outline: 3px solid #1a1a1a; outline-offset: 2px; }
+  .btn-next { background: #2e8b57; color: #fff; box-shadow: 0 3px 0 #1f6b3a; }
+  .btn-back { background: #e0ede6; color: #1a1a1a; }
+
+  .qcard { background: #fff; border: 2px solid #d8e6dd; border-radius: 14px; padding: 1rem 1.1rem; margin-bottom: 0.9rem; }
+  .qcard.solved { border-color: #2e7d32; background: #f2f9f2; }
+  .qcard .sent { font-size: 1.02rem; font-weight: 700; margin-bottom: 0.6rem; }
+  .qcard .opts { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .qcard .opts button { background: #fff; border: 2px solid #cddbd2; color: #1a1a1a; font-size: 0.9rem; padding: 0.45rem 0.95rem; }
+  .qcard .opts button.right { background: #e6f3e6; border-color: #2e7d32; color: #1c5e28; }
+  .qcard .opts button.wrong { background: #fdeee0; border-color: #ef7724; color: #c05a10; }
+  .qcard .fb { font-weight: 700; font-size: 0.9rem; margin-top: 0.55rem; min-height: 1.3em; color: #555; }
+  .qcard.solved .fb { color: #1c5e28; }
+
+  /* resultant force calculator */
+  .force-row { background: #fff; border: 2px solid #d8e6dd; border-radius: 14px; padding: 1rem 1.1rem; margin-bottom: 0.9rem; }
+  .force-row.solved { border-color: #2e7d32; background: #f2f9f2; }
+  .force-row .scenario { font-weight: 700; font-size: 1rem; margin-bottom: 0.7rem; }
+  .arrows { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 0.6rem 0 0.9rem; flex-wrap: wrap; }
+  .arrow-tag { display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 700; font-size: 0.9rem; background: #eef4f0; border: 1.5px solid #cddbd2; border-radius: 8px; padding: 0.3rem 0.7rem; }
+  .arrow-tag .glyph { font-size: 1.2rem; line-height: 1; color: #2e8b57; }
+  .force-field { display: flex; flex-wrap: wrap; gap: 0.9rem; align-items: flex-end; }
+  .force-field label { display: block; font-size: 0.8rem; font-weight: 700; color: #555; margin-bottom: 0.25rem; }
+  .force-field input[type=number] { width: 92px; font-family: inherit; font-size: 0.95rem; padding: 0.5rem 0.6rem; border: 2px solid #cddbd2; border-radius: 8px; }
+  .force-field input:focus-visible { outline: 3px solid #2e8b57; outline-offset: 1px; }
+  .bchoice { display: flex; gap: 0.4rem; }
+  .bchoice button { background: #fff; border: 2px solid #cddbd2; color: #1a1a1a; font-size: 0.85rem; padding: 0.45rem 0.9rem; }
+  .bchoice button.sel-right { background: #e6f3e6; border-color: #2e7d32; color: #1c5e28; }
+  .bchoice button.sel-wrong { background: #fdeee0; border-color: #ef7724; color: #c05a10; }
+  .fcheck { font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.5rem 1.1rem; background: #2e8b57; color: #fff; border-radius: 999px; }
+  .force-fb { font-weight: 700; font-size: 0.9rem; margin-top: 0.6rem; min-height: 1.3em; color: #555; }
+  .force-row.solved .force-fb { color: #1c5e28; }
+
+  /* match: friction vs drag */
+  .match-item { background: #fff; border: 2px solid #d8e6dd; border-radius: 12px; padding: 0.8rem 1rem; margin-bottom: 0.7rem; }
+  .match-item.solved { border-color: #2e7d32; background: #f2f9f2; }
+  .match-item .desc { font-size: 0.96rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .match-item .opts { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .match-item .opts button { background: #fff; border: 2px solid #cddbd2; color: #1a1a1a; font-size: 0.82rem; padding: 0.4rem 0.8rem; }
+  .match-item .opts button.right { background: #e6f3e6; border-color: #2e7d32; color: #1c5e28; }
+  .match-item .opts button.wrong { background: #fdeee0; border-color: #ef7724; color: #c05a10; }
+  .match-fb { font-weight: 700; font-size: 0.86rem; margin-top: 0.45rem; min-height: 1.2em; color: #555; }
+  .match-item.solved .match-fb { color: #1c5e28; }
+
+  /* written answers */
+  .wtask { background: #fff; border: 2px solid #d8e6dd; border-radius: 14px; padding: 1rem 1.1rem; margin-bottom: 0.9rem; }
+  .wtask .qn { font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
+  textarea { width: 100%; min-height: 76px; font-family: inherit; font-size: 0.95rem; padding: 0.7rem 0.9rem; border: 2px solid #cddbd2; border-radius: 10px; background: #fff; resize: vertical; line-height: 1.5; }
+  textarea:focus-visible { outline: 3px solid #2e8b57; outline-offset: 1px; }
+  .example { margin-top: 0.6rem; }
+  .example > button { background: none; border: none; color: #1f6b3a; font-size: 0.85rem; font-weight: 700; text-decoration: underline; padding: 0.2rem 0; }
+  .example .extext { display: none; margin-top: 0.4rem; background: #e9f5ee; border-left: 4px solid #2e8b57; border-radius: 8px; padding: 0.6rem 0.9rem; font-size: 0.9rem; font-style: italic; color: #333; }
+  .example.open .extext { display: block; }
+
+  .spaceship-scene { display: flex; align-items: center; gap: 0.8rem; background: #0b1020; border-radius: 12px; padding: 0.9rem 1.1rem; margin-bottom: 0.8rem; }
+  .spaceship-scene svg { width: 64px; height: 64px; flex: 0 0 auto; }
+  .spaceship-scene p { color: #cdd6e6; font-size: 0.92rem; margin: 0; }
+  .spaceship-scene strong { color: #ffce2e; }
+
+  .msg { min-height: 1.5em; font-weight: 700; font-size: 0.9rem; margin-top: 0.5rem; color: #c05a10; }
+
+  /* boss */
+  .boss { margin-top: 1.6rem; border-radius: 14px; overflow: hidden; border: 2px solid #1a1a1a; }
+  .boss-head { width: 100%; text-align: left; background: #1a1a1a; color: #fff; padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.7rem; cursor: pointer; border: none; border-radius: 0; font-family: inherit; font-size: 0.95rem; font-weight: 700; }
+  .boss-head .badge { background: #ffce2e; color: #1a1a1a; padding: 0.15rem 0.6rem; border-radius: 6px; letter-spacing: 1px; font-size: 0.78rem; flex: 0 0 auto; }
+  .boss-head .sub { font-weight: 400; font-size: 0.82rem; opacity: 0.85; }
+  .boss-body { display: none; padding: 1rem 1.1rem; background: #12241a; color: #e6f0ea; }
+  .boss.open .boss-body { display: block; }
+  .boss-body p { font-size: 0.95rem; }
+  .boss-body .qcard { background: #1c3327; border-color: #365a44; }
+  .boss-body .qcard .sent { color: #e6f0ea; }
+  .boss-body .qcard .opts button { background: #fff; }
+  .boss-body .qcard.solved { background: #234a30; border-color: #6fbf7a; }
+  .boss-body .qcard.solved .fb { color: #b9e6bf; }
+  .boss-body .qcard .fb { color: #bfcabf; }
+  .boss-verdict { display: none; margin-top: 0.7rem; background: #333d1a; border-left: 4px solid #ffce2e; border-radius: 8px; padding: 0.6rem 0.9rem; font-weight: 700; font-size: 0.9rem; color: #ffdf75; }
+  .boss-verdict.show { display: block; }
+
+  /* send */
+  .send { margin-top: 1.6rem; background: #e9f5ee; border: 2px solid #2e8b57; border-radius: 14px; padding: 1.1rem 1.2rem; }
+  .send h3 { font-size: 1.05rem; color: #1f6b3a; margin-bottom: 0.4rem; }
+  .send label { display: block; font-size: 0.85rem; font-weight: 700; color: #555; margin: 0.7rem 0 0.3rem; }
+  .send input[type=text] { width: 100%; max-width: 300px; padding: 0.6rem 0.85rem; font-family: inherit; font-size: 0.95rem; border: 2px solid #bcdccb; border-radius: 10px; }
+  .send input:focus-visible { outline: 3px solid #2e8b57; outline-offset: 1px; }
+  .send .sendbtn { margin-top: 0.8rem; background: #2e8b57; color: #fff; box-shadow: 0 3px 0 #1f6b3a; }
+
+  .toast { position: fixed; left: 50%; bottom: 1.2rem; transform: translateX(-50%); z-index: 1100; background: #2e8b57; color: #fef8f4; font-size: 0.92rem; font-weight: 700; padding: 0.7rem 1.1rem; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.22); max-width: 90vw; display: none; align-items: center; gap: 0.6rem; }
+  .toast.show { display: flex; }
+  .toast svg { width: 22px; height: 22px; flex: 0 0 auto; }
+
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Week 6</a>
+  <div class="header-inner">
+    <p class="week-label">Week 6 &middot; Science &middot; Friday</p>
+    <h1>Forces in Action</h1>
+    <p class="header-sub">Pushes, pulls, and what happens when they do not cancel out. Five rounds, at your own pace.</p>
+    <div class="starbar" id="starbar" aria-label="0 of 6 stars earned"></div>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<div class="dots" id="dots"></div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="#ffce2e" stroke="#1a1a1a" stroke-width="3" stroke-linejoin="round"/></svg>
+  <span id="toast-text">Well done!</span>
+</div>
+
+<main class="main">
+
+  <section class="step active" id="s-intro">
+    <h2>Five rounds on forces</h2>
+    <p class="lead">Name the forces, add them up, sort out springs, work out what makes things speed up or stop, and tell friction from drag. Do them in order or skip about. Nothing here is timed.</p>
+    <div class="keybox"><strong>The big idea.</strong> A force is a push or a pull. When two forces on an object are equal and opposite, they are balanced, and nothing about its motion changes. When they are unbalanced, the object speeds up, slows down, or changes direction. Force is measured in newtons (N).</div>
+    <div class="nav"><button class="btn-next" data-go="1">Start</button></div>
+  </section>
+
+  <section class="step" id="s-name">
+    <h2>Round 1: Spot the force</h2>
+    <p class="lead">Every push or pull has a name. Match each description to the right force.</p>
+    <div id="name-cards"></div>
+    <p class="msg" id="name-msg" role="status"></p>
+    <div class="nav"><button class="btn-back" data-go="0">Back</button><button class="btn-next" data-go="2">Next</button></div>
+  </section>
+
+  <section class="step" id="s-add">
+    <h2>Round 2: Add up the forces</h2>
+    <p class="lead">Same direction, add them. Opposite directions, subtract them. The answer is the overall force, sometimes called the resultant. Type the number, pick the unit direction, then say if it is balanced.</p>
+    <div id="add-rows"></div>
+    <p class="msg" id="add-msg" role="status"></p>
+    <div class="nav"><button class="btn-back" data-go="1">Back</button><button class="btn-next" data-go="3">Next</button></div>
+  </section>
+
+  <section class="step" id="s-springs">
+    <h2>Round 3: Springs and stretching</h2>
+    <p class="lead">When you pull a spring, you do work on it, and that energy has to go somewhere.</p>
+    <div id="spring-cards"></div>
+    <p class="msg" id="spring-msg" role="status"></p>
+    <div class="nav"><button class="btn-back" data-go="2">Back</button><button class="btn-next" data-go="4">Next</button></div>
+  </section>
+
+  <section class="step" id="s-motion">
+    <h2>Round 4: Changing motion</h2>
+    <p class="lead">It takes an unbalanced force to start something, stop it, or turn it. Two quick answers, then the big one.</p>
+
+    <div class="wtask">
+      <div class="qn">A football rolls across the grass and slowly stops. Name the force rubbing against it that slows it down.</div>
+      <div class="opts" id="motion-force" style="display:flex; flex-wrap:wrap; gap:0.45rem;"></div>
+      <div class="fb" id="motion-force-fb" style="font-weight:700; font-size:0.9rem; margin-top:0.55rem; min-height:1.3em; color:#555;"></div>
+    </div>
+
+    <div class="wtask">
+      <div class="qn">A player runs up and kicks the rolling ball from the side. What happens to the ball's direction of motion?</div>
+      <div class="opts" id="motion-dir" style="display:flex; flex-wrap:wrap; gap:0.45rem;"></div>
+      <div class="fb" id="motion-dir-fb" style="font-weight:700; font-size:0.9rem; margin-top:0.55rem; min-height:1.3em; color:#555;"></div>
+    </div>
+
+    <div class="wtask">
+      <div class="spaceship-scene">
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 4 C 42 12 44 28 44 40 L20 40 C 20 28 22 12 32 4 Z" fill="#e6ecf5" stroke="#9fb0c9" stroke-width="2"/><circle cx="32" cy="24" r="5" fill="#7fb2e6" stroke="#3a6ea5" stroke-width="2"/><path d="M20 40 L12 52 L22 46 Z" fill="#d64545"/><path d="M44 40 L52 52 L42 46 Z" fill="#d64545"/><path d="M28 44 Q32 60 36 44 Z" fill="#ffce2e"/></svg>
+        <p>A spaceship coasts through <strong>deep, empty space</strong>. No air resistance, no friction. It switches its engines fully off.</p>
+      </div>
+      <div class="qn">Will it slow down and stop? Explain using what you know about forces.</div>
+      <textarea id="w15" placeholder="Think: is there any force acting on it now? What would it take to slow it down?"></textarea>
+      <div class="example"><button type="button">Peek at an example</button><div class="extext">No, it will not slow down. With no friction and no air resistance, there is no unbalanced force acting on it, so it keeps moving at the same speed in the same direction.</div></div>
+    </div>
+
+    <p class="msg" id="motion-msg" role="status"></p>
+    <div class="nav"><button class="btn-back" data-go="3">Back</button><button class="btn-next" data-go="5">Next</button></div>
+  </section>
+
+  <section class="step" id="s-match">
+    <h2>Round 5: Friction or drag?</h2>
+    <p class="lead">Friction is solid surfaces rubbing together. Drag is pushing through a gas or a liquid, like air resistance or water resistance. Sort each one.</p>
+    <div id="match-items"></div>
+    <p class="msg" id="match-msg" role="status"></p>
+    <div class="nav"><button class="btn-back" data-go="4">Back</button><button class="btn-next" data-go="6">Next</button></div>
+  </section>
+
+  <section class="step" id="s-finish">
+    <h2>That is the lot</h2>
+    <p class="lead">The thread through all five rounds: nothing changes its motion on its own. It always takes an unbalanced force. If you remember only that, you are most of the way there.</p>
+
+    <section class="boss" id="boss">
+      <button class="boss-head" id="boss-toggle" aria-expanded="false" aria-controls="boss-body">
+        <span class="badge">BOSS LEVEL</span>
+        <span class="sub">optional, three proper thinking questions</span>
+      </button>
+      <div class="boss-body" id="boss-body">
+        <p style="margin-bottom:0.8rem;">These go a step past the worksheet. Pick the sharpest answer.</p>
+        <div id="boss-cards"></div>
+        <div class="boss-verdict" id="boss-verdict">Three for three. You are not just naming forces now, you are reasoning about them.</div>
+      </div>
+    </section>
+
+    <div class="send">
+      <h3>Send your work to Jay</h3>
+      <p style="font-size:0.9rem; color:#555;">The email includes your spaceship explanation and how far you got in each round.</p>
+      <label for="initials">Your initials</label>
+      <input type="text" id="initials" placeholder="Type your initials">
+      <div><button class="sendbtn" id="send-btn">Send to Jay</button></div>
+      <p class="msg" id="send-msg" role="status"></p>
+    </div>
+
+    <div class="nav"><button class="btn-back" data-go="5">Back</button><a class="btn-next" href="../index.html" style="text-decoration:none; display:inline-block; text-align:center;">All done</a></div>
+  </section>
+
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+"use strict";
+
+var NS = "base6.w6sci1.";
+function save(k, v) { try { localStorage.setItem(NS + k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(NS + k); } catch (e) { return null; } }
+function loadJSON(k, fb) { try { var v = localStorage.getItem(NS + k); return v ? JSON.parse(v) : fb; } catch (e) { return fb; } }
+function byId(id) { return document.getElementById(id); }
+
+var quiet = false;
+var TOTAL_STARS = 6;
+var stars = loadJSON("stars", []);
+
+function starSvg(f) {
+  return '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="' + (f ? '#ffce2e' : 'rgba(255,255,255,0.3)') + '" stroke="' + (f ? '#1a1a1a' : '#fef8f4') + '" stroke-width="3" stroke-linejoin="round"/></svg>';
+}
+function renderStars() {
+  var html = "";
+  for (var i = 0; i < TOTAL_STARS; i++) { html += starSvg(i < stars.length); }
+  byId("starbar").innerHTML = html;
+  byId("starbar").setAttribute("aria-label", stars.length + " of " + TOTAL_STARS + " stars earned");
+}
+function showToast(text) {
+  if (quiet) { return; }
+  var t = byId("toast");
+  byId("toast-text").textContent = text;
+  t.classList.add("show");
+  clearTimeout(t._t);
+  t._t = setTimeout(function () { t.classList.remove("show"); }, 3200);
+}
+function award(id, text) {
+  if (stars.indexOf(id) === -1) {
+    stars.push(id);
+    save("stars", JSON.stringify(stars));
+    renderStars();
+    showToast(text || "Star earned!");
+  }
+}
+
+/* ---------- Round 1: name the force ---------- */
+var FORCE_OPTS = ["Friction", "Air resistance", "Tension", "Weight", "Upthrust"];
+var NAME_Q = [
+  { id: "n1", sent: "The force that pulls objects downwards towards the Earth.", ans: "Weight",
+    fb: "Weight is the pull of gravity on a mass. Always downwards, towards the Earth.",
+    hint: "Downwards, always. Which force is caused by gravity?" },
+  { id: "n2", sent: "The force that pushes a boat up so it floats on water.", ans: "Upthrust",
+    fb: "Upthrust is the upward push from a liquid or gas. It is what holds a boat up.",
+    hint: "It pushes up, from the water. Not friction, not weight." },
+  { id: "n3", sent: "The force in a stretched rope in a tug-of-war.", ans: "Tension",
+    fb: "Tension is the force running along a stretched rope, string or cable.",
+    hint: "Think about what the rope itself is doing when both teams pull." },
+  { id: "n4", sent: "The force that slows a parachute as it falls through the sky.", ans: "Air resistance",
+    fb: "Air resistance is drag from pushing through the air. A parachute is built to make lots of it.",
+    hint: "The parachute is pushing through the air. What is the air doing back?" },
+  { id: "n5", sent: "The force that slows a bicycle tyre when you squeeze the brakes.", ans: "Friction",
+    fb: "Friction happens where two solid surfaces rub, like brake pad against wheel.",
+    hint: "Two solid surfaces are rubbing together here. What is that called?" }
+];
+
+/* ---------- Round 2: resultant force ---------- */
+var ADD_Q = [
+  { id: "f6", scenario: "A toy car is pushed forwards with 50 N. Friction pulls backwards with 30 N.",
+    left: { dir: "forwards", n: 50 }, right: { dir: "backwards", n: 30 },
+    answer: 20, dir: "forwards", balanced: "Unbalanced",
+    fb: "50 take away 30 is 20 N forwards. The pushes do not cancel, so it is unbalanced." },
+  { id: "f7", scenario: "A heavy box is pulled left with 10 N and pulled right with 10 N.",
+    left: { dir: "left", n: 10 }, right: { dir: "right", n: 10 },
+    answer: 0, dir: "none", balanced: "Balanced",
+    fb: "10 and 10 in opposite directions cancel out. 0 N means the forces are balanced." },
+  { id: "f8", scenario: "A skydiver is pulled down with 600 N. Air resistance pushes up with 200 N.",
+    left: { dir: "down", n: 600 }, right: { dir: "up", n: 200 },
+    answer: 400, dir: "down", balanced: "Unbalanced",
+    fb: "600 take away 200 is 400 N downwards. Unbalanced, so the skydiver is still speeding up." }
+];
+
+/* ---------- Round 3: springs ---------- */
+var SPRING_Q = [
+  { id: "s10", sent: "Work is done to stretch a spring, so energy is transferred. What type of energy is stored in a stretched spring?",
+    opts: ["Kinetic energy", "Elastic potential energy", "Thermal (heat) energy"], ans: "Elastic potential energy",
+    fb: "Elastic potential energy is stored whenever something springy is stretched or squashed.",
+    hint: "Kinetic is movement, thermal is heat. What kind of energy does a stretched, springy thing hold?" },
+  { id: "s11", sent: "Pull a spring too hard and it will not return to its shape. It has been permanently...",
+    opts: ["strengthened", "deformed", "balanced"], ans: "deformed",
+    fb: "Deformed means its shape has changed for good. Too much force does that to a spring.",
+    hint: "Its shape has changed and will not spring back. Which word means that?" },
+  { id: "s12", sent: "True or false: squashing a foam ball also uses forces and stores energy.",
+    opts: ["True", "False"], ans: "True",
+    fb: "True. Squashing is deforming too, so it takes force and stores elastic potential energy, just like stretching.",
+    hint: "Squashing changes the shape as well. Does that take a force?" }
+];
+
+/* ---------- Round 4 quick MCQs ---------- */
+var MOTION_FORCE = { opts: ["Friction", "Upthrust", "Tension"], ans: "Friction",
+  fb: "Friction between the ball and the grass slows it to a stop.",
+  hint: "The ball and the grass are rubbing together. Solid on solid." };
+var MOTION_DIR = { opts: ["It speeds up but goes straight on", "It changes direction", "Nothing happens to it"], ans: "It changes direction",
+  fb: "A sideways force changes the direction the ball is moving in.",
+  hint: "The kick comes from the side, not from behind. What does a sideways push do?" };
+
+/* ---------- Round 5: friction vs drag ---------- */
+var MATCH_Q = [
+  { id: "m1", desc: "A surfboard slides over water and feels the liquid resisting it.", ans: "Drag (water resistance)",
+    fb: "Pushing through a liquid is drag. Here it is water resistance." },
+  { id: "m2", desc: "A climber's rubber boots grip tightly onto a dry rock face.", ans: "Friction (solids)",
+    fb: "Two solid surfaces gripping is friction, and useful friction at that." },
+  { id: "m3", desc: "A cyclist tucks their head down to push through the wind.", ans: "Drag (air resistance)",
+    fb: "Pushing through a gas is drag too. Here it is air resistance." },
+  { id: "m4", desc: "Brake pads press against the spinning metal wheel of a scooter.", ans: "Friction (solids)",
+    fb: "Solid pad against solid wheel is friction, used on purpose to slow down." }
+];
+var MATCH_OPTS = ["Friction (solids)", "Drag (water resistance)", "Drag (air resistance)"];
+
+/* ---------- Boss ---------- */
+var BOSS = [
+  { id: "b1", sent: "The box in round 2 had balanced forces (0 N overall) but imagine it was already sliding when the forces balanced. What does it do?",
+    opts: ["Stops instantly", "Keeps moving at a steady speed", "Speeds up"],
+    ans: "Keeps moving at a steady speed",
+    fb: "Balanced forces do not mean stopped, they mean no change. A moving object with balanced forces keeps going at the same steady speed.",
+    hint: "Balanced forces change nothing about the motion. If it was already moving..." },
+  { id: "b2", sent: "The skydiver falls faster and faster, so air resistance grows. Eventually up and down forces become equal. What happens to their speed then?",
+    opts: ["They keep speeding up", "They fall at a steady top speed", "They shoot back upwards"],
+    ans: "They fall at a steady top speed",
+    fb: "Once the forces balance, there is no unbalanced force, so no more speeding up. That steady speed is called terminal velocity.",
+    hint: "When the forces become balanced, what can no longer happen to the speed?" },
+  { id: "b3", sent: "Back to the spaceship. If it fired its engine for two seconds then switched off in empty space, what happens after the engine stops?",
+    opts: ["It slows back to a stop", "It keeps moving at the new, faster steady speed", "It carries on speeding up forever"],
+    ans: "It keeps moving at the new, faster steady speed",
+    fb: "The engine gave it an unbalanced force while it fired, so it sped up. Once off, no forces act, so it coasts at that new speed. Not stopping, not still accelerating.",
+    hint: "The engine only pushes while it is on. With it off, what forces are left to change the speed?" }
+];
+
+/* ---------- generic MCQ card builder ---------- */
+function buildCards(data, holderId, msgId, defaultOpts, starId, starText, doneLine) {
+  var holder = byId(holderId);
+  var state = loadJSON(holderId, []);
+  var solved = 0;
+  data.forEach(function (q) {
+    var card = document.createElement("div");
+    card.className = "qcard";
+    card.innerHTML = '<div class="sent">' + q.sent + '</div><div class="opts"></div><div class="fb"></div>';
+    var optbox = card.querySelector(".opts");
+    var fb = card.querySelector(".fb");
+    var opts = q.opts || defaultOpts;
+    function solve(byUser) {
+      card.classList.add("solved");
+      optbox.querySelectorAll("button").forEach(function (b) {
+        if (b.textContent === q.ans) { b.classList.add("right"); }
+        b.disabled = true;
+      });
+      fb.textContent = q.fb;
+      solved += 1;
+      if (solved >= data.length) {
+        byId(msgId).textContent = doneLine;
+        if (byUser) { award(starId, starText); }
+      }
+    }
+    opts.forEach(function (o) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = o;
+      b.addEventListener("click", function () {
+        if (card.classList.contains("solved")) { return; }
+        if (o === q.ans) {
+          solve(true);
+          if (state.indexOf(q.id) === -1) { state.push(q.id); save(holderId, JSON.stringify(state)); }
+        } else {
+          b.classList.add("wrong");
+          fb.textContent = q.hint;
+          (function (bb) { setTimeout(function () { bb.classList.remove("wrong"); }, 700); })(b);
+        }
+      });
+      optbox.appendChild(b);
+    });
+    holder.appendChild(card);
+    if (state.indexOf(q.id) !== -1) { solve(false); }
+  });
+}
+
+/* ---------- Round 2 builder (calculator) ---------- */
+function buildAddRows() {
+  var holder = byId("add-rows");
+  var state = loadJSON("add-rows", []);
+  var solved = 0;
+  ADD_Q.forEach(function (q) {
+    var row = document.createElement("div");
+    row.className = "force-row";
+    var dirButtons = ["forwards", "backwards", "left", "right", "up", "down", "none"];
+    row.innerHTML =
+      '<div class="scenario">' + q.scenario + '</div>' +
+      '<div class="arrows">' +
+        '<span class="arrow-tag"><span class="glyph">&#8594;</span> ' + q.left.n + ' N ' + q.left.dir + '</span>' +
+        '<span class="arrow-tag"><span class="glyph">&#8592;</span> ' + q.right.n + ' N ' + q.right.dir + '</span>' +
+      '</div>' +
+      '<div class="force-field">' +
+        '<div><label>Overall force (N)</label><input type="number" class="f-num" min="0" placeholder="0"></div>' +
+        '<div><label>Balanced or unbalanced?</label><div class="bchoice">' +
+          '<button type="button" class="f-bal" data-b="Balanced">Balanced</button>' +
+          '<button type="button" class="f-bal" data-b="Unbalanced">Unbalanced</button>' +
+        '</div></div>' +
+        '<button type="button" class="fcheck">Check</button>' +
+      '</div>' +
+      '<div class="force-fb"></div>';
+    var numEl = row.querySelector(".f-num");
+    var balBtns = row.querySelectorAll(".f-bal");
+    var checkBtn = row.querySelector(".fcheck");
+    var fb = row.querySelector(".force-fb");
+    var chosenBal = null;
+    balBtns.forEach(function (b) {
+      b.addEventListener("click", function () {
+        if (row.classList.contains("solved")) { return; }
+        chosenBal = b.getAttribute("data-b");
+        balBtns.forEach(function (x) { x.classList.remove("sel-right", "sel-wrong"); });
+        b.classList.add("sel-right");
+      });
+    });
+    function solve(byUser) {
+      row.classList.add("solved");
+      numEl.value = q.answer;
+      numEl.disabled = true;
+      balBtns.forEach(function (b) {
+        b.disabled = true;
+        b.classList.remove("sel-right", "sel-wrong");
+        if (b.getAttribute("data-b") === q.balanced) { b.classList.add("sel-right"); }
+      });
+      checkBtn.disabled = true;
+      checkBtn.style.opacity = "0.5";
+      fb.textContent = q.fb;
+      solved += 1;
+      if (solved >= ADD_Q.length) {
+        byId("add-msg").textContent = "Resultant forces, all worked out. That is the maths of motion.";
+        if (byUser) { award("add", "Forces added up. Newton would nod."); }
+      }
+    }
+    checkBtn.addEventListener("click", function () {
+      if (row.classList.contains("solved")) { return; }
+      var val = parseInt(numEl.value, 10);
+      if (isNaN(val)) { fb.textContent = "Type the overall force in newtons first."; return; }
+      if (!chosenBal) { fb.textContent = "Now choose balanced or unbalanced."; return; }
+      if (val === q.answer && chosenBal === q.balanced) {
+        solve(true);
+        if (state.indexOf(q.id) === -1) { state.push(q.id); save("add-rows", JSON.stringify(state)); }
+      } else if (val !== q.answer) {
+        fb.textContent = "Not quite. Same direction you add, opposite directions you subtract. Try the number again.";
+      } else {
+        fb.textContent = "The number is right. Have another think about balanced versus unbalanced.";
+      }
+    });
+    holder.appendChild(row);
+    if (state.indexOf(q.id) !== -1) { solve(false); }
+  });
+}
+
+/* ---------- Round 4 (two MCQs + written) ---------- */
+function buildMotion() {
+  buildInlineMcq(MOTION_FORCE, "motion-force", "motion-force-fb");
+  buildInlineMcq(MOTION_DIR, "motion-dir", "motion-dir-fb");
+  var ta = byId("w15");
+  var saved = load("w15"); if (saved) { ta.value = saved; }
+  ta.addEventListener("input", function () { save("w15", ta.value); checkMotion(true); });
+  checkMotion(false);
+}
+function buildInlineMcq(q, holderId, fbId) {
+  var holder = byId(holderId);
+  var fb = byId(fbId);
+  var done = load(holderId + "-done") === "1";
+  q.opts.forEach(function (o) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "";
+    b.style.cssText = "background:#fff;border:2px solid #cddbd2;color:#1a1a1a;font-size:0.9rem;padding:0.45rem 0.95rem;border-radius:999px;font-weight:700;cursor:pointer;font-family:inherit;";
+    b.textContent = o;
+    b.addEventListener("click", function () {
+      if (holder.getAttribute("data-solved") === "1") { return; }
+      if (o === q.ans) {
+        holder.setAttribute("data-solved", "1");
+        save(holderId + "-done", "1");
+        holder.querySelectorAll("button").forEach(function (x) {
+          x.disabled = true;
+          if (x.textContent === q.ans) { x.style.background = "#e6f3e6"; x.style.borderColor = "#2e7d32"; x.style.color = "#1c5e28"; }
+        });
+        fb.style.color = "#1c5e28";
+        fb.textContent = q.fb;
+        checkMotion(true);
+      } else {
+        b.style.background = "#fdeee0"; b.style.borderColor = "#ef7724"; b.style.color = "#c05a10";
+        fb.style.color = "#555";
+        fb.textContent = q.hint;
+        (function (bb) { setTimeout(function () { bb.style.background = "#fff"; bb.style.borderColor = "#cddbd2"; bb.style.color = "#1a1a1a"; }, 700); })(b);
+      }
+    });
+    holder.appendChild(b);
+  });
+  if (done) {
+    holder.setAttribute("data-solved", "1");
+    holder.querySelectorAll("button").forEach(function (x) {
+      x.disabled = true;
+      if (x.textContent === q.ans) { x.style.background = "#e6f3e6"; x.style.borderColor = "#2e7d32"; x.style.color = "#1c5e28"; }
+    });
+    fb.style.color = "#1c5e28";
+    fb.textContent = q.fb;
+  }
+}
+function checkMotion(byUser) {
+  var f1 = load("motion-force-done") === "1";
+  var f2 = load("motion-dir-done") === "1";
+  var written = byId("w15").value.trim().length > 10;
+  if (f1 && f2 && written) {
+    byId("motion-msg").textContent = "Two forces named and the big idea explained. Nicely done.";
+    if (byUser) { award("motion", "Changing motion, understood. The spaceship keeps going."); }
+    else if (!quiet && stars.indexOf("motion") === -1) { award("motion", "Changing motion, understood. The spaceship keeps going."); }
+  } else {
+    byId("motion-msg").textContent = "";
+  }
+}
+
+/* ---------- Round 5 builder ---------- */
+function buildMatch() {
+  var holder = byId("match-items");
+  var state = loadJSON("match-items", []);
+  var solved = 0;
+  MATCH_Q.forEach(function (q) {
+    var item = document.createElement("div");
+    item.className = "match-item";
+    item.innerHTML = '<div class="desc">' + q.desc + '</div><div class="opts"></div><div class="match-fb"></div>';
+    var optbox = item.querySelector(".opts");
+    var fb = item.querySelector(".match-fb");
+    function solve(byUser) {
+      item.classList.add("solved");
+      optbox.querySelectorAll("button").forEach(function (b) {
+        if (b.textContent === q.ans) { b.classList.add("right"); }
+        b.disabled = true;
+      });
+      fb.textContent = q.fb;
+      solved += 1;
+      if (solved >= MATCH_Q.length) {
+        byId("match-msg").textContent = "Friction and drag, told apart. Both slow things down, but in different stuff.";
+        if (byUser) { award("match", "Friction versus drag, sorted."); }
+      }
+    }
+    MATCH_OPTS.forEach(function (o) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = o;
+      b.addEventListener("click", function () {
+        if (item.classList.contains("solved")) { return; }
+        if (o === q.ans) {
+          solve(true);
+          if (state.indexOf(q.id) === -1) { state.push(q.id); save("match-items", JSON.stringify(state)); }
+        } else {
+          b.classList.add("wrong");
+          fb.textContent = (o.indexOf("Drag") === 0)
+            ? "Not drag. Is this pushing through a gas or liquid, or two solids rubbing?"
+            : "Not that one. Is this solids rubbing, or pushing through a gas or liquid?";
+          (function (bb) { setTimeout(function () { bb.classList.remove("wrong"); }, 800); })(b);
+        }
+      });
+      optbox.appendChild(b);
+    });
+    holder.appendChild(item);
+    if (state.indexOf(q.id) !== -1) { solve(false); }
+  });
+}
+
+/* ---------- Boss ---------- */
+function wireBoss() {
+  var head = byId("boss-toggle");
+  var boss = byId("boss");
+  head.addEventListener("click", function () {
+    var open = boss.classList.toggle("open");
+    head.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  var state = loadJSON("boss", []);
+  var solved = 0;
+  BOSS.forEach(function (q) {
+    var card = document.createElement("div");
+    card.className = "qcard";
+    card.innerHTML = '<div class="sent">' + q.sent + '</div><div class="opts"></div><div class="fb"></div>';
+    var optbox = card.querySelector(".opts");
+    var fb = card.querySelector(".fb");
+    function solve(byUser) {
+      card.classList.add("solved");
+      optbox.querySelectorAll("button").forEach(function (b) {
+        if (b.textContent === q.ans) { b.classList.add("right"); }
+        b.disabled = true;
+      });
+      fb.textContent = q.fb;
+      solved += 1;
+      if (solved >= BOSS.length) {
+        byId("boss-verdict").classList.add("show");
+        if (byUser) { award("boss", "Boss level cleared. Proper physics reasoning."); }
+      }
+    }
+    q.opts.forEach(function (o) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = o;
+      b.addEventListener("click", function () {
+        if (card.classList.contains("solved")) { return; }
+        if (o === q.ans) {
+          solve(true);
+          if (state.indexOf(q.id) === -1) { state.push(q.id); save("boss", JSON.stringify(state)); }
+        } else {
+          b.classList.add("wrong");
+          fb.textContent = q.hint;
+          (function (bb) { setTimeout(function () { bb.classList.remove("wrong"); }, 700); })(b);
+        }
+      });
+      optbox.appendChild(b);
+    });
+    byId("boss-cards").appendChild(card);
+    if (state.indexOf(q.id) !== -1) { solve(false); }
+  });
+}
+
+/* ---------- steps ---------- */
+var STEPS = ["s-intro", "s-name", "s-add", "s-springs", "s-motion", "s-match", "s-finish"];
+function buildDots() {
+  var d = byId("dots");
+  STEPS.forEach(function (id, i) {
+    var b = document.createElement("button");
+    b.setAttribute("aria-label", "Go to part " + (i + 1) + " of " + STEPS.length);
+    b.addEventListener("click", function () { goStep(i); });
+    d.appendChild(b);
+  });
+}
+function goStep(i) {
+  STEPS.forEach(function (id, n) {
+    byId(id).classList.toggle("active", n === i);
+    byId("dots").children[n].classList.toggle("on", n === i);
+  });
+  save("step", String(i));
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+function wireNav() {
+  document.querySelectorAll("[data-go]").forEach(function (b) {
+    b.addEventListener("click", function () { goStep(parseInt(b.getAttribute("data-go"), 10)); });
+  });
+}
+function wireExamples() {
+  document.querySelectorAll(".example > button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var open = b.parentNode.classList.toggle("open");
+      b.textContent = open ? "Hide the example" : "Peek at an example";
+    });
+  });
+}
+
+/* ---------- send ---------- */
+function wireSend() {
+  var init = byId("initials");
+  try {
+    var profile = JSON.parse(localStorage.getItem("base6Profile") || "null");
+    if (profile && profile.initials) { init.value = profile.initials; }
+  } catch (e) {}
+  byId("send-btn").addEventListener("click", function () {
+    var name = init.value.trim();
+    if (!name) { byId("send-msg").textContent = "Pop your initials in first."; return; }
+    try { localStorage.setItem("base6Profile", JSON.stringify({ initials: name })); } catch (e) {}
+    var lines = [
+      "BASE 6 - SCIENCE - FORCES IN ACTION (Week 6, Friday)",
+      "",
+      "Student: " + name,
+      "Date: " + new Date().toLocaleDateString("en-GB"),
+      "Stars earned: " + stars.length + "/" + TOTAL_STARS,
+      "",
+      "Round 1 (name the force): " + loadJSON("name-cards", []).length + "/5",
+      "Round 2 (resultant force): " + loadJSON("add-rows", []).length + "/3",
+      "Round 3 (springs): " + loadJSON("spring-cards", []).length + "/3",
+      "Round 5 (friction vs drag): " + loadJSON("match-items", []).length + "/4",
+      "Boss level: " + loadJSON("boss", []).length + "/3",
+      "",
+      "Spaceship explanation (will it slow down and stop?):",
+      (byId("w15").value.trim() || "(not written)"),
+      "",
+      "Sent automatically from Base 6"
+    ];
+    var url = "https://mail.google.com/mail/?view=cm&fs=1"
+      + "&to=" + encodeURIComponent("jay.raine@chiltonbridgeschool.co.uk")
+      + "&su=" + encodeURIComponent("Base 6 - Science: Forces in Action - " + name)
+      + "&body=" + encodeURIComponent(lines.join("\n"));
+    var opened = window.open(url, "_blank");
+    if (!opened) { window.location.href = url; }
+    byId("send-msg").textContent = "Email opened. Press send in the email.";
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  quiet = true;
+  renderStars();
+  buildDots();
+  buildCards(NAME_Q, "name-cards", "name-msg", FORCE_OPTS, "name",
+    "Every force named. Five for five.", "All five named. You know your pushes from your pulls.");
+  buildAddRows();
+  buildCards(SPRING_Q, "spring-cards", "spring-msg", null, "springs",
+    "Springs sorted. Energy stored and released.", "All three done. Stretch or squash, the energy goes in either way.");
+  buildMotion();
+  buildMatch();
+  wireBoss();
+  wireExamples();
+  wireNav();
+  wireSend();
+  quiet = false;
+  var st = parseInt(load("step"), 10);
+  if (isNaN(st) || st < 0 || st >= STEPS.length) { st = 0; }
+  goStep(st);
+});
+</script>
+
+</body>
+</html>
