@@ -59,6 +59,21 @@
   .field-wrap { position: relative; background: #0a3d54; border-radius: 0; overflow: hidden; line-height: 0; }
   #field { display: block; width: 100%; height: auto; touch-action: manipulation; }
 
+  /* Fullscreen mode: keeps the original canvas/assets intact and only changes the container. */
+  #screen-game:fullscreen { background: #fef8f4; padding: 0.8rem; overflow: auto; width: 100vw; height: 100vh; }
+  #screen-game:fullscreen .hud,
+  #screen-game:fullscreen .field-wrap,
+  #screen-game:fullscreen .field-foot { max-width: min(1280px, 100%); margin-left: auto; margin-right: auto; }
+  #screen-game:fullscreen .tip,
+  #screen-game:fullscreen .backlink { display: none; }
+  #screen-game.fullscreen-fallback { position: fixed; inset: 0; z-index: 9999; display: block; background: #fef8f4; padding: 0.8rem; overflow: auto; }
+  #screen-game.fullscreen-fallback .hud,
+  #screen-game.fullscreen-fallback .field-wrap,
+  #screen-game.fullscreen-fallback .field-foot { max-width: min(1280px, 100%); margin-left: auto; margin-right: auto; }
+  #screen-game.fullscreen-fallback .tip,
+  #screen-game.fullscreen-fallback .backlink { display: none; }
+  body.td-fs-lock { overflow: hidden; }
+
   /* placement pad markers drawn on canvas; tower menu is DOM overlay */
   .tower-menu, .tower-manage { position: absolute; z-index: 20; background: #0d5570; border: 2px solid #12a0c8; border-radius: 12px; padding: 0.6rem; box-shadow: 0 6px 20px rgba(0,0,0,0.35); width: 220px; }
   .tower-menu.hidden, .tower-manage.hidden { display: none; }
@@ -177,6 +192,7 @@
       <span class="hud-wave" id="wave-label">Wave 0 / 15</span>
       <button class="hud-btn" id="btn-pause" type="button">Pause</button>
       <button class="hud-btn" id="btn-speed" type="button">Speed x1</button>
+      <button class="hud-btn" id="btn-fullscreen" type="button">Full screen</button>
       <button class="hud-btn primary" id="btn-start-wave" type="button">INITIATE</button>
     </div>
 
@@ -273,8 +289,8 @@ var TOWERS = {
     name: "Turtle Tower", colour: "#2e8b57", shot: "net",
     cost: 100, sell: [60, 120],
     levels: [
-      { dmg: 3, range: 115, rate: 1400, splash: 30, slow: 0 },
-      { dmg: 5, range: 140, rate: 1100, splash: 45, slow: 0 }
+      { dmg: 3, range: 118, rate: 1325, splash: 30, slow: 0 },
+      { dmg: 5, range: 142, rate: 1040, splash: 45, slow: 0 }
     ],
     upgradeCost: 200, upgradeDesc: "Stronger nets trap more plastic at once.",
     desc: "Slow but strong. Nets hit several pieces at once."
@@ -283,8 +299,8 @@ var TOWERS = {
     name: "Crab Tower", colour: "#ef7724", shot: "ink",
     cost: 60, sell: [35, 70],
     levels: [
-      { dmg: 1, range: 95, rate: 550, splash: 0, slow: 0 },
-      { dmg: 2, range: 115, rate: 420, splash: 0, slow: 0 }
+      { dmg: 1, range: 100, rate: 520, splash: 0, slow: 0 },
+      { dmg: 2, range: 118, rate: 400, splash: 0, slow: 0 }
     ],
     upgradeCost: 120, upgradeDesc: "Faster claws, more damage.",
     desc: "Cheap and quick. Fires fast at one piece at a time."
@@ -293,8 +309,8 @@ var TOWERS = {
     name: "Octopus Tower", colour: "#7b5ea7", shot: "bubble",
     cost: 80, sell: [45, 90],
     levels: [
-      { dmg: 1, range: 105, rate: 800, splash: 0, slow: 0.35, slowDur: 1200 },
-      { dmg: 2, range: 125, rate: 700, splash: 0, slow: 0.55, slowDur: 1600 }
+      { dmg: 1, range: 108, rate: 780, splash: 0, slow: 0.36, slowDur: 1300 },
+      { dmg: 2, range: 128, rate: 680, splash: 0, slow: 0.56, slowDur: 1700 }
     ],
     upgradeCost: 160, upgradeDesc: "Thicker bubbles slow plastic more, for longer.",
     desc: "Fires bubbles that slow plastic down."
@@ -305,10 +321,10 @@ var TOWER_ORDER = ["turtle", "crab", "octopus"];
 /* ---- enemy defs ---- */
 var ENEMIES = {
   bottle:   { name: "bottle",   hp: 4,  speed: 55, reward: 5,  leak: 1, colour: "#8fd0e6", r: 15, role: "standard" },
-  bag:      { name: "bag",      hp: 3,  speed: 92, reward: 6,  leak: 1, colour: "#e8e8ee", r: 16, role: "floaty", dodge: 0.34 },
+  bag:      { name: "bag",      hp: 3,  speed: 92, reward: 6,  leak: 1, colour: "#e8e8ee", r: 16, role: "floaty", dodge: 0.25 },
   cup:      { name: "cup",      hp: 7,  speed: 43, reward: 7,  leak: 1, colour: "#f0dcc0", r: 15, role: "armoured", armour: true },
   sixpack:  { name: "sixpack",  hp: 5,  speed: 60, reward: 8,  leak: 2, colour: "#cfd8dc", r: 16, role: "splitter", splits: 2 },
-  canister: { name: "canister", hp: 22, speed: 34, reward: 24, leak: 2, colour: "#b0b6ba", r: 21, role: "mini-boss", boss: true, pulseEvery: 4300 }
+  canister: { name: "canister", hp: 22, speed: 34, reward: 24, leak: 2, colour: "#b0b6ba", r: 21, role: "mini-boss", boss: true, pulseEvery: 4800 }
 };
 
 /* ---- difficulty tiers ---- */
@@ -316,9 +332,9 @@ var TIERS = {
   normal: { key: "normal", name: "Normal", tag: "Level 1", desc: "A steady introduction. Learn how each creature works and clear all fifteen waves.",
     hpMul: 1.0, spdMul: 1.0, countMul: 1.0, coins: 150, lives: 20, tc: "#2e8b57", tsh: "rgba(46,139,87,0.22)" },
   hard: { key: "hard", name: "Hard", tag: "Level 2", desc: "More plastic, tougher and faster, with less to spend. You will need a real plan.",
-    hpMul: 1.5, spdMul: 1.15, countMul: 1.25, coins: 130, lives: 15, tc: "#ef7724", tsh: "rgba(239,119,36,0.22)" },
+    hpMul: 1.42, spdMul: 1.12, countMul: 1.22, coins: 130, lives: 15, tc: "#ef7724", tsh: "rgba(239,119,36,0.22)" },
   impossible: { key: "impossible", name: "Almost Impossible", tag: "Level 3", desc: "A brutal tide of plastic. Only attempt this once you have mastered the others.",
-    hpMul: 2.2, spdMul: 1.3, countMul: 1.5, coins: 110, lives: 12, tc: "#7b5ea7", tsh: "rgba(123,94,167,0.22)" }
+    hpMul: 2.05, spdMul: 1.24, countMul: 1.42, coins: 110, lives: 12, tc: "#7b5ea7", tsh: "rgba(123,94,167,0.22)" }
 };
 var TIER_ORDER = ["normal", "hard", "impossible"];
 
@@ -342,9 +358,9 @@ function applyStrategy(key) {
     state.lastStrategy = "Damage-first";
   } else {
     var tier = TIERS[state.tier];
-    state.coins += 45;
-    state.coinsEarned += 45;
-    state.lives = Math.min(tier.lives, state.lives + 2);
+    state.coins += 32;
+    state.coinsEarned += 32;
+    state.lives = Math.min(tier.lives, state.lives + 1);
     state.lastStrategy = "Balanced defence";
   }
   state.pendingStrategy = false;
@@ -434,7 +450,7 @@ function buildWave(waveNum, tier) {
   else { types = ["cup", "sixpack", "bag", "bottle", "sixpack", "cup"]; }
   for (var i = 0; i < count; i++) { list.push(types[i % types.length]); }
   if (waveNum === 5 || waveNum === 10 || waveNum === 15) {
-    var bosses = waveNum === 15 ? 3 : (waveNum === 10 ? 2 : 1);
+    var bosses = waveNum === 15 ? 2 : (waveNum === 10 ? 2 : 1);
     for (var b = 0; b < bosses; b++) { list.push("canister"); }
   }
   return list;
@@ -550,14 +566,20 @@ function step(dt) {
     var sh = state.shots[s];
     if (!sh.target || state.enemies.indexOf(sh.target) === -1) { state.shots.splice(s, 1); continue; }
     var tp = posAlong(sh.target.dist);
-    var ang = Math.atan2(tp.y - sh.y, tp.x - sh.x);
+    var dx = tp.x - sh.x;
+    var dy = tp.y - sh.y;
+    var distToTarget = Math.hypot(dx, dy);
     var spd = 420;
-    sh.x += Math.cos(ang) * spd * dt / 1000;
-    sh.y += Math.sin(ang) * spd * dt / 1000;
-    if (Math.hypot(tp.x - sh.x, tp.y - sh.y) < 16) {
+    var travel = spd * dt / 1000;
+    if (distToTarget <= Math.max(16, travel)) {
+      sh.x = tp.x;
+      sh.y = tp.y;
       applyHit(sh, tp);
       state.shots.splice(s, 1);
+      continue;
     }
+    sh.x += dx / distToTarget * travel;
+    sh.y += dy / distToTarget * travel;
   }
   /* particles */
   for (var pi = state.particles.length - 1; pi >= 0; pi--) {
@@ -865,6 +887,7 @@ function loop(now) {
   }
 
   function quitToSelect() {
+    exitFullscreen();
     TD.stopLoop();
     buildTierGrid();
     show("screen-select");
@@ -1134,8 +1157,54 @@ function loop(now) {
   function hideBanner() { byId("banner").classList.remove("show"); }
   window.__tdHideBanner = hideBanner;
 
+  /* ---- fullscreen ---- */
+  function gameScreen() { return byId("screen-game"); }
+  function isNativeFullscreen() { return document.fullscreenElement === gameScreen(); }
+  function isFallbackFullscreen() { return gameScreen().classList.contains("fullscreen-fallback"); }
+  function updateFullscreenButton() {
+    var btn = byId("btn-fullscreen");
+    if (!btn) { return; }
+    btn.textContent = (isNativeFullscreen() || isFallbackFullscreen()) ? "Exit full screen" : "Full screen";
+  }
+  function enableFallbackFullscreen() {
+    gameScreen().classList.add("fullscreen-fallback");
+    document.body.classList.add("td-fs-lock");
+    updateFullscreenButton();
+  }
+  function disableFallbackFullscreen() {
+    gameScreen().classList.remove("fullscreen-fallback");
+    document.body.classList.remove("td-fs-lock");
+    updateFullscreenButton();
+  }
+  function enterFullscreen() {
+    var el = gameScreen();
+    if (el.requestFullscreen) {
+      var p = el.requestFullscreen();
+      if (p && p.catch) { p.catch(enableFallbackFullscreen); }
+    } else {
+      enableFallbackFullscreen();
+    }
+    updateFullscreenButton();
+  }
+  function exitFullscreen() {
+    disableFallbackFullscreen();
+    if (document.fullscreenElement && document.exitFullscreen) {
+      document.exitFullscreen().catch(function () {});
+    }
+    updateFullscreenButton();
+  }
+  function toggleFullscreen() {
+    if (isNativeFullscreen() || isFallbackFullscreen()) { exitFullscreen(); }
+    else { enterFullscreen(); }
+  }
+  document.addEventListener("fullscreenchange", updateFullscreenButton);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && isFallbackFullscreen()) { exitFullscreen(); }
+  });
+
   /* ---- controls ---- */
   byId("btn-start-wave").addEventListener("click", function () { hideMenus(); TD.startWave(); });
+  byId("btn-fullscreen").addEventListener("click", toggleFullscreen);
   byId("btn-pause").addEventListener("click", function () {
     var p = !TD.getPaused();
     TD.setPaused(p);
