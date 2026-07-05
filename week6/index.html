@@ -68,6 +68,8 @@
   }
   .b6-day-tile::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--tile); }
   .b6-day-tile:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 10px 26px var(--tile-shadow); }
+  .b6-day-tile.b6-day-static { cursor: default; }
+  .b6-day-tile.b6-day-static:hover { transform: none; box-shadow: none; }
   .b6-day-badge { position: relative; width: 52px; height: 52px; border-radius: 50%; background: var(--tile-soft); border: 2px solid var(--tile); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; line-height: 1; margin-bottom: 0.35rem; }
   .b6-day-badge::after { content: ""; position: absolute; inset: -8px; border-radius: 50%;
     background: conic-gradient(var(--tile) calc(var(--ring, 0) * 1%), rgba(0,0,0,0.06) 0);
@@ -302,7 +304,7 @@
   <div class="b6-day-section">
     <p class="section-label">This week, day by day</p>
     <div class="b6-day-grid">
-      <a class="b6-day-tile" href="day1.html" data-date="2026-07-06" data-day="1" data-total="4" style="--tile:#8d6e63; --tile-soft:#f3ece9; --tile-shadow:rgba(141,110,99,0.22);">
+      <a class="b6-day-tile" href="day1.html" data-date="2026-07-06" data-day="1" data-total="3" style="--tile:#8d6e63; --tile-soft:#f3ece9; --tile-shadow:rgba(141,110,99,0.22);">
         <span class="b6-day-badge" aria-hidden="true">&#128220;</span>
         <span class="b6-tile-day">Monday</span>
         <span class="b6-tile-date">Mon 6 July</span>
@@ -310,7 +312,7 @@
         <span class="b6-ring-label" aria-live="off"></span>
         <span class="b6-tile-today">Today</span>
       </a>
-      <a class="b6-day-tile" href="day2.html" data-date="2026-07-07" data-day="2" data-total="4" style="--tile:#2e7d32; --tile-soft:#e6f3e6; --tile-shadow:rgba(46,125,50,0.22);">
+      <a class="b6-day-tile" href="day2.html" data-date="2026-07-07" data-day="2" data-total="2" style="--tile:#2e7d32; --tile-soft:#e6f3e6; --tile-shadow:rgba(46,125,50,0.22);">
         <span class="b6-day-badge" aria-hidden="true">&#127794;</span>
         <span class="b6-tile-day">Tuesday</span>
         <span class="b6-tile-date">Tue 7 July</span>
@@ -318,7 +320,7 @@
         <span class="b6-ring-label" aria-live="off"></span>
         <span class="b6-tile-today">Today</span>
       </a>
-      <a class="b6-day-tile" href="day3.html" data-date="2026-07-08" data-day="3" data-total="4" style="--tile:#007291; --tile-soft:#e3f1f5; --tile-shadow:rgba(0,114,145,0.22);">
+      <a class="b6-day-tile" href="day3.html" data-date="2026-07-08" data-day="3" data-total="3" style="--tile:#007291; --tile-soft:#e3f1f5; --tile-shadow:rgba(0,114,145,0.22);">
         <span class="b6-day-badge" aria-hidden="true">&#129517;</span>
         <span class="b6-tile-day">Wednesday</span>
         <span class="b6-tile-date">Wed 8 July</span>
@@ -326,15 +328,15 @@
         <span class="b6-ring-label" aria-live="off"></span>
         <span class="b6-tile-today">Today</span>
       </a>
-      <a class="b6-day-tile" href="trip.html" data-date="2026-07-09" id="trip-tile" style="--tile:#ef7724; --tile-soft:#fdeadd; --tile-shadow:rgba(239,119,36,0.24);">
+      <div class="b6-day-tile b6-day-static" data-date="2026-07-09" id="trip-tile" style="--tile:#ef7724; --tile-soft:#fdeadd; --tile-shadow:rgba(239,119,36,0.24);">
         <span class="b6-day-badge" aria-hidden="true">&#128652;</span>
         <span class="b6-tile-day">Thursday</span>
         <span class="b6-tile-date">Thu 9 July</span>
         <span class="b6-tile-tag" id="trip-tag">Trip</span>
         <span class="b6-ring-label" aria-live="off"></span>
         <span class="b6-tile-today">Today</span>
-      </a>
-      <a class="b6-day-tile" href="day5.html" data-date="2026-07-10" data-day="5" data-total="4" style="--tile:#2a7a9b; --tile-soft:#e2f0f6; --tile-shadow:rgba(42,122,155,0.22);">
+      </div>
+      <a class="b6-day-tile" href="day5.html" data-date="2026-07-10" data-day="5" data-total="3" style="--tile:#2a7a9b; --tile-soft:#e2f0f6; --tile-shadow:rgba(42,122,155,0.22);">
         <span class="b6-day-badge" aria-hidden="true">&#127754;</span>
         <span class="b6-tile-day">Friday</span>
         <span class="b6-tile-date">Fri 10 July</span>
@@ -343,7 +345,7 @@
         <span class="b6-tile-today">Today</span>
       </a>
     </div>
-    <p class="b6-day-note">If choosing feels like a lot, you could start with today's tile. It lights up on the day, and the ring around each badge fills up as you finish activities. Thursday's tile has everything you might want to know about the trip.</p>
+    <p class="b6-day-note">If choosing feels like a lot, you could start with today's tile. It lights up on the day, and the ring around each badge fills up as you finish activities. Thursday is the trip, so its tile just shows the countdown rather than opening a page.</p>
   </div>
 
   <script>
@@ -443,14 +445,6 @@
       <span class="tile-subject">Relational (PSHE &amp; RSE)</span>
       <span class="tile-title">Check-In</span>
       <span class="tile-desc">A short morning check-in most days, with this week's PSHE theme.</span>
-      <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
-    </a>
-
-    <a class="tile" style="--c:#007291; --bg:#e6f5f8; --shadow:rgba(0,114,145,0.22);" href="project/index.html">
-      <span class="tile-badge">&#128640;</span>
-      <span class="tile-subject">Project</span>
-      <span class="tile-title">Your Project</span>
-      <span class="tile-desc">Your individual project, on most mornings this week. One more week to bring it home after this.</span>
       <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
     </a>
 
