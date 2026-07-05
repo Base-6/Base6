@@ -102,6 +102,13 @@
   .banner .btn-row { display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; }
   .banner .btn-ghost { background: rgba(255,255,255,0.15); box-shadow: none; }
   .banner .btn-ghost:hover { background: rgba(255,255,255,0.28); }
+  .banner .strategy-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.65rem; width: min(720px, 100%); margin: 0.15rem 0 0.95rem; }
+  .banner button.strategy-card { border-radius: 14px; padding: 0.75rem 0.85rem; text-align: left; background: rgba(255,255,255,0.12); border: 2px solid rgba(191,230,242,0.55); box-shadow: none; line-height: 1.35; }
+  .banner button.strategy-card:hover { background: rgba(255,255,255,0.22); border-color: #ffce2e; transform: translateY(-1px); }
+  .strategy-title { display: block; font-size: 0.95rem; color: #ffce2e; margin-bottom: 0.25rem; }
+  .strategy-copy { display: block; font-size: 0.78rem; font-weight: 400; color: #eaf6fb; }
+  .strategy-tag { display: inline-block; margin-top: 0.4rem; font-size: 0.72rem; color: #063a4a; background: #bfe6f2; border-radius: 999px; padding: 0.18rem 0.5rem; }
+  @media (max-width: 720px) { .banner .strategy-cards { grid-template-columns: 1fr; } }
 
   /* tip dolphin */
   .tip { display: flex; align-items: center; gap: 0.7rem; background: #e6f5f8; border: 2px solid #12a0c8; border-radius: 12px; padding: 0.7rem 1rem; margin-top: 1rem; }
@@ -147,7 +154,7 @@
 
   <div class="intro">
     <h2>The word is Initiate: to make the first move</h2>
-    <p>Nothing here happens until you start it. You choose where the first tower goes, then set the first wave moving. The whole defence begins with one decision from you. That is what it means to initiate: everything that follows grows from the first push.</p>
+    <p>Nothing here happens until you start it. You choose where the first tower goes, then set the first wave moving. After each wave, you also initiate a strategy: slow-first, damage-first, or balanced defence. The whole defence grows from the decisions you make.</p>
   </div>
 
   <!-- LEVEL SELECT -->
@@ -210,7 +217,7 @@
 
     <div class="tip">
       <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="30" cy="34" rx="22" ry="15" fill="#4bb3d4"/><path d="M48 30 Q60 24 58 36 Q54 40 46 38 Z" fill="#4bb3d4"/><circle cx="22" cy="31" r="3" fill="#063a4a"/><path d="M12 34 Q8 34 9 40" stroke="#4bb3d4" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M20 44 Q30 50 42 44" stroke="#eaf6fb" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-      <p id="tip-text"><strong>Tip.</strong> The turtle is slow but its net hits several pieces at once. The crab is cheap and quick. The octopus slows plastic down with bubbles. A mix works best.</p>
+      <p id="tip-text"><strong>Tip.</strong> Use tower combinations. Octopus bubbles make plastic wet-stuck, then turtle nets hit harder. Bags are floaty, cups are armoured, six-pack rings split, and canisters act like mini-bosses.</p>
     </div>
 
     <a class="backlink" id="quit-link" href="#" role="button">&larr; Back to level select</a>
@@ -250,6 +257,7 @@ function loadImg(name) {
 ["tower-turtle-1","tower-turtle-2","tower-crab-1","tower-crab-2","tower-octopus-1","tower-octopus-2",
  "enemy-bottle","enemy-bag","enemy-cup","enemy-sixpack","enemy-canister",
  "shot-net","shot-bubble","shot-ink"].forEach(loadImg);
+/* Gameplay upgrades intentionally keep the original tower/enemy/shot asset filenames unchanged. */
 
 /* Floating school bottle used as a constant underwater stage prop.
    It is embedded so the game still works on GitHub Pages without a separate asset path. */
@@ -296,11 +304,11 @@ var TOWER_ORDER = ["turtle", "crab", "octopus"];
 
 /* ---- enemy defs ---- */
 var ENEMIES = {
-  bottle:   { name: "bottle",   hp: 4,  speed: 55, reward: 5,  leak: 1, colour: "#8fd0e6", r: 15 },
-  bag:      { name: "bag",      hp: 3,  speed: 80, reward: 6,  leak: 1, colour: "#e8e8ee", r: 16 },
-  cup:      { name: "cup",      hp: 6,  speed: 45, reward: 7,  leak: 1, colour: "#f0dcc0", r: 15 },
-  sixpack:  { name: "sixpack",  hp: 5,  speed: 60, reward: 8,  leak: 2, colour: "#cfd8dc", r: 16 },
-  canister: { name: "canister", hp: 18, speed: 35, reward: 20, leak: 2, colour: "#b0b6ba", r: 20 }
+  bottle:   { name: "bottle",   hp: 4,  speed: 55, reward: 5,  leak: 1, colour: "#8fd0e6", r: 15, role: "standard" },
+  bag:      { name: "bag",      hp: 3,  speed: 92, reward: 6,  leak: 1, colour: "#e8e8ee", r: 16, role: "floaty", dodge: 0.34 },
+  cup:      { name: "cup",      hp: 7,  speed: 43, reward: 7,  leak: 1, colour: "#f0dcc0", r: 15, role: "armoured", armour: true },
+  sixpack:  { name: "sixpack",  hp: 5,  speed: 60, reward: 8,  leak: 2, colour: "#cfd8dc", r: 16, role: "splitter", splits: 2 },
+  canister: { name: "canister", hp: 22, speed: 34, reward: 24, leak: 2, colour: "#b0b6ba", r: 21, role: "mini-boss", boss: true, pulseEvery: 4300 }
 };
 
 /* ---- difficulty tiers ---- */
@@ -313,6 +321,35 @@ var TIERS = {
     hpMul: 2.2, spdMul: 1.3, countMul: 1.5, coins: 110, lives: 12, tc: "#7b5ea7", tsh: "rgba(123,94,167,0.22)" }
 };
 var TIER_ORDER = ["normal", "hard", "impossible"];
+
+var STRATEGY_CARDS = [
+  { key: "slow", name: "Slow-first", tag: "Octopus plan", desc: "Octopus bubbles slow more and leave longer wet-stuck puddles." },
+  { key: "damage", name: "Damage-first", tag: "Crab + turtle plan", desc: "Every attack hits harder. Crab critical snaps happen more often." },
+  { key: "balanced", name: "Balanced defence", tag: "Repair + coins", desc: "Repair the bay a little and gain extra coins for flexible building." }
+];
+
+function applyStrategy(key) {
+  if (!state || !state.pendingStrategy) { return; }
+  if (!state.strategy) { state.strategy = { slowBonus: 0, puddleBonus: 0, damageBonus: 0, turtleBonus: 0, crabCritBonus: 0 }; }
+  if (key === "slow") {
+    state.strategy.slowBonus = Math.min(0.24, state.strategy.slowBonus + 0.08);
+    state.strategy.puddleBonus = Math.min(1800, state.strategy.puddleBonus + 550);
+    state.lastStrategy = "Slow-first";
+  } else if (key === "damage") {
+    state.strategy.damageBonus = Math.min(3, state.strategy.damageBonus + 1);
+    state.strategy.turtleBonus = Math.min(4, state.strategy.turtleBonus + 1);
+    state.strategy.crabCritBonus = Math.min(2, state.strategy.crabCritBonus + 1);
+    state.lastStrategy = "Damage-first";
+  } else {
+    var tier = TIERS[state.tier];
+    state.coins += 45;
+    state.coinsEarned += 45;
+    state.lives = Math.min(tier.lives, state.lives + 2);
+    state.lastStrategy = "Balanced defence";
+  }
+  state.pendingStrategy = false;
+  updateHUD();
+}
 
 var TOTAL_WAVES = 15;
 
@@ -349,10 +386,15 @@ function newLevelState(tierKey) {
     enemies: [],
     shots: [],
     particles: [],
+    puddles: [],
+    statusTexts: [],
     spawnQueue: [],
     spawnTimer: 0,
     cleaned: 0,
     coinsEarned: 0,
+    strategy: { slowBonus: 0, puddleBonus: 0, damageBonus: 0, turtleBonus: 0, crabCritBonus: 0 },
+    pendingStrategy: false,
+    lastStrategy: "None yet",
     over: false,
     won: false
   };
@@ -401,6 +443,10 @@ function buildWave(waveNum, tier) {
 /* ===== spawn / update ===== */
 function startWave() {
   if (state.waveActive || state.over) { return; }
+  if (state.pendingStrategy) {
+    if (window.__tdSetHint) { window.__tdSetHint("Choose a strategy card before you initiate the next wave."); }
+    return;
+  }
   if (state.wave >= TOTAL_WAVES) { return; }
   state.wave += 1;
   var tier = TIERS[state.tier];
@@ -419,7 +465,8 @@ function spawnEnemy(typeKey) {
   state.enemies.push({
     type: typeKey, def: def, hp: hp, maxHp: hp,
     speed: def.speed * tier.spdMul, dist: 0,
-    slowUntil: 0, slowFactor: 1, r: def.r
+    slowUntil: 0, slowFactor: 1, wetUntil: 0,
+    pulseTimer: def.pulseEvery || 0, r: def.r
   });
 }
 
@@ -433,12 +480,44 @@ function step(dt) {
       state.spawnTimer = 620;
     }
   }
+  /* puddles and floating status text */
+  for (var pu = state.puddles.length - 1; pu >= 0; pu--) {
+    state.puddles[pu].life -= dt;
+    if (state.puddles[pu].life <= 0) { state.puddles.splice(pu, 1); }
+  }
+  for (var st = state.statusTexts.length - 1; st >= 0; st--) {
+    state.statusTexts[st].life -= dt;
+    state.statusTexts[st].y -= 18 * dt / 1000;
+    if (state.statusTexts[st].life <= 0) { state.statusTexts.splice(st, 1); }
+  }
+
   /* enemies */
   var now = performance.now();
   for (var i = state.enemies.length - 1; i >= 0; i--) {
     var e = state.enemies[i];
     var sp = e.speed;
     if (now < e.slowUntil) { sp *= e.slowFactor; }
+    var ep = posAlong(e.dist);
+    for (var pd = 0; pd < state.puddles.length; pd++) {
+      var puddle = state.puddles[pd];
+      if (Math.hypot(ep.x - puddle.x, ep.y - puddle.y) <= puddle.r) {
+        sp *= puddle.factor;
+        e.wetUntil = Math.max(e.wetUntil || 0, now + 650);
+      }
+    }
+    if (now < e.wetUntil) { sp *= 0.9; }
+    if (e.def.boss) {
+      e.pulseTimer -= dt;
+      if (e.pulseTimer <= 0) {
+        e.pulseTimer = e.def.pulseEvery || 4300;
+        var cp = posAlong(e.dist);
+        spawnParticles(cp.x, cp.y, "#6d7d84", 10);
+        addStatus(cp.x, cp.y, "leak!", "#ffce2e");
+        state.lives = Math.max(0, state.lives - 1);
+        updateHUD();
+        if (state.lives <= 0) { loseLevel(); return; }
+      }
+    }
     e.dist += sp * dt / 1000;
     if (e.dist >= PATH_LEN) {
       state.lives -= e.def.leak;
@@ -496,21 +575,84 @@ function step(dt) {
 }
 
 function fireShot(tw, target, lvl) {
-  state.shots.push({ x: tw.x, y: tw.y, target: target, dmg: lvl.dmg, splash: lvl.splash, slow: lvl.slow, slowDur: lvl.slowDur || 0, kind: TOWERS[tw.kind].shot });
+  var strat = state.strategy || {};
+  var dmg = lvl.dmg + (strat.damageBonus || 0);
+  var slow = lvl.slow || 0;
+  var slowDur = lvl.slowDur || 0;
+  var crit = false;
+  if (tw.kind === "octopus") {
+    slow = Math.min(0.78, slow + (strat.slowBonus || 0));
+    slowDur += Math.round((strat.puddleBonus || 0) * 0.5);
+  }
+  if (tw.kind === "crab") {
+    tw.hitCount = (tw.hitCount || 0) + 1;
+    var every = Math.max(3, 5 - (strat.crabCritBonus || 0));
+    if (tw.hitCount % every === 0) { dmg += 2; crit = true; }
+  }
+  state.shots.push({ x: tw.x, y: tw.y, target: target, dmg: dmg, splash: lvl.splash, slow: slow, slowDur: slowDur, kind: TOWERS[tw.kind].shot, tower: tw.kind, crit: crit });
+}
+
+function addStatus(x, y, text, colour) {
+  if (!state || !state.statusTexts) { return; }
+  state.statusTexts.push({ x: x, y: y, text: text, colour: colour || "#ffce2e", life: 850, maxLife: 850 });
+}
+
+function createPuddle(x, y, slow, duration, radius) {
+  if (!state || !state.puddles) { return; }
+  state.puddles.push({ x: x, y: y, r: radius, factor: Math.max(0.25, 1 - slow), life: duration, maxLife: duration });
 }
 
 function applyHit(sh, tp) {
-  var reduced = false;
+  var now = performance.now();
+  var strat = state.strategy || {};
+
+  if (sh.kind === "bubble") {
+    createPuddle(tp.x, tp.y, Math.min(0.62, (sh.slow || 0.35) + 0.08), 2600 + (strat.puddleBonus || 0), sh.slow > 0.5 ? 48 : 40);
+  }
+
   function hurt(en) {
-    en.hp -= sh.dmg;
-    if (sh.slow > 0) { en.slowUntil = performance.now() + sh.slowDur; en.slowFactor = 1 - sh.slow; }
+    if (!en || state.enemies.indexOf(en) === -1) { return; }
+    var p = posAlong(en.dist);
+    var wet = now < en.slowUntil || now < en.wetUntil;
+    var damage = sh.dmg;
+
+    /* Plastic bags are floaty. They dodge normal hits unless bubbles have made them wet-stuck. */
+    if (en.def.dodge && sh.kind !== "bubble" && !wet && Math.random() < en.def.dodge) {
+      addStatus(p.x, p.y, "floaty dodge", "#cfeaff");
+      spawnParticles(p.x, p.y, "#cfeaff", 3);
+      return;
+    }
+
+    /* Cups are armoured against small crab hits. Nets are better against them. */
+    if (en.def.armour && sh.kind === "ink") {
+      damage = Math.max(1, Math.ceil(damage * 0.55));
+      addStatus(p.x, p.y, "armoured", "#ffce2e");
+    }
+    if (en.def.armour && sh.kind === "net") { damage += 1; }
+
+    /* Core tower synergy: octopus wet-stuck first, turtle net second. */
+    if (sh.kind === "net" && wet) {
+      damage += 2 + (strat.turtleBonus || 0);
+      addStatus(p.x, p.y, "wet net!", "#9fe9ff");
+    }
+    if (sh.crit) { addStatus(p.x, p.y, "critical snap!", "#ffce2e"); }
+
+    if (sh.slow > 0) {
+      en.slowUntil = now + sh.slowDur;
+      en.slowFactor = Math.max(0.18, 1 - sh.slow);
+      en.wetUntil = Math.max(en.wetUntil || 0, now + sh.slowDur + 650);
+      addStatus(p.x, p.y, "wet-stuck", "#9fe9ff");
+    }
+
+    en.hp -= damage;
     if (en.hp <= 0) { killEnemy(en); }
   }
+
   if (sh.splash > 0) {
     for (var k = state.enemies.length - 1; k >= 0; k--) {
       var en = state.enemies[k];
       var p = posAlong(en.dist);
-      if (Math.hypot(p.x - tp.x, p.y - tp.y) <= sh.splash) { hurt(en); reduced = true; }
+      if (Math.hypot(p.x - tp.x, p.y - tp.y) <= sh.splash) { hurt(en); }
     }
     spawnParticles(tp.x, tp.y, "#2e8b57", 8);
   } else {
@@ -522,12 +664,34 @@ function applyHit(sh, tp) {
 function killEnemy(en) {
   var idx = state.enemies.indexOf(en);
   if (idx === -1) { return; }
+  var p = posAlong(en.dist);
+  var shouldSplit = en.def.splits && en.type === "sixpack";
   state.enemies.splice(idx, 1);
   state.coins += en.def.reward;
   state.coinsEarned += en.def.reward;
   state.cleaned += 1;
-  var p = posAlong(en.dist);
   spawnParticles(p.x, p.y, "#ffce2e", 6);
+  if (shouldSplit) {
+    addStatus(p.x, p.y, "split!", "#cfeaff");
+    for (var r = 0; r < en.def.splits; r++) {
+      /* Use the original six-pack sprite for fragments too: no new asset needed. */
+      spawnEnemy("sixpack");
+      var piece = state.enemies[state.enemies.length - 1];
+      piece.type = "sixpack";
+      piece.def = Object.assign({}, ENEMIES.sixpack, {
+        name: "six-pack fragment", hp: 2, speed: 78, reward: 2, leak: 1, r: 9, splits: 0
+      });
+      piece.hp = Math.max(1, Math.round(piece.def.hp * TIERS[state.tier].hpMul));
+      piece.maxHp = piece.hp;
+      piece.speed = piece.def.speed * TIERS[state.tier].spdMul;
+      piece.r = piece.def.r;
+      piece.dist = Math.max(0, en.dist - 12 - r * 7);
+      piece.wetUntil = en.wetUntil || 0;
+      piece.slowUntil = en.slowUntil || 0;
+      piece.slowFactor = en.slowFactor || 1;
+    }
+  }
+  if (en.def.boss) { addStatus(p.x, p.y, "boss cleared", "#ffce2e"); }
   updateHUD();
 }
 
@@ -546,6 +710,7 @@ function waveCleared() {
   state.coinsEarned += bonus;
   updateHUD();
   if (state.wave >= TOTAL_WAVES) { winLevel(); return; }
+  state.pendingStrategy = true;
   showWaveBanner(bonus);
 }
 
@@ -580,6 +745,7 @@ function markCleared(tierKey) {
 /* expose a few for the UI module */
 window.__td = {
   TOWERS: TOWERS, TOWER_ORDER: TOWER_ORDER, TIERS: TIERS, TIER_ORDER: TIER_ORDER,
+  STRATEGY_CARDS: STRATEGY_CARDS, applyStrategy: applyStrategy,
   ENEMIES: ENEMIES, TOTAL_WAVES: TOTAL_WAVES, PATH: PATH, PADS: PADS,
   images: images, imgReady: imgReady,
   posAlong: posAlong, PATH_LEN: PATH_LEN,
@@ -720,6 +886,7 @@ function loop(now) {
   window.__tdUpdateHUD = updateHUD;
 
   function setHint(t) { byId("foot-hint").textContent = t; }
+  window.__tdSetHint = setHint;
 
   /* ---- placement + management menus ---- */
   var selected = null; /* {pad} or {tower} */
@@ -887,21 +1054,42 @@ function loop(now) {
 
   function showWaveBanner(bonus) {
     var s = TD.getState();
-    byId("banner-title").textContent = "Wave cleared!";
+    byId("banner-title").textContent = "Wave cleared — initiate a strategy";
     byId("banner-collected").innerHTML =
       '<span>' + recycleSvg() + ' ' + s.cleaned + '</span>' +
       '<span>' + coinSvg() + ' ' + s.coins + '</span>';
-    byId("banner-text").textContent = "Nice work. Bonus of " + bonus + " coins banked. Upgrade a tower, then send in the next wave.";
+    byId("banner-text").textContent = "Bonus of " + bonus + " coins banked. Choose the plan that will shape your next wave.";
     var btns = byId("banner-btns");
     btns.innerHTML = "";
-    var b1 = document.createElement("button");
-    b1.textContent = "Next wave (" + (s.wave + 1) + " of " + TD.TOTAL_WAVES + ")";
-    b1.addEventListener("click", function () { hideBanner(); TD.startWave(); });
-    var b2 = document.createElement("button");
-    b2.className = "btn-ghost";
-    b2.textContent = "Build first";
-    b2.addEventListener("click", hideBanner);
-    btns.appendChild(b1); btns.appendChild(b2);
+    var cards = document.createElement("div");
+    cards.className = "strategy-cards";
+    TD.STRATEGY_CARDS.forEach(function (card) {
+      var b = document.createElement("button");
+      b.className = "strategy-card";
+      b.type = "button";
+      b.innerHTML = '<span class="strategy-title">' + card.name + '</span>' +
+        '<span class="strategy-copy">' + card.desc + '</span>' +
+        '<span class="strategy-tag">' + card.tag + '</span>';
+      b.addEventListener("click", function () {
+        TD.applyStrategy(card.key);
+        var nowState = TD.getState();
+        byId("banner-title").textContent = "Strategy initiated: " + nowState.lastStrategy;
+        byId("banner-text").textContent = "Build around that choice, then send in the next wave when you are ready.";
+        btns.innerHTML = "";
+        var next = document.createElement("button");
+        next.textContent = "Next wave (" + (nowState.wave + 1) + " of " + TD.TOTAL_WAVES + ")";
+        next.addEventListener("click", function () { hideBanner(); TD.startWave(); });
+        var build = document.createElement("button");
+        build.className = "btn-ghost";
+        build.textContent = "Build first";
+        build.addEventListener("click", hideBanner);
+        btns.appendChild(next);
+        btns.appendChild(build);
+        setHint("Strategy chosen: " + nowState.lastStrategy + ". Build, upgrade, then press INITIATE.");
+      });
+      cards.appendChild(b);
+    });
+    btns.appendChild(cards);
     byId("banner").classList.add("show");
   }
   window.__tdWaveBanner = showWaveBanner;
@@ -1222,6 +1410,48 @@ function loop(now) {
     }
   }
 
+  function drawPuddles(now) {
+    var s = TD.getState();
+    if (!s || !s.puddles) { return; }
+    for (var i = 0; i < s.puddles.length; i++) {
+      var p = s.puddles[i];
+      var c = worldToIso(p.x, p.y, 2);
+      var a = Math.max(0, p.life / p.maxLife);
+      ctx.save();
+      ctx.globalAlpha = 0.12 + a * 0.16;
+      ctx.fillStyle = "#9fe9ff";
+      ctx.beginPath();
+      ctx.ellipse(c.x, c.y, p.r * ISO.scaleX * 1.25, p.r * ISO.scaleY * 1.25, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 0.22 + a * 0.2;
+      ctx.strokeStyle = "#cfeaff";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  function drawStatusTexts() {
+    var s = TD.getState();
+    if (!s || !s.statusTexts) { return; }
+    ctx.save();
+    ctx.font = "700 12px Atkinson Hyperlegible, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    for (var i = 0; i < s.statusTexts.length; i++) {
+      var st = s.statusTexts[i];
+      var p = worldToIso(st.x, st.y, 40);
+      var a = Math.max(0, st.life / st.maxLife);
+      ctx.globalAlpha = a;
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "rgba(3,24,35,0.75)";
+      ctx.strokeText(st.text, p.x, p.y);
+      ctx.fillStyle = st.colour;
+      ctx.fillText(st.text, p.x, p.y);
+    }
+    ctx.restore();
+  }
+
   function drawRangeIfSelected() {
     if (!selected || !selected.tower) { return; }
     var tw = selected.tower;
@@ -1290,6 +1520,7 @@ function loop(now) {
   function drawEnemyEntity(e, now) {
     var wp = TD.posAlong(e.dist);
     var slowed = performance.now() < e.slowUntil;
+    var wet = performance.now() < e.wetUntil;
     drawShadow(wp.x, wp.y, e.def.r * 0.8);
     var bob = reduced ? 0 : Math.sin(now * 0.004 + e.dist * 0.05) * 2;
     var top = worldToIso(wp.x, wp.y, 14);
@@ -1304,6 +1535,22 @@ function loop(now) {
       ctx.arc(top.x, top.y, e.def.r, 0, Math.PI * 2);
       ctx.fillStyle = e.def.colour; ctx.fill();
       ctx.lineWidth = 2; ctx.strokeStyle = "#5a6b73"; ctx.stroke();
+      ctx.restore();
+    }
+    if (e.def.boss) {
+      ctx.save();
+      ctx.globalAlpha = 0.35 + (reduced ? 0 : Math.sin(now * 0.006) * 0.12);
+      ctx.beginPath();
+      ctx.arc(top.x, top.y, e.def.r + 8, 0, Math.PI * 2);
+      ctx.strokeStyle = "#ffce2e"; ctx.lineWidth = 3; ctx.stroke();
+      ctx.restore();
+    }
+    if (wet) {
+      ctx.save();
+      ctx.globalAlpha = 0.48;
+      ctx.beginPath();
+      ctx.arc(top.x, top.y, e.def.r + 6, 0, Math.PI * 2);
+      ctx.strokeStyle = "#9fe9ff"; ctx.lineWidth = 3; ctx.stroke();
       ctx.restore();
     }
     if (slowed) {
@@ -1387,9 +1634,11 @@ function loop(now) {
     drawPath();
     drawSeaweed(now);
     drawPads();
+    drawPuddles(now);
     drawRangeIfSelected();
     drawEntities(now);
     drawParticles();
+    drawStatusTexts();
     drawAmbientBottle(now);
     drawBubbles(now);
   }
