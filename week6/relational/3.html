@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Dream or Goal? | Setting Goals | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { position: relative; background-color: #7b5ea7; padding: 2rem 2rem 2.8rem; text-align: center; overflow: hidden; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(254,248,244,0.13); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.9; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.82rem; font-weight: 700; color: #e7ddf3; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .header-sub { font-size: 1.02rem; color: #e7ddf3; margin-top: 0.45rem; max-width: 46ch; margin-left: auto; margin-right: auto; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 36px; z-index: 1; }
+  .main { max-width: 680px; margin: 0 auto; padding: 1.6rem 1.5rem 4rem; }
+  .lead { font-size: 1rem; line-height: 1.6; color: #444; margin-bottom: 1.4rem; }
+  .keybox { background: #efe9f6; border: 2px solid #7b5ea7; border-radius: 12px; padding: 0.9rem 1.1rem; margin-bottom: 1.4rem; font-size: 0.95rem; line-height: 1.55; }
+  .keybox strong { color: #5f4a86; }
+
+  .section-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #7b5ea7; margin: 1.6rem 0 0.9rem; }
+
+  /* sorter */
+  .sorter-card { background: #fff; border: 2px solid #e3d9ef; border-radius: 16px; padding: 1.1rem 1.2rem; margin-bottom: 0.9rem; }
+  .sorter-card .stmt { font-size: 1.02rem; font-weight: 700; margin-bottom: 0.7rem; line-height: 1.4; }
+  .sorter-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .sorter-btns button { flex: 1 1 120px; font-family: inherit; font-size: 0.9rem; font-weight: 700; padding: 0.55rem 0.9rem; border-radius: 999px; border: 2px solid #cbb8e2; background: #fff; color: #5f4a86; cursor: pointer; }
+  .sorter-btns button.pick-dream.sel { background: #e7ddf3; border-color: #7b5ea7; }
+  .sorter-btns button.pick-goal.sel { background: #fff6ef; border-color: #ef7724; color: #c05a10; }
+  .sorter-fb { font-size: 0.88rem; font-weight: 700; margin-top: 0.6rem; min-height: 1.2em; color: #666; }
+  .sorter-card.answered .sorter-fb { color: #5f4a86; }
+
+  /* discussion cards */
+  .disc { background: #faf7fd; border: 2px solid #d8cce8; border-left: 5px solid #7b5ea7; border-radius: 12px; padding: 0.9rem 1.1rem; margin-bottom: 0.8rem; }
+  .disc .q { font-size: 1rem; font-weight: 700; color: #4a3a6a; line-height: 1.45; }
+  .disc .hint { font-size: 0.85rem; color: #777; margin-top: 0.35rem; line-height: 1.5; }
+
+  .catch { background: #fff; border: 2px solid #e3d9ef; border-radius: 14px; padding: 1rem 1.1rem; margin-top: 1rem; }
+  .catch label { display: block; font-size: 0.9rem; font-weight: 700; color: #5f4a86; margin-bottom: 0.4rem; }
+  .catch textarea { width: 100%; min-height: 60px; font-family: inherit; font-size: 0.95rem; padding: 0.7rem 0.9rem; border: 2px solid #d8cce8; border-radius: 10px; background: #fff; resize: vertical; line-height: 1.5; }
+  .catch textarea:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 1px; }
+  .catch .opt { font-size: 0.8rem; color: #999; margin-top: 0.35rem; }
+
+  .send { margin-top: 1.4rem; background: #efe9f6; border: 2px solid #7b5ea7; border-radius: 14px; padding: 1.1rem 1.2rem; }
+  .send h3 { font-size: 1.05rem; color: #5f4a86; margin-bottom: 0.4rem; }
+  .send p { font-size: 0.9rem; color: #555; line-height: 1.5; }
+  .send label { display: block; font-size: 0.85rem; font-weight: 700; color: #555; margin: 0.7rem 0 0.3rem; }
+  .send input[type=text] { width: 100%; max-width: 300px; padding: 0.6rem 0.85rem; font-family: inherit; font-size: 0.95rem; border: 2px solid #cbb8e2; border-radius: 10px; }
+  .send input:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 1px; }
+  button.sendbtn { margin-top: 0.8rem; font-family: inherit; font-size: 0.92rem; font-weight: 700; padding: 0.65rem 1.4rem; background: #7b5ea7; color: #fff; border: none; border-radius: 999px; cursor: pointer; box-shadow: 0 3px 0 #5f4a86; }
+  .msg { min-height: 1.3em; font-weight: 700; font-size: 0.88rem; margin-top: 0.5rem; color: #5f4a86; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+  .nav-foot { display: flex; justify-content: space-between; margin-top: 1.6rem; font-size: 0.9rem; font-weight: 700; }
+  .nav-foot a { color: #5f4a86; text-decoration: none; }
+  .nav-foot a:hover { text-decoration: underline; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Check-In</a>
+  <div class="header-inner">
+    <p class="week-label">Wondering Wednesday &middot; Setting Goals</p>
+    <h1>Dream or Goal?</h1>
+    <p class="header-sub">What turns a wish into a plan? A talking-and-thinking check-in, with barely any typing.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+<main class="main">
+  <p class="lead">Today is more about thinking and talking than writing. A dream and a goal can start out looking the same. The interesting question is where they split apart. Have a go at the sorter, then chew on the discussion cards, out loud or in your head.</p>
+  <div class="keybox"><strong>One way to see it.</strong> A dream is something you would love to happen. A goal is a dream you have decided to do something about. The difference is often a plan and a first step, which is what the rest of this week is about.</div>
+
+  <p class="section-label">Quick sorter: dream or goal?</p>
+  <div id="sorter"></div>
+
+  <p class="section-label">Discussion cards</p>
+  <p style="font-size:0.9rem; color:#666; margin-bottom:0.9rem; line-height:1.5;">No right answers here. Talk them through with someone, or just think them over.</p>
+  <div class="disc"><div class="q">At what exact moment does a wish become a plan?</div><div class="hint">Is it when you say it out loud? Write it down? Tell someone? Take the first step?</div></div>
+  <div class="disc"><div class="q">Can a dream be too big to ever become a goal? Or can any dream be broken down?</div><div class="hint">Think back to yesterday's back-planning. Did breaking it into steps change anything?</div></div>
+  <div class="disc"><div class="q">Is it worth having dreams you may never reach?</div><div class="hint">What might a big dream give you, even if you never fully get there?</div></div>
+
+  <div class="catch">
+    <label for="w1">One thought to keep (optional)</label>
+    <textarea id="w1" placeholder="If one idea stuck with you today, jot it here. Totally optional."></textarea>
+    <p class="opt">You can leave this blank. Today does not need writing to count.</p>
+  </div>
+
+  <div class="send">
+    <h3>Share a thought (optional)</h3>
+    <p>If you wrote something above and want to share it, you can send it to Jay. No pressure at all.</p>
+    <label for="initials">Your initials</label>
+    <input type="text" id="initials" placeholder="Type your initials">
+    <div><button class="sendbtn" id="send-btn" type="button">Send to Jay</button></div>
+    <p class="msg" id="send-msg" role="status"></p>
+  </div>
+
+  <div class="nav-foot">
+    <a href="2.html">&larr; Tuesday: Back-Plan Board</a>
+    <a href="4.html">Thursday: Future Letter &rarr;</a>
+  </div>
+</main>
+<footer>Base 6 &middot; Chilton Bridge School</footer>
+<script>
+"use strict";
+var NS = "base6.w6pshe3.";
+function save(k, v) { try { localStorage.setItem(NS + k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(NS + k); } catch (e) { return null; } }
+function loadJSON(k, fb) { try { var v = localStorage.getItem(NS + k); return v ? JSON.parse(v) : fb; } catch (e) { return fb; } }
+function byId(id) { return document.getElementById(id); }
+
+/* Sorter: each item is really a dream or a goal, but the point is the reasoning,
+   so both answers get an affirming, thought-provoking response rather than right/wrong. */
+var SORT = [
+  { id: "s1", stmt: "\"I wish I could speak another language.\"",
+    lean: "dream",
+    dreamFb: "Yes, as it stands this is a wish. It becomes a goal the moment you pick a language and a first lesson.",
+    goalFb: "It could be, if there is a plan behind it. On its own, with no next step, it is still a dream for now." },
+  { id: "s2", stmt: "\"I am going to practise my reading for ten minutes after lunch each day.\"",
+    lean: "goal",
+    dreamFb: "It sounds more like a goal to me. It has a what, a when, and a how, which is what turns a wish into a plan.",
+    goalFb: "Agreed. There is a clear action and a time. That is a goal in motion." },
+  { id: "s3", stmt: "\"One day I would love to travel the world.\"",
+    lean: "dream",
+    dreamFb: "A lovely dream. It could grow into goals later: save a bit, pick one place, plan one trip.",
+    goalFb: "Maybe on its way to one. Without a first concrete step though, it is still mostly a dream." }
+];
+
+function buildSorter() {
+  var holder = byId("sorter");
+  var state = loadJSON("sorter", {});
+  SORT.forEach(function (q) {
+    var card = document.createElement("div");
+    card.className = "sorter-card";
+    card.innerHTML = '<div class="stmt">' + q.stmt + '</div>'
+      + '<div class="sorter-btns">'
+      + '<button type="button" class="pick-dream">Sounds like a dream</button>'
+      + '<button type="button" class="pick-goal">Sounds like a goal</button>'
+      + '</div><div class="sorter-fb"></div>';
+    var dreamBtn = card.querySelector(".pick-dream");
+    var goalBtn = card.querySelector(".pick-goal");
+    var fb = card.querySelector(".sorter-fb");
+    function choose(kind, byUser) {
+      card.classList.add("answered");
+      dreamBtn.classList.toggle("sel", kind === "dream");
+      goalBtn.classList.toggle("sel", kind === "goal");
+      fb.textContent = (kind === "dream") ? q.dreamFb : q.goalFb;
+      if (byUser) { state[q.id] = kind; save("sorter", JSON.stringify(state)); }
+    }
+    dreamBtn.addEventListener("click", function () { choose("dream", true); });
+    goalBtn.addEventListener("click", function () { choose("goal", true); });
+    holder.appendChild(card);
+    if (state[q.id]) { choose(state[q.id], false); }
+  });
+}
+
+(function () {
+  var ta = byId("w1");
+  var saved = load("w1"); if (saved) { ta.value = saved; }
+  ta.addEventListener("input", function () { save("w1", ta.value); });
+
+  var init = byId("initials");
+  try { var p = JSON.parse(localStorage.getItem("base6Profile") || "null"); if (p && p.initials) { init.value = p.initials; } } catch (e) {}
+  byId("send-btn").addEventListener("click", function () {
+    var name = init.value.trim();
+    if (!name) { byId("send-msg").textContent = "Pop your initials in first."; return; }
+    var thought = byId("w1").value.trim();
+    if (!thought) { byId("send-msg").textContent = "Write a thought above first, or feel free to skip today."; return; }
+    try { localStorage.setItem("base6Profile", JSON.stringify({ initials: name })); } catch (e) {}
+    var body = "BASE 6 - SETTING GOALS - DREAM OR GOAL? (Wednesday)\n\n"
+      + "Student: " + name + "\n"
+      + "Date: " + new Date().toLocaleDateString("en-GB") + "\n\n"
+      + "A thought I wanted to keep:\n" + thought + "\n\n"
+      + "-\nSent automatically from Base 6";
+    var url = "https://mail.google.com/mail/?view=cm&fs=1"
+      + "&to=" + encodeURIComponent("jay.raine@chiltonbridgeschool.co.uk")
+      + "&su=" + encodeURIComponent("Base 6 - Setting Goals: A thought - " + name)
+      + "&body=" + encodeURIComponent(body);
+    var opened = window.open(url, "_blank");
+    if (!opened) { window.location.href = url; }
+    byId("send-msg").textContent = "Email opened. Press send in the email.";
+  });
+})();
+
+buildSorter();
+</script>
+</body>
+</html>
