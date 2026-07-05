@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>The Future Letter | Setting Goals | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { position: relative; background-color: #7b5ea7; padding: 2rem 2rem 2.8rem; text-align: center; overflow: hidden; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(254,248,244,0.13); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.9; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.82rem; font-weight: 700; color: #e7ddf3; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .header-sub { font-size: 1.02rem; color: #e7ddf3; margin-top: 0.45rem; max-width: 46ch; margin-left: auto; margin-right: auto; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 36px; z-index: 1; }
+  .main { max-width: 680px; margin: 0 auto; padding: 1.6rem 1.5rem 4rem; }
+  .lead { font-size: 1rem; line-height: 1.6; color: #444; margin-bottom: 1.4rem; }
+  .keybox { background: #efe9f6; border: 2px solid #7b5ea7; border-radius: 12px; padding: 0.9rem 1.1rem; margin-bottom: 1.4rem; font-size: 0.95rem; line-height: 1.55; }
+  .keybox strong { color: #5f4a86; }
+
+  .letter { background: #fffdf9; border: 2px solid #e3d9ef; border-radius: 16px; padding: 1.3rem 1.4rem; box-shadow: 0 4px 16px rgba(123,94,167,0.08); background-image: repeating-linear-gradient(#fffdf9, #fffdf9 31px, #efe9f6 32px); }
+  .letter .greeting { font-size: 1.05rem; font-weight: 700; color: #5f4a86; margin-bottom: 0.5rem; }
+  .prompt-block { margin-bottom: 1rem; }
+  .prompt-block .plabel { font-size: 0.85rem; font-weight: 700; color: #5f4a86; margin-bottom: 0.35rem; }
+  .prompt-block textarea { width: 100%; min-height: 64px; font-family: inherit; font-size: 0.96rem; padding: 0.6rem 0.85rem; border: 2px solid #d8cce8; border-radius: 10px; background: rgba(255,255,255,0.85); resize: vertical; line-height: 1.6; }
+  .prompt-block textarea:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 1px; }
+  .signoff { font-size: 0.95rem; color: #5f4a86; font-weight: 700; margin-top: 0.4rem; }
+
+  .seal-note { display: flex; gap: 0.7rem; align-items: flex-start; background: #efe9f6; border-radius: 12px; padding: 0.9rem 1.1rem; margin: 1.3rem 0; }
+  .seal-note .wax { font-size: 1.6rem; flex: 0 0 auto; }
+  .seal-note p { font-size: 0.9rem; color: #555; line-height: 1.55; }
+
+  .send { margin-top: 0.6rem; background: #fff; border: 2px solid #7b5ea7; border-radius: 14px; padding: 1.1rem 1.2rem; }
+  .send h3 { font-size: 1.05rem; color: #5f4a86; margin-bottom: 0.4rem; }
+  .send p { font-size: 0.9rem; color: #555; line-height: 1.5; }
+  .send label { display: block; font-size: 0.85rem; font-weight: 700; color: #555; margin: 0.7rem 0 0.3rem; }
+  .send input[type=text] { width: 100%; max-width: 300px; padding: 0.6rem 0.85rem; font-family: inherit; font-size: 0.95rem; border: 2px solid #cbb8e2; border-radius: 10px; }
+  .send input:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 1px; }
+  button.sendbtn { margin-top: 0.8rem; font-family: inherit; font-size: 0.92rem; font-weight: 700; padding: 0.7rem 1.5rem; background: #7b5ea7; color: #fff; border: none; border-radius: 999px; cursor: pointer; box-shadow: 0 3px 0 #5f4a86; }
+  .saved-tag { display: inline-block; font-size: 0.82rem; font-weight: 700; color: #1f6b3a; background: #e6f3e6; border-radius: 999px; padding: 0.25rem 0.8rem; margin-top: 0.6rem; }
+  .msg { min-height: 1.3em; font-weight: 700; font-size: 0.88rem; margin-top: 0.5rem; color: #5f4a86; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+  .nav-foot { display: flex; justify-content: space-between; margin-top: 1.6rem; font-size: 0.9rem; font-weight: 700; }
+  .nav-foot a { color: #5f4a86; text-decoration: none; }
+  .nav-foot a:hover { text-decoration: underline; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Check-In</a>
+  <div class="header-inner">
+    <p class="week-label">Therapeutic Thursday &middot; Setting Goals</p>
+    <h1>The Future Letter</h1>
+    <p class="header-sub">A letter to the you of the future, to be opened on the last day of the school year.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+<main class="main">
+  <p class="lead">You are going to write a short letter to yourself. Not to hand in, not to be marked. Jay will keep a copy safe and give it back to you on the last day of the school year, so future you can see how far you have come. Be honest and be kind to yourself. Future you will appreciate it.</p>
+  <div class="keybox"><strong>Write to the future you.</strong> Imagine yourself reading this on the last day of the year. What would you want that person to know, to remember, or to smile about? Fill in as much or as little as feels right.</div>
+
+  <div class="letter">
+    <div class="greeting">Dear future me,</div>
+
+    <div class="prompt-block">
+      <div class="plabel">Right now, this is what life feels like</div>
+      <textarea id="w1" placeholder="What is going on for you at the moment? How are things, honestly?"></textarea>
+    </div>
+
+    <div class="prompt-block">
+      <div class="plabel">This is something I am hoping for</div>
+      <textarea id="w2" placeholder="A goal, a wish, or something you would love to have happened by the time you read this."></textarea>
+    </div>
+
+    <div class="prompt-block">
+      <div class="plabel">And this is what I want you to remember</div>
+      <textarea id="w3" placeholder="A message to future you. Encouragement, a reminder, or something kind."></textarea>
+    </div>
+
+    <div class="signoff">With hope, past me.</div>
+  </div>
+
+  <div class="seal-note">
+    <span class="wax" aria-hidden="true">&#128220;</span>
+    <p>When you send this, it saves here on this device and a sealed copy goes to Jay to look after. You will get it back at the end of the year. No one will use it against you, it is just for future you.</p>
+  </div>
+
+  <div class="send">
+    <h3>Seal and send your letter</h3>
+    <p>Add your initials, then send. Jay will keep it safe until the last day of the school year.</p>
+    <label for="initials">Your initials</label>
+    <input type="text" id="initials" placeholder="Type your initials">
+    <div><button class="sendbtn" id="send-btn" type="button">Seal and send to Jay</button></div>
+    <span class="saved-tag" id="saved-tag" style="display:none;">Saved on this device</span>
+    <p class="msg" id="send-msg" role="status"></p>
+  </div>
+
+  <div class="nav-foot">
+    <a href="3.html">&larr; Wednesday: Dream or Goal?</a>
+    <a href="5.html">Friday: The Launchpad &rarr;</a>
+  </div>
+</main>
+<footer>Base 6 &middot; Chilton Bridge School</footer>
+<script>
+"use strict";
+var NS = "base6.w6pshe4.";
+function save(k, v) { try { localStorage.setItem(NS + k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(NS + k); } catch (e) { return null; } }
+function byId(id) { return document.getElementById(id); }
+
+var FIELDS = ["w1", "w2", "w3"];
+FIELDS.forEach(function (f) {
+  var ta = byId(f);
+  var saved = load(f); if (saved) { ta.value = saved; }
+  ta.addEventListener("input", function () { save(f, ta.value); });
+});
+
+/* If a letter was already sent, show the saved tag quietly on load. */
+if (load("sent") === "1") { byId("saved-tag").style.display = "inline-block"; }
+
+(function () {
+  var init = byId("initials");
+  try { var p = JSON.parse(localStorage.getItem("base6Profile") || "null"); if (p && p.initials) { init.value = p.initials; } } catch (e) {}
+  byId("send-btn").addEventListener("click", function () {
+    var name = init.value.trim();
+    if (!name) { byId("send-msg").textContent = "Pop your initials in first."; return; }
+    var any = FIELDS.some(function (f) { return byId(f).value.trim().length > 0; });
+    if (!any) { byId("send-msg").textContent = "Write at least a line to future you first."; return; }
+    try { localStorage.setItem("base6Profile", JSON.stringify({ initials: name })); } catch (e) {}
+    save("sent", "1");
+    byId("saved-tag").style.display = "inline-block";
+    var body = "BASE 6 - SETTING GOALS - THE FUTURE LETTER (Thursday)\n"
+      + "PLEASE KEEP SAFE - to be returned to the student on the last day of the school year.\n\n"
+      + "Student: " + name + "\n"
+      + "Written: " + new Date().toLocaleDateString("en-GB") + "\n\n"
+      + "Dear future me,\n\n"
+      + "Right now, life feels like:\n" + (byId("w1").value.trim() || "(left blank)") + "\n\n"
+      + "Something I am hoping for:\n" + (byId("w2").value.trim() || "(left blank)") + "\n\n"
+      + "What I want to remember:\n" + (byId("w3").value.trim() || "(left blank)") + "\n\n"
+      + "With hope, past me.\n\n"
+      + "-\nSent automatically from Base 6";
+    var url = "https://mail.google.com/mail/?view=cm&fs=1"
+      + "&to=" + encodeURIComponent("jay.raine@chiltonbridgeschool.co.uk")
+      + "&su=" + encodeURIComponent("Base 6 - Future Letter, please keep safe - " + name)
+      + "&body=" + encodeURIComponent(body);
+    var opened = window.open(url, "_blank");
+    if (!opened) { window.location.href = url; }
+    byId("send-msg").textContent = "Letter saved and email opened. Press send, and Jay will keep it safe.";
+  });
+})();
+</script>
+</body>
+</html>
