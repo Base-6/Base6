@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>The Milestone Map | Setting Goals | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { position: relative; background-color: #7b5ea7; padding: 2rem 2rem 2.8rem; text-align: center; overflow: hidden; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(254,248,244,0.13); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.9; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.82rem; font-weight: 700; color: #e7ddf3; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .header-sub { font-size: 1.02rem; color: #e7ddf3; margin-top: 0.45rem; max-width: 46ch; margin-left: auto; margin-right: auto; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 36px; z-index: 1; }
+  .main { max-width: 680px; margin: 0 auto; padding: 1.6rem 1.5rem 4rem; }
+  .lead { font-size: 1rem; line-height: 1.6; color: #444; margin-bottom: 1.4rem; }
+  .keybox { background: #efe9f6; border: 2px solid #7b5ea7; border-radius: 12px; padding: 0.9rem 1.1rem; margin-bottom: 1.4rem; font-size: 0.95rem; line-height: 1.55; }
+  .keybox strong { color: #5f4a86; }
+  .zone { background: #fff; border: 2px solid #e3d9ef; border-radius: 16px; padding: 1.1rem 1.2rem; margin-bottom: 1.1rem; }
+  .zone.filled { border-color: #7b5ea7; background: #faf7fd; }
+  .zone-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.3rem; }
+  .zone-badge { width: 44px; height: 44px; border-radius: 50%; background: #efe9f6; border: 2px solid #7b5ea7; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex: 0 0 auto; }
+  .zone-title { font-size: 1.15rem; font-weight: 700; color: #5f4a86; }
+  .zone-prompt { font-size: 0.9rem; color: #666; margin: 0.3rem 0 0.6rem; line-height: 1.5; }
+  textarea { width: 100%; min-height: 68px; font-family: inherit; font-size: 0.95rem; padding: 0.7rem 0.9rem; border: 2px solid #d8cce8; border-radius: 10px; background: #fff; resize: vertical; line-height: 1.5; }
+  textarea:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 1px; }
+  .starter { margin-top: 0.5rem; }
+  .starter > button { background: none; border: none; color: #5f4a86; font-size: 0.85rem; font-weight: 700; text-decoration: underline; cursor: pointer; padding: 0.2rem 0; font-family: inherit; }
+  .starter .chips { display: none; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+  .starter.open .chips { display: flex; }
+  .starter .chips button { background: #efe9f6; border: 1.5px solid #c9b8e0; color: #5f4a86; font-size: 0.82rem; font-weight: 700; border-radius: 999px; padding: 0.3rem 0.75rem; cursor: pointer; font-family: inherit; }
+  .starter .chips button:hover { background: #e2d6f2; }
+  .progress { text-align: center; font-weight: 700; font-size: 0.95rem; color: #5f4a86; margin: 1.4rem 0 0.4rem; min-height: 1.3em; }
+  .send { margin-top: 1.4rem; background: #efe9f6; border: 2px solid #7b5ea7; border-radius: 14px; padding: 1.1rem 1.2rem; }
+  .send h3 { font-size: 1.05rem; color: #5f4a86; margin-bottom: 0.4rem; }
+  .send p { font-size: 0.9rem; color: #555; line-height: 1.5; }
+  .send label { display: block; font-size: 0.85rem; font-weight: 700; color: #555; margin: 0.7rem 0 0.3rem; }
+  .send input[type=text] { width: 100%; max-width: 300px; padding: 0.6rem 0.85rem; font-family: inherit; font-size: 0.95rem; border: 2px solid #cbb8e2; border-radius: 10px; }
+  .send input:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 1px; }
+  button.sendbtn { margin-top: 0.8rem; font-family: inherit; font-size: 0.92rem; font-weight: 700; padding: 0.65rem 1.4rem; background: #7b5ea7; color: #fff; border: none; border-radius: 999px; cursor: pointer; box-shadow: 0 3px 0 #5f4a86; }
+  .msg { min-height: 1.3em; font-weight: 700; font-size: 0.88rem; margin-top: 0.5rem; color: #5f4a86; }
+  a:focus-visible, button:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+  .nav-foot { display: flex; justify-content: space-between; margin-top: 1.6rem; font-size: 0.9rem; font-weight: 700; }
+  .nav-foot a { color: #5f4a86; text-decoration: none; }
+  .nav-foot a:hover { text-decoration: underline; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Check-In</a>
+  <div class="header-inner">
+    <p class="week-label">Motivation Monday &middot; Setting Goals</p>
+    <h1>The Milestone Map</h1>
+    <p class="header-sub">Where would you like to be by this time next year? Let us sketch it out.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+<main class="main">
+  <p class="lead">This is a brainstorm, not a test. There are no wrong answers, and nothing here is fixed. You are just imagining where you might like to be a year from now, in three parts of life. Jot down whatever comes to mind. A few words per box is plenty.</p>
+  <div class="keybox"><strong>A year is a long time.</strong> Think how much has changed since last summer. The point of a map is not to predict the future perfectly, it is to give yourself a direction to head in.</div>
+
+  <div class="zone" id="z-learning">
+    <div class="zone-head"><span class="zone-badge" aria-hidden="true">&#128218;</span><span class="zone-title">Learning</span></div>
+    <p class="zone-prompt">Something you would like to get better at, understand, or achieve with your learning.</p>
+    <textarea id="w1" placeholder="By this time next year, with my learning I would like to..."></textarea>
+    <div class="starter"><button type="button">Need a nudge?</button><div class="chips">
+      <button type="button">get more confident with reading</button>
+      <button type="button">finish a project I am proud of</button>
+      <button type="button">try a subject that scares me a bit</button>
+    </div></div>
+  </div>
+
+  <div class="zone" id="z-social">
+    <div class="zone-head"><span class="zone-badge" aria-hidden="true">&#128101;</span><span class="zone-title">People and friendships</span></div>
+    <p class="zone-prompt">Something about how you connect with others: friends, family, or your group.</p>
+    <textarea id="w2" placeholder="By this time next year, with people I would like to..."></textarea>
+    <div class="starter"><button type="button">Need a nudge?</button><div class="chips">
+      <button type="button">feel easier in a group</button>
+      <button type="button">keep in touch with a friend</button>
+      <button type="button">try one new social thing</button>
+    </div></div>
+  </div>
+
+  <div class="zone" id="z-personal">
+    <div class="zone-head"><span class="zone-badge" aria-hidden="true">&#127793;</span><span class="zone-title">You, personally</span></div>
+    <p class="zone-prompt">Something just for you: a skill, a habit, a hobby, or a way you would like to feel.</p>
+    <textarea id="w3" placeholder="By this time next year, in myself I would like to..."></textarea>
+    <div class="starter"><button type="button">Need a nudge?</button><div class="chips">
+      <button type="button">learn something with my hands</button>
+      <button type="button">feel calmer more often</button>
+      <button type="button">get into a hobby properly</button>
+    </div></div>
+  </div>
+
+  <p class="progress" id="progress" role="status" aria-live="polite">Three areas to map. Fill whichever speak to you.</p>
+
+  <div class="send">
+    <h3>Keep your map</h3>
+    <p>Your map is saved on this device so you can come back to it. You could also send a copy to Jay, so it is somewhere safe for later in the year.</p>
+    <label for="initials">Your initials</label>
+    <input type="text" id="initials" placeholder="Type your initials">
+    <div><button class="sendbtn" id="send-btn" type="button">Send my map to Jay</button></div>
+    <p class="msg" id="send-msg" role="status"></p>
+  </div>
+
+  <div class="nav-foot">
+    <a href="index.html">&larr; All check-ins</a>
+    <a href="2.html">Tuesday: Back-Plan Board &rarr;</a>
+  </div>
+</main>
+<footer>Base 6 &middot; Chilton Bridge School</footer>
+<script>
+"use strict";
+var NS = "base6.w6pshe1.";
+function save(k, v) { try { localStorage.setItem(NS + k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(NS + k); } catch (e) { return null; } }
+function byId(id) { return document.getElementById(id); }
+
+var FIELDS = ["w1", "w2", "w3"];
+var ZONES = { w1: "z-learning", w2: "z-social", w3: "z-personal" };
+
+function updateProgress() {
+  var n = 0;
+  FIELDS.forEach(function (f) {
+    var filled = byId(f).value.trim().length > 0;
+    var z = byId(ZONES[f]);
+    if (z) { z.classList.toggle("filled", filled); }
+    if (filled) { n += 1; }
+  });
+  var p = byId("progress");
+  if (n === 0) { p.textContent = "Three areas to map. Fill whichever speak to you."; }
+  else if (n < 3) { p.textContent = n + " of 3 mapped. No need to do all three unless you want to."; }
+  else { p.textContent = "All three mapped. That is a proper sense of direction."; }
+}
+
+FIELDS.forEach(function (f) {
+  var ta = byId(f);
+  var saved = load(f); if (saved) { ta.value = saved; }
+  ta.addEventListener("input", function () { save(f, ta.value); updateProgress(); });
+});
+
+document.querySelectorAll(".starter > button").forEach(function (b) {
+  b.addEventListener("click", function () {
+    var open = b.parentNode.classList.toggle("open");
+    b.textContent = open ? "Hide ideas" : "Need a nudge?";
+  });
+});
+document.querySelectorAll(".starter .chips button").forEach(function (chip) {
+  chip.addEventListener("click", function () {
+    var zone = chip.closest(".zone");
+    var ta = zone.querySelector("textarea");
+    var txt = chip.textContent.trim();
+    ta.value = ta.value.trim() ? ta.value.trim() + ", " + txt : txt.charAt(0).toUpperCase() + txt.slice(1);
+    save(ta.id, ta.value);
+    updateProgress();
+    ta.focus();
+  });
+});
+
+(function () {
+  var init = byId("initials");
+  try { var p = JSON.parse(localStorage.getItem("base6Profile") || "null"); if (p && p.initials) { init.value = p.initials; } } catch (e) {}
+  byId("send-btn").addEventListener("click", function () {
+    var name = init.value.trim();
+    if (!name) { byId("send-msg").textContent = "Pop your initials in first."; return; }
+    try { localStorage.setItem("base6Profile", JSON.stringify({ initials: name })); } catch (e) {}
+    var body = "BASE 6 - SETTING GOALS - THE MILESTONE MAP (Monday)\n\n"
+      + "Student: " + name + "\n"
+      + "Date: " + new Date().toLocaleDateString("en-GB") + "\n\n"
+      + "By this time next year...\n\n"
+      + "Learning:\n" + (byId("w1").value.trim() || "(not written)") + "\n\n"
+      + "People and friendships:\n" + (byId("w2").value.trim() || "(not written)") + "\n\n"
+      + "Personally:\n" + (byId("w3").value.trim() || "(not written)") + "\n\n"
+      + "-\nSent automatically from Base 6";
+    var url = "https://mail.google.com/mail/?view=cm&fs=1"
+      + "&to=" + encodeURIComponent("jay.raine@chiltonbridgeschool.co.uk")
+      + "&su=" + encodeURIComponent("Base 6 - Setting Goals: My Milestone Map - " + name)
+      + "&body=" + encodeURIComponent(body);
+    var opened = window.open(url, "_blank");
+    if (!opened) { window.location.href = url; }
+    byId("send-msg").textContent = "Email opened. Press send in the email.";
+  });
+})();
+
+updateProgress();
+</script>
+</body>
+</html>
