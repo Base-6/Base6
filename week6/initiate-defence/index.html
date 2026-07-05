@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Initiate: Ocean Defence | Word of the Week | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: #007291; padding: 1.6rem 2rem 2.4rem; text-align: center; overflow: hidden; }
+  .site-header::after { content: ""; position: absolute; bottom: 6px; right: -50px; width: 180px; height: 180px; background: rgba(239,119,36,0.16); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.9; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.8rem; font-weight: 700; color: #d7eef4; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.35rem; }
+  h1 { font-size: 2rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .header-sub { font-size: 1rem; color: #d7eef4; margin-top: 0.4rem; max-width: 52ch; margin-left: auto; margin-right: auto; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 34px; z-index: 1; }
+
+  .main { max-width: 960px; margin: 0 auto; padding: 1.4rem 1rem 3rem; }
+
+  /* intro / word framing */
+  .intro { background: #fff; border: 2px solid #ef7724; border-radius: 14px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; }
+  .intro h2 { font-size: 1.1rem; color: #c05a10; margin-bottom: 0.3rem; }
+  .intro p { font-size: 0.95rem; line-height: 1.55; color: #444; }
+
+  /* screens */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* level select */
+  .level-select { text-align: center; }
+  .tier-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; margin: 1.2rem 0; }
+  .tier-card { background: #fff; border: 2px solid var(--tc); border-radius: 16px; padding: 1.3rem 1.2rem; text-align: left; cursor: pointer; font-family: inherit; transition: transform 0.15s, box-shadow 0.15s; position: relative; overflow: hidden; }
+  .tier-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--tc); }
+  .tier-card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px var(--tsh); }
+  .tier-card:disabled { opacity: 0.55; cursor: default; transform: none; box-shadow: none; }
+  .tier-name { font-size: 1.25rem; font-weight: 700; color: var(--tc); margin-bottom: 0.2rem; }
+  .tier-tag { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 0.6rem; }
+  .tier-desc { font-size: 0.9rem; color: #555; line-height: 1.5; margin-bottom: 0.7rem; }
+  .tier-stats { font-size: 0.82rem; color: #666; line-height: 1.6; }
+  .tier-star { position: absolute; top: 12px; right: 14px; font-size: 0.78rem; font-weight: 700; color: #2e8b57; }
+  .tier-star.locked { color: #bbb; }
+
+  /* game area */
+  .hud { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; background: #063a4a; border-radius: 12px 12px 0 0; padding: 0.6rem 0.9rem; color: #eaf6fb; }
+  .hud-stat { display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 700; font-size: 0.95rem; background: rgba(255,255,255,0.1); border-radius: 999px; padding: 0.28rem 0.75rem; }
+  .hud-stat svg { width: 18px; height: 18px; display: block; }
+  .hud-wave { margin-left: auto; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.03em; }
+  .hud-btn { font-family: inherit; font-weight: 700; font-size: 0.85rem; border: none; border-radius: 8px; padding: 0.4rem 0.8rem; cursor: pointer; background: #0f7d9c; color: #fff; }
+  .hud-btn:hover { background: #12a0c8; }
+  .hud-btn.primary { background: #ef7724; }
+  .hud-btn.primary:hover { background: #ff8a3a; }
+  .hud-btn:disabled { background: #4a6670; cursor: default; }
+
+  .field-wrap { position: relative; background: #0a3d54; border-radius: 0; overflow: hidden; line-height: 0; }
+  #field { display: block; width: 100%; height: auto; touch-action: manipulation; }
+
+  /* placement pad markers drawn on canvas; tower menu is DOM overlay */
+  .tower-menu, .tower-manage { position: absolute; z-index: 20; background: #0d5570; border: 2px solid #12a0c8; border-radius: 12px; padding: 0.6rem; box-shadow: 0 6px 20px rgba(0,0,0,0.35); width: 220px; }
+  .tower-menu.hidden, .tower-manage.hidden { display: none; }
+  .tm-title { font-size: 0.78rem; font-weight: 700; color: #bfe6f2; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; text-align: center; }
+  .tm-opt { display: flex; align-items: center; gap: 0.5rem; width: 100%; background: #0a4a63; border: 2px solid transparent; border-radius: 9px; padding: 0.45rem 0.55rem; cursor: pointer; font-family: inherit; margin-bottom: 0.35rem; text-align: left; }
+  .tm-opt:hover:not(:disabled) { border-color: #ffce2e; }
+  .tm-opt:disabled { opacity: 0.5; cursor: default; }
+  .tm-swatch { width: 30px; height: 30px; border-radius: 6px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; }
+  .tm-info { flex: 1; }
+  .tm-name { font-size: 0.85rem; font-weight: 700; color: #fff; line-height: 1.1; }
+  .tm-cost { font-size: 0.78rem; font-weight: 700; color: #ffce2e; }
+  .tm-desc { font-size: 0.72rem; color: #bfe6f2; line-height: 1.3; margin-top: 0.15rem; }
+  .tm-close { display: block; width: 100%; background: none; border: none; color: #bfe6f2; font-family: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; text-decoration: underline; margin-top: 0.2rem; }
+
+  .tower-manage .mg-stats { font-size: 0.78rem; color: #cdeef7; line-height: 1.5; margin-bottom: 0.5rem; }
+  .mg-row { display: flex; gap: 0.4rem; }
+  .mg-btn { flex: 1; font-family: inherit; font-weight: 700; font-size: 0.82rem; border: none; border-radius: 8px; padding: 0.5rem; cursor: pointer; }
+  .mg-up { background: #2e8b57; color: #fff; }
+  .mg-up:hover:not(:disabled) { background: #37a869; }
+  .mg-up:disabled { background: #4a6670; cursor: default; }
+  .mg-sell { background: #b5532a; color: #fff; }
+  .mg-sell:hover { background: #d0653a; }
+
+  /* bottom bar under field */
+  .field-foot { display: flex; align-items: center; gap: 0.7rem; background: #063a4a; border-radius: 0 0 12px 12px; padding: 0.6rem 0.9rem; color: #eaf6fb; flex-wrap: wrap; }
+  .field-foot .hint { font-size: 0.82rem; color: #bfe6f2; line-height: 1.4; }
+  .earth { margin-left: auto; display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 700; font-size: 0.85rem; }
+  .earth-meter { width: 64px; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.2); overflow: hidden; }
+  .earth-fill { height: 100%; background: linear-gradient(90deg, #2e8b57, #6fce8f); width: 100%; transition: width 0.4s; }
+
+  /* banners */
+  .banner { position: absolute; inset: 0; z-index: 30; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: rgba(6,36,61,0.82); color: #fff; padding: 1.5rem; }
+  .banner.show { display: flex; }
+  .banner h2 { font-size: 2rem; color: #ffce2e; text-shadow: 0 2px 0 #b5532a; margin-bottom: 0.6rem; }
+  .banner p { font-size: 1rem; color: #eaf6fb; line-height: 1.5; max-width: 40ch; margin-bottom: 1rem; }
+  .banner .collected { display: flex; gap: 1.2rem; justify-content: center; margin-bottom: 1rem; font-size: 1.1rem; font-weight: 700; }
+  .banner .collected span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .banner .collected svg { width: 24px; height: 24px; }
+  .banner button { font-family: inherit; font-weight: 700; font-size: 1rem; border: none; border-radius: 999px; padding: 0.7rem 1.8rem; cursor: pointer; background: #ef7724; color: #fff; box-shadow: 0 4px 0 #b5532a; }
+  .banner button:hover { background: #ff8a3a; }
+  .banner .btn-row { display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; }
+  .banner .btn-ghost { background: rgba(255,255,255,0.15); box-shadow: none; }
+  .banner .btn-ghost:hover { background: rgba(255,255,255,0.28); }
+
+  /* tip dolphin */
+  .tip { display: flex; align-items: center; gap: 0.7rem; background: #e6f5f8; border: 2px solid #12a0c8; border-radius: 12px; padding: 0.7rem 1rem; margin-top: 1rem; }
+  .tip svg { width: 40px; height: 40px; flex: 0 0 auto; }
+  .tip p { font-size: 0.88rem; color: #0a4a63; line-height: 1.45; }
+  .tip strong { color: #007291; }
+
+  /* send / finish */
+  .send { margin-top: 1.2rem; background: #e6f5f8; border: 2px solid #007291; border-radius: 14px; padding: 1.1rem 1.2rem; }
+  .send h3 { font-size: 1.05rem; color: #005a72; margin-bottom: 0.4rem; }
+  .send p { font-size: 0.9rem; color: #555; line-height: 1.5; }
+  .send label { display: block; font-size: 0.85rem; font-weight: 700; color: #555; margin: 0.7rem 0 0.3rem; }
+  .send input[type=text] { width: 100%; max-width: 300px; padding: 0.6rem 0.85rem; font-family: inherit; font-size: 0.95rem; border: 2px solid #b5d9e2; border-radius: 10px; }
+  .send input:focus-visible { outline: 3px solid #007291; outline-offset: 1px; }
+  .send .sendbtn { margin-top: 0.8rem; font-family: inherit; font-weight: 700; font-size: 0.92rem; padding: 0.65rem 1.4rem; background: #007291; color: #fff; border: none; border-radius: 999px; cursor: pointer; box-shadow: 0 3px 0 #005a72; }
+  .send .msg { min-height: 1.3em; font-weight: 700; font-size: 0.88rem; margin-top: 0.5rem; color: #1f6b3a; }
+
+  .backlink { display: inline-block; margin-top: 1.2rem; font-size: 0.9rem; font-weight: 700; color: #007291; text-decoration: none; }
+  .backlink:hover { text-decoration: underline; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Week 6</a>
+  <div class="header-inner">
+    <p class="week-label">Word of the Week &middot; Initiate</p>
+    <h1>Ocean Defence</h1>
+    <p class="header-sub">Plastic is drifting into the bay. Place your sea-creature crew to clean it up before it reaches the open water.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <div class="intro">
+    <h2>The word is Initiate: to make the first move</h2>
+    <p>Nothing here happens until you start it. You choose where the first tower goes, then set the first wave moving. The whole defence begins with one decision from you. That is what it means to initiate: everything that follows grows from the first push.</p>
+  </div>
+
+  <!-- LEVEL SELECT -->
+  <section class="screen active" id="screen-select">
+    <div class="level-select">
+      <div class="tier-grid" id="tier-grid"></div>
+      <p style="font-size:0.85rem; color:#666; line-height:1.5;">Clear a tier to unlock a leaf. Start with Normal to learn the ropes, then test yourself. Almost Impossible is meant to be beaten only after plenty of practice.</p>
+    </div>
+    <div class="tip">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="30" cy="34" rx="22" ry="15" fill="#4bb3d4"/><path d="M48 30 Q60 24 58 36 Q54 40 46 38 Z" fill="#4bb3d4"/><circle cx="22" cy="31" r="3" fill="#063a4a"/><path d="M12 34 Q8 34 9 40" stroke="#4bb3d4" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M20 44 Q30 50 42 44" stroke="#eaf6fb" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <p><strong>How to play.</strong> Tap a stone pad beside the path to place a tower. Tap a tower you own to upgrade or sell it. Start the wave when you are ready, and speed it up once you feel confident.</p>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section class="screen" id="screen-game">
+    <div class="hud">
+      <span class="hud-stat" id="hud-lives" title="Lives"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 21 C 6 16 3 12 3 8 A 4 4 0 0 1 12 6 A 4 4 0 0 1 21 8 C 21 12 18 16 12 21 Z" fill="#ff5a5a"/></svg><span id="lives-val">20</span></span>
+      <span class="hud-stat" id="hud-coins" title="Coins"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#ffce2e" stroke="#c79a13" stroke-width="2"/><text x="12" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="#8a6a10">C</text></svg><span id="coins-val">150</span></span>
+      <span class="hud-wave" id="wave-label">Wave 0 / 15</span>
+      <button class="hud-btn" id="btn-pause" type="button">Pause</button>
+      <button class="hud-btn" id="btn-speed" type="button">Speed x1</button>
+      <button class="hud-btn primary" id="btn-start-wave" type="button">INITIATE</button>
+    </div>
+
+    <div class="field-wrap" id="field-wrap">
+      <canvas id="field" width="900" height="560" role="img" aria-label="Ocean defence play field. Use the buttons to place towers and start waves."></canvas>
+
+      <div class="tower-menu hidden" id="tower-menu">
+        <div class="tm-title">Place a tower</div>
+        <div id="tm-options"></div>
+        <button class="tm-close" id="tm-close" type="button">Cancel</button>
+      </div>
+
+      <div class="tower-manage hidden" id="tower-manage">
+        <div class="tm-title" id="mg-title">Turtle Tower</div>
+        <div class="mg-stats" id="mg-stats"></div>
+        <div class="mg-row">
+          <button class="mg-btn mg-up" id="mg-upgrade" type="button">Upgrade</button>
+          <button class="mg-btn mg-sell" id="mg-sell" type="button">Sell</button>
+        </div>
+        <button class="tm-close" id="mg-close" type="button">Close</button>
+      </div>
+
+      <div class="banner" id="banner">
+        <h2 id="banner-title">Wave cleared!</h2>
+        <div class="collected" id="banner-collected"></div>
+        <p id="banner-text"></p>
+        <div class="btn-row" id="banner-btns"></div>
+      </div>
+    </div>
+
+    <div class="field-foot">
+      <span class="hint" id="foot-hint">Tap a stone pad to place your first tower, then press INITIATE.</span>
+      <span class="earth" title="How clean the bay is">
+        <span id="earth-pct">100%</span>
+        <span class="earth-meter"><span class="earth-fill" id="earth-fill"></span></span>
+      </span>
+    </div>
+
+    <div class="tip">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="30" cy="34" rx="22" ry="15" fill="#4bb3d4"/><path d="M48 30 Q60 24 58 36 Q54 40 46 38 Z" fill="#4bb3d4"/><circle cx="22" cy="31" r="3" fill="#063a4a"/><path d="M12 34 Q8 34 9 40" stroke="#4bb3d4" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M20 44 Q30 50 42 44" stroke="#eaf6fb" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <p id="tip-text"><strong>Tip.</strong> The turtle is slow but its net hits several pieces at once. The crab is cheap and quick. The octopus slows plastic down with bubbles. A mix works best.</p>
+    </div>
+
+    <a class="backlink" id="quit-link" href="#" role="button">&larr; Back to level select</a>
+  </section>
+
+</main>
+
+<footer>Base 6 &middot; Chilton Bridge School</footer>
+
+<script id="game-script">
+"use strict";
+
+/* ===== Initiate: Ocean Defence ===== */
+var NS = "base6.w6defence.";
+function save(k, v) { try { localStorage.setItem(NS + k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(NS + k); } catch (e) { return null; } }
+function loadJSON(k, fb) { try { var v = localStorage.getItem(NS + k); return v ? JSON.parse(v) : fb; } catch (e) { return fb; } }
+function byId(id) { return document.getElementById(id); }
+
+/* bridges to UI module (defined in the UI IIFE, attached to window) */
+function updateHUD() { if (window.__tdUpdateHUD) { window.__tdUpdateHUD(); } }
+function hideBanner() { if (window.__tdHideBanner) { window.__tdHideBanner(); } }
+function showWaveBanner(bonus) { if (window.__tdWaveBanner) { window.__tdWaveBanner(bonus); } }
+function showWinBanner() { if (window.__tdWinBanner) { window.__tdWinBanner(); } }
+function showLoseBanner() { if (window.__tdLoseBanner) { window.__tdLoseBanner(); } }
+
+var ASSET_DIR = "assets/";
+var images = {};
+var imgReady = {};
+function loadImg(name) {
+  var im = new Image();
+  im.onload = function () { imgReady[name] = true; };
+  im.onerror = function () { imgReady[name] = false; };
+  im.src = ASSET_DIR + name + ".png";
+  images[name] = im;
+}
+["tower-turtle-1","tower-turtle-2","tower-crab-1","tower-crab-2","tower-octopus-1","tower-octopus-2",
+ "enemy-bottle","enemy-bag","enemy-cup","enemy-sixpack","enemy-canister",
+ "shot-net","shot-bubble","shot-ink"].forEach(loadImg);
+
+/* ---- tower defs (two levels each) ---- */
+var TOWERS = {
+  turtle: {
+    name: "Turtle Tower", colour: "#2e8b57", shot: "net",
+    cost: 100, sell: [60, 120],
+    levels: [
+      { dmg: 3, range: 90, rate: 1400, splash: 30, slow: 0 },
+      { dmg: 5, range: 110, rate: 1100, splash: 45, slow: 0 }
+    ],
+    upgradeCost: 200, upgradeDesc: "Stronger nets trap more plastic at once.",
+    desc: "Slow but strong. Nets hit several pieces at once."
+  },
+  crab: {
+    name: "Crab Tower", colour: "#ef7724", shot: "ink",
+    cost: 60, sell: [35, 70],
+    levels: [
+      { dmg: 1, range: 75, rate: 550, splash: 0, slow: 0 },
+      { dmg: 2, range: 90, rate: 420, splash: 0, slow: 0 }
+    ],
+    upgradeCost: 120, upgradeDesc: "Faster claws, more damage.",
+    desc: "Cheap and quick. Fires fast at one piece at a time."
+  },
+  octopus: {
+    name: "Octopus Tower", colour: "#7b5ea7", shot: "bubble",
+    cost: 80, sell: [45, 90],
+    levels: [
+      { dmg: 1, range: 85, rate: 800, splash: 0, slow: 0.35, slowDur: 1200 },
+      { dmg: 2, range: 100, rate: 700, splash: 0, slow: 0.55, slowDur: 1600 }
+    ],
+    upgradeCost: 160, upgradeDesc: "Thicker bubbles slow plastic more, for longer.",
+    desc: "Fires bubbles that slow plastic down."
+  }
+};
+var TOWER_ORDER = ["turtle", "crab", "octopus"];
+
+/* ---- enemy defs ---- */
+var ENEMIES = {
+  bottle:   { name: "bottle",   hp: 4,  speed: 55, reward: 5,  leak: 1, colour: "#8fd0e6", r: 15 },
+  bag:      { name: "bag",      hp: 3,  speed: 80, reward: 6,  leak: 1, colour: "#e8e8ee", r: 16 },
+  cup:      { name: "cup",      hp: 6,  speed: 45, reward: 7,  leak: 1, colour: "#f0dcc0", r: 15 },
+  sixpack:  { name: "sixpack",  hp: 5,  speed: 60, reward: 8,  leak: 2, colour: "#cfd8dc", r: 16 },
+  canister: { name: "canister", hp: 18, speed: 35, reward: 20, leak: 2, colour: "#b0b6ba", r: 20 }
+};
+
+/* ---- difficulty tiers ---- */
+var TIERS = {
+  normal: { key: "normal", name: "Normal", tag: "Level 1", desc: "A steady introduction. Learn how each creature works and clear all fifteen waves.",
+    hpMul: 1.0, spdMul: 1.0, countMul: 1.0, coins: 150, lives: 20, tc: "#2e8b57", tsh: "rgba(46,139,87,0.22)" },
+  hard: { key: "hard", name: "Hard", tag: "Level 2", desc: "More plastic, tougher and faster, with less to spend. You will need a real plan.",
+    hpMul: 1.5, spdMul: 1.15, countMul: 1.25, coins: 130, lives: 15, tc: "#ef7724", tsh: "rgba(239,119,36,0.22)" },
+  impossible: { key: "impossible", name: "Almost Impossible", tag: "Level 3", desc: "A brutal tide of plastic. Only attempt this once you have mastered the others.",
+    hpMul: 2.2, spdMul: 1.3, countMul: 1.5, coins: 110, lives: 12, tc: "#7b5ea7", tsh: "rgba(123,94,167,0.22)" }
+};
+var TIER_ORDER = ["normal", "hard", "impossible"];
+
+var TOTAL_WAVES = 15;
+
+/* ---- path waypoints (900x560 field), an S-curve ---- */
+var PATH = [
+  { x: -30, y: 150 }, { x: 150, y: 150 }, { x: 240, y: 170 }, { x: 300, y: 240 },
+  { x: 320, y: 330 }, { x: 380, y: 400 }, { x: 480, y: 420 }, { x: 560, y: 380 },
+  { x: 600, y: 300 }, { x: 640, y: 220 }, { x: 720, y: 180 }, { x: 820, y: 190 },
+  { x: 930, y: 220 }
+];
+
+/* ---- buildable pads beside the path ---- */
+var PADS = [
+  { x: 120, y: 90 }, { x: 230, y: 250 }, { x: 250, y: 400 }, { x: 400, y: 320 },
+  { x: 470, y: 500 }, { x: 560, y: 470 }, { x: 540, y: 250 }, { x: 690, y: 300 },
+  { x: 680, y: 100 }, { x: 800, y: 280 }, { x: 380, y: 130 }, { x: 820, y: 110 }
+];
+
+/* ===== runtime state ===== */
+var canvas, ctx, W = 900, H = 560;
+var state = null;
+var raf = null, lastT = 0, speedMul = 1, paused = false;
+var selectedPad = null, selectedTower = null;
+
+function newLevelState(tierKey) {
+  var tier = TIERS[tierKey];
+  return {
+    tier: tierKey,
+    lives: tier.lives,
+    coins: tier.coins,
+    wave: 0,
+    waveActive: false,
+    towers: [],
+    enemies: [],
+    shots: [],
+    particles: [],
+    spawnQueue: [],
+    spawnTimer: 0,
+    cleaned: 0,
+    coinsEarned: 0,
+    over: false,
+    won: false
+  };
+}
+
+/* ===== path helpers ===== */
+function pathLength() {
+  var L = 0;
+  for (var i = 1; i < PATH.length; i++) {
+    L += Math.hypot(PATH[i].x - PATH[i - 1].x, PATH[i].y - PATH[i - 1].y);
+  }
+  return L;
+}
+var PATH_LEN = pathLength();
+function posAlong(dist) {
+  var d = dist;
+  for (var i = 1; i < PATH.length; i++) {
+    var seg = Math.hypot(PATH[i].x - PATH[i - 1].x, PATH[i].y - PATH[i - 1].y);
+    if (d <= seg) {
+      var t = seg === 0 ? 0 : d / seg;
+      return { x: PATH[i - 1].x + (PATH[i].x - PATH[i - 1].x) * t, y: PATH[i - 1].y + (PATH[i].y - PATH[i - 1].y) * t };
+    }
+    d -= seg;
+  }
+  return { x: PATH[PATH.length - 1].x, y: PATH[PATH.length - 1].y };
+}
+
+/* ===== wave composition ===== */
+function buildWave(waveNum, tier) {
+  var list = [];
+  var base = 4 + waveNum * 2;
+  var count = Math.round(base * tier.countMul);
+  var types;
+  if (waveNum < 3) { types = ["bottle", "bottle", "bag"]; }
+  else if (waveNum < 6) { types = ["bottle", "bag", "cup", "bottle"]; }
+  else if (waveNum < 10) { types = ["bag", "cup", "sixpack", "bottle", "bag"]; }
+  else { types = ["cup", "sixpack", "bag", "bottle", "sixpack", "cup"]; }
+  for (var i = 0; i < count; i++) { list.push(types[i % types.length]); }
+  if (waveNum === 5 || waveNum === 10 || waveNum === 15) {
+    var bosses = waveNum === 15 ? 3 : (waveNum === 10 ? 2 : 1);
+    for (var b = 0; b < bosses; b++) { list.push("canister"); }
+  }
+  return list;
+}
+
+/* ===== spawn / update ===== */
+function startWave() {
+  if (state.waveActive || state.over) { return; }
+  if (state.wave >= TOTAL_WAVES) { return; }
+  state.wave += 1;
+  var tier = TIERS[state.tier];
+  var comp = buildWave(state.wave, tier);
+  state.spawnQueue = comp.slice();
+  state.spawnTimer = 0;
+  state.waveActive = true;
+  updateHUD();
+  hideBanner();
+}
+
+function spawnEnemy(typeKey) {
+  var def = ENEMIES[typeKey];
+  var tier = TIERS[state.tier];
+  var hp = Math.round(def.hp * tier.hpMul);
+  state.enemies.push({
+    type: typeKey, def: def, hp: hp, maxHp: hp,
+    speed: def.speed * tier.spdMul, dist: 0,
+    slowUntil: 0, slowFactor: 1, r: def.r
+  });
+}
+
+function step(dt) {
+  var tier = TIERS[state.tier];
+  /* spawn */
+  if (state.waveActive && state.spawnQueue.length > 0) {
+    state.spawnTimer -= dt;
+    if (state.spawnTimer <= 0) {
+      spawnEnemy(state.spawnQueue.shift());
+      state.spawnTimer = 620;
+    }
+  }
+  /* enemies */
+  var now = performance.now();
+  for (var i = state.enemies.length - 1; i >= 0; i--) {
+    var e = state.enemies[i];
+    var sp = e.speed;
+    if (now < e.slowUntil) { sp *= e.slowFactor; }
+    e.dist += sp * dt / 1000;
+    if (e.dist >= PATH_LEN) {
+      state.lives -= e.def.leak;
+      state.enemies.splice(i, 1);
+      if (state.lives <= 0) { state.lives = 0; loseLevel(); return; }
+      updateHUD();
+      continue;
+    }
+  }
+  /* towers fire */
+  for (var t = 0; t < state.towers.length; t++) {
+    var tw = state.towers[t];
+    tw.cool -= dt;
+    if (tw.cool > 0) { continue; }
+    var lvl = TOWERS[tw.kind].levels[tw.level];
+    var target = null, tdist = -1;
+    for (var j = 0; j < state.enemies.length; j++) {
+      var en = state.enemies[j];
+      var p = posAlong(en.dist);
+      var d = Math.hypot(p.x - tw.x, p.y - tw.y);
+      if (d <= lvl.range && en.dist > tdist) { target = en; tdist = en.dist; }
+    }
+    if (target) {
+      fireShot(tw, target, lvl);
+      tw.cool = lvl.rate;
+    }
+  }
+  /* shots */
+  for (var s = state.shots.length - 1; s >= 0; s--) {
+    var sh = state.shots[s];
+    if (!sh.target || state.enemies.indexOf(sh.target) === -1) { state.shots.splice(s, 1); continue; }
+    var tp = posAlong(sh.target.dist);
+    var ang = Math.atan2(tp.y - sh.y, tp.x - sh.x);
+    var spd = 420;
+    sh.x += Math.cos(ang) * spd * dt / 1000;
+    sh.y += Math.sin(ang) * spd * dt / 1000;
+    if (Math.hypot(tp.x - sh.x, tp.y - sh.y) < 16) {
+      applyHit(sh, tp);
+      state.shots.splice(s, 1);
+    }
+  }
+  /* particles */
+  for (var pi = state.particles.length - 1; pi >= 0; pi--) {
+    var pa = state.particles[pi];
+    pa.life -= dt;
+    pa.x += pa.vx * dt / 1000;
+    pa.y += pa.vy * dt / 1000;
+    if (pa.life <= 0) { state.particles.splice(pi, 1); }
+  }
+  /* wave end */
+  if (state.waveActive && state.spawnQueue.length === 0 && state.enemies.length === 0) {
+    state.waveActive = false;
+    waveCleared();
+  }
+}
+
+function fireShot(tw, target, lvl) {
+  state.shots.push({ x: tw.x, y: tw.y, target: target, dmg: lvl.dmg, splash: lvl.splash, slow: lvl.slow, slowDur: lvl.slowDur || 0, kind: TOWERS[tw.kind].shot });
+}
+
+function applyHit(sh, tp) {
+  var reduced = false;
+  function hurt(en) {
+    en.hp -= sh.dmg;
+    if (sh.slow > 0) { en.slowUntil = performance.now() + sh.slowDur; en.slowFactor = 1 - sh.slow; }
+    if (en.hp <= 0) { killEnemy(en); }
+  }
+  if (sh.splash > 0) {
+    for (var k = state.enemies.length - 1; k >= 0; k--) {
+      var en = state.enemies[k];
+      var p = posAlong(en.dist);
+      if (Math.hypot(p.x - tp.x, p.y - tp.y) <= sh.splash) { hurt(en); reduced = true; }
+    }
+    spawnParticles(tp.x, tp.y, "#2e8b57", 8);
+  } else {
+    if (sh.target && state.enemies.indexOf(sh.target) !== -1) { hurt(sh.target); }
+    spawnParticles(tp.x, tp.y, sh.kind === "bubble" ? "#7b5ea7" : "#ef7724", 4);
+  }
+}
+
+function killEnemy(en) {
+  var idx = state.enemies.indexOf(en);
+  if (idx === -1) { return; }
+  state.enemies.splice(idx, 1);
+  state.coins += en.def.reward;
+  state.coinsEarned += en.def.reward;
+  state.cleaned += 1;
+  var p = posAlong(en.dist);
+  spawnParticles(p.x, p.y, "#ffce2e", 6);
+  updateHUD();
+}
+
+function spawnParticles(x, y, colour, n) {
+  if (prefersReduced()) { return; }
+  for (var i = 0; i < n; i++) {
+    var a = Math.random() * Math.PI * 2;
+    var sp = 40 + Math.random() * 80;
+    state.particles.push({ x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 380, maxLife: 380, colour: colour });
+  }
+}
+
+function waveCleared() {
+  var bonus = 20 + state.wave * 4;
+  state.coins += bonus;
+  state.coinsEarned += bonus;
+  updateHUD();
+  if (state.wave >= TOTAL_WAVES) { winLevel(); return; }
+  showWaveBanner(bonus);
+}
+
+function loseLevel() {
+  state.over = true;
+  state.waveActive = false;
+  stopLoop();
+  showLoseBanner();
+}
+
+function winLevel() {
+  state.over = true;
+  state.won = true;
+  state.waveActive = false;
+  stopLoop();
+  markCleared(state.tier);
+  showWinBanner();
+}
+
+function prefersReduced() {
+  return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+/* ===== cleared-tier persistence ===== */
+function getCleared() { return loadJSON("cleared", {}); }
+function markCleared(tierKey) {
+  var c = getCleared();
+  c[tierKey] = true;
+  save("cleared", JSON.stringify(c));
+}
+
+/* expose a few for the UI module */
+window.__td = {
+  TOWERS: TOWERS, TOWER_ORDER: TOWER_ORDER, TIERS: TIERS, TIER_ORDER: TIER_ORDER,
+  ENEMIES: ENEMIES, TOTAL_WAVES: TOTAL_WAVES, PATH: PATH, PADS: PADS,
+  images: images, imgReady: imgReady,
+  posAlong: posAlong, PATH_LEN: PATH_LEN,
+  getState: function () { return state; },
+  setState: function (s) { state = s; },
+  newLevelState: newLevelState,
+  startWave: startWave, step: step,
+  getCleared: getCleared, markCleared: markCleared,
+  save: save, load: load, loadJSON: loadJSON, byId: byId,
+  prefersReduced: prefersReduced,
+  setSpeed: function (m) { speedMul = m; },
+  getSpeed: function () { return speedMul; },
+  setPaused: function (p) { paused = p; },
+  getPaused: function () { return paused; },
+  startLoop: startLoop, stopLoop: stopLoop
+};
+
+/* ===== main loop ===== */
+function startLoop() {
+  if (raf) { return; }
+  lastT = performance.now();
+  raf = requestAnimationFrame(loop);
+}
+function stopLoop() {
+  if (raf) { cancelAnimationFrame(raf); raf = null; }
+}
+function loop(now) {
+  raf = requestAnimationFrame(loop);
+  var dt = now - lastT;
+  lastT = now;
+  if (dt > 60) { dt = 60; }
+  if (!paused && state && !state.over) {
+    var sub = speedMul;
+    step(dt * sub);
+  }
+  if (window.__tdRender) { window.__tdRender(); }
+}
+
+
+
+/* ===== UI MODULE ===== */
+/* ===== Rendering + UI (uses window.__td) ===== */
+(function () {
+  var TD = window.__td;
+  var byId = TD.byId;
+  var canvas = byId("field");
+  var ctx = canvas.getContext("2d");
+  var W = canvas.width, H = canvas.height;
+
+  /* ===== ISOMETRIC PROJECTION =====
+     Game logic lives in flat world space (0..900 x, 0..560 y), unchanged and tested.
+     We project world -> iso screen only when drawing. Standard 2:1 iso feel.
+     A height value h (world units) lifts towers/enemies off the water plane. */
+  var ISO = {
+    scaleX: 0.60,
+    scaleY: 0.335,
+    originX: W * 0.5,
+    originY: 292,
+    heightK: 0.62
+  };
+  function worldToIso(wx, wy, h) {
+    var cx = wx - 450;
+    var cy = wy - 280;
+    var sx = (cx - cy) * ISO.scaleX + ISO.originX;
+    var sy = (cx + cy) * ISO.scaleY + ISO.originY - (h || 0) * ISO.heightK;
+    return { x: sx, y: sy };
+  }
+  function depthKey(wx, wy) { return wx + wy; }
+
+  /* ---- level select ---- */
+  function buildTierGrid() {
+    var grid = byId("tier-grid");
+    grid.innerHTML = "";
+    var cleared = TD.getCleared();
+    TD.TIER_ORDER.forEach(function (key, idx) {
+      var tier = TD.TIERS[key];
+      var prevKey = idx > 0 ? TD.TIER_ORDER[idx - 1] : null;
+      var locked = prevKey && !cleared[prevKey];
+      var btn = document.createElement("button");
+      btn.className = "tier-card";
+      btn.style.setProperty("--tc", tier.tc);
+      btn.style.setProperty("--tsh", tier.tsh);
+      btn.disabled = !!locked;
+      var starTxt = cleared[key] ? "Cleared" : (locked ? "Locked" : "Not yet");
+      btn.innerHTML =
+        '<span class="tier-star ' + (cleared[key] ? "" : "locked") + '">' + starTxt + '</span>' +
+        '<div class="tier-tag">' + tier.tag + '</div>' +
+        '<div class="tier-name">' + tier.name + '</div>' +
+        '<div class="tier-desc">' + tier.desc + '</div>' +
+        '<div class="tier-stats">Lives ' + tier.lives + ' &middot; Coins ' + tier.coins + ' &middot; ' + TD.TOTAL_WAVES + ' waves</div>';
+      if (locked) {
+        btn.innerHTML += '<div class="tier-stats" style="margin-top:0.4rem; color:#b5532a;">Clear ' + TD.TIERS[prevKey].name + ' to unlock.</div>';
+      }
+      btn.addEventListener("click", function () { if (!locked) { enterLevel(key); } });
+      grid.appendChild(btn);
+    });
+  }
+
+  /* ---- screens ---- */
+  function show(screenId) {
+    document.querySelectorAll(".screen").forEach(function (s) { s.classList.toggle("active", s.id === screenId); });
+  }
+
+  function enterLevel(tierKey) {
+    TD.setState(TD.newLevelState(tierKey));
+    TD.setSpeed(1);
+    TD.setPaused(false);
+    byId("btn-speed").textContent = "Speed x1";
+    byId("btn-pause").textContent = "Pause";
+    selected = null;
+    show("screen-game");
+    updateHUD();
+    hideMenus();
+    hideBanner();
+    setHint("Tap a stone pad to place your first tower, then press INITIATE.");
+    TD.startLoop();
+  }
+
+  function quitToSelect() {
+    TD.stopLoop();
+    buildTierGrid();
+    show("screen-select");
+  }
+
+  /* ---- HUD ---- */
+  function updateHUD() {
+    var s = TD.getState();
+    if (!s) { return; }
+    byId("lives-val").textContent = s.lives;
+    byId("coins-val").textContent = s.coins;
+    byId("wave-label").textContent = "Wave " + s.wave + " / " + TD.TOTAL_WAVES;
+    byId("btn-start-wave").disabled = s.waveActive || s.over || s.wave >= TD.TOTAL_WAVES;
+    var tier = TD.TIERS[s.tier];
+    var pct = Math.max(0, Math.round(s.lives / tier.lives * 100));
+    byId("earth-pct").textContent = pct + "%";
+    byId("earth-fill").style.width = pct + "%";
+  }
+  window.__tdUpdateHUD = updateHUD;
+
+  function setHint(t) { byId("foot-hint").textContent = t; }
+
+  /* ---- placement + management menus ---- */
+  var selected = null; /* {pad} or {tower} */
+
+  function fieldScale() {
+    var rect = canvas.getBoundingClientRect();
+    return { sx: rect.width / W, sy: rect.height / H, rect: rect };
+  }
+
+  function canvasPoint(evt) {
+    var rect = canvas.getBoundingClientRect();
+    var cx = (evt.touches ? evt.touches[0].clientX : evt.clientX) - rect.left;
+    var cy = (evt.touches ? evt.touches[0].clientY : evt.clientY) - rect.top;
+    return { x: cx / rect.width * W, y: cy / rect.height * H };
+  }
+
+  canvas.addEventListener("click", function (evt) {
+    var s = TD.getState();
+    if (!s || s.over) { return; }
+    var p = canvasPoint(evt);
+    /* hit-test in SCREEN space: project each entity, compare there.
+       Towers sit lifted; test near their body. Nearest wins so overlaps resolve. */
+    var bestTower = null, bestTd = 999;
+    for (var i = 0; i < s.towers.length; i++) {
+      var tw = s.towers[i];
+      var ps = worldToIso(tw.x, tw.y, 22);
+      var d = Math.hypot(ps.x - p.x, ps.y - p.y);
+      if (d < 30 && d < bestTd) { bestTd = d; bestTower = tw; }
+    }
+    if (bestTower) { openManage(bestTower); return; }
+    var bestPad = null, bestPd = 999;
+    for (var j = 0; j < TD.PADS.length; j++) {
+      var pad = TD.PADS[j];
+      if (padOccupied(pad)) { continue; }
+      var pp = worldToIso(pad.x, pad.y, 0);
+      var dd = Math.hypot(pp.x - p.x, pp.y - p.y);
+      if (dd < 30 && dd < bestPd) { bestPd = dd; bestPad = pad; }
+    }
+    if (bestPad) { openPlace(bestPad); return; }
+    hideMenus();
+  });
+
+  function padOccupied(pad) {
+    var s = TD.getState();
+    return s.towers.some(function (t) { return t.padX === pad.x && t.padY === pad.y; });
+  }
+
+  function placeMenuAt(px, py, el) {
+    var sc = fieldScale();
+    var iso = worldToIso(px, py, 20);
+    var left = iso.x * sc.sx;
+    var top = iso.y * sc.sy;
+    var wrap = byId("field-wrap").getBoundingClientRect();
+    left = Math.max(6, Math.min(left, wrap.width - 226));
+    top = Math.max(6, Math.min(top, wrap.height - 190));
+    el.style.left = left + "px";
+    el.style.top = top + "px";
+  }
+
+  function openPlace(pad) {
+    hideMenus();
+    selected = { pad: pad };
+    var s = TD.getState();
+    var opts = byId("tm-options");
+    opts.innerHTML = "";
+    TD.TOWER_ORDER.forEach(function (kind) {
+      var def = TD.TOWERS[kind];
+      var afford = s.coins >= def.cost;
+      var b = document.createElement("button");
+      b.className = "tm-opt";
+      b.disabled = !afford;
+      b.innerHTML =
+        '<span class="tm-swatch" style="background:' + def.colour + '"></span>' +
+        '<span class="tm-info"><span class="tm-name">' + def.name + '</span>' +
+        '<span class="tm-cost">' + def.cost + ' coins</span>' +
+        '<span class="tm-desc">' + def.desc + '</span></span>';
+      b.addEventListener("click", function () { if (afford) { placeTower(kind, pad); } });
+      opts.appendChild(b);
+    });
+    var menu = byId("tower-menu");
+    menu.classList.remove("hidden");
+    placeMenuAt(pad.x, pad.y, menu);
+  }
+
+  function placeTower(kind, pad) {
+    var s = TD.getState();
+    var def = TD.TOWERS[kind];
+    if (s.coins < def.cost) { return; }
+    s.coins -= def.cost;
+    s.towers.push({ kind: kind, level: 0, x: pad.x, y: pad.y, padX: pad.x, padY: pad.y, cool: 0 });
+    hideMenus();
+    updateHUD();
+    setHint("Tower placed. Add more, or press INITIATE when you are ready.");
+  }
+
+  function openManage(tw) {
+    hideMenus();
+    selected = { tower: tw };
+    var def = TD.TOWERS[tw.kind];
+    var lvl = def.levels[tw.level];
+    byId("mg-title").textContent = def.name + " (level " + (tw.level + 1) + ")";
+    var stats = "Damage " + lvl.dmg + " &middot; Range " + lvl.range + " &middot; ";
+    stats += "Fire rate " + (lvl.rate / 1000).toFixed(1) + "s";
+    if (lvl.splash) { stats += "<br>Net splash radius " + lvl.splash; }
+    if (lvl.slow) { stats += "<br>Slows plastic by " + Math.round(lvl.slow * 100) + "%"; }
+    byId("mg-stats").innerHTML = stats;
+    var upBtn = byId("mg-upgrade");
+    var s = TD.getState();
+    if (tw.level >= def.levels.length - 1) {
+      upBtn.textContent = "Max level";
+      upBtn.disabled = true;
+    } else {
+      upBtn.textContent = "Upgrade (" + def.upgradeCost + ")";
+      upBtn.disabled = s.coins < def.upgradeCost;
+    }
+    byId("mg-sell").textContent = "Sell (" + def.sell[tw.level] + ")";
+    var mg = byId("tower-manage");
+    mg.classList.remove("hidden");
+    placeMenuAt(tw.x, tw.y, mg);
+  }
+
+  byId("mg-upgrade").addEventListener("click", function () {
+    if (!selected || !selected.tower) { return; }
+    var tw = selected.tower;
+    var def = TD.TOWERS[tw.kind];
+    var s = TD.getState();
+    if (tw.level >= def.levels.length - 1) { return; }
+    if (s.coins < def.upgradeCost) { return; }
+    s.coins -= def.upgradeCost;
+    tw.level += 1;
+    updateHUD();
+    openManage(tw);
+  });
+
+  byId("mg-sell").addEventListener("click", function () {
+    if (!selected || !selected.tower) { return; }
+    var tw = selected.tower;
+    var def = TD.TOWERS[tw.kind];
+    var s = TD.getState();
+    s.coins += def.sell[tw.level];
+    var idx = s.towers.indexOf(tw);
+    if (idx !== -1) { s.towers.splice(idx, 1); }
+    hideMenus();
+    updateHUD();
+  });
+
+  byId("tm-close").addEventListener("click", hideMenus);
+  byId("mg-close").addEventListener("click", hideMenus);
+  function hideMenus() {
+    byId("tower-menu").classList.add("hidden");
+    byId("tower-manage").classList.add("hidden");
+    selected = null;
+  }
+
+  /* ---- banners ---- */
+  function starSvgSmall(colour) {
+    return '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M32 6 L40 24 L60 26 L45 39 L50 59 L32 48 L14 59 L19 39 L4 26 L24 24 Z" fill="' + colour + '" stroke="#1a1a1a" stroke-width="3" stroke-linejoin="round"/></svg>';
+  }
+  function recycleSvg() {
+    return '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M7 3 L11 3 L9 7 L12 9 L6 10 L5 5 Z" fill="#2e8b57"/><path d="M17 6 L19 10 L15 11 L15 15 L11 11 L15 6 Z" fill="#37a869"/><path d="M12 21 L8 19 L11 16 L9 13 L15 13 L14 19 Z" fill="#6fce8f"/></svg>';
+  }
+  function coinSvg() {
+    return '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#ffce2e" stroke="#c79a13" stroke-width="2"/></svg>';
+  }
+
+  function showWaveBanner(bonus) {
+    var s = TD.getState();
+    byId("banner-title").textContent = "Wave cleared!";
+    byId("banner-collected").innerHTML =
+      '<span>' + recycleSvg() + ' ' + s.cleaned + '</span>' +
+      '<span>' + coinSvg() + ' ' + s.coins + '</span>';
+    byId("banner-text").textContent = "Nice work. Bonus of " + bonus + " coins banked. Upgrade a tower, then send in the next wave.";
+    var btns = byId("banner-btns");
+    btns.innerHTML = "";
+    var b1 = document.createElement("button");
+    b1.textContent = "Next wave (" + (s.wave + 1) + " of " + TD.TOTAL_WAVES + ")";
+    b1.addEventListener("click", function () { hideBanner(); TD.startWave(); });
+    var b2 = document.createElement("button");
+    b2.className = "btn-ghost";
+    b2.textContent = "Build first";
+    b2.addEventListener("click", hideBanner);
+    btns.appendChild(b1); btns.appendChild(b2);
+    byId("banner").classList.add("show");
+  }
+  window.__tdWaveBanner = showWaveBanner;
+
+  function showWinBanner() {
+    var s = TD.getState();
+    byId("banner-title").textContent = "Bay cleaned!";
+    byId("banner-collected").innerHTML =
+      '<span>' + recycleSvg() + ' ' + s.cleaned + '</span>' +
+      '<span>' + starSvgSmall("#ffce2e") + '</span>';
+    byId("banner-text").textContent = "You cleared all fifteen waves on " + TD.TIERS[s.tier].name + ". The bay is clear and the wildlife is safe. That started with one tower.";
+    var btns = byId("banner-btns");
+    btns.innerHTML = "";
+    var b1 = document.createElement("button");
+    b1.textContent = "Back to levels";
+    b1.addEventListener("click", quitToSelect);
+    btns.appendChild(b1);
+    byId("banner").classList.add("show");
+    revealSend();
+  }
+  window.__tdWinBanner = showWinBanner;
+
+  function showLoseBanner() {
+    var s = TD.getState();
+    byId("banner-title").textContent = "The tide got through";
+    byId("banner-collected").innerHTML = '<span>' + recycleSvg() + ' ' + s.cleaned + ' cleaned</span>';
+    byId("banner-text").textContent = "Too much plastic slipped past on wave " + s.wave + ". No harm done, you keep any levels you have already cleared. Have another go, maybe with a different mix of towers.";
+    var btns = byId("banner-btns");
+    btns.innerHTML = "";
+    var b1 = document.createElement("button");
+    b1.textContent = "Try this level again";
+    b1.addEventListener("click", function () { enterLevel(s.tier); });
+    var b2 = document.createElement("button");
+    b2.className = "btn-ghost";
+    b2.textContent = "Back to levels";
+    b2.addEventListener("click", quitToSelect);
+    btns.appendChild(b1); btns.appendChild(b2);
+    byId("banner").classList.add("show");
+  }
+  window.__tdLoseBanner = showLoseBanner;
+
+  function hideBanner() { byId("banner").classList.remove("show"); }
+  window.__tdHideBanner = hideBanner;
+
+  /* ---- controls ---- */
+  byId("btn-start-wave").addEventListener("click", function () { hideMenus(); TD.startWave(); });
+  byId("btn-pause").addEventListener("click", function () {
+    var p = !TD.getPaused();
+    TD.setPaused(p);
+    byId("btn-pause").textContent = p ? "Resume" : "Pause";
+  });
+  byId("btn-speed").addEventListener("click", function () {
+    var cur = TD.getSpeed();
+    var next = cur === 1 ? 2 : (cur === 2 ? 3 : 1);
+    TD.setSpeed(next);
+    byId("btn-speed").textContent = "Speed x" + next;
+  });
+  byId("quit-link").addEventListener("click", function (e) { e.preventDefault(); quitToSelect(); });
+
+  /* ===== ISO RENDER ===== */
+  var reduced = TD.prefersReduced();
+
+  /* ambient decor generated once: seaweed clumps and rocks beside the path,
+     plus a persistent bubble field. All in world space, projected at draw. */
+  var DECOR = (function () {
+    var seaweed = [];
+    var rocks = [];
+    var i;
+    var seedSpots = [
+      [90, 70], [70, 260], [110, 430], [200, 500], [360, 520], [520, 540],
+      [700, 500], [820, 440], [860, 300], [790, 120], [560, 90], [420, 80],
+      [250, 110], [640, 350], [480, 300]
+    ];
+    for (i = 0; i < seedSpots.length; i++) {
+      if (i % 2 === 0) { seaweed.push({ x: seedSpots[i][0], y: seedSpots[i][1], phase: i * 0.7, blades: 3 + (i % 3) }); }
+      else { rocks.push({ x: seedSpots[i][0], y: seedSpots[i][1], r: 10 + (i % 3) * 5 }); }
+    }
+    var bubbles = [];
+    for (i = 0; i < 22; i++) {
+      bubbles.push({ x: Math.random() * 900, y: Math.random() * 560, r: 2 + Math.random() * 4, sp: 12 + Math.random() * 24, ph: Math.random() * 6 });
+    }
+    return { seaweed: seaweed, rocks: rocks, bubbles: bubbles };
+  })();
+
+  function isoDiamond(wx, wy, rw, rh, h) {
+    var c = worldToIso(wx, wy, h || 0);
+    ctx.beginPath();
+    ctx.moveTo(c.x, c.y - rh);
+    ctx.lineTo(c.x + rw, c.y);
+    ctx.lineTo(c.x, c.y + rh);
+    ctx.lineTo(c.x - rw, c.y);
+    ctx.closePath();
+    return c;
+  }
+
+  /* animated iso water plane */
+  function drawWater(now) {
+    /* deep base gradient */
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#0c4a66");
+    g.addColorStop(0.55, "#083a54");
+    g.addColorStop(1, "#052b40");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+
+    /* iso ground diamond (the whole play area) for a subtle lighter sea floor */
+    ctx.save();
+    var corners = [worldToIso(0, 0, 0), worldToIso(900, 0, 0), worldToIso(900, 560, 0), worldToIso(0, 560, 0)];
+    ctx.beginPath();
+    ctx.moveTo(corners[0].x, corners[0].y);
+    for (var c = 1; c < corners.length; c++) { ctx.lineTo(corners[c].x, corners[c].y); }
+    ctx.closePath();
+    ctx.fillStyle = "#0a4055";
+    ctx.fill();
+    ctx.clip();
+
+    /* shimmer bands drifting across, gives a moving-water feel */
+    var t = reduced ? 0 : now * 0.00045;
+    ctx.globalAlpha = 0.10;
+    ctx.strokeStyle = "#3fa9c9";
+    ctx.lineWidth = 14;
+    for (var b = -6; b < 26; b++) {
+      var off = ((b * 46 + t * 120) % (900 + 200)) - 100;
+      var a = worldToIso(off, 0, 0);
+      var d = worldToIso(off - 260, 560, 0);
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(d.x, d.y);
+      ctx.stroke();
+    }
+    /* soft caustic blobs */
+    ctx.globalAlpha = 0.06;
+    ctx.fillStyle = "#8fe0ff";
+    for (var k = 0; k < 7; k++) {
+      var cx = (k * 150 + (reduced ? 0 : Math.sin(now * 0.0003 + k) * 40)) % 900;
+      var cy = (k * 90 + 40) % 560;
+      var p = worldToIso(cx, cy, 0);
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y, 46, 22, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  }
+
+  /* iso path drawn as a filled sandy ribbon with rocky rim */
+  function drawPath() {
+    var pts = TD.PATH;
+    function edge(width, colour) {
+      ctx.beginPath();
+      for (var i = 0; i < pts.length; i++) {
+        var p = worldToIso(pts[i].x, pts[i].y, 0);
+        if (i === 0) { ctx.moveTo(p.x, p.y); } else { ctx.lineTo(p.x, p.y); }
+      }
+      ctx.lineJoin = "round"; ctx.lineCap = "round";
+      ctx.lineWidth = width; ctx.strokeStyle = colour;
+      ctx.stroke();
+    }
+    ctx.save();
+    edge(38, "#8a7a52");   /* rocky rim shadow */
+    edge(30, "#c8a86a");   /* sand edge */
+    edge(22, "#e0c88a");   /* sand top */
+    ctx.restore();
+  }
+
+  function drawRocksBehind() {
+    /* rocks are decor; draw the ones "behind" everything as part of the floor */
+    for (var i = 0; i < DECOR.rocks.length; i++) {
+      var r = DECOR.rocks[i];
+      var c = worldToIso(r.x, r.y, 0);
+      ctx.save();
+      ctx.fillStyle = "#3a4a52";
+      ctx.beginPath();
+      ctx.ellipse(c.x, c.y, r.r, r.r * 0.55, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#4c5f68";
+      ctx.beginPath();
+      ctx.ellipse(c.x, c.y - r.r * 0.25, r.r * 0.8, r.r * 0.42, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  function drawSeaweed(now) {
+    for (var i = 0; i < DECOR.seaweed.length; i++) {
+      var s = DECOR.seaweed[i];
+      var base = worldToIso(s.x, s.y, 0);
+      for (var bl = 0; bl < s.blades; bl++) {
+        var sway = reduced ? 0 : Math.sin(now * 0.0016 + s.phase + bl) * 6;
+        ctx.save();
+        ctx.strokeStyle = bl % 2 ? "#2e8b57" : "#3fa06a";
+        ctx.lineWidth = 4;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(base.x + (bl - 1) * 5, base.y);
+        ctx.quadraticCurveTo(base.x + (bl - 1) * 5 + sway, base.y - 18, base.x + (bl - 1) * 5 + sway * 1.6, base.y - 34);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+  }
+
+  function drawBubbles(now) {
+    if (reduced) { return; }
+    for (var i = 0; i < DECOR.bubbles.length; i++) {
+      var b = DECOR.bubbles[i];
+      var yy = b.y - ((now * 0.001 * b.sp + b.ph * 40) % 560);
+      if (yy < 0) { yy += 560; }
+      var p = worldToIso(b.x, yy, 30 + (560 - yy) * 0.1);
+      ctx.save();
+      ctx.globalAlpha = 0.22;
+      ctx.strokeStyle = "#cfeaff";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, b.r, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  function drawPads() {
+    var s = TD.getState();
+    for (var i = 0; i < TD.PADS.length; i++) {
+      var pad = TD.PADS[i];
+      var occ = s.towers.some(function (t) { return t.padX === pad.x && t.padY === pad.y; });
+      if (occ) { continue; }
+      /* iso stone platform: a short raised diamond block */
+      var top = worldToIso(pad.x, pad.y, 12);
+      ctx.save();
+      /* side walls */
+      var bl = worldToIso(pad.x, pad.y, 0);
+      isoDiamond(pad.x, pad.y, 22, 12, 0);
+      ctx.fillStyle = "#3f5058";
+      ctx.fill();
+      /* top face */
+      isoDiamond(pad.x, pad.y, 22, 12, 12);
+      ctx.fillStyle = "rgba(120,140,150,0.85)";
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,0.6)";
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = "rgba(255,255,255,0.85)";
+      ctx.font = "bold 18px sans-serif";
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText("+", top.x, top.y);
+      ctx.restore();
+    }
+  }
+
+  function drawRangeIfSelected() {
+    if (!selected || !selected.tower) { return; }
+    var tw = selected.tower;
+    var lvl = TD.TOWERS[tw.kind].levels[tw.level];
+    /* range is a circle in world space -> an ellipse in iso */
+    var c = worldToIso(tw.x, tw.y, 0);
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(c.x, c.y, lvl.range * ISO.scaleX * 1.42, lvl.range * ISO.scaleY * 1.42, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(255,255,255,0.08)";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,0.4)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 5]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  /* shadow blob under a lifted entity */
+  function drawShadow(wx, wy, rw) {
+    var c = worldToIso(wx, wy, 0);
+    ctx.save();
+    ctx.globalAlpha = 0.25;
+    ctx.fillStyle = "#02141f";
+    ctx.beginPath();
+    ctx.ellipse(c.x, c.y, rw, rw * 0.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawTowerEntity(tw, now) {
+    var def = TD.TOWERS[tw.kind];
+    drawShadow(tw.x, tw.y, 20);
+    /* iso stone base under the creature */
+    isoDiamond(tw.x, tw.y, 20, 11, 0);
+    ctx.fillStyle = "#48595f"; ctx.fill();
+    isoDiamond(tw.x, tw.y, 20, 11, 11);
+    ctx.fillStyle = "#5f7178"; ctx.fill();
+    var bob = reduced ? 0 : Math.sin(now * 0.003 + tw.x) * 2;
+    var imgName = "tower-" + tw.kind + "-" + (tw.level + 1);
+    var top = worldToIso(tw.x, tw.y, 30);
+    if (TD.imgReady[imgName]) {
+      ctx.drawImage(TD.images[imgName], top.x - 34, top.y - 46 + bob, 68, 68);
+    } else {
+      ctx.save();
+      ctx.translate(top.x, top.y - 8 + bob);
+      ctx.beginPath();
+      ctx.arc(0, 0, tw.level === 1 ? 18 : 15, 0, Math.PI * 2);
+      ctx.fillStyle = def.colour; ctx.fill();
+      ctx.lineWidth = 3; ctx.strokeStyle = "#fff"; ctx.stroke();
+      /* a tiny creature hint: eyes */
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.arc(-5, -3, 3, 0, Math.PI * 2); ctx.arc(5, -3, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#1a1a1a";
+      ctx.beginPath(); ctx.arc(-4, -3, 1.4, 0, Math.PI * 2); ctx.arc(6, -3, 1.4, 0, Math.PI * 2); ctx.fill();
+      if (tw.level === 1) {
+        ctx.fillStyle = "#ffce2e"; ctx.font = "bold 11px sans-serif";
+        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillText("2", 0, 12);
+      }
+      ctx.restore();
+    }
+  }
+
+  function drawEnemyEntity(e, now) {
+    var wp = TD.posAlong(e.dist);
+    var slowed = performance.now() < e.slowUntil;
+    drawShadow(wp.x, wp.y, e.def.r * 0.8);
+    var bob = reduced ? 0 : Math.sin(now * 0.004 + e.dist * 0.05) * 2;
+    var top = worldToIso(wp.x, wp.y, 14);
+    top.y += bob;
+    var imgName = "enemy-" + e.type;
+    if (TD.imgReady[imgName]) {
+      var sz = e.def.r * 2 + 8;
+      ctx.drawImage(TD.images[imgName], top.x - sz / 2, top.y - sz / 2, sz, sz);
+    } else {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(top.x, top.y, e.def.r, 0, Math.PI * 2);
+      ctx.fillStyle = e.def.colour; ctx.fill();
+      ctx.lineWidth = 2; ctx.strokeStyle = "#5a6b73"; ctx.stroke();
+      ctx.restore();
+    }
+    if (slowed) {
+      ctx.save();
+      ctx.globalAlpha = 0.45;
+      ctx.beginPath();
+      ctx.arc(top.x, top.y, e.def.r + 4, 0, Math.PI * 2);
+      ctx.strokeStyle = "#a98fd6"; ctx.lineWidth = 3; ctx.stroke();
+      ctx.restore();
+    }
+    /* health bar floats above */
+    var w = 28, hpct = Math.max(0, e.hp / e.maxHp);
+    ctx.fillStyle = "rgba(0,0,0,0.45)";
+    ctx.fillRect(top.x - w / 2, top.y - e.def.r - 14, w, 5);
+    ctx.fillStyle = hpct > 0.5 ? "#5fce8f" : (hpct > 0.25 ? "#ffce2e" : "#ff5a5a");
+    ctx.fillRect(top.x - w / 2, top.y - e.def.r - 14, w * hpct, 5);
+  }
+
+  function drawShotEntity(sh) {
+    var p = worldToIso(sh.x, sh.y, 24);
+    var imgName = "shot-" + sh.kind;
+    if (TD.imgReady[imgName]) {
+      ctx.drawImage(TD.images[imgName], p.x - 12, p.y - 12, 24, 24);
+    } else {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, sh.kind === "net" ? 8 : 5, 0, Math.PI * 2);
+      ctx.fillStyle = sh.kind === "net" ? "#2e8b57" : (sh.kind === "bubble" ? "#9fd8ff" : "#ef7724");
+      ctx.fill();
+    }
+  }
+
+  function drawParticles() {
+    var s = TD.getState();
+    for (var i = 0; i < s.particles.length; i++) {
+      var p = s.particles[i];
+      var sp = worldToIso(p.x, p.y, 20);
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+      ctx.fillStyle = p.colour;
+      ctx.beginPath();
+      ctx.arc(sp.x, sp.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  /* depth-sorted entity pass: towers, enemies, shots into one list by world depth */
+  function drawEntities(now) {
+    var s = TD.getState();
+    var items = [];
+    var i;
+    for (i = 0; i < s.towers.length; i++) {
+      var tw = s.towers[i];
+      items.push({ depth: depthKey(tw.x, tw.y), kind: "tower", ref: tw });
+    }
+    for (i = 0; i < s.enemies.length; i++) {
+      var e = s.enemies[i];
+      var wp = TD.posAlong(e.dist);
+      items.push({ depth: depthKey(wp.x, wp.y), kind: "enemy", ref: e });
+    }
+    for (i = 0; i < s.shots.length; i++) {
+      var sh = s.shots[i];
+      items.push({ depth: depthKey(sh.x, sh.y) + 5, kind: "shot", ref: sh });
+    }
+    items.sort(function (a, b) { return a.depth - b.depth; });
+    for (i = 0; i < items.length; i++) {
+      var it = items[i];
+      if (it.kind === "tower") { drawTowerEntity(it.ref, now); }
+      else if (it.kind === "enemy") { drawEnemyEntity(it.ref, now); }
+      else { drawShotEntity(it.ref); }
+    }
+  }
+
+  function render() {
+    var s = TD.getState();
+    if (!s) { return; }
+    var now = performance.now();
+    ctx.clearRect(0, 0, W, H);
+    drawWater(now);
+    drawRocksBehind();
+    drawPath();
+    drawSeaweed(now);
+    drawPads();
+    drawRangeIfSelected();
+    drawEntities(now);
+    drawParticles();
+    drawBubbles(now);
+  }
+  window.__tdRender = render;
+
+  /* keep menus glued to towers/pads on resize */
+  window.addEventListener("resize", function () {
+    if (!selected) { return; }
+    if (selected.tower) { placeMenuAt(selected.tower.x, selected.tower.y, byId("tower-manage")); }
+    else if (selected.pad) { placeMenuAt(selected.pad.x, selected.pad.y, byId("tower-menu")); }
+  });
+
+  /* ---- send to Jay ---- */
+  function revealSend() {
+    var host = byId("screen-game");
+    if (byId("td-send")) { byId("td-send").style.display = "block"; return; }
+    var s = TD.getState();
+    var div = document.createElement("div");
+    div.className = "send";
+    div.id = "td-send";
+    div.innerHTML =
+      '<h3>Send your result to Jay</h3>' +
+      '<p>You cleared ' + TD.TIERS[s.tier].name + '. Pop your initials in to let Jay know.</p>' +
+      '<label for="td-initials">Your initials</label>' +
+      '<input type="text" id="td-initials" placeholder="Type your initials">' +
+      '<div><button class="sendbtn" id="td-send-btn" type="button">Send to Jay</button></div>' +
+      '<p class="msg" id="td-send-msg" role="status"></p>';
+    host.insertBefore(div, byId("quit-link"));
+    var init = byId("td-initials");
+    try { var p = JSON.parse(localStorage.getItem("base6Profile") || "null"); if (p && p.initials) { init.value = p.initials; } } catch (e) {}
+    byId("td-send-btn").addEventListener("click", function () {
+      var name = init.value.trim();
+      if (!name) { byId("td-send-msg").textContent = "Pop your initials in first."; return; }
+      try { localStorage.setItem("base6Profile", JSON.stringify({ initials: name })); } catch (e) {}
+      var st = TD.getState();
+      var body = "BASE 6 - WORD OF THE WEEK - OCEAN DEFENCE\n\n"
+        + "Student: " + name + "\n"
+        + "Date: " + new Date().toLocaleDateString("en-GB") + "\n\n"
+        + "Cleared level: " + TD.TIERS[st.tier].name + "\n"
+        + "Plastic pieces cleaned: " + st.cleaned + "\n"
+        + "Coins earned: " + st.coinsEarned + "\n\n"
+        + "-\nSent automatically from Base 6";
+      var url = "https://mail.google.com/mail/?view=cm&fs=1"
+        + "&to=" + encodeURIComponent("jay.raine@chiltonbridgeschool.co.uk")
+        + "&su=" + encodeURIComponent("Base 6 - Ocean Defence cleared: " + TD.TIERS[st.tier].name + " - " + name)
+        + "&body=" + encodeURIComponent(body);
+      var opened = window.open(url, "_blank");
+      if (!opened) { window.location.href = url; }
+      byId("td-send-msg").textContent = "Email opened. Press send in the email.";
+    });
+  }
+
+  /* ---- boot ---- */
+  buildTierGrid();
+})();
+
+</script>
+
+</body>
+</html>
