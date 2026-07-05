@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>The Back-Plan Board | Setting Goals | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { position: relative; background-color: #7b5ea7; padding: 2rem 2rem 2.8rem; text-align: center; overflow: hidden; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(254,248,244,0.13); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.9; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.82rem; font-weight: 700; color: #e7ddf3; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .header-sub { font-size: 1.02rem; color: #e7ddf3; margin-top: 0.45rem; max-width: 46ch; margin-left: auto; margin-right: auto; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 36px; z-index: 1; }
+  .main { max-width: 680px; margin: 0 auto; padding: 1.6rem 1.5rem 4rem; }
+  .lead { font-size: 1rem; line-height: 1.6; color: #444; margin-bottom: 1.4rem; }
+  .keybox { background: #efe9f6; border: 2px solid #7b5ea7; border-radius: 12px; padding: 0.9rem 1.1rem; margin-bottom: 1.4rem; font-size: 0.95rem; line-height: 1.55; }
+  .keybox strong { color: #5f4a86; }
+
+  .goal-set { background: #fff; border: 2px solid #e3d9ef; border-radius: 16px; padding: 1.1rem 1.2rem; margin-bottom: 1.2rem; }
+  .goal-set label { display: block; font-size: 0.85rem; font-weight: 700; color: #5f4a86; margin-bottom: 0.4rem; }
+  .goal-set input[type=text] { width: 100%; font-family: inherit; font-size: 1rem; padding: 0.7rem 0.9rem; border: 2px solid #d8cce8; border-radius: 10px; }
+  .goal-set input:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 1px; }
+  .goal-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+  .goal-chips button { background: #efe9f6; border: 1.5px solid #c9b8e0; color: #5f4a86; font-size: 0.82rem; font-weight: 700; border-radius: 999px; padding: 0.3rem 0.75rem; cursor: pointer; font-family: inherit; }
+  .goal-chips button:hover { background: #e2d6f2; }
+
+  .ladder { position: relative; }
+  .ladder::before { content: ""; position: absolute; left: 27px; top: 20px; bottom: 20px; width: 3px; background: linear-gradient(#c9b8e0, #7b5ea7); border-radius: 3px; }
+  .rung { position: relative; display: flex; gap: 0.9rem; align-items: flex-start; margin-bottom: 0.9rem; }
+  .rung-dot { position: relative; z-index: 1; width: 56px; flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; }
+  .rung-dot .num { width: 34px; height: 34px; border-radius: 50%; background: #7b5ea7; color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; }
+  .rung-dot .when { font-size: 0.66rem; font-weight: 700; color: #8a7aa5; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 0.25rem; text-align: center; line-height: 1.2; }
+  .rung-body { flex: 1; background: #fff; border: 2px solid #e3d9ef; border-radius: 12px; padding: 0.7rem 0.9rem; }
+  .rung-body.filled { border-color: #7b5ea7; background: #faf7fd; }
+  .rung-body .rlabel { font-size: 0.82rem; font-weight: 700; color: #5f4a86; margin-bottom: 0.35rem; }
+  .rung-body textarea { width: 100%; min-height: 48px; font-family: inherit; font-size: 0.92rem; padding: 0.55rem 0.75rem; border: 2px solid #d8cce8; border-radius: 8px; background: #fff; resize: vertical; line-height: 1.45; }
+  .rung-body textarea:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 1px; }
+  .rung.goal-rung .rung-dot .num { background: #ef7724; }
+  .rung.goal-rung .rung-body { border-color: #ef7724; background: #fff6ef; }
+  .rung.goal-rung .rlabel { color: #c05a10; }
+  .goal-echo { font-size: 0.98rem; font-weight: 700; color: #c05a10; min-height: 1.2em; }
+
+  .progress { text-align: center; font-weight: 700; font-size: 0.95rem; color: #5f4a86; margin: 1.4rem 0 0.4rem; min-height: 1.3em; }
+  .send { margin-top: 1.4rem; background: #efe9f6; border: 2px solid #7b5ea7; border-radius: 14px; padding: 1.1rem 1.2rem; }
+  .send h3 { font-size: 1.05rem; color: #5f4a86; margin-bottom: 0.4rem; }
+  .send p { font-size: 0.9rem; color: #555; line-height: 1.5; }
+  .send label { display: block; font-size: 0.85rem; font-weight: 700; color: #555; margin: 0.7rem 0 0.3rem; }
+  .send input[type=text] { width: 100%; max-width: 300px; padding: 0.6rem 0.85rem; font-family: inherit; font-size: 0.95rem; border: 2px solid #cbb8e2; border-radius: 10px; }
+  .send input:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 1px; }
+  button.sendbtn { margin-top: 0.8rem; font-family: inherit; font-size: 0.92rem; font-weight: 700; padding: 0.65rem 1.4rem; background: #7b5ea7; color: #fff; border: none; border-radius: 999px; cursor: pointer; box-shadow: 0 3px 0 #5f4a86; }
+  .msg { min-height: 1.3em; font-weight: 700; font-size: 0.88rem; margin-top: 0.5rem; color: #5f4a86; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+  .nav-foot { display: flex; justify-content: space-between; margin-top: 1.6rem; font-size: 0.9rem; font-weight: 700; }
+  .nav-foot a { color: #5f4a86; text-decoration: none; }
+  .nav-foot a:hover { text-decoration: underline; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Check-In</a>
+  <div class="header-inner">
+    <p class="week-label">Taskmaster Tuesday &middot; Setting Goals</p>
+    <h1>The Back-Plan Board</h1>
+    <p class="header-sub">Start at the finish line, then work backwards to what you could do this month.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+<main class="main">
+  <p class="lead">Big goals feel huge because we look at the whole mountain at once. Back-planning flips it around. You start at the goal, then step backwards, asking each time: what would have to happen just before this? By the end you reach something small enough to start this month.</p>
+  <div class="keybox"><strong>Work top to bottom.</strong> Write your goal at the top, then fill the rungs going down. Each rung is a step earlier in time, until the bottom one is something you could genuinely begin in the next few weeks.</div>
+
+  <div class="goal-set">
+    <label for="goal">First, the goal. Something you would like to reach one day.</label>
+    <input type="text" id="goal" placeholder="One day I would like to...">
+    <div class="goal-chips">
+      <button type="button">read a whole book on my own</button>
+      <button type="button">cook a meal start to finish</button>
+      <button type="button">learn to ride confidently</button>
+      <button type="button">make something to be proud of</button>
+    </div>
+  </div>
+
+  <div class="ladder">
+    <div class="rung goal-rung">
+      <div class="rung-dot"><span class="num" aria-hidden="true">&#127937;</span><span class="when">The goal</span></div>
+      <div class="rung-body">
+        <div class="rlabel">Where you want to get to</div>
+        <div class="goal-echo" id="goal-echo">Your goal will appear here once you type it above.</div>
+      </div>
+    </div>
+    <div class="rung">
+      <div class="rung-dot"><span class="num">3</span><span class="when">Along the way</span></div>
+      <div class="rung-body">
+        <div class="rlabel">A big step that would come just before reaching it</div>
+        <textarea id="w3" placeholder="Before I could reach the goal, I would need to..."></textarea>
+      </div>
+    </div>
+    <div class="rung">
+      <div class="rung-dot"><span class="num">2</span><span class="when">Sooner</span></div>
+      <div class="rung-body">
+        <div class="rlabel">A smaller step that would come before that one</div>
+        <textarea id="w2" placeholder="Before that, I would need to..."></textarea>
+      </div>
+    </div>
+    <div class="rung">
+      <div class="rung-dot"><span class="num">1</span><span class="when">This month</span></div>
+      <div class="rung-body filled-target">
+        <div class="rlabel">The very first small step, something you could start this month</div>
+        <textarea id="w1" placeholder="The first thing I could actually start soon is..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <p class="progress" id="progress" role="status" aria-live="polite">Set a goal, then fill the rungs down to this month.</p>
+
+  <div class="send">
+    <h3>Keep your plan</h3>
+    <p>Your board saves on this device. Sending it to Jay means there is a copy to look back on, and Jay can cheer you on with that first step.</p>
+    <label for="initials">Your initials</label>
+    <input type="text" id="initials" placeholder="Type your initials">
+    <div><button class="sendbtn" id="send-btn" type="button">Send my plan to Jay</button></div>
+    <p class="msg" id="send-msg" role="status"></p>
+  </div>
+
+  <div class="nav-foot">
+    <a href="1.html">&larr; Monday: Milestone Map</a>
+    <a href="3.html">Wednesday: Dream or Goal? &rarr;</a>
+  </div>
+</main>
+<footer>Base 6 &middot; Chilton Bridge School</footer>
+<script>
+"use strict";
+var NS = "base6.w6pshe2.";
+function save(k, v) { try { localStorage.setItem(NS + k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(NS + k); } catch (e) { return null; } }
+function byId(id) { return document.getElementById(id); }
+
+var goal = byId("goal");
+var echo = byId("goal-echo");
+function updateEcho() {
+  var v = goal.value.trim();
+  echo.textContent = v ? v : "Your goal will appear here once you type it above.";
+}
+var savedGoal = load("goal"); if (savedGoal) { goal.value = savedGoal; }
+goal.addEventListener("input", function () { save("goal", goal.value); updateEcho(); updateProgress(); });
+
+byId("goal") && document.querySelectorAll(".goal-chips button").forEach(function (chip) {
+  chip.addEventListener("click", function () {
+    var t = chip.textContent.trim();
+    goal.value = t.charAt(0).toUpperCase() + t.slice(1);
+    save("goal", goal.value);
+    updateEcho();
+    updateProgress();
+    goal.focus();
+  });
+});
+
+var RUNGS = ["w3", "w2", "w1"];
+RUNGS.forEach(function (f) {
+  var ta = byId(f);
+  var saved = load(f); if (saved) { ta.value = saved; }
+  ta.addEventListener("input", function () {
+    save(f, ta.value);
+    ta.closest(".rung-body").classList.toggle("filled", ta.value.trim().length > 0);
+    updateProgress();
+  });
+});
+
+function updateProgress() {
+  var g = goal.value.trim().length > 0;
+  var n = 0;
+  RUNGS.forEach(function (f) { if (byId(f).value.trim().length > 0) { n += 1; } });
+  var p = byId("progress");
+  if (!g) { p.textContent = "Set a goal, then fill the rungs down to this month."; }
+  else if (n === 0) { p.textContent = "Goal set. Now work backwards, top rung first."; }
+  else if (n < 3) { p.textContent = n + " of 3 rungs filled. Keep stepping back towards this month."; }
+  else { p.textContent = "The whole path is mapped, right down to a first step. That is the hard part done."; }
+}
+
+(function () {
+  var init = byId("initials");
+  try { var p = JSON.parse(localStorage.getItem("base6Profile") || "null"); if (p && p.initials) { init.value = p.initials; } } catch (e) {}
+  byId("send-btn").addEventListener("click", function () {
+    var name = init.value.trim();
+    if (!name) { byId("send-msg").textContent = "Pop your initials in first."; return; }
+    try { localStorage.setItem("base6Profile", JSON.stringify({ initials: name })); } catch (e) {}
+    var body = "BASE 6 - SETTING GOALS - THE BACK-PLAN BOARD (Tuesday)\n\n"
+      + "Student: " + name + "\n"
+      + "Date: " + new Date().toLocaleDateString("en-GB") + "\n\n"
+      + "The goal:\n" + (goal.value.trim() || "(not written)") + "\n\n"
+      + "Working backwards...\n\n"
+      + "Big step just before the goal:\n" + (byId("w3").value.trim() || "(not written)") + "\n\n"
+      + "A smaller step before that:\n" + (byId("w2").value.trim() || "(not written)") + "\n\n"
+      + "First step, to start this month:\n" + (byId("w1").value.trim() || "(not written)") + "\n\n"
+      + "-\nSent automatically from Base 6";
+    var url = "https://mail.google.com/mail/?view=cm&fs=1"
+      + "&to=" + encodeURIComponent("jay.raine@chiltonbridgeschool.co.uk")
+      + "&su=" + encodeURIComponent("Base 6 - Setting Goals: My Back-Plan - " + name)
+      + "&body=" + encodeURIComponent(body);
+    var opened = window.open(url, "_blank");
+    if (!opened) { window.location.href = url; }
+    byId("send-msg").textContent = "Email opened. Press send in the email.";
+  });
+})();
+
+updateEcho();
+updateProgress();
+</script>
+</body>
+</html>
