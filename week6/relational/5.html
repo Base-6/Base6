@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>The Launchpad | Setting Goals | Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+  .site-header { position: relative; background-color: #7b5ea7; padding: 2rem 2rem 2.8rem; text-align: center; overflow: hidden; }
+  .site-header::after { content: ""; position: absolute; bottom: 10px; right: -50px; width: 200px; height: 200px; background: rgba(254,248,244,0.13); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.9; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .week-label { font-size: 0.82rem; font-weight: 700; color: #e7ddf3; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .header-sub { font-size: 1.02rem; color: #e7ddf3; margin-top: 0.45rem; max-width: 46ch; margin-left: auto; margin-right: auto; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 36px; z-index: 1; }
+  .main { max-width: 680px; margin: 0 auto; padding: 1.6rem 1.5rem 4rem; }
+  .lead { font-size: 1rem; line-height: 1.6; color: #444; margin-bottom: 1.4rem; }
+  .keybox { background: #efe9f6; border: 2px solid #7b5ea7; border-radius: 12px; padding: 0.9rem 1.1rem; margin-bottom: 1.4rem; font-size: 0.95rem; line-height: 1.55; }
+  .keybox strong { color: #5f4a86; }
+
+  .recall { background: #fff; border: 2px dashed #cbb8e2; border-radius: 14px; padding: 0.9rem 1.1rem; margin-bottom: 1.2rem; display: none; }
+  .recall.show { display: block; }
+  .recall .rl-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #8a7aa5; margin-bottom: 0.3rem; }
+  .recall .rl-text { font-size: 0.98rem; color: #4a3a6a; font-weight: 700; line-height: 1.45; }
+
+  .pad { background: linear-gradient(160deg, #6f52a0, #4a3a6a); border-radius: 18px; padding: 1.4rem 1.4rem 1.5rem; color: #f3eefa; box-shadow: 0 8px 24px rgba(74,58,106,0.28); }
+  .pad .rocket { text-align: center; font-size: 2.2rem; }
+  .pad h2 { font-size: 1.2rem; color: #fff; text-align: center; margin: 0.2rem 0 0.3rem; }
+  .pad .sub { font-size: 0.9rem; color: #ded2f0; text-align: center; line-height: 1.5; margin-bottom: 1rem; }
+  .pad label { display: block; font-size: 0.85rem; font-weight: 700; color: #ded2f0; margin-bottom: 0.4rem; }
+  .pad input[type=text] { width: 100%; font-family: inherit; font-size: 1rem; padding: 0.75rem 0.9rem; border: 2px solid #8a72b8; border-radius: 10px; background: rgba(255,255,255,0.95); color: #1a1a1a; }
+  .pad input:focus-visible { outline: 3px solid #ffce2e; outline-offset: 1px; }
+  .when-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+  .when-row button { font-family: inherit; font-size: 0.82rem; font-weight: 700; padding: 0.4rem 0.85rem; border-radius: 999px; border: 2px solid #8a72b8; background: rgba(255,255,255,0.12); color: #f3eefa; cursor: pointer; }
+  .when-row button.sel { background: #ffce2e; border-color: #ffce2e; color: #4a3a6a; }
+
+  .checklist { margin-top: 1.2rem; }
+  .checklist .ck-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #ded2f0; margin-bottom: 0.5rem; }
+  .ck-item { display: flex; align-items: flex-start; gap: 0.6rem; background: rgba(255,255,255,0.08); border-radius: 10px; padding: 0.55rem 0.8rem; margin-bottom: 0.45rem; cursor: pointer; }
+  .ck-item .box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #b7a3dc; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: #4a3a6a; background: transparent; margin-top: 1px; }
+  .ck-item.on .box { background: #ffce2e; border-color: #ffce2e; }
+  .ck-item .ck-text { font-size: 0.9rem; line-height: 1.4; color: #f3eefa; }
+
+  .launch-state { text-align: center; font-weight: 700; font-size: 0.98rem; margin: 1.4rem 0 0.4rem; min-height: 1.3em; color: #5f4a86; }
+  .launch-state.go { color: #1f6b3a; }
+
+  .send { margin-top: 1rem; background: #efe9f6; border: 2px solid #7b5ea7; border-radius: 14px; padding: 1.1rem 1.2rem; }
+  .send h3 { font-size: 1.05rem; color: #5f4a86; margin-bottom: 0.4rem; }
+  .send p { font-size: 0.9rem; color: #555; line-height: 1.5; }
+  .send label { display: block; font-size: 0.85rem; font-weight: 700; color: #555; margin: 0.7rem 0 0.3rem; }
+  .send input[type=text] { width: 100%; max-width: 300px; padding: 0.6rem 0.85rem; font-family: inherit; font-size: 0.95rem; border: 2px solid #cbb8e2; border-radius: 10px; }
+  .send input:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 1px; }
+  button.sendbtn { margin-top: 0.8rem; font-family: inherit; font-size: 0.92rem; font-weight: 700; padding: 0.7rem 1.5rem; background: #7b5ea7; color: #fff; border: none; border-radius: 999px; cursor: pointer; box-shadow: 0 3px 0 #5f4a86; }
+  .msg { min-height: 1.3em; font-weight: 700; font-size: 0.88rem; margin-top: 0.5rem; color: #5f4a86; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #7b5ea7; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; margin-top: 2rem; }
+  .nav-foot { display: flex; justify-content: space-between; margin-top: 1.6rem; font-size: 0.9rem; font-weight: 700; }
+  .nav-foot a { color: #5f4a86; text-decoration: none; }
+  .nav-foot a:hover { text-decoration: underline; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Check-In</a>
+  <div class="header-inner">
+    <p class="week-label">Focus Friday &middot; Setting Goals</p>
+    <h1>The Launchpad</h1>
+    <p class="header-sub">One single action for Monday morning. The first push that gets your goal moving.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+<main class="main">
+  <p class="lead">This week you mapped where you want to go, planned backwards, and thought about what makes a goal real. Today is the smallest and most important step: choosing one action for Monday morning. Not the whole goal. Just the first push.</p>
+  <div class="keybox"><strong>Small and specific beats big and vague.</strong> "Get better at reading" is hard to start. "Read one page after breakfast" is easy to start. A good first action is something you could do even on a tired Monday.</div>
+
+  <div class="recall" id="recall">
+    <div class="rl-label">Your first step from Tuesday</div>
+    <div class="rl-text" id="recall-text"></div>
+  </div>
+
+  <div class="pad">
+    <div class="rocket" aria-hidden="true">&#128640;</div>
+    <h2>My Monday launch action</h2>
+    <p class="sub">Fill in one small, doable action. Keep it tiny enough that future you cannot wriggle out of it.</p>
+    <label for="action">On Monday morning, I will...</label>
+    <input type="text" id="action" placeholder="e.g. read one page, or ask Jay about my project">
+    <div class="when-row" id="when-row" role="group" aria-label="When on Monday">
+      <button type="button" data-when="first thing">First thing</button>
+      <button type="button" data-when="after Breathe-in">After Breathe-in</button>
+      <button type="button" data-when="before lunch">Before lunch</button>
+      <button type="button" data-when="in the afternoon">In the afternoon</button>
+    </div>
+
+    <div class="checklist">
+      <div class="ck-title">Is it a good first action? Tap any that are true.</div>
+      <div class="ck-item" data-ck="small"><span class="box" aria-hidden="true">&#10003;</span><span class="ck-text">It is small enough to do in a few minutes</span></div>
+      <div class="ck-item" data-ck="clear"><span class="box" aria-hidden="true">&#10003;</span><span class="ck-text">I know exactly what I would do, with no guessing</span></div>
+      <div class="ck-item" data-ck="mine"><span class="box" aria-hidden="true">&#10003;</span><span class="ck-text">It is something I can do myself, without waiting on anyone</span></div>
+    </div>
+  </div>
+
+  <p class="launch-state" id="launch-state" role="status" aria-live="polite">Write your action to prime the launchpad.</p>
+
+  <div class="send">
+    <h3>Lock it in</h3>
+    <p>Send your launch action to Jay so it is on record. On Monday, Jay will know exactly what you are starting, and can be in your corner.</p>
+    <label for="initials">Your initials</label>
+    <input type="text" id="initials" placeholder="Type your initials">
+    <div><button class="sendbtn" id="send-btn" type="button">Send my launch to Jay</button></div>
+    <p class="msg" id="send-msg" role="status"></p>
+  </div>
+
+  <div class="nav-foot">
+    <a href="4.html">&larr; Thursday: Future Letter</a>
+    <a href="index.html">Back to all check-ins &rarr;</a>
+  </div>
+</main>
+<footer>Base 6 &middot; Chilton Bridge School</footer>
+<script>
+"use strict";
+var NS = "base6.w6pshe5.";
+function save(k, v) { try { localStorage.setItem(NS + k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(NS + k); } catch (e) { return null; } }
+function loadJSON(k, fb) { try { var v = localStorage.getItem(NS + k); return v ? JSON.parse(v) : fb; } catch (e) { return fb; } }
+function byId(id) { return document.getElementById(id); }
+
+/* Pull the first step from Tuesday's Back-Plan Board if it exists, same origin. */
+(function () {
+  var firstStep = null;
+  try { firstStep = localStorage.getItem("base6.w6pshe2.w1"); } catch (e) {}
+  if (firstStep && firstStep.trim()) {
+    byId("recall-text").textContent = firstStep.trim();
+    byId("recall").classList.add("show");
+  }
+})();
+
+var action = byId("action");
+var savedAction = load("action"); if (savedAction) { action.value = savedAction; }
+action.addEventListener("input", function () { save("action", action.value); updateState(); });
+
+var chosenWhen = load("when");
+document.querySelectorAll("#when-row button").forEach(function (b) {
+  if (chosenWhen && b.getAttribute("data-when") === chosenWhen) { b.classList.add("sel"); }
+  b.addEventListener("click", function () {
+    document.querySelectorAll("#when-row button").forEach(function (x) { x.classList.remove("sel"); });
+    b.classList.add("sel");
+    chosenWhen = b.getAttribute("data-when");
+    save("when", chosenWhen);
+    updateState();
+  });
+});
+
+var checks = loadJSON("checks", {});
+document.querySelectorAll(".ck-item").forEach(function (item) {
+  var key = item.getAttribute("data-ck");
+  if (checks[key]) { item.classList.add("on"); }
+  item.addEventListener("click", function () {
+    var on = item.classList.toggle("on");
+    checks[key] = on;
+    save("checks", JSON.stringify(checks));
+    updateState();
+  });
+});
+
+function updateState() {
+  var hasAction = action.value.trim().length > 0;
+  var checkCount = 0;
+  document.querySelectorAll(".ck-item.on").forEach(function () { checkCount += 1; });
+  var st = byId("launch-state");
+  if (!hasAction) { st.textContent = "Write your action to prime the launchpad."; st.className = "launch-state"; }
+  else if (checkCount === 3) { st.textContent = "That is a strong first action: small, clear, and yours. Cleared for launch."; st.className = "launch-state go"; }
+  else if (checkCount > 0) { st.textContent = "Good start. The more of those that are true, the easier Monday will be."; st.className = "launch-state"; }
+  else { st.textContent = "Action set. Check it against the three points above to make it launch-ready."; st.className = "launch-state"; }
+}
+
+(function () {
+  var init = byId("initials");
+  try { var p = JSON.parse(localStorage.getItem("base6Profile") || "null"); if (p && p.initials) { init.value = p.initials; } } catch (e) {}
+  byId("send-btn").addEventListener("click", function () {
+    var name = init.value.trim();
+    if (!name) { byId("send-msg").textContent = "Pop your initials in first."; return; }
+    if (!action.value.trim()) { byId("send-msg").textContent = "Write your one Monday action first."; return; }
+    try { localStorage.setItem("base6Profile", JSON.stringify({ initials: name })); } catch (e) {}
+    var whenTxt = chosenWhen ? (" (" + chosenWhen + ")") : "";
+    var body = "BASE 6 - SETTING GOALS - THE LAUNCHPAD (Friday)\n\n"
+      + "Student: " + name + "\n"
+      + "Date: " + new Date().toLocaleDateString("en-GB") + "\n\n"
+      + "My one action for Monday morning:\n" + action.value.trim() + whenTxt + "\n\n"
+      + "-\nSent automatically from Base 6";
+    var url = "https://mail.google.com/mail/?view=cm&fs=1"
+      + "&to=" + encodeURIComponent("jay.raine@chiltonbridgeschool.co.uk")
+      + "&su=" + encodeURIComponent("Base 6 - Setting Goals: My Monday Launch - " + name)
+      + "&body=" + encodeURIComponent(body);
+    var opened = window.open(url, "_blank");
+    if (!opened) { window.location.href = url; }
+    byId("send-msg").textContent = "Email opened. Press send, and Monday is ready.";
+  });
+})();
+
+updateState();
+</script>
+</body>
+</html>
