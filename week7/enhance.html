@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Enhance &middot; Word of the Week &middot; Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: #ef7724; padding: 2rem 2rem 2.75rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 26px; right: -50px; width: 140px; height: 140px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.9; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .eyebrow { font-size: 0.8rem; font-weight: 700; color: #ffe4cd; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .site-header h1 { font-size: 2.4rem; font-weight: 700; color: #fef8f4; line-height: 1.2; letter-spacing: 0.02em; }
+  .header-sub { font-size: 1rem; color: #ffe4cd; margin-top: 0.4rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 34px; z-index: 2; }
+
+  .main { max-width: 680px; margin: 0 auto; padding: 1.75rem 1.25rem 4rem; }
+
+  .card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .card.accent { border-color: #ef7724; box-shadow: 0 4px 14px rgba(239,119,36,0.12); }
+
+  .stage-title { font-size: 1.35rem; font-weight: 700; color: #c05a10; margin-bottom: 0.5rem; line-height: 1.3; }
+  .stage-sub { font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 1.1rem; }
+  .stage-sub:last-child { margin-bottom: 0; }
+
+  .btn { font-family: inherit; font-weight: 700; border-radius: 12px; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .btn-primary { font-size: 1rem; padding: 0.8rem 1.6rem; background: #ef7724; color: #ffffff; border: 2px solid #ef7724; }
+  .btn-primary:hover { background: #c05a10; border-color: #c05a10; }
+  .btn-ghost { font-size: 0.85rem; padding: 0.55rem 1rem; background: none; color: #888; border: none; text-decoration: underline; }
+  .btn-ghost:hover { color: #555; }
+  .btn-outline { font-size: 0.95rem; padding: 0.7rem 1.3rem; background: #ffffff; color: #ef7724; border: 2px solid #ef7724; }
+  .btn-outline:hover { background: #fff3e8; }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; align-items: center; }
+
+  .name-field { margin-bottom: 0.9rem; text-align: left; }
+  .name-field label { display: block; font-size: 0.82rem; font-weight: 700; color: #555; margin-bottom: 0.3rem; }
+  .name-field input { width: 100%; padding: 0.7rem 0.9rem; font-family: inherit; font-size: 1rem; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #ffffff; color: #1a1a1a; outline: none; }
+  .name-field input:focus { border-color: #ef7724; }
+
+  /* the word itself */
+  .word-card { background: linear-gradient(140deg, #ef7724, #c05a10); border: none; color: #fef8f4; text-align: center; }
+  .word-big { font-size: 2.6rem; font-weight: 700; letter-spacing: 0.03em; line-height: 1.1; margin-bottom: 0.2rem; }
+  .word-type { font-size: 0.85rem; color: #ffe4cd; font-style: normal; margin-bottom: 0.9rem; }
+  .word-def { font-size: 1.1rem; line-height: 1.5; font-weight: 700; margin-bottom: 0.9rem; }
+  .word-plain { font-size: 0.95rem; line-height: 1.6; color: #ffe4cd; }
+  .word-rel { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem; }
+  .rel-chip { font-size: 0.78rem; font-weight: 700; background: rgba(255,255,255,0.16); border: 1.5px solid rgba(255,255,255,0.4); border-radius: 999px; padding: 0.25rem 0.7rem; }
+
+  /* progress */
+  .progress-bar { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; justify-content: center; }
+  .step-chip { display: inline-flex; align-items: center; gap: 0.35rem; background: #fff3e8; border: 1.5px solid #ef7724; color: #c05a10; border-radius: 999px; padding: 0.25rem 0.8rem; font-size: 0.82rem; font-weight: 700; }
+  .q-dots { display: inline-flex; gap: 4px; }
+  .q-dot { width: 9px; height: 9px; border-radius: 50%; background: #e0d8d0; }
+  .q-dot.done { background: #ef7724; }
+  .q-dot.now { background: #007291; }
+
+  /* game round */
+  .game-head { text-align: center; margin-bottom: 1.1rem; }
+  .game-emoji { font-size: 2.4rem; line-height: 1; display: block; margin-bottom: 0.4rem; }
+  .game-q { font-size: 1.15rem; font-weight: 700; color: #333; line-height: 1.4; }
+  .game-hint { font-size: 0.88rem; color: #777; line-height: 1.5; margin-top: 0.3rem; }
+  .thing-box { background: #fff7f0; border: 2px dashed #f3c9a4; border-radius: 12px; padding: 1rem; text-align: center; margin-bottom: 1rem; }
+  .thing-text { font-size: 1.05rem; font-weight: 700; color: #333; line-height: 1.5; }
+  .pair-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin-bottom: 0.9rem; }
+  @media (max-width: 480px) { .pair-grid { grid-template-columns: 1fr; } }
+  .pair-btn { font-family: inherit; font-size: 0.98rem; font-weight: 700; color: #333; background: #ffffff; border: 2.5px solid #e0d8d0; border-radius: 14px; padding: 1.1rem 0.9rem; cursor: pointer; line-height: 1.45; transition: border-color 0.15s, background 0.15s, transform 0.12s; }
+  .pair-btn:hover { border-color: #ef7724; background: #fff7f0; transform: translateY(-2px); }
+  .verdict { text-align: center; }
+  .verdict-mark { font-size: 2.4rem; line-height: 1; display: block; margin-bottom: 0.4rem; }
+  .verdict-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .verdict-title.right { color: #2e8b57; }
+  .verdict-title.near { color: #007291; }
+  .verdict-why { font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 1rem; }
+
+  /* options */
+  .opt-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 0.9rem; }
+  .opt-btn { font-family: inherit; font-size: 0.98rem; font-weight: 700; color: #333; background: #ffffff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 0.85rem 1rem; cursor: pointer; text-align: left; line-height: 1.45; transition: border-color 0.15s, background 0.15s, transform 0.1s; }
+  .opt-btn:hover { border-color: #ef7724; background: #fff7f0; transform: translateX(3px); }
+  .opt-btn .opt-sub { display: block; font-size: 0.82rem; font-weight: 400; color: #777; margin-top: 0.2rem; line-height: 1.45; }
+  .opt-own { border-style: dashed; color: #c05a10; }
+
+  .own-box { width: 100%; padding: 0.75rem 0.9rem; font-family: inherit; font-size: 1rem; border: 2px solid #e0d8d0; border-radius: 10px; background: #fffdf9; color: #1a1a1a; outline: none; line-height: 1.55; margin-bottom: 0.75rem; }
+  .own-box:focus { border-color: #ef7724; }
+  textarea.own-box { min-height: 90px; resize: vertical; }
+
+  /* the pledge card */
+  .pledge { background: #fffdf9; border: 3px solid #c05a10; border-radius: 16px; padding: 0; overflow: hidden; margin-bottom: 1.25rem; }
+  .pledge-top { background: #c05a10; color: #fef8f4; padding: 1rem 1.25rem; text-align: center; }
+  .pledge-stamp { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #ffd9b8; margin-bottom: 0.3rem; }
+  .pledge-word { font-size: 1.9rem; font-weight: 700; letter-spacing: 0.04em; }
+  .pledge-by { font-size: 0.82rem; color: #ffd9b8; margin-top: 0.3rem; }
+  .pledge-body { padding: 1.25rem; }
+  .field { border-bottom: 1px dashed #e0d8d0; padding: 0.8rem 0; }
+  .field:last-child { border-bottom: none; }
+  .field-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #ef7724; margin-bottom: 0.25rem; }
+  .field-value { font-size: 1rem; color: #333; line-height: 1.55; }
+  .field-value.empty { color: #bbb; }
+
+  .score-strip { text-align: center; font-size: 0.9rem; font-weight: 700; color: #007291; background: #e6f5f8; border: 1.5px solid #9fd3e0; border-radius: 12px; padding: 0.7rem 1rem; margin-bottom: 1.25rem; line-height: 1.5; }
+  .report-note { font-size: 0.88rem; color: #555; line-height: 1.6; margin-top: 0.75rem; }
+
+  .cheer { text-align: center; margin-top: 1.75rem; font-size: 1rem; font-weight: 700; color: #ef7724; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #007291; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .opt-btn, .pair-btn { transition: none; }
+    .opt-btn:hover, .pair-btn:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Week 7</a>
+  <div class="header-inner">
+    <p class="eyebrow">Word of the Week &middot; Week 7</p>
+    <h1>Enhance</h1>
+    <p class="header-sub">To make something that already exists even better.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+  <div id="stage"></div>
+  <p class="cheer" id="cheer" style="display:none;">Small improvements count. They always have.</p>
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+/* ============================================================
+   WORD OF THE WEEK: ENHANCE
+   Three parts.
+   1. Meet the word.
+   2. Spot the enhancement: six rounds distinguishing enhancing
+      (making an existing thing better) from replacing, starting
+      over, or breaking it. This is where the word gets learned.
+   3. The Enhance Lab: pick one real thing from your own project,
+      choose how to enhance it, and commit to one small step
+      before Friday. Produces a pledge card, emailed to Jay.
+   Autosaves, skippable throughout.
+   ============================================================ */
+
+var TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+var SAVE_KEY = 'base6Enhance-week7';
+var DONE_KEY = 'base6Done-week7-shuffle';
+var DONE_ID = 'word-enhance';
+
+/* Each round: a thing, and two things you could do to it.
+   'e' is the enhancing move. The other is a decoy that is not enhancing:
+   it replaces, restarts, or wrecks the thing instead. */
+var ROUNDS = [
+  { emoji: '\ud83d\udcf7', thing: 'A photo you took that is a bit dark.',
+    a: 'Brighten it up and crop the edges', b: 'Delete it and take a whole new one',
+    e: 'a', why: 'Enhancing works with what is already there. Brightening the photo makes the same photo better. Taking a new one is starting again, which is fine, but it is not enhancing.' },
+  { emoji: '\ud83c\udf5c', thing: 'A soup that tastes a bit plain.',
+    a: 'Throw it away and open a tin instead', b: 'Add herbs, pepper and a squeeze of lemon',
+    e: 'b', why: 'The soup was already good. Seasoning brings out what was in it. Swapping it for a tin is replacing, not enhancing.' },
+  { emoji: '\ud83d\udcdd', thing: 'A piece of writing you finished but are not thrilled with.',
+    a: 'Reread it and sharpen the weakest paragraph', b: 'Bin it and write something completely different',
+    e: 'a', why: 'Almost all real writing gets enhanced rather than rewritten. Finding the weakest bit and fixing it is exactly what the word means.' },
+  { emoji: '\ud83c\udfae', thing: 'A game you built that works but feels a bit flat.',
+    a: 'Uninstall it and play someone else\u0027s game', b: 'Add sound effects and make the scoring feel better',
+    e: 'b', why: 'The game already worked. Sound and feedback make the same game more enjoyable. That is an enhancement.' },
+  { emoji: '\ud83e\udeb4', thing: 'A plant that is alive but a bit sad looking.',
+    a: 'Move it to better light and water it properly', b: 'Pull it up and buy a plastic one',
+    e: 'a', why: 'Same plant, better conditions, better plant. Replacing it with plastic is giving up, not enhancing.' },
+  { emoji: '\ud83c\udfa4', thing: 'A presentation you could give on Friday, which is fine as it is.',
+    a: 'Practise the tricky bit once so it flows', b: 'Scrap it the night before and improvise',
+    e: 'a', why: 'This is the one that matters this week. Something that is already fine can still be enhanced, and usually the enhancement is small. One practice run of the tricky bit is enough.' }
+];
+
+/* The lab: what could you enhance, and how? */
+var THINGS = [
+  { id: 'project', emoji: '\ud83c\udfaf', label: 'My project, for Friday',
+    sub: 'The thing you are showing at the Summer Festival.' },
+  { id: 'presenting', emoji: '\ud83c\udfa4', label: 'How I present it',
+    sub: 'Not the work itself. The way you show it to people.' },
+  { id: 'space', emoji: '\ud83e\ude91', label: 'My bit of the Base',
+    sub: 'Your desk, your corner, your space. Make it better for the last week.' },
+  { id: 'skill', emoji: '\ud83c\udfb8', label: 'Something I am already good at',
+    sub: 'You are already good. Enhancing means getting even better.' },
+  { id: 'day', emoji: '\u2600\ufe0f', label: 'How my day goes',
+    sub: 'A routine, a habit, a bit of the day that could run smoother.' },
+  { id: 'someone', emoji: '\ud83d\udc9b', label: 'Someone else\u0027s week',
+    sub: 'You can enhance a person\u0027s week. It is the best kind.' }
+];
+
+var MOVES = [
+  { id: 'add', emoji: '\u2795', label: 'Add something to it',
+    sub: 'One more detail. One more layer. Something that was not there before.' },
+  { id: 'remove', emoji: '\u2702\ufe0f', label: 'Take something away from it',
+    sub: 'Often the best enhancement. Cut the bit that is not working.' },
+  { id: 'polish', emoji: '\u2728', label: 'Polish what is already there',
+    sub: 'Nothing new. Just make the existing bits better made.' },
+  { id: 'practise', emoji: '\ud83d\udd01', label: 'Practise it once more',
+    sub: 'Same thing, done again, done better. Boring and extremely effective.' },
+  { id: 'ask', emoji: '\ud83d\udcac', label: 'Ask someone what they think',
+    sub: 'Other people see the bits you have stopped noticing.' },
+  { id: 'fix', emoji: '\ud83d\udd27', label: 'Fix the one bit that annoys me',
+    sub: 'You already know what it is. You have known for ages.' }
+];
+
+/* ---------- state ---------- */
+var state = null;
+
+function freshState(name) {
+  return { name: name, phase: 'word', r: 0, correct: 0, tried: 0,
+           thing: '', thingOwn: '', move: '', step: '', pledge: '',
+           started: new Date().toLocaleDateString('en-GB') };
+}
+function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {} }
+function load() { try { return JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); } catch (e) { return null; } }
+function clearSave() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+var stage = document.getElementById('stage');
+var cheer = document.getElementById('cheer');
+
+function markDone() {
+  try {
+    var a = JSON.parse(localStorage.getItem(DONE_KEY) || '[]');
+    if (a.indexOf(DONE_ID) === -1) { a.push(DONE_ID); localStorage.setItem(DONE_KEY, JSON.stringify(a)); }
+  } catch (e) {}
+}
+
+/* ---------- start ---------- */
+function showStart() {
+  cheer.style.display = 'none';
+  var resume = load();
+  var resumeHtml = '';
+  if (resume && resume.name && resume.phase !== 'word') {
+    resumeHtml = '<div class="card accent" style="text-align:center;">' +
+      '<p class="stage-sub" style="margin-bottom:0.75rem;">' + esc(resume.name.toUpperCase()) +
+      ' has this in progress on this device.</p>' +
+      '<div class="btn-row">' +
+      '<button class="btn btn-primary" id="resume-btn">Carry on</button>' +
+      '<button class="btn btn-ghost" id="restart-btn">Start fresh instead</button>' +
+      '</div></div>';
+  }
+  stage.innerHTML = resumeHtml +
+    '<div class="card word-card">' +
+    '<p class="word-big">Enhance</p>' +
+    '<p class="word-type">verb &middot; en-HANSS</p>' +
+    '<p class="word-def">To make something that already exists even better.</p>' +
+    '<p class="word-plain">Not building it from scratch. Not throwing it out and starting again. Taking a thing that is already there, already working, already yours, and improving it. Usually by a small amount. Usually that is enough.</p>' +
+    '<div class="word-rel">' +
+    '<span class="rel-chip">improve</span>' +
+    '<span class="rel-chip">upgrade</span>' +
+    '<span class="rel-chip">refine</span>' +
+    '<span class="rel-chip">polish</span>' +
+    '<span class="rel-chip">boost</span>' +
+    '</div></div>' +
+
+    '<div class="card accent" style="text-align:center;">' +
+    '<h2 class="stage-title">Why this word, this week?</h2>' +
+    '<p class="stage-sub">Because after seven weeks, you are not starting anything. Everything you are showing on Friday already exists. It is already done, already yours, already good enough.</p>' +
+    '<p class="stage-sub">So the only question left is a small one: what would make it that little bit better? That question is what enhance means, and it is the last one this project is going to ask you.</p>' +
+    '<div class="name-field"><label for="name-input">Your initials</label>' +
+    '<input type="text" id="name-input" maxlength="20" placeholder="Type initials here"></div>' +
+    '<div class="btn-row"><button class="btn btn-primary" id="go-btn">Start</button></div>' +
+    '</div>';
+  if (resumeHtml) {
+    document.getElementById('resume-btn').addEventListener('click', function () { state = resume; route(); });
+    document.getElementById('restart-btn').addEventListener('click', function () { clearSave(); showStart(); });
+  }
+  try {
+    var profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+    if (profile && profile.initials) { document.getElementById('name-input').value = profile.initials.toUpperCase(); }
+  } catch (e) {}
+  var input = document.getElementById('name-input');
+  document.getElementById('go-btn').addEventListener('click', function () {
+    var n = input.value.trim();
+    if (!n) { input.style.borderColor = '#007291'; input.focus(); return; }
+    state = freshState(n);
+    state.phase = 'game';
+    save();
+    showGame();
+  });
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { document.getElementById('go-btn').click(); } });
+}
+
+function route() {
+  if (state.phase === 'game') { showGame(); }
+  else if (state.phase === 'thing') { showThing(); }
+  else if (state.phase === 'move') { showMove(); }
+  else if (state.phase === 'step') { showStep(); }
+  else if (state.phase === 'done') { showPledge(); }
+  else { showStart(); }
+}
+
+/* ---------- part 2: spot the enhancement ---------- */
+function gameProgress() {
+  var dots = '';
+  for (var i = 0; i < ROUNDS.length; i++) {
+    dots += '<span class="q-dot' + (i < state.r ? ' done' : (i === state.r ? ' now' : '')) + '"></span>';
+  }
+  return '<div class="progress-bar">' +
+    '<span class="step-chip">&#128269; Spot the enhancement &middot; ' + (state.r + 1) + ' of ' + ROUNDS.length + '</span>' +
+    '<span class="q-dots">' + dots + '</span>' +
+    '</div>';
+}
+
+function showGame() {
+  if (state.r >= ROUNDS.length) { state.phase = 'thing'; save(); showThing(); return; }
+  var R = ROUNDS[state.r];
+  stage.innerHTML = gameProgress() +
+    '<div class="card">' +
+    '<div class="game-head">' +
+    '<span class="game-emoji" aria-hidden="true">' + R.emoji + '</span>' +
+    '<p class="game-q">Which one is enhancing it?</p>' +
+    '<p class="game-hint">Both are allowed. Only one fits the word.</p>' +
+    '</div>' +
+    '<div class="thing-box"><p class="thing-text">' + esc(R.thing) + '</p></div>' +
+    '<div class="pair-grid">' +
+    '<button class="pair-btn" data-p="a">' + esc(R.a) + '</button>' +
+    '<button class="pair-btn" data-p="b">' + esc(R.b) + '</button>' +
+    '</div>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-ghost" id="skip-btn">Skip this one</button>' +
+    '<button class="btn btn-ghost" id="jump-btn">Skip to the Enhance Lab</button>' +
+    '</div></div>';
+  cheer.style.display = 'block';
+  document.querySelectorAll('.pair-btn').forEach(function (b) {
+    b.addEventListener('click', function () { checkAnswer(b.getAttribute('data-p')); });
+  });
+  document.getElementById('skip-btn').addEventListener('click', function () { state.r++; save(); showGame(); });
+  document.getElementById('jump-btn').addEventListener('click', function () {
+    state.phase = 'thing'; save(); showThing();
+  });
+}
+
+function checkAnswer(pick) {
+  var R = ROUNDS[state.r];
+  var right = (pick === R.e);
+  state.tried++;
+  if (right) { state.correct++; }
+  save();
+  stage.innerHTML = gameProgress() +
+    '<div class="card verdict">' +
+    '<span class="verdict-mark" aria-hidden="true">' + (right ? '\u2705' : '\ud83d\udca1') + '</span>' +
+    '<p class="verdict-title ' + (right ? 'right' : 'near') + '">' +
+    (right ? 'That is enhancing.' : 'Close, but the other one is the enhancement.') + '</p>' +
+    '<p class="verdict-why">' + esc(R.why) + '</p>' +
+    '<div class="btn-row"><button class="btn btn-primary" id="next-btn">' +
+    (state.r === ROUNDS.length - 1 ? 'On to the Enhance Lab' : 'Next one') + '</button></div>' +
+    '</div>';
+  document.getElementById('next-btn').addEventListener('click', function () {
+    state.r++;
+    if (state.r >= ROUNDS.length) { state.phase = 'thing'; }
+    save();
+    route();
+  });
+}
+
+/* ---------- part 3: the enhance lab ---------- */
+function labProgress(n) {
+  var dots = '';
+  for (var i = 1; i <= 3; i++) {
+    dots += '<span class="q-dot' + (i < n ? ' done' : (i === n ? ' now' : '')) + '"></span>';
+  }
+  return '<div class="progress-bar">' +
+    '<span class="step-chip">&#128300; The Enhance Lab &middot; ' + n + ' of 3</span>' +
+    '<span class="q-dots">' + dots + '</span>' +
+    '</div>';
+}
+
+function showThing() {
+  var opts = '';
+  THINGS.forEach(function (t) {
+    opts += '<button class="opt-btn" data-t="' + t.id + '">' + t.emoji + ' ' + esc(t.label) +
+      '<span class="opt-sub">' + esc(t.sub) + '</span></button>';
+  });
+  opts += '<button class="opt-btn opt-own" id="own-btn">&#9998; Something else entirely' +
+    '<span class="opt-sub">Your call. It is your week.</span></button>';
+  stage.innerHTML = labProgress(1) +
+    '<div class="card">' +
+    '<div class="game-head">' +
+    '<span class="game-emoji" aria-hidden="true">&#128300;</span>' +
+    '<p class="game-q">What is one thing you could enhance this week?</p>' +
+    '<p class="game-hint">It has to already exist. That is the whole point of the word.</p>' +
+    '</div>' +
+    '<div class="opt-list">' + opts + '</div>' +
+    '<div class="btn-row"><button class="btn btn-ghost" id="back-btn">Back to the game</button></div>' +
+    '</div>';
+  cheer.style.display = 'block';
+  document.querySelectorAll('.opt-btn[data-t]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      state.thing = b.getAttribute('data-t'); state.thingOwn = '';
+      state.phase = 'move'; save(); showMove();
+    });
+  });
+  document.getElementById('own-btn').addEventListener('click', showOwnThing);
+  document.getElementById('back-btn').addEventListener('click', function () {
+    state.phase = 'game'; state.r = 0; save(); showGame();
+  });
+}
+
+function showOwnThing() {
+  stage.innerHTML = labProgress(1) +
+    '<div class="card">' +
+    '<div class="game-head">' +
+    '<span class="game-emoji" aria-hidden="true">&#9998;</span>' +
+    '<p class="game-q">What is it?</p>' +
+    '<p class="game-hint">A few words is plenty.</p>' +
+    '</div>' +
+    '<input type="text" class="own-box" id="own-thing" maxlength="90" placeholder="The thing I want to make better is...">' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-primary" id="own-go">That is the one</button>' +
+    '<button class="btn btn-ghost" id="own-back">Back to the list</button>' +
+    '</div></div>';
+  var box = document.getElementById('own-thing');
+  box.focus();
+  document.getElementById('own-go').addEventListener('click', function () {
+    var v = box.value.trim();
+    if (!v) { box.style.borderColor = '#ef7724'; box.focus(); return; }
+    state.thing = 'own'; state.thingOwn = v;
+    state.phase = 'move'; save(); showMove();
+  });
+  box.addEventListener('keydown', function (e) { if (e.key === 'Enter') { document.getElementById('own-go').click(); } });
+  document.getElementById('own-back').addEventListener('click', showThing);
+}
+
+function thingLabel() {
+  if (state.thing === 'own') { return state.thingOwn; }
+  for (var i = 0; i < THINGS.length; i++) { if (THINGS[i].id === state.thing) { return THINGS[i].label; } }
+  return 'Something';
+}
+function moveLabel() {
+  for (var i = 0; i < MOVES.length; i++) { if (MOVES[i].id === state.move) { return MOVES[i].label; } }
+  return '';
+}
+
+function showMove() {
+  var opts = '';
+  MOVES.forEach(function (m) {
+    opts += '<button class="opt-btn" data-m="' + m.id + '">' + m.emoji + ' ' + esc(m.label) +
+      '<span class="opt-sub">' + esc(m.sub) + '</span></button>';
+  });
+  stage.innerHTML = labProgress(2) +
+    '<div class="card">' +
+    '<div class="game-head">' +
+    '<span class="game-emoji" aria-hidden="true">&#128295;</span>' +
+    '<p class="game-q">How would you enhance it?</p>' +
+    '<p class="game-hint">You chose: ' + esc(thingLabel()) + '. Pick the move that fits.</p>' +
+    '</div>' +
+    '<div class="opt-list">' + opts + '</div>' +
+    '<div class="btn-row"><button class="btn btn-ghost" id="back-btn">Back</button></div>' +
+    '</div>';
+  document.querySelectorAll('.opt-btn[data-m]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      state.move = b.getAttribute('data-m');
+      state.phase = 'step'; save(); showStep();
+    });
+  });
+  document.getElementById('back-btn').addEventListener('click', function () {
+    state.phase = 'thing'; save(); showThing();
+  });
+}
+
+function showStep() {
+  stage.innerHTML = labProgress(3) +
+    '<div class="card">' +
+    '<div class="game-head">' +
+    '<span class="game-emoji" aria-hidden="true">&#128072;</span>' +
+    '<p class="game-q">What is the smallest first step?</p>' +
+    '<p class="game-hint">You are going to ' + esc(moveLabel().toLowerCase()) + ', with ' + esc(thingLabel().toLowerCase()) +
+    '. What is the tiniest thing you could do towards that? Small is the point. Small is what actually happens.</p>' +
+    '</div>' +
+    '<textarea class="own-box" id="step-box" placeholder="My first small step is..."></textarea>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-primary" id="save-btn">That is my plan</button>' +
+    '<button class="btn btn-ghost" id="skip-btn">Skip this bit</button>' +
+    '<button class="btn btn-ghost" id="back-btn">Back</button>' +
+    '</div></div>';
+  var box = document.getElementById('step-box');
+  if (state.step) { box.value = state.step; }
+  box.focus();
+  document.getElementById('save-btn').addEventListener('click', function () {
+    state.step = box.value.trim();
+    state.phase = 'done'; save(); showPledge();
+  });
+  document.getElementById('skip-btn').addEventListener('click', function () {
+    state.step = '';
+    state.phase = 'done'; save(); showPledge();
+  });
+  document.getElementById('back-btn').addEventListener('click', function () {
+    state.phase = 'move'; save(); showMove();
+  });
+}
+
+/* ---------- the pledge card ---------- */
+function showPledge() {
+  markDone();
+  cheer.style.display = 'none';
+  var scoreLine = '';
+  if (state.tried > 0) {
+    scoreLine = '<div class="score-strip">You spotted the enhancement ' + state.correct + ' out of ' +
+      state.tried + ' ' + (state.tried === 1 ? 'time' : 'times') + '. ' +
+      (state.correct === state.tried ? 'Every single one. You have got the word.'
+        : 'The ones you missed are the interesting ones. That is how words get learned.') + '</div>';
+  }
+  var html = scoreLine +
+    '<div class="pledge">' +
+    '<div class="pledge-top">' +
+    '<p class="pledge-stamp">Base 6 &middot; Word of the Week &middot; Week 7</p>' +
+    '<p class="pledge-word">Enhance</p>' +
+    '<p class="pledge-by">' + esc(state.name.toUpperCase()) + ' &middot; ' + esc(new Date().toLocaleDateString('en-GB')) + '</p>' +
+    '</div>' +
+    '<div class="pledge-body">' +
+    '<div class="field"><p class="field-label">&#128300; What I am enhancing</p>' +
+    '<p class="field-value">' + esc(thingLabel()) + '</p></div>' +
+    '<div class="field"><p class="field-label">&#128295; How</p>' +
+    '<p class="field-value">' + esc(moveLabel() || 'Not decided yet') + '</p></div>' +
+    '<div class="field"><p class="field-label">&#128072; My first small step</p>' +
+    '<p class="field-value' + (state.step ? '' : ' empty') + '">' +
+    (state.step ? esc(state.step) : 'Left blank, which is allowed. The plan still counts.') + '</p></div>' +
+    '</div></div>';
+
+  html += '<div class="card accent" style="text-align:center;">' +
+    '<h2 class="stage-title">That is enhancing.</h2>' +
+    '<p class="stage-sub">You did not start anything new. You took a thing that already existed and you found the small way to make it better. That is the whole word, and it is the last thing this project is asking of you.</p>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-primary" id="send-btn">Send my plan to Jay</button>' +
+    '<button class="btn btn-outline" id="again-btn">Do it again for something else</button>' +
+    '</div>' +
+    '<p class="report-note">The week 7 challenge on the main page asks a very similar question, if you fancy earning the last stamp on your card.</p>' +
+    '<div class="btn-row" style="margin-top:0.75rem;">' +
+    '<a class="btn btn-ghost" href="index.html" style="text-decoration:underline; display:inline-block; padding:0.55rem 1rem;">Back to Week 7</a>' +
+    '</div></div>';
+
+  stage.innerHTML = html;
+  document.getElementById('send-btn').addEventListener('click', sendPledge);
+  document.getElementById('again-btn').addEventListener('click', function () {
+    var n = state.name;
+    var c = state.correct, t = state.tried;
+    state = freshState(n);
+    state.correct = c; state.tried = t;
+    state.phase = 'thing'; state.r = ROUNDS.length;
+    save(); showThing();
+  });
+}
+
+function sendPledge() {
+  var lines = 'BASE 6 - WORD OF THE WEEK - ENHANCE\n\n';
+  lines += 'Student: ' + state.name.toUpperCase() + '\n';
+  lines += 'Date: ' + new Date().toLocaleDateString('en-GB') + '\n';
+  if (state.tried > 0) {
+    lines += 'Spot the enhancement: ' + state.correct + ' of ' + state.tried + ' correct\n';
+  }
+  lines += '\nWHAT I AM ENHANCING:\n' + thingLabel() + '\n';
+  lines += '\nHOW:\n' + (moveLabel() || '(not decided)') + '\n';
+  lines += '\nMY FIRST SMALL STEP:\n' + (state.step ? state.step : '(left blank)') + '\n';
+  lines += '\n-\nSent automatically from Base 6';
+  var subject = 'Base 6 - Enhance - ' + state.name.toUpperCase();
+  var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL +
+    '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines);
+  window.open(url, '_blank');
+}
+
+showStart();
+</script>
+
+</body>
+</html>
