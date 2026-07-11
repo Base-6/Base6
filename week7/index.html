@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Week 7 &middot; Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  /* -- CURVED BANNER, week 7 festival edition -- */
+  .site-header { position: relative; background-color: #007291; padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header .header-inner { position: relative; z-index: 2; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .site-logo { display: block; width: 80px; height: 80px; margin: 0 auto 0.9rem; animation: b6-bob 4s ease-in-out infinite; }
+  @keyframes b6-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  .week-label { font-size: 0.85rem; font-weight: 700; color: #d7eef4; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2.5rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
+  .site-header .header-sub { font-size: 1.1rem; color: #d7eef4; margin-top: 0.5rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 2; }
+
+  /* Festival bunting hangs across the top of the banner */
+  .header-bunting { position: absolute; top: 0; left: 0; width: 100%; height: 56px; z-index: 1; opacity: 0.9; }
+
+  /* Drifting confetti pieces, the week 7 answer to week 6's falling leaves */
+  .confetti { position: absolute; top: -20px; z-index: 1; width: 12px; height: 12px; animation: confettidrift linear infinite; opacity: 0.85; pointer-events: none; border-radius: 3px; }
+  @keyframes confettidrift { 0% { transform: translate(0, -30px) rotate(0deg); } 100% { transform: translate(-60px, 360px) rotate(320deg); } }
+
+  /* Now / Next chip */
+  .nownext { display: none; margin-top: 0.8rem; background: rgba(254,248,244,0.16); border: 1.5px solid rgba(254,248,244,0.5); border-radius: 999px; padding: 0.4rem 1rem; color: #fef8f4; font-weight: 700; font-size: 0.92rem; }
+
+  .main { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* -- WORD OF THE WEEK RIBBON -- */
+  .ribbon { display: block; border-radius: 14px; padding: 0.85rem 1.4rem; text-align: center; text-decoration: none; font-size: 0.98rem; font-weight: 700; margin-bottom: 1rem; transition: transform 0.12s ease, box-shadow 0.12s ease; }
+  .ribbon:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+  .ribbon.wotw { background: #ef7724; color: #fef8f4; }
+
+  /* -- INTRO CARD -- */
+  .intro { background: #ffffff; border: 2px solid #ef7724; border-radius: 16px; padding: 1.4rem 1.6rem; margin: 1.25rem 0 2.25rem; box-shadow: 0 4px 14px rgba(239,119,36,0.1); }
+  .intro h2 { font-size: 1.3rem; color: #c05a10; margin-bottom: 0.5rem; }
+  .intro p { font-size: 1rem; line-height: 1.6; color: #333; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
+
+  /* -- DAY BY DAY TILES with progress rings -- */
+  .b6-day-section { margin-bottom: 2.5rem; }
+  .b6-day-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 1rem; }
+  .b6-day-tile {
+    position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.2rem;
+    text-decoration: none; color: inherit;
+    background: #ffffff; border: 2px solid var(--tile); border-radius: 16px;
+    padding: 1.4rem 0.9rem 1.1rem; overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .b6-day-tile::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--tile); }
+  .b6-day-tile:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 10px 26px var(--tile-shadow); }
+  .b6-day-tile.b6-day-static { cursor: default; }
+  .b6-day-tile.b6-day-static:hover { transform: none; box-shadow: none; }
+  .b6-day-badge { position: relative; width: 52px; height: 52px; border-radius: 50%; background: var(--tile-soft); border: 2px solid var(--tile); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; line-height: 1; margin-bottom: 0.35rem; }
+  .b6-day-badge::after { content: ""; position: absolute; inset: -8px; border-radius: 50%;
+    background: conic-gradient(var(--tile) calc(var(--ring, 0) * 1%), rgba(0,0,0,0.06) 0);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px)); }
+  .b6-day-tile.day-complete .b6-day-badge { box-shadow: 0 0 0 3px #ffffff, 0 0 14px var(--tile); }
+  .b6-tile-day { font-size: 1.15rem; font-weight: 700; color: var(--tile); }
+  .b6-tile-date { font-size: 0.82rem; color: #555; }
+  .b6-tile-tag { font-size: 0.8rem; font-weight: 700; color: var(--tile); }
+  .b6-ring-label { font-size: 0.72rem; color: #888; min-height: 1em; }
+  .b6-tile-today { display: none; margin-top: 0.5rem; background: var(--tile); color: #ffffff; font-weight: 700; border-radius: 8px; padding: 1px 12px; font-size: 0.78rem; }
+  .b6-day-tile.is-today { border-width: 4px; }
+  .b6-day-tile.is-today .b6-tile-today { display: inline-block; }
+  .b6-day-note { font-size: 0.85rem; color: #555; line-height: 1.55; margin-top: 1rem; }
+
+  /* -- SUBJECT / ZONE TILES -- */
+  .tiles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem; margin-bottom: 2.5rem; }
+  .tile { position: relative; background: #ffffff; border: 2px solid var(--c); border-radius: 16px; padding: 1.5rem 1.5rem 1.25rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.45rem; transition: transform 0.18s ease, box-shadow 0.18s ease; overflow: hidden; }
+  .tile::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--c); }
+  .tile:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 10px 26px var(--shadow); }
+  .tile-badge { width: 56px; height: 56px; border-radius: 50%; background: var(--bg); border: 2px solid var(--c); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; line-height: 1; margin-bottom: 0.4rem; }
+  .tile-subject { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c); }
+  .tile-title { font-size: 1.25rem; font-weight: 700; color: var(--c); line-height: 1.3; }
+  .tile-desc { font-size: 0.92rem; color: #444; line-height: 1.55; flex-grow: 1; }
+  .tile-go { margin-top: 0.7rem; font-size: 0.85rem; font-weight: 700; color: var(--c); display: inline-flex; align-items: center; gap: 0.3rem; }
+  .tile-go .arrow { transition: transform 0.18s ease; }
+  .tile:hover .tile-go .arrow { transform: translateX(4px); }
+  .tile-guest { position: absolute; top: 14px; right: 14px; background: var(--c); color: #ffffff; font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; letter-spacing: 0.04em; }
+  .tile-note { display: inline-block; background: var(--bg); border: 1.5px solid var(--c); color: var(--c); font-size: 0.74rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; width: fit-content; }
+
+  /* -- STAMP CARD -- */
+  .stamp-card-section { margin-bottom: 2.5rem; }
+  .stamp-card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 1.25rem 1.5rem; transition: border-color 0.3s, box-shadow 0.3s; }
+  .stamp-card.card-complete { border-color: #ef7724; box-shadow: 0 6px 22px rgba(239,119,36,0.22); }
+  .stamp-card-title { font-size: 0.9rem; font-weight: 700; color: #1a1a1a; margin-bottom: 0.25rem; }
+  .stamp-card-sub { font-size: 0.82rem; color: #888; margin-bottom: 1rem; }
+  .stamp-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .stamp-slot { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+  .stamp-slot .slot-circle { width: 52px; height: 52px; border-radius: 50%; border: 2px dashed #e0d8d0; background: #fef8f4; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; transition: border-color 0.2s, background 0.2s; }
+  .stamp-slot .slot-circle.filled { border-color: #ef7724; border-style: solid; background: #fff3e8; }
+  .stamp-slot .slot-label { font-size: 0.65rem; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.06em; }
+  .stamp-slot .slot-label.filled { color: #ef7724; }
+  .stamp-complete-banner { display: none; margin-top: 1rem; padding: 0.85rem 1.1rem; background: #fff3e8; border: 1.5px solid #ef7724; border-radius: 12px; font-size: 0.92rem; font-weight: 700; color: #c05a10; line-height: 1.5; }
+  .stamp-complete-banner.show { display: block; }
+
+  /* -- WEEKLY CHALLENGE -- */
+  .challenge-section { margin-bottom: 2.5rem; }
+  .challenge-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ef7724; margin-bottom: 1.25rem; }
+  .challenge-card { background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 16px; padding: 1.5rem; }
+  .challenge-top { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem; }
+  .challenge-icon { width: 44px; height: 44px; border-radius: 50%; background: #fff3e8; border: 1.5px solid #fcd8bc; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+  .challenge-meta { flex: 1; }
+  .challenge-optional { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #c05a10; margin-bottom: 0.3rem; }
+  .challenge-question { font-size: 1.05rem; font-weight: 700; color: #1a1a1a; line-height: 1.4; margin-bottom: 0.5rem; }
+  .challenge-desc { font-size: 0.88rem; color: #555; line-height: 1.6; margin-bottom: 0.75rem; }
+  .challenge-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .challenge-tag { font-size: 0.72rem; padding: 2px 8px; border-radius: 20px; border: 1px solid #e0d8d0; color: #888; background: #fff; }
+  .challenge-form { border-top: 1px solid #fcd8bc; padding-top: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+  .challenge-form label { font-size: 0.82rem; font-weight: 700; color: #555; }
+  .challenge-form input[type=text] { width: 100%; padding: 0.65rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #ffffff; color: #1a1a1a; outline: none; }
+  .challenge-form input:focus { border-color: #ef7724; }
+  .challenge-form textarea { width: 100%; min-height: 80px; padding: 0.65rem 0.9rem; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; border: 1.5px solid #e0d8d0; border-radius: 8px; background: #ffffff; color: #1a1a1a; outline: none; resize: vertical; line-height: 1.5; }
+  .challenge-form textarea:focus { border-color: #ef7724; }
+  .challenge-submit { align-self: flex-end; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 0.65rem 1.4rem; background: #ef7724; color: #ffffff; border: none; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+  .challenge-submit:hover { background: #c05a10; }
+  .challenge-submit:disabled { background: #ccc; cursor: default; }
+  .challenge-done { border-top: 1px solid #fcd8bc; padding-top: 1.25rem; display: none; flex-direction: column; align-items: center; gap: 0.75rem; text-align: center; }
+  .challenge-done.show { display: flex; }
+  .stamp-circle { width: 80px; height: 80px; border-radius: 50%; border: 3px dashed #ef7724; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .stamp-circle .stamp-emoji { font-size: 1.8rem; }
+  .stamp-circle .stamp-wk { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #ef7724; }
+  .stamp-done-title { font-size: 1rem; font-weight: 700; color: #1a1a1a; }
+  .stamp-done-sub { font-size: 0.85rem; color: #555; }
+  .stamp-response-preview { font-size: 0.85rem; color: #555; background: #fff3e8; border-radius: 8px; padding: 0.5rem 0.75rem; max-width: 480px; line-height: 1.5; }
+  .notify-bar { display: none; padding: 0.65rem 1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700; margin-top: 0.5rem; }
+  .notify-bar.show { display: block; }
+
+  .cheer { text-align: center; margin-top: 2rem; font-size: 1.05rem; font-weight: 700; color: #007291; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .ribbon:focus-visible, .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+  .teacher-link { color: #d8d0c8; font-size: 0.72rem; text-decoration: none; margin-left: 1rem; }
+  .teacher-link:hover { color: #888; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile, .b6-day-tile, .ribbon, .tile-go .arrow { transition: none; }
+    .tile:hover, .b6-day-tile:hover { transform: none; }
+    .site-logo { animation: none; }
+    .confetti { display: none; }
+  }
+
+  /* ===== BASE 6 AVATAR + COSMETICS (b6a-) ===== */
+  .b6a-badge { position: relative; width: var(--b6a-size,64px); height: var(--b6a-size,64px); border-radius: 50%; background: var(--b6a-bg,#ffe9d6); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .b6a-creature { font-size: calc(var(--b6a-size,64px) * 0.6); line-height: 1; }
+  .b6a-acc { position: absolute; line-height: 1; pointer-events: none; }
+  .b6a-head { top: -10%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.5); }
+  .b6a-eyes { top: 28%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.42); }
+  .b6a-neck { bottom: 0%; left: 50%; transform: translateX(-50%); font-size: calc(var(--b6a-size,64px) * 0.4); }
+  .b6a-friend { bottom: -8%; right: -12%; font-size: calc(var(--b6a-size,64px) * 0.42); }
+  .b6a-hand { bottom: -6%; left: -12%; font-size: calc(var(--b6a-size,64px) * 0.42); }
+
+  .b6a-hero-badge { display: none; margin: 0.6rem auto 0; }
+
+  .b6a-pick-overlay, .b6a-cust-overlay { position: fixed; inset: 0; background: rgba(0,114,145,0.22); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 1000; }
+  .b6a-pick-card, .b6a-cust-card { position: relative; background: #fffaf6; border: 2px solid #fcd8bc; border-radius: 18px; padding: 1.7rem 1.5rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.18); max-height: 88vh; overflow-y: auto; }
+  .b6a-eyebrow { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #ef7724; margin-bottom: 0.4rem; }
+  .b6a-pick-title { font-size: 1.35rem; font-weight: 700; color: #1a1a1a; line-height: 1.3; margin-bottom: 0.4rem; }
+  .b6a-pick-sub { font-size: 0.9rem; color: #555; line-height: 1.5; margin-bottom: 1.2rem; }
+  .b6a-pick-btns { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 1rem; }
+  .b6a-pick-btn { font-family: inherit; font-size: 1.3rem; font-weight: 700; color: #007291; background: #fff; border: 2px solid #007291; border-radius: 12px; padding: 0.8rem 0; cursor: pointer; flex: 1 1 calc(33% - 0.6rem); min-width: 84px; transition: background 0.15s, color 0.15s; }
+  .b6a-pick-btn:hover { background: #007291; color: #fff; }
+  .b6a-skip { font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; text-decoration: underline; }
+  .b6a-skip:hover { color: #555; }
+
+  .b6a-creature-grid, .b6a-creature-row { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .b6a-creature-opt { font-size: 1.7rem; line-height: 1; background: #fff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 0.4rem 0.5rem; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+  .b6a-creature-opt:hover { border-color: #007291; transform: translateY(-2px); }
+  .b6a-creature-opt.sel { border-color: #ef7724; background: #fff3e8; }
+
+  .b6a-close { position: absolute; top: 0.6rem; right: 0.8rem; font-size: 1.4rem; line-height: 1; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; }
+  .b6a-close:hover { color: #1a1a1a; }
+  .b6a-preview { display: flex; justify-content: center; margin-bottom: 0.6rem; }
+  .b6a-cust-initials { font-size: 1.1rem; font-weight: 700; color: #007291; margin-bottom: 0.3rem; }
+  .b6a-switch { font-family: inherit; font-size: 0.8rem; font-weight: 700; color: #888; background: none; border: none; cursor: pointer; text-decoration: underline; margin-bottom: 1rem; }
+  .b6a-switch:hover { color: #555; }
+  .b6a-cust-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #007291; margin: 1rem 0 0.5rem; text-align: left; }
+  .b6a-slot { text-align: left; }
+  .b6a-opt-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .b6a-opt { font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #555; background: #fff; border: 2px solid #e0d8d0; border-radius: 10px; padding: 0.4rem 0.7rem; cursor: pointer; transition: border-color 0.15s; }
+  .b6a-opt:hover { border-color: #007291; }
+  .b6a-opt.sel { border-color: #ef7724; background: #fff3e8; color: #1a1a1a; }
+  .b6a-empty { font-size: 0.88rem; color: #555; line-height: 1.5; margin-top: 1rem; }
+
+  .b6a-chip { position: fixed; bottom: 1rem; right: 1rem; z-index: 900; display: inline-flex; align-items: center; gap: 0.45rem; font-family: inherit; font-size: 0.85rem; font-weight: 700; color: #007291; background: #fff; border: 1.5px solid #007291; border-radius: 999px; padding: 0.3rem 0.8rem 0.3rem 0.35rem; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+  .b6a-chip:hover { background: #f0fafc; }
+
+  .b6a-toast { position: fixed; left: 50%; bottom: 1.2rem; transform: translateX(-50%); z-index: 1100; background: #007291; color: #fef8f4; font-family: inherit; font-size: 0.9rem; font-weight: 700; padding: 0.7rem 1.1rem; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.22); max-width: 90vw; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- ===== BASE 6 AVATAR + COSMETICS (self-contained, b6a-) ===== -->
+<div class="b6a-pick-overlay" id="b6a-pick" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="b6a-pick-title">
+  <div class="b6a-pick-card">
+    <p class="b6a-eyebrow">Base 6</p>
+    <div id="b6a-step1">
+      <h2 class="b6a-pick-title" id="b6a-pick-title">Who is working here today?</h2>
+      <p class="b6a-pick-sub">Tap your initials. This device will remember you.</p>
+      <div class="b6a-pick-btns" id="b6a-initials-row"></div>
+      <button class="b6a-skip" id="b6a-skip">Not now</button>
+    </div>
+    <div id="b6a-step2" style="display:none;">
+      <h2 class="b6a-pick-title">Choose your avatar</h2>
+      <p class="b6a-pick-sub">Pick a creature. You can change it any time.</p>
+      <div class="b6a-creature-grid" id="b6a-creature-grid"></div>
+    </div>
+  </div>
+</div>
+
+<div class="b6a-cust-overlay" id="b6a-cust" style="display:none;" role="dialog" aria-modal="true">
+  <div class="b6a-cust-card">
+    <button class="b6a-close" id="b6a-cust-close" aria-label="Close">&times;</button>
+    <p class="b6a-eyebrow">Your avatar</p>
+    <div class="b6a-preview"><span class="b6a-badge" id="b6a-cust-badge" style="--b6a-size:96px;"></span></div>
+    <p class="b6a-cust-initials" id="b6a-cust-initials">&nbsp;</p>
+    <button class="b6a-switch" id="b6a-switch">Switch student</button>
+    <div class="b6a-creature-row" id="b6a-creature-row"></div>
+    <div id="b6a-slots"></div>
+    <p class="b6a-empty" id="b6a-empty" style="display:none;">Do an activity this week to unlock things to wear.</p>
+  </div>
+</div>
+
+<button class="b6a-chip" id="b6a-chip" style="display:none;" aria-label="Your avatar">
+  <span class="b6a-badge" id="b6a-chip-badge" style="--b6a-size:30px;"></span>
+  <span id="b6a-chip-text">&nbsp;</span>
+</button>
+
+<div class="b6a-toast" id="b6a-toast" role="status" aria-live="polite" style="display:none;"></div>
+
+
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Home</a>
+
+  <!-- festival bunting hangs across the top of the banner -->
+  <svg class="header-bunting" viewBox="0 0 1200 56" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0 8 Q 300 26 600 8 Q 900 26 1200 8" fill="none" stroke="#04435c" stroke-width="3"/>
+    <path d="M40 12 L58 44 L76 13 Z" fill="#ef7724"/>
+    <path d="M120 15 L138 47 L156 16 Z" fill="#ffce2e"/>
+    <path d="M200 17 L218 49 L236 18 Z" fill="#9fd08c"/>
+    <path d="M280 19 L298 51 L316 19 Z" fill="#ff9ed4"/>
+    <path d="M360 19 L378 51 L396 19 Z" fill="#ef7724"/>
+    <path d="M440 18 L458 50 L476 18 Z" fill="#ffce2e"/>
+    <path d="M520 15 L538 47 L556 15 Z" fill="#9fd08c"/>
+    <path d="M600 12 L618 44 L636 12 Z" fill="#ff9ed4"/>
+    <path d="M680 14 L698 46 L716 14 Z" fill="#ffce2e"/>
+    <path d="M760 17 L778 49 L796 17 Z" fill="#ef7724"/>
+    <path d="M840 19 L858 51 L876 19 Z" fill="#9fd08c"/>
+    <path d="M920 19 L938 51 L956 19 Z" fill="#ff9ed4"/>
+    <path d="M1000 17 L1018 49 L1036 17 Z" fill="#ffce2e"/>
+    <path d="M1080 14 L1098 46 L1116 14 Z" fill="#ef7724"/>
+    <path d="M1150 11 L1168 43 L1186 11 Z" fill="#9fd08c"/>
+  </svg>
+  <span class="confetti" style="left:14%; background:#ffce2e; animation-duration:12s;" aria-hidden="true"></span>
+  <span class="confetti" style="left:46%; background:#ff9ed4; animation-duration:16s; animation-delay:4s;" aria-hidden="true"></span>
+  <span class="confetti" style="left:78%; background:#9fd08c; animation-duration:14s; animation-delay:7s;" aria-hidden="true"></span>
+
+  <div class="header-inner">
+    <!-- EDIT: same logo line as week 6. If /Base6/logo.png is committed this just works. -->
+    <img class="site-logo" src="../logo.png" alt="Base 6 logo, a stylised orange bridge" onerror="this.style.display='none'">
+    <p class="week-label">Week 7 &middot; The final week</p>
+    <!-- EDIT (draft, change to your actual theme name): -->
+    <h1>The Big Finish</h1>
+    <p class="header-sub">Choose a day below to see what is happening this week.</p>
+    <p class="nownext" id="nownext" aria-live="polite"></p>
+    <span class="b6a-badge b6a-hero-badge" id="b6a-hero-badge" style="--b6a-size:54px;"></span>
+    <p class="hero-greeting" id="hero-greeting" style="display:none; color:#fef8f4; font-weight:700; margin-top:0.6rem;">&nbsp;</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <!-- EDIT: this is a plain div for now. When a word of the week activity exists,
+       change the div to an <a> with its href, and add " &rarr;" back to the end. -->
+  <div class="ribbon wotw">Word of the Week: Enhance</div>
+
+  <!-- EDIT (draft): warm welcome to the final week -->
+  <div class="intro">
+    <h2>Welcome to Week 7, the last one</h2>
+    <p>Seven weeks ago we asked one big question: how do our choices today shape the worlds of tomorrow? This week is all about showing what you found. Monday is the trip to Wake the Tiger, Tuesday and Wednesday are for finishing your project your way, and Friday is the Summer Festival, where your work gets its moment. We are also welcoming some new faces to the Base on Wednesday and Thursday, and they are lucky to be joining this one. No rush on anything this week. You have already done the hard part, and Jay is properly proud of all of it.</p>
+  </div>
+
+  <!-- -- DAY BY DAY --
+       Monday and Friday are static tiles with countdowns (the trip and the festival),
+       so only Tuesday, Wednesday and Thursday link to day pages.
+       data-total = number of activity cards on each day page, estimated. Adjust when
+       you build day2 to day4. Day pages should mark completion in
+       base6Done-week7-dayN so the rings and cosmetics unlocks work. -->
+  <div class="b6-day-section">
+    <p class="section-label">This week, day by day</p>
+    <div class="b6-day-grid">
+      <div class="b6-day-tile b6-day-static" data-date="2026-07-13" id="trip-tile" style="--tile:#c05a10; --tile-soft:#fbeadd; --tile-shadow:rgba(192,90,16,0.24);">
+        <span class="b6-day-badge" aria-hidden="true">&#128047;</span>
+        <span class="b6-tile-day">Monday</span>
+        <span class="b6-tile-date">Mon 13 July</span>
+        <span class="b6-tile-tag" id="trip-tag">Trip: Wake the Tiger</span>
+        <span class="b6-ring-label" aria-live="off"></span>
+        <span class="b6-tile-today">Today</span>
+      </div>
+      <a class="b6-day-tile" href="day2.html" data-date="2026-07-14" data-day="2" data-total="2" style="--tile:#007291; --tile-soft:#e3f1f5; --tile-shadow:rgba(0,114,145,0.22);">
+        <span class="b6-day-badge" aria-hidden="true">&#128736;&#65039;</span>
+        <span class="b6-tile-day">Tuesday</span>
+        <span class="b6-tile-date">Tue 14 July</span>
+        <span class="b6-tile-tag">Project finishing day</span>
+        <span class="b6-ring-label" aria-live="off"></span>
+        <span class="b6-tile-today">Today</span>
+      </a>
+      <a class="b6-day-tile" href="day3.html" data-date="2026-07-15" data-day="3" data-total="2" style="--tile:#7b5ea7; --tile-soft:#efe9f6; --tile-shadow:rgba(123,94,167,0.22);">
+        <span class="b6-day-badge" aria-hidden="true">&#129309;</span>
+        <span class="b6-tile-day">Wednesday</span>
+        <span class="b6-tile-date">Wed 15 July</span>
+        <span class="b6-tile-tag">Shuffle up: new faces</span>
+        <span class="b6-ring-label" aria-live="off"></span>
+        <span class="b6-tile-today">Today</span>
+      </a>
+      <a class="b6-day-tile" href="day4.html" data-date="2026-07-16" data-day="4" data-total="2" style="--tile:#2e8b57; --tile-soft:#e6f3ec; --tile-shadow:rgba(46,139,87,0.22);">
+        <span class="b6-day-badge" aria-hidden="true">&#127880;</span>
+        <span class="b6-tile-day">Thursday</span>
+        <span class="b6-tile-date">Thu 16 July</span>
+        <span class="b6-tile-tag">Festival prep and shuffle</span>
+        <span class="b6-ring-label" aria-live="off"></span>
+        <span class="b6-tile-today">Today</span>
+      </a>
+      <div class="b6-day-tile b6-day-static" data-date="2026-07-17" id="fest-tile" style="--tile:#ef7724; --tile-soft:#fdeadd; --tile-shadow:rgba(239,119,36,0.24);">
+        <span class="b6-day-badge" aria-hidden="true">&#127881;</span>
+        <span class="b6-tile-day">Friday</span>
+        <span class="b6-tile-date">Fri 17 July</span>
+        <span class="b6-tile-tag" id="fest-tag">Summer Festival</span>
+        <span class="b6-ring-label" aria-live="off"></span>
+        <span class="b6-tile-today">Today</span>
+      </div>
+    </div>
+    <p class="b6-day-note">Monday is the trip and Friday is the festival, so those two tiles just count down rather than opening a page. Tuesday to Thursday have a few things on their pages if you want them, and the rings fill up as you go. As ever, nothing here is a demand.</p>
+  </div>
+
+  <script>
+  (function () {
+    var now = new Date();
+    var today = now.getFullYear() + '-' +
+      String(now.getMonth() + 1).padStart(2, '0') + '-' +
+      String(now.getDate()).padStart(2, '0');
+    document.querySelectorAll('.b6-day-tile').forEach(function (tile) {
+      if (tile.getAttribute('data-date') === today) { tile.classList.add('is-today'); }
+    });
+    /* progress rings */
+    document.querySelectorAll('.b6-day-tile[data-day]').forEach(function (tile) {
+      var day = tile.getAttribute('data-day');
+      var total = parseInt(tile.getAttribute('data-total'), 10);
+      var done = [];
+      try { done = JSON.parse(localStorage.getItem('base6Done-week7-day' + day) || '[]'); } catch (e) { done = []; }
+      if (!total || done.length === 0) { return; }
+      var pct = Math.min(100, Math.round(done.length / total * 100));
+      var badge = tile.querySelector('.b6-day-badge');
+      if (badge) { badge.style.setProperty('--ring', pct); }
+      if (pct >= 100) { tile.classList.add('day-complete'); }
+      var lab = tile.querySelector('.b6-ring-label');
+      if (lab) { lab.textContent = done.length + ' of ' + total + ' done'; }
+    });
+    /* countdowns for the two static tiles */
+    var t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    function sleeps(target) { return Math.round((target - t0) / 86400000); }
+    var tripDiff = sleeps(new Date(2026, 6, 13));
+    var tripTag = document.getElementById('trip-tag');
+    if (tripTag) {
+      if (tripDiff > 1) { tripTag.textContent = 'Wake the Tiger: ' + tripDiff + ' sleeps to go'; }
+      else if (tripDiff === 1) { tripTag.textContent = 'Wake the Tiger: 1 sleep to go'; }
+      else if (tripDiff === 0) { tripTag.textContent = 'Trip day!'; }
+      else { tripTag.textContent = 'Wake the Tiger: how was it?'; }
+    }
+    var festDiff = sleeps(new Date(2026, 6, 17));
+    var festTag = document.getElementById('fest-tag');
+    if (festTag) {
+      if (festDiff > 1) { festTag.textContent = 'Summer Festival: ' + festDiff + ' sleeps to go'; }
+      else if (festDiff === 1) { festTag.textContent = 'Summer Festival: 1 sleep to go'; }
+      else if (festDiff === 0) { festTag.textContent = 'Festival day!'; }
+      else { festTag.textContent = 'The festival: you did it!'; }
+    }
+  })();
+  </script>
+
+  <!-- -- THIS WEEK'S SPACES --
+       Week 7 does not run normal subject sessions, so instead of the usual subject grid
+       this is a small set of zones. EDIT the hrefs as the pages get built:
+       - project/index.html: optional page of finishing checklists or festival prep notes
+       - shuffle/index.html: home for the shuffle up activities (dino brainstorm,
+         getting to know me). Build these next and point the tile at them.
+       - relational/index.html: Tuesday's PSHE session page. -->
+  <p class="section-label">This week's spaces</p>
+  <div class="tiles-grid">
+
+    <a class="tile" style="--c:#ef7724; --bg:#fdeee0; --shadow:rgba(239,119,36,0.24);" href="project/index.html">
+      <span class="tile-badge">&#127914;</span>
+      <span class="tile-subject">Project</span>
+      <span class="tile-title">Festival HQ</span>
+      <span class="tile-desc">Finishing touches, practice runs and festival prep. Your project, your way, ready for Friday.</span>
+      <span class="tile-go">See what is on <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#7b5ea7; --bg:#efe9f6; --shadow:rgba(123,94,167,0.22);" href="shuffle/index.html">
+      <span class="tile-badge">&#128075;</span>
+      <span class="tile-subject">Shuffle Up</span>
+      <span class="tile-title">The Welcome Zone</span>
+      <span class="tile-note">New faces this week</span>
+      <span class="tile-desc">Activities for our newest Base 6 members, plus a sneak peek at September's big question: what if dinosaurs still existed?</span>
+      <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
+    </a>
+
+    <a class="tile" style="--c:#0e8a9e; --bg:#e2f3f6; --shadow:rgba(14,138,158,0.22);" href="relational/index.html">
+      <span class="tile-badge">&#128172;</span>
+      <span class="tile-subject">Relational (PSHE &amp; RSE)</span>
+      <span class="tile-title">Check-In</span>
+      <span class="tile-desc">Tuesday morning's session, plus a chance to look back at how far you have come since week 1.</span>
+      <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
+    </a>
+
+  </div>
+
+  <!-- -- STAMP CARD -- -->
+  <div class="stamp-card-section">
+    <p class="section-label">My stamp card</p>
+    <div class="stamp-card" id="stamp-card">
+      <div class="stamp-card-title">Base 6 &middot; Weekly Challenges</div>
+      <div class="stamp-card-sub">Complete each week's challenge to earn a stamp. Your card saves on this device.</div>
+      <div class="stamp-row" id="stamp-row"></div>
+      <div class="stamp-complete-banner" id="stamp-complete-banner">
+        &#127882; All seven stamps. The whole card, the whole project, start to finish. That took showing up week after week, and you did it. Jay will be very keen to see this.
+      </div>
+    </div>
+  </div>
+
+  <!-- -- WEEKLY CHALLENGE -- -->
+  <div class="challenge-section">
+    <p class="challenge-label">This week's challenge, the last one</p>
+    <div class="challenge-card">
+      <div class="challenge-top">
+        <div class="challenge-icon">&#127891;</div>
+        <div class="challenge-meta">
+          <div class="challenge-optional">Optional &middot; any time this week</div>
+          <div class="challenge-question">To enhance means to make something even better. Looking back over the whole project, what is one thing that got better because of you? It could be a piece of work, a skill, or even a corner of the Base. Tiny things count.</div>
+          <div class="challenge-desc">Maybe a game score climbed, a page you wrote got sharper, or you found a better way to do something. This is the final stamp on the card, and it is yours to earn whenever you like.</div>
+          <div class="challenge-tags">
+            <span class="challenge-tag">links to Word of the Week</span>
+            <span class="challenge-tag">links to Project</span>
+            <span class="challenge-tag">the final stamp</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="challenge-form" id="challenge-form">
+        <div>
+          <label for="c-name">Your initials</label>
+          <input type="text" id="c-name" placeholder="Type your initials here">
+        </div>
+        <div>
+          <label for="c-answer">Your answer, a sentence or two is fine</label>
+          <textarea id="c-answer" placeholder="Type your answer here..."></textarea>
+        </div>
+        <div class="notify-bar" id="notify-bar"></div>
+        <button class="challenge-submit" id="challenge-submit" onclick="submitChallenge()">Earn my stamp &#127891;</button>
+      </div>
+
+      <div class="challenge-done" id="challenge-done">
+        <div class="stamp-circle">
+          <span class="stamp-emoji">&#127891;</span>
+          <span class="stamp-wk">Week 7</span>
+        </div>
+        <div class="stamp-done-title">Challenge complete!</div>
+        <div class="stamp-done-sub">Your stamp has been saved to this device.</div>
+        <div class="stamp-response-preview" id="done-preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="cheer">Seven weeks. Look what you built. Jay could not be prouder.</p>
+
+</main>
+
+<footer>
+  <span id="reset-target" onclick="handleResetClick()" style="cursor:default;">Base 6 &middot; Chilton Bridge School</span>
+  <a class="teacher-link" href="teacher.html">&middot;</a>
+</footer>
+
+<script>
+const THIS_WEEK = 7;
+const TOTAL_WEEKS = 7;
+const STORE_KEY = 'base6_stamps';
+const TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+
+// EDIT (draft): change to your actual theme name, matching the h1 above.
+const WEEK_THEME_NAME = 'The Big Finish';
+const CHALLENGE_QUESTION = 'To enhance means to make something even better. Looking back over the whole project, what is one thing that got better because of you? It could be a piece of work, a skill, or even a corner of the Base. Tiny things count.';
+
+const WEEK_THEMES = {
+  1: { emoji: '\ud83c\udf31', label: 'Wk 1' },
+  2: { emoji: '\ud83c\udfc6', label: 'Wk 2' },
+  3: { emoji: '\u2699\ufe0f', label: 'Wk 3' },
+  4: { emoji: '\ud83d\udd25', label: 'Wk 4' },
+  5: { emoji: '\ud83d\udca1', label: 'Wk 5' },
+  6: { emoji: '\ud83d\ude80', label: 'Wk 6' },
+  7: { emoji: '\ud83c\udf93', label: 'Wk 7' },
+};
+
+function loadStamps() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveStamps(stamps) {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(stamps)); } catch(e) {}
+}
+
+function renderStampRow() {
+  const stamps = loadStamps();
+  const row = document.getElementById('stamp-row');
+  row.innerHTML = '';
+  let filledCount = 0;
+  for(let w = 1; w <= TOTAL_WEEKS; w++) {
+    const theme = WEEK_THEMES[w];
+    const filled = !!stamps[w];
+    if (filled) { filledCount++; }
+    const slot = document.createElement('div');
+    slot.className = 'stamp-slot';
+    slot.innerHTML = `
+      <div class="slot-circle ${filled ? 'filled' : ''}" title="${filled ? 'Week '+w+' complete, '+stamps[w].name : 'Week '+w+', not yet done'}">
+        ${filled ? theme.emoji : ''}
+      </div>
+      <div class="slot-label ${filled ? 'filled' : ''}">${theme.label}</div>
+    `;
+    row.appendChild(slot);
+  }
+  /* the full-card moment: all seven stamps earns the golden card */
+  const card = document.getElementById('stamp-card');
+  const banner = document.getElementById('stamp-complete-banner');
+  if (filledCount === TOTAL_WEEKS) {
+    if (card) { card.classList.add('card-complete'); }
+    if (banner) { banner.classList.add('show'); }
+  } else {
+    if (card) { card.classList.remove('card-complete'); }
+    if (banner) { banner.classList.remove('show'); }
+  }
+}
+
+function checkAlreadyDone() {
+  const stamps = loadStamps();
+  if(stamps[THIS_WEEK]) {
+    showDoneState(stamps[THIS_WEEK].answer, stamps[THIS_WEEK].name);
+  }
+}
+
+function showDoneState(answer, name) {
+  document.getElementById('challenge-form').style.display = 'none';
+  const done = document.getElementById('challenge-done');
+  done.classList.add('show');
+  document.getElementById('done-preview').textContent = '"' + answer + '"';
+}
+
+function submitChallenge() {
+  const name = document.getElementById('c-name').value.trim();
+  const answer = document.getElementById('c-answer').value.trim();
+  const notify = document.getElementById('notify-bar');
+
+  if(!name) {
+    notify.textContent = 'Please type your initials first.';
+    notify.className = 'notify-bar show';
+    notify.style.background = '#fff3e6';
+    notify.style.border = '1.5px solid #e8a020';
+    notify.style.color = '#7a4a00';
+    document.getElementById('c-name').focus();
+    return;
+  }
+  if(!answer) {
+    notify.textContent = 'Add your answer before earning the stamp.';
+    notify.className = 'notify-bar show';
+    notify.style.background = '#fff3e6';
+    notify.style.border = '1.5px solid #e8a020';
+    notify.style.color = '#7a4a00';
+    document.getElementById('c-answer').focus();
+    return;
+  }
+
+  const stamps = loadStamps();
+  stamps[THIS_WEEK] = {
+    name,
+    answer,
+    date: new Date().toLocaleDateString('en-GB'),
+    week: THIS_WEEK
+  };
+  saveStamps(stamps);
+
+  try { localStorage.setItem('base6Profile', JSON.stringify({ initials: name })); } catch(e) {}
+
+  renderStampRow();
+  showDoneState(answer, name);
+
+  const subject = encodeURIComponent('Base 6 - Week ' + THIS_WEEK + ' Challenge - ' + name);
+  const body = encodeURIComponent(
+    'BASE 6 - WEEKLY CHALLENGE RESPONSE\n\n' +
+    'Student: ' + name + '\n' +
+    'Week: ' + THIS_WEEK + ' - ' + WEEK_THEME_NAME + '\n' +
+    'Date: ' + new Date().toLocaleDateString('en-GB') + '\n\n' +
+    'Challenge: ' + CHALLENGE_QUESTION + '\n\n' +
+    'Response:\n' + answer + '\n\n' +
+    '-\nSent automatically from Base 6'
+  );
+  window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL + '&su=' + subject + '&body=' + body, '_blank');
+}
+
+renderStampRow();
+checkAlreadyDone();
+
+try {
+  const profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+  if (profile && profile.initials) {
+    document.getElementById('c-name').value = profile.initials;
+  }
+} catch(e) {}
+
+let resetClicks = 0, resetTimer = null;
+function handleResetClick() {
+  resetClicks++;
+  clearTimeout(resetTimer);
+  resetTimer = setTimeout(() => { resetClicks = 0; }, 600);
+  if (resetClicks >= 3) {
+    resetClicks = 0;
+    if (confirm('Reset your stamp card? This will clear all saved stamps on this device.')) {
+      localStorage.removeItem(STORE_KEY);
+      document.getElementById('challenge-form').style.display = 'flex';
+      document.getElementById('challenge-done').classList.remove('show');
+      renderStampRow();
+    }
+  }
+}
+</script>
+
+<script>
+/* ===== NOW / NEXT chip: reads the week 7 timetable and the clock ===== */
+(function () {
+  const SCHEDULE = {
+    1: [['09:30','10:00','Breathe-in'],['10:00','14:00','The trip: Wake the Tiger'],['14:00','14:30','Breathe-out']],
+    2: [['09:30','10:00','Breathe-in'],['10:00','10:30','PSHE check-in'],['10:30','12:00','Project'],['12:30','14:00','Project'],['14:00','14:30','Breathe-out']],
+    3: [['09:30','10:00','Breathe-in'],['10:00','12:00','Shuffle up: welcoming new students'],['12:30','14:00','Project'],['14:00','14:30','Breathe-out']],
+    4: [['09:30','10:00','Breathe-in'],['10:00','12:00','Festival preparation'],['12:30','14:00','Shuffle up: welcoming new students'],['14:00','14:30','Breathe-out']],
+    5: [['09:30','10:00','Breathe-in'],['10:00','14:00','The Summer Festival'],['14:00','14:30','Breathe-out']]
+  };
+  const SHOW_FROM = new Date(2026, 6, 11);
+  const WEEK_START = new Date(2026, 6, 13);
+  const WEEK_END = new Date(2026, 6, 17, 23, 59, 59);
+  const el = document.getElementById('nownext');
+  const now = new Date();
+  if (!el || now < SHOW_FROM || now > WEEK_END) { return; }
+  function mins(t) { const p = t.split(':'); return parseInt(p[0], 10) * 60 + parseInt(p[1], 10); }
+  const dow = now.getDay();
+  const cur = now.getHours() * 60 + now.getMinutes();
+  let text = '';
+  if (dow >= 1 && dow <= 5 && now >= WEEK_START) {
+    const blocks = SCHEDULE[dow];
+    let nowB = null, nextB = null;
+    for (const b of blocks) {
+      if (cur >= mins(b[0]) && cur < mins(b[1])) { nowB = b; }
+      else if (cur < mins(b[0]) && !nextB) { nextB = b; }
+    }
+    if (nowB && nextB) { text = 'Now: ' + nowB[2] + ' \u00b7 Next: ' + nextB[2] + ' at ' + nextB[0]; }
+    else if (nowB) { text = 'Now: ' + nowB[2] + ' \u00b7 the last one today'; }
+    else if (nextB) { text = 'Next up: ' + nextB[2] + ' at ' + nextB[0]; }
+    else { text = (dow === 5) ? 'That is everything. What a project. Have a brilliant summer.' : 'That is everything for today. See you tomorrow.'; }
+  } else {
+    text = 'Next up: Breathe-in, Monday at 9:30';
+  }
+  el.textContent = text;
+  el.style.display = 'inline-block';
+})();
+</script>
+
+<script>
+(function () {
+  /* EDIT: when the new students' initials are confirmed, add them to this list so
+     they can pick an avatar on shuffle days. Keep to initials only, as ever. */
+  var STUDENTS = ['LW','AP','LS','LC','HK','JTK'];
+  var CREATURES = ['\ud83e\udd85','\ud83d\udc09','\ud83e\udd96','\ud83d\udc3a','\ud83e\udd84','\ud83e\udd8c','\ud83e\udda3','\ud83d\udc05','\ud83e\udd8e','\ud83e\udd8f'];
+  /* Week 7 cosmetics: the festival, the trip and the big finish.
+     Items unlock in order as activities are completed across the week. */
+  var ITEMS = [
+    { id:'medal',      slot:'neck',   emoji:'\ud83c\udfc5',       label:'Festival Medal' },
+    { id:'balloon',    slot:'hand',   emoji:'\ud83c\udf88',       label:'Balloon' },
+    { id:'tophat',     slot:'head',   emoji:'\ud83c\udfa9',       label:'Showtime Hat' },
+    { id:'bunting',    slot:'bg',     color:'#fff0e0',             label:'Bunting Sky' },
+    { id:'tiger',      slot:'friend', emoji:'\ud83d\udc2f',       label:'Tiger Cub' },
+    { id:'sparkler',   slot:'hand',   emoji:'\ud83c\udf87',       label:'Sparkler' },
+    { id:'lei',        slot:'neck',   emoji:'\ud83c\udf3a',       label:'Flower Garland' },
+    { id:'shades',     slot:'eyes',   emoji:'\ud83d\udd76\ufe0f', label:'Festival Shades' },
+    { id:'mic',        slot:'hand',   emoji:'\ud83c\udfa4',       label:'Presenter Mic' },
+    { id:'rosette',    slot:'neck',   emoji:'\ud83c\udff5\ufe0f', label:'Rosette' },
+    { id:'butterfly',  slot:'friend', emoji:'\ud83e\udd8b',       label:'Butterfly' },
+    { id:'stagelight', slot:'bg',     color:'#fdeada',             label:'Stage Lights' },
+    { id:'trophy',     slot:'hand',   emoji:'\ud83c\udfc6',       label:'Trophy' },
+    { id:'ribbon',     slot:'neck',   emoji:'\ud83c\udf97\ufe0f', label:'Ribbon of Honour' },
+    { id:'crown',      slot:'head',   emoji:'\ud83d\udc51',       label:'Festival Crown' },
+    { id:'golden',     slot:'bg',     color:'#fdf3d7',             label:'Golden Hour' },
+    { id:'gradcap',    slot:'head',   emoji:'\ud83c\udf93',       label:'Graduate Cap' },
+    /* ---- Bonus items: granted by id from an activity page via wardrobe.unlocked.
+       'tigerticket' from the Wake the Tiger reflection, 'dino' from the shuffle
+       zone's September teaser, 'discoball' from the festival page. ---- */
+    { id:'tigerticket', slot:'hand',  emoji:'\ud83c\udf9f\ufe0f', label:'Tiger Ticket' },
+    { id:'dino',        slot:'friend', emoji:'\ud83e\udd95',      label:'September Dino' },
+    { id:'discoball',   slot:'hand',  emoji:'\ud83e\udea9',       label:'Disco Ball' }
+  ];
+  var SLOT_ORDER = ['head','eyes','neck','hand','friend','bg'];
+  var SLOT_LABELS = { head:'Head', eyes:'Eyes', neck:'Neck', hand:'Holding', friend:'Friend', bg:'Background' };
+  var WEEK_KEY = 'base6Avatar-week7';
+  var pendingInitials = null;
+
+  function getProfile(){ try { return JSON.parse(localStorage.getItem('base6Profile') || 'null'); } catch(e){ return null; } }
+  function setProfile(p){ try { localStorage.setItem('base6Profile', JSON.stringify(p)); } catch(e){} }
+  function getWardrobe(){ try { return JSON.parse(localStorage.getItem(WEEK_KEY) || 'null') || { worn:{}, seen:[] }; } catch(e){ return { worn:{}, seen:[] }; } }
+  function setWardrobe(w){ try { localStorage.setItem(WEEK_KEY, JSON.stringify(w)); } catch(e){} }
+  function itemById(id){ for (var i=0;i<ITEMS.length;i++){ if (ITEMS[i].id===id) return ITEMS[i]; } return null; }
+
+  function totalDone(){
+    var t = 0;
+    for (var d=1; d<=5; d++){
+      try { var a = JSON.parse(localStorage.getItem('base6Done-week7-day'+d) || '[]'); if (a && a.length) t += a.length; } catch(e){}
+    }
+    return t;
+  }
+  function unlockedItems(){
+    var n = totalDone();
+    var w = getWardrobe(); var ex = Array.isArray(w.unlocked) ? w.unlocked : [];
+    return ITEMS.filter(function(it,i){ return (i+1) <= n || ex.indexOf(it.id) !== -1; });
+  }
+
+  function renderBadge(el, size){
+    var p = getProfile(); if (!p || !el) return;
+    var w = getWardrobe(); var worn = w.worn || {};
+    el.style.setProperty('--b6a-size', size + 'px');
+    var bg = '#ffe9d6';
+    if (worn.bg){ var b = itemById(worn.bg); if (b && b.color) bg = b.color; }
+    el.style.setProperty('--b6a-bg', bg);
+    var html = '<span class="b6a-creature" aria-hidden="true">' + (p.creature || CREATURES[0]) + '</span>';
+    ['head','eyes','neck','friend','hand'].forEach(function(slot){
+      var id = worn[slot]; if (!id) return; var it = itemById(id); if (!it || !it.emoji) return;
+      html += '<span class="b6a-acc b6a-' + slot + '" aria-hidden="true">' + it.emoji + '</span>';
+    });
+    el.innerHTML = html;
+  }
+
+  function updateGreeting(p){
+    var hero = document.getElementById('hero-greeting');
+    var greet = document.getElementById('greeting');
+    var dn = (typeof DAY_NAME !== 'undefined') ? DAY_NAME : '';
+    if (p && p.initials){
+      if (hero){ hero.textContent = 'Hello ' + p.initials.toUpperCase() + '.'; hero.style.display = 'block'; }
+      else if (greet){ greet.textContent = 'Hello ' + p.initials.toUpperCase() + (dn ? '. Welcome to ' + dn + '.' : '.'); }
+      var cName = document.getElementById('c-name'); if (cName && !cName.value){ cName.value = p.initials; }
+    } else if (hero){ hero.style.display = 'none'; }
+    var hb = document.getElementById('b6a-hero-badge');
+    if (hb){ if (p){ hb.style.display = 'inline-flex'; renderBadge(hb, 54); } else { hb.style.display = 'none'; } }
+  }
+
+  function refreshAll(){
+    var p = getProfile();
+    updateGreeting(p);
+    var chip = document.getElementById('b6a-chip');
+    if (p){
+      chip.style.display = 'inline-flex';
+      renderBadge(document.getElementById('b6a-chip-badge'), 30);
+      document.getElementById('b6a-chip-text').textContent = p.initials.toUpperCase();
+    } else { chip.style.display = 'none'; }
+  }
+
+  var toastTimer = null;
+  function showToast(msg){
+    var t = document.getElementById('b6a-toast');
+    t.textContent = msg; t.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.style.display = 'none'; }, 5500);
+  }
+  document.getElementById('b6a-toast').addEventListener('click', function(){ this.style.display = 'none'; });
+
+  function checkUnlocks(){
+    var p = getProfile(); if (!p) return;
+    var w = getWardrobe(); var unlocked = unlockedItems(); var seen = w.seen || [];
+    var fresh = unlocked.filter(function(it){ return seen.indexOf(it.id) === -1; });
+    if (fresh.length > 0){
+      w.seen = unlocked.map(function(it){ return it.id; }); setWardrobe(w);
+      showToast(fresh.length === 1
+        ? 'You found ' + fresh[0].label + '. Tap your avatar to add it.'
+        : 'You found ' + fresh.length + ' new things. Tap your avatar to add them.');
+    }
+  }
+
+  var pickOverlay = document.getElementById('b6a-pick');
+  function openPicker(step){ buildPickerOnce(); showStep(step || 1); pickOverlay.style.display = 'flex'; }
+  function closePicker(){ pickOverlay.style.display = 'none'; }
+  function showStep(n){
+    document.getElementById('b6a-step1').style.display = (n === 1) ? 'block' : 'none';
+    document.getElementById('b6a-step2').style.display = (n === 2) ? 'block' : 'none';
+  }
+  var pickerBuilt = false;
+  function buildPickerOnce(){
+    if (pickerBuilt) return; pickerBuilt = true;
+    var ir = document.getElementById('b6a-initials-row');
+    STUDENTS.forEach(function(s){
+      var b = document.createElement('button'); b.className = 'b6a-pick-btn'; b.textContent = s;
+      b.addEventListener('click', function(){ pendingInitials = s; showStep(2); });
+      ir.appendChild(b);
+    });
+    var cg = document.getElementById('b6a-creature-grid');
+    CREATURES.forEach(function(c){
+      var b = document.createElement('button'); b.className = 'b6a-creature-opt'; b.textContent = c;
+      b.addEventListener('click', function(){ commitNew(pendingInitials, c); });
+      cg.appendChild(b);
+    });
+  }
+  function commitNew(initials, creature){
+    setProfile({ initials: initials.toLowerCase(), creature: creature });
+    var w = getWardrobe(); w.seen = unlockedItems().map(function(it){ return it.id; }); setWardrobe(w);
+    closePicker(); refreshAll();
+  }
+  document.getElementById('b6a-skip').addEventListener('click', function(){
+    try { localStorage.setItem('base6ProfileAsked', '1'); } catch(e){}
+    closePicker();
+  });
+
+  var custOverlay = document.getElementById('b6a-cust');
+  function openCust(){ buildCust(); custOverlay.style.display = 'flex'; }
+  function closeCust(){ custOverlay.style.display = 'none'; }
+  document.getElementById('b6a-cust-close').addEventListener('click', closeCust);
+  document.getElementById('b6a-switch').addEventListener('click', function(){ closeCust(); openPicker(1); });
+
+  function buildCust(){
+    var p = getProfile(); if (!p) return;
+    var w = getWardrobe();
+    renderBadge(document.getElementById('b6a-cust-badge'), 96);
+    document.getElementById('b6a-cust-initials').textContent = p.initials.toUpperCase();
+
+    var cr = document.getElementById('b6a-creature-row'); cr.innerHTML = '';
+    CREATURES.forEach(function(c){
+      var b = document.createElement('button'); b.className = 'b6a-creature-opt' + (c === p.creature ? ' sel' : ''); b.textContent = c;
+      b.addEventListener('click', function(){ var pr = getProfile(); pr.creature = c; setProfile(pr); buildCust(); refreshAll(); });
+      cr.appendChild(b);
+    });
+
+    var unlocked = unlockedItems();
+    var slotsEl = document.getElementById('b6a-slots'); slotsEl.innerHTML = ''; var any = false;
+    SLOT_ORDER.forEach(function(slot){
+      var items = unlocked.filter(function(it){ return it.slot === slot; });
+      if (items.length === 0) return; any = true;
+      var wrap = document.createElement('div'); wrap.className = 'b6a-slot';
+      var lab = document.createElement('p'); lab.className = 'b6a-cust-label'; lab.textContent = SLOT_LABELS[slot]; wrap.appendChild(lab);
+      var row = document.createElement('div'); row.className = 'b6a-opt-row';
+      var none = document.createElement('button'); none.className = 'b6a-opt' + (!w.worn[slot] ? ' sel' : ''); none.textContent = 'None';
+      none.addEventListener('click', function(){ var ww = getWardrobe(); delete ww.worn[slot]; setWardrobe(ww); buildCust(); refreshAll(); });
+      row.appendChild(none);
+      items.forEach(function(it){
+        var b = document.createElement('button'); b.className = 'b6a-opt' + (w.worn[slot] === it.id ? ' sel' : '');
+        b.innerHTML = (it.emoji ? '<span aria-hidden="true">' + it.emoji + '</span> ' : '') + it.label;
+        b.addEventListener('click', function(){ var ww = getWardrobe(); ww.worn[slot] = it.id; setWardrobe(ww); buildCust(); refreshAll(); });
+        row.appendChild(b);
+      });
+      wrap.appendChild(row); slotsEl.appendChild(wrap);
+    });
+    document.getElementById('b6a-empty').style.display = any ? 'none' : 'block';
+  }
+
+  document.getElementById('b6a-chip').addEventListener('click', function(){ if (getProfile()) openCust(); else openPicker(1); });
+
+  var asked = (function(){ try { return localStorage.getItem('base6ProfileAsked'); } catch(e){ return null; } })();
+  if (document.getElementById('hero-greeting') && !getProfile() && !asked){ openPicker(1); }
+  refreshAll();
+  checkUnlocks();
+})();
+</script>
+
+</body>
+</html>
