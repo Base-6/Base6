@@ -47,7 +47,7 @@
 
   .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #007291; margin-bottom: 1.25rem; }
 
-  /* -- DAY BY DAY TILES with progress rings -- */
+  /* -- DAY BY DAY TILES -- */
   .b6-day-section { margin-bottom: 2.5rem; }
   .b6-day-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 1rem; }
   .b6-day-tile {
@@ -62,15 +62,9 @@
   .b6-day-tile.b6-day-static { cursor: default; }
   .b6-day-tile.b6-day-static:hover { transform: none; box-shadow: none; }
   .b6-day-badge { position: relative; width: 52px; height: 52px; border-radius: 50%; background: var(--tile-soft); border: 2px solid var(--tile); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; line-height: 1; margin-bottom: 0.35rem; }
-  .b6-day-badge::after { content: ""; position: absolute; inset: -8px; border-radius: 50%;
-    background: conic-gradient(var(--tile) calc(var(--ring, 0) * 1%), rgba(0,0,0,0.06) 0);
-    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
-    mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px)); }
-  .b6-day-tile.day-complete .b6-day-badge { box-shadow: 0 0 0 3px #ffffff, 0 0 14px var(--tile); }
   .b6-tile-day { font-size: 1.15rem; font-weight: 700; color: var(--tile); }
   .b6-tile-date { font-size: 0.82rem; color: #555; }
   .b6-tile-tag { font-size: 0.8rem; font-weight: 700; color: var(--tile); }
-  .b6-ring-label { font-size: 0.72rem; color: #888; min-height: 1em; }
   .b6-tile-today { display: none; margin-top: 0.5rem; background: var(--tile); color: #ffffff; font-weight: 700; border-radius: 8px; padding: 1px 12px; font-size: 0.78rem; }
   .b6-day-tile.is-today { border-width: 4px; }
   .b6-day-tile.is-today .b6-tile-today { display: inline-block; }
@@ -230,7 +224,7 @@
     <button class="b6a-switch" id="b6a-switch">Switch student</button>
     <div class="b6a-creature-row" id="b6a-creature-row"></div>
     <div id="b6a-slots"></div>
-    <p class="b6a-empty" id="b6a-empty" style="display:none;">Do an activity this week to unlock things to wear.</p>
+    <p class="b6a-empty" id="b6a-empty" style="display:none;">Try something in the Welcome Zone, or do this week's challenge, to unlock things to wear.</p>
   </div>
 </div>
 
@@ -286,9 +280,7 @@
 
 <main class="main">
 
-  <!-- EDIT: this is a plain div for now. When a word of the week activity exists,
-       change the div to an <a> with its href, and add " &rarr;" back to the end. -->
-  <div class="ribbon wotw">Word of the Week: Enhance</div>
+  <a class="ribbon wotw" href="enhance.html">Word of the Week: Enhance &rarr;</a>
 
   <!-- EDIT (draft): warm welcome to the final week -->
   <div class="intro">
@@ -297,11 +289,10 @@
   </div>
 
   <!-- -- DAY BY DAY --
-       Monday and Friday are static tiles with countdowns (the trip and the festival),
-       so only Tuesday, Wednesday and Thursday link to day pages.
-       data-total = number of activity cards on each day page, estimated. Adjust when
-       you build day2 to day4. Day pages should mark completion in
-       base6Done-week7-dayN so the rings and cosmetics unlocks work. -->
+       Week 7 is a practical week: a trip, project finishing, shuffle days and the
+       festival. None of it needs an activity page, so every tile is static. They
+       show what is on, light up on the day, and count down to the trip and the
+       festival. Everything clickable this week lives in the spaces below. -->
   <div class="b6-day-section">
     <p class="section-label">This week, day by day</p>
     <div class="b6-day-grid">
@@ -310,43 +301,38 @@
         <span class="b6-tile-day">Monday</span>
         <span class="b6-tile-date">Mon 13 July</span>
         <span class="b6-tile-tag" id="trip-tag">Trip: Wake the Tiger</span>
-        <span class="b6-ring-label" aria-live="off"></span>
         <span class="b6-tile-today">Today</span>
       </div>
-      <a class="b6-day-tile" href="day2.html" data-date="2026-07-14" data-day="2" data-total="2" style="--tile:#007291; --tile-soft:#e3f1f5; --tile-shadow:rgba(0,114,145,0.22);">
+      <div class="b6-day-tile b6-day-static" data-date="2026-07-14" style="--tile:#007291; --tile-soft:#e3f1f5; --tile-shadow:rgba(0,114,145,0.22);">
         <span class="b6-day-badge" aria-hidden="true">&#128736;&#65039;</span>
         <span class="b6-tile-day">Tuesday</span>
         <span class="b6-tile-date">Tue 14 July</span>
         <span class="b6-tile-tag">Project finishing day</span>
-        <span class="b6-ring-label" aria-live="off"></span>
         <span class="b6-tile-today">Today</span>
-      </a>
-      <a class="b6-day-tile" href="day3.html" data-date="2026-07-15" data-day="3" data-total="2" style="--tile:#7b5ea7; --tile-soft:#efe9f6; --tile-shadow:rgba(123,94,167,0.22);">
+      </div>
+      <div class="b6-day-tile b6-day-static" data-date="2026-07-15" style="--tile:#7b5ea7; --tile-soft:#efe9f6; --tile-shadow:rgba(123,94,167,0.22);">
         <span class="b6-day-badge" aria-hidden="true">&#129309;</span>
         <span class="b6-tile-day">Wednesday</span>
         <span class="b6-tile-date">Wed 15 July</span>
         <span class="b6-tile-tag">Shuffle up: new faces</span>
-        <span class="b6-ring-label" aria-live="off"></span>
         <span class="b6-tile-today">Today</span>
-      </a>
-      <a class="b6-day-tile" href="day4.html" data-date="2026-07-16" data-day="4" data-total="2" style="--tile:#2e8b57; --tile-soft:#e6f3ec; --tile-shadow:rgba(46,139,87,0.22);">
+      </div>
+      <div class="b6-day-tile b6-day-static" data-date="2026-07-16" style="--tile:#2e8b57; --tile-soft:#e6f3ec; --tile-shadow:rgba(46,139,87,0.22);">
         <span class="b6-day-badge" aria-hidden="true">&#127880;</span>
         <span class="b6-tile-day">Thursday</span>
         <span class="b6-tile-date">Thu 16 July</span>
         <span class="b6-tile-tag">Festival prep and shuffle</span>
-        <span class="b6-ring-label" aria-live="off"></span>
         <span class="b6-tile-today">Today</span>
-      </a>
+      </div>
       <div class="b6-day-tile b6-day-static" data-date="2026-07-17" id="fest-tile" style="--tile:#ef7724; --tile-soft:#fdeadd; --tile-shadow:rgba(239,119,36,0.24);">
         <span class="b6-day-badge" aria-hidden="true">&#127881;</span>
         <span class="b6-tile-day">Friday</span>
         <span class="b6-tile-date">Fri 17 July</span>
         <span class="b6-tile-tag" id="fest-tag">Summer Festival</span>
-        <span class="b6-ring-label" aria-live="off"></span>
         <span class="b6-tile-today">Today</span>
       </div>
     </div>
-    <p class="b6-day-note">Monday is the trip and Friday is the festival, so those two tiles just count down rather than opening a page. Tuesday to Thursday have a few things on their pages if you want them, and the rings fill up as you go. As ever, nothing here is a demand.</p>
+    <p class="b6-day-note">This week is mostly out in the world rather than on a screen, so these tiles are just here to show you what is coming. Today's one lights up. The trip and the festival count down. Everything you can actually click on this week is below.</p>
   </div>
 
   <script>
@@ -358,21 +344,7 @@
     document.querySelectorAll('.b6-day-tile').forEach(function (tile) {
       if (tile.getAttribute('data-date') === today) { tile.classList.add('is-today'); }
     });
-    /* progress rings */
-    document.querySelectorAll('.b6-day-tile[data-day]').forEach(function (tile) {
-      var day = tile.getAttribute('data-day');
-      var total = parseInt(tile.getAttribute('data-total'), 10);
-      var done = [];
-      try { done = JSON.parse(localStorage.getItem('base6Done-week7-day' + day) || '[]'); } catch (e) { done = []; }
-      if (!total || done.length === 0) { return; }
-      var pct = Math.min(100, Math.round(done.length / total * 100));
-      var badge = tile.querySelector('.b6-day-badge');
-      if (badge) { badge.style.setProperty('--ring', pct); }
-      if (pct >= 100) { tile.classList.add('day-complete'); }
-      var lab = tile.querySelector('.b6-ring-label');
-      if (lab) { lab.textContent = done.length + ' of ' + total + ' done'; }
-    });
-    /* countdowns for the two static tiles */
+    /* countdowns for the trip and the festival */
     var t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     function sleeps(target) { return Math.round((target - t0) / 86400000); }
     var tripDiff = sleeps(new Date(2026, 6, 13));
@@ -394,38 +366,19 @@
   })();
   </script>
 
-  <!-- -- THIS WEEK'S SPACES --
-       Week 7 does not run normal subject sessions, so instead of the usual subject grid
-       this is a small set of zones. EDIT the hrefs as the pages get built:
-       - project/index.html: optional page of finishing checklists or festival prep notes
-       - shuffle/index.html: home for the shuffle up activities (dino brainstorm,
-         getting to know me). Build these next and point the tile at them.
-       - relational/index.html: Tuesday's PSHE session page. -->
-  <p class="section-label">This week's spaces</p>
+  <!-- -- THIS WEEK'S SPACE --
+       Week 7 has no normal subject sessions and no day pages, so the Welcome Zone
+       is the only clickable space this week. The word of the week activity is
+       linked from the ribbon at the top. -->
+  <p class="section-label">This week's space</p>
   <div class="tiles-grid">
-
-    <a class="tile" style="--c:#ef7724; --bg:#fdeee0; --shadow:rgba(239,119,36,0.24);" href="project/index.html">
-      <span class="tile-badge">&#127914;</span>
-      <span class="tile-subject">Project</span>
-      <span class="tile-title">Festival HQ</span>
-      <span class="tile-desc">Finishing touches, practice runs and festival prep. Your project, your way, ready for Friday.</span>
-      <span class="tile-go">See what is on <span class="arrow">&#8594;</span></span>
-    </a>
 
     <a class="tile" style="--c:#7b5ea7; --bg:#efe9f6; --shadow:rgba(123,94,167,0.22);" href="shuffle/index.html">
       <span class="tile-badge">&#128075;</span>
       <span class="tile-subject">Shuffle Up</span>
       <span class="tile-title">The Welcome Zone</span>
       <span class="tile-note">New faces this week</span>
-      <span class="tile-desc">Activities for our newest Base 6 members, plus a sneak peek at September's big question: what if dinosaurs still existed?</span>
-      <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
-    </a>
-
-    <a class="tile" style="--c:#0e8a9e; --bg:#e2f3f6; --shadow:rgba(14,138,158,0.22);" href="relational/index.html">
-      <span class="tile-badge">&#128172;</span>
-      <span class="tile-subject">Relational (PSHE &amp; RSE)</span>
-      <span class="tile-title">Check-In</span>
-      <span class="tile-desc">Tuesday morning's session, plus a chance to look back at how far you have come since week 1.</span>
+      <span class="tile-desc">Activities for our newest Base 6 members, plus a sneak peek at September's big question: what if dinosaurs still existed? Open all week, not just on Wednesday and Thursday.</span>
       <span class="tile-go">See activities <span class="arrow">&#8594;</span></span>
     </a>
 
@@ -729,15 +682,18 @@ function handleResetClick() {
   function setWardrobe(w){ try { localStorage.setItem(WEEK_KEY, JSON.stringify(w)); } catch(e){} }
   function itemById(id){ for (var i=0;i<ITEMS.length;i++){ if (ITEMS[i].id===id) return ITEMS[i]; } return null; }
 
+  /* Week 7 has no day pages, so unlocks come from the Welcome Zone activities and
+     the weekly challenge stamp instead. Each one earned unlocks the next item. */
   function totalDone(){
     var t = 0;
-    for (var d=1; d<=5; d++){
-      try { var a = JSON.parse(localStorage.getItem('base6Done-week7-day'+d) || '[]'); if (a && a.length) t += a.length; } catch(e){}
-    }
+    try { var a = JSON.parse(localStorage.getItem('base6Done-week7-shuffle') || '[]'); if (a && a.length) t += a.length; } catch(e){}
+    try { var s = JSON.parse(localStorage.getItem('base6_stamps') || '{}'); if (s && s[7]) t += 1; } catch(e){}
     return t;
   }
+  /* Fewer things to complete this week, so each one is worth four items. */
+  var ITEMS_PER_DONE = 4;
   function unlockedItems(){
-    var n = totalDone();
+    var n = totalDone() * ITEMS_PER_DONE;
     var w = getWardrobe(); var ex = Array.isArray(w.unlocked) ? w.unlocked : [];
     return ITEMS.filter(function(it,i){ return (i+1) <= n || ex.indexOf(it.id) !== -1; });
   }
