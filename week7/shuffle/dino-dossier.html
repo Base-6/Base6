@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Dino Dossier &middot; The Welcome Zone &middot; Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: #007291; padding: 2rem 2rem 2.75rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 26px; right: -50px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .eyebrow { font-size: 0.8rem; font-weight: 700; color: #d7eef4; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .site-header h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .header-sub { font-size: 1rem; color: #d7eef4; margin-top: 0.4rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 34px; z-index: 2; }
+
+  .main { max-width: 700px; margin: 0 auto; padding: 1.75rem 1.25rem 4rem; }
+
+  .card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .card.accent { border-color: #007291; box-shadow: 0 4px 14px rgba(0,114,145,0.12); }
+
+  .stage-title { font-size: 1.35rem; font-weight: 700; color: #005a73; margin-bottom: 0.5rem; line-height: 1.3; }
+  .stage-sub { font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 1.1rem; }
+
+  .btn { font-family: inherit; font-weight: 700; border-radius: 12px; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .btn-primary { font-size: 1rem; padding: 0.8rem 1.6rem; background: #007291; color: #ffffff; border: 2px solid #007291; }
+  .btn-primary:hover { background: #005a73; border-color: #005a73; }
+  .btn-primary:disabled { background: #ccc; border-color: #ccc; cursor: default; }
+  .btn-ghost { font-size: 0.85rem; padding: 0.55rem 1rem; background: none; color: #888; border: none; text-decoration: underline; }
+  .btn-ghost:hover { color: #555; }
+  .btn-outline { font-size: 0.95rem; padding: 0.7rem 1.3rem; background: #ffffff; color: #007291; border: 2px solid #007291; }
+  .btn-outline:hover { background: #e6f5f8; }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; align-items: center; }
+
+  .name-field { margin-bottom: 0.9rem; text-align: left; }
+  .name-field label { display: block; font-size: 0.82rem; font-weight: 700; color: #555; margin-bottom: 0.3rem; }
+  .name-field input { width: 100%; padding: 0.7rem 0.9rem; font-family: inherit; font-size: 1rem; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #ffffff; color: #1a1a1a; outline: none; }
+  .name-field input:focus { border-color: #007291; }
+
+  /* dinosaur picker */
+  .dino-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.8rem; margin-bottom: 1rem; }
+  .dino-btn { font-family: inherit; background: #ffffff; border: 2.5px solid #e0d8d0; border-radius: 14px; padding: 1rem 0.8rem; cursor: pointer; text-align: center; transition: border-color 0.15s, transform 0.12s; }
+  .dino-btn:hover { border-color: #007291; transform: translateY(-2px); }
+  .dino-emoji { font-size: 2rem; line-height: 1; display: block; margin-bottom: 0.35rem; }
+  .dino-name { font-size: 1rem; font-weight: 700; color: #005a73; display: block; }
+  .dino-fact { font-size: 0.78rem; color: #777; display: block; margin-top: 0.25rem; line-height: 1.45; }
+
+  /* progress */
+  .progress-bar { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; justify-content: center; }
+  .step-chip { display: inline-flex; align-items: center; gap: 0.35rem; background: #e6f5f8; border: 1.5px solid #007291; color: #005a73; border-radius: 999px; padding: 0.25rem 0.8rem; font-size: 0.82rem; font-weight: 700; }
+  .q-dots { display: inline-flex; gap: 4px; }
+  .q-dot { width: 9px; height: 9px; border-radius: 50%; background: #e0d8d0; }
+  .q-dot.done { background: #007291; }
+  .q-dot.now { background: #ef7724; }
+
+  /* section step */
+  .step-head { text-align: center; margin-bottom: 1.1rem; }
+  .step-emoji { font-size: 2.4rem; line-height: 1; display: block; margin-bottom: 0.4rem; }
+  .step-q { font-size: 1.2rem; font-weight: 700; color: #333; line-height: 1.4; margin-bottom: 0.4rem; }
+  .step-hint { font-size: 0.88rem; color: #777; line-height: 1.5; }
+
+  .opt-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 0.9rem; }
+  .opt-btn { font-family: inherit; font-size: 0.98rem; font-weight: 700; color: #333; background: #ffffff; border: 2px solid #e0d8d0; border-radius: 12px; padding: 0.85rem 1rem; cursor: pointer; text-align: left; line-height: 1.4; transition: border-color 0.15s, background 0.15s, transform 0.1s; }
+  .opt-btn:hover { border-color: #007291; background: #f2fafc; transform: translateX(3px); }
+  .opt-btn.sel { border-color: #ef7724; background: #fff3e8; }
+  .opt-own { border-style: dashed; color: #007291; }
+
+  .own-box { width: 100%; padding: 0.7rem 0.9rem; font-family: inherit; font-size: 0.95rem; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #ffffff; color: #1a1a1a; outline: none; line-height: 1.55; margin-bottom: 0.75rem; }
+  .own-box:focus { border-color: #007291; }
+  textarea.own-box { min-height: 90px; resize: vertical; }
+
+  /* the dossier itself */
+  .dossier { background: #fffdf9; border: 3px solid #005a73; border-radius: 16px; padding: 0; overflow: hidden; margin-bottom: 1.25rem; }
+  .dossier-top { background: #005a73; color: #fef8f4; padding: 1rem 1.25rem; text-align: center; }
+  .dossier-stamp { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #9fd3e0; margin-bottom: 0.3rem; }
+  .dossier-hero { font-size: 3rem; line-height: 1; display: block; margin: 0.2rem 0 0.35rem; }
+  .dossier-name { font-size: 1.5rem; font-weight: 700; line-height: 1.25; }
+  .dossier-by { font-size: 0.82rem; color: #9fd3e0; margin-top: 0.3rem; }
+  .dossier-body { padding: 1.25rem; }
+  .field { border-bottom: 1px dashed #e0d8d0; padding: 0.75rem 0; }
+  .field:last-child { border-bottom: none; }
+  .field-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #007291; margin-bottom: 0.25rem; }
+  .field-value { font-size: 0.98rem; color: #333; line-height: 1.55; }
+  .field-value.empty { color: #bbb; font-style: normal; }
+
+  .unlock-note { background: #e6f3ec; border: 1.5px solid #2e8b57; border-radius: 12px; padding: 0.8rem 1rem; font-size: 0.9rem; font-weight: 700; color: #1f6b41; text-align: center; margin-bottom: 1.25rem; line-height: 1.5; }
+  .report-note { font-size: 0.88rem; color: #555; line-height: 1.6; margin-top: 0.75rem; }
+
+  .cheer { text-align: center; margin-top: 1.75rem; font-size: 1rem; font-weight: 700; color: #007291; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .opt-btn, .dino-btn { transition: none; }
+    .opt-btn:hover, .dino-btn:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Welcome Zone</a>
+  <div class="header-inner">
+    <p class="eyebrow">The Welcome Zone &middot; September sneak peek</p>
+    <h1>Dino Dossier</h1>
+    <p class="header-sub">Pick a dinosaur. Imagine its life now. Build its file.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+  <div id="stage"></div>
+  <p class="cheer" id="cheer" style="display:none;">No wrong answers. It is your dinosaur.</p>
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+/* ============================================================
+   DINO DOSSIER
+   Pick a dinosaur, then work through ten sections about its
+   modern life. Each section offers tapped options plus an
+   "own answer" route, so writing is available but never required.
+   Ends with a built dossier card and a Gmail export to Jay.
+   Autosaves, skippable, back button on every step.
+   Grants the 'dino' bonus cosmetic on the week 7 avatar.
+   ============================================================ */
+
+var TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+var SAVE_KEY = 'base6DinoDossier-week7';
+var DONE_KEY = 'base6Done-week7-shuffle';
+var DONE_ID = 'dino-dossier';
+var AVATAR_KEY = 'base6Avatar-week7';
+var BONUS_ITEM = 'dino';
+
+var DINOS = [
+  { id: 'trex',    emoji: '\ud83e\udd96', name: 'T. rex',        fact: 'Bus sized. Tiny arms. Very strong opinions.' },
+  { id: 'raptor',  emoji: '\ud83e\udd85', name: 'Velociraptor',  fact: 'Turkey sized, feathered, alarmingly clever.' },
+  { id: 'tri',     emoji: '\ud83e\udd8f', name: 'Triceratops',   fact: 'Three horns, a bony frill, built like a tank.' },
+  { id: 'dip',     emoji: '\ud83e\udd95', name: 'Diplodocus',    fact: 'Longer than a tennis court. Eats only plants.' },
+  { id: 'steg',    emoji: '\ud83c\udf3f', name: 'Stegosaurus',   fact: 'Plates on its back, spikes on its tail, brain the size of a plum.' },
+  { id: 'ptero',   emoji: '\ud83e\udd85', name: 'Pterodactyl',   fact: 'Not technically a dinosaur. Flies anyway.' },
+  { id: 'anky',    emoji: '\ud83d\udee1\ufe0f', name: 'Ankylosaurus', fact: 'Armoured all over with a club for a tail.' },
+  { id: 'compy',   emoji: '\ud83d\udc25', name: 'Compsognathus', fact: 'Chicken sized. Fast. Never stops moving.' },
+  { id: 'own',     emoji: '\u2753',       name: 'My own one',    fact: 'Invent it. Name it. It is yours.' }
+];
+function dinoById(id) {
+  for (var i = 0; i < DINOS.length; i++) { if (DINOS[i].id === id) { return DINOS[i]; } }
+  return null;
+}
+
+/* Ten sections. Options are taps; every section also allows an own answer,
+   and every section can be skipped. Field labels appear on the dossier card. */
+var SECTIONS = [
+  { key: 'home', emoji: '\ud83c\udfe1', label: 'Where it lives',
+    q: 'Where would it live now?', hint: 'The world is full. It has to fit in somewhere.',
+    opts: ['A wildlife park, safe and watched', 'Wild in the countryside', 'In the sea, or near it', 'A city, somehow', 'A farm, with a very big field', 'Somewhere nobody has found yet'] },
+
+  { key: 'food', emoji: '\ud83c\udf57', label: 'What it eats',
+    q: 'What does it eat in the modern world?', hint: 'The plants it used to eat are mostly extinct. So are the animals.',
+    opts: ['Whatever it can catch', 'Special food grown just for it', 'Leaves, grass, hedges, trees', 'Human leftovers, sadly', 'Fish', 'It has become a very fussy eater'] },
+
+  { key: 'people', emoji: '\ud83d\udc65', label: 'How people treat it',
+    q: 'How do people treat it?', hint: 'This is the question the whole project might hang on.',
+    opts: ['Like a pet', 'Like a wild animal, kept away', 'Like a worker, given a job', 'Like a celebrity', 'Like a threat, feared', 'Like a person, with rights'] },
+
+  { key: 'job', emoji: '\ud83d\udee0\ufe0f', label: 'Its job, if it has one',
+    q: 'Does it have a job? What is it?', hint: 'Every animal in the modern world seems to end up working somehow.',
+    opts: ['Search and rescue', 'Building and heavy lifting', 'Guarding something important', 'Farming, mowing, clearing land', 'Entertainment: film, sport, shows', 'No job. It refuses. Good for it.'] },
+
+  { key: 'friend', emoji: '\ud83d\udc9b', label: 'Who it gets on with',
+    q: 'Who or what does it get on with?', hint: 'Everyone needs someone.',
+    opts: ['One particular human', 'Other dinosaurs, and nobody else', 'Dogs, weirdly', 'Small children, who are unafraid', 'Nobody yet, but it is trying', 'Everyone. It is a delight.'] },
+
+  { key: 'problem', emoji: '\u26a0\ufe0f', label: 'Its biggest problem',
+    q: 'What is the hardest thing about its life?', hint: 'Being brought back is not the same as being welcome.',
+    opts: ['Nowhere big enough to live', 'People are frightened of it', 'It is lonely', 'The weather is all wrong for it', 'It keeps breaking things by accident', 'Nobody asked if it wanted to come back'] },
+
+  { key: 'good', emoji: '\u2728', label: 'The best thing about it',
+    q: 'What is the best thing about having it around?', hint: 'There must be an upside.',
+    opts: ['It is astonishing to look at', 'It helps with jobs nothing else can do', 'It teaches us about the past', 'It makes people care about nature', 'It is a genuinely good friend', 'It is simply happy to be alive'] },
+
+  { key: 'law', emoji: '\u2696\ufe0f', label: 'The rules about it',
+    q: 'What rule would you make about it?', hint: 'Somebody has to write the law. Might as well be you.',
+    opts: ['It must never be kept in a cage', 'It cannot be bought or sold', 'It must be allowed to roam free', 'Nobody may hurt it, ever', 'It gets a say in what happens to it', 'It is protected, like an endangered species'] },
+
+  { key: 'name', emoji: '\ud83c\udff7\ufe0f', label: 'Its name',
+    q: 'What is it actually called?', hint: 'Not the species. Its name. The one you would call it.',
+    opts: ['Something friendly and normal', 'Something grand and ancient', 'Something a bit silly', 'A number, sadly. It is in a programme.', 'It named itself, somehow', 'It does not have one yet'],
+    freeFirst: true },
+
+  { key: 'future', emoji: '\ud83d\udd2e', label: 'What happens next',
+    q: 'In ten years, what has happened to it?', hint: 'Last one. Be honest, even if it is not a happy ending.',
+    opts: ['It is thriving and there are more of them', 'It is the last one left', 'It has been let go, properly wild', 'It lives with the same person, still', 'Nobody finds it strange any more', 'Something nobody expected'] }
+];
+
+var CLOSERS = [
+  'Filed.', 'Noted.', 'Good call.', 'Added to the dossier.', 'Recorded.', 'That is going in.'
+];
+function pickLine(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+/* ---------- state ---------- */
+var state = null;
+
+function freshState(name) {
+  return { name: name, dino: null, dinoOwn: '', step: 0, fields: {}, started: new Date().toLocaleDateString('en-GB') };
+}
+function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {} }
+function load() { try { return JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); } catch (e) { return null; } }
+function clearSave() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+var stage = document.getElementById('stage');
+var cheer = document.getElementById('cheer');
+
+function dinoLabel() {
+  var d = dinoById(state.dino);
+  if (state.dino === 'own') { return state.dinoOwn || 'A brand new dinosaur'; }
+  return d ? d.name : 'A dinosaur';
+}
+function dinoEmoji() {
+  var d = dinoById(state.dino);
+  return d ? d.emoji : '\ud83e\udd95';
+}
+
+/* ---------- start ---------- */
+function showStart() {
+  cheer.style.display = 'none';
+  var resume = load();
+  var resumeHtml = '';
+  if (resume && resume.name && resume.dino) {
+    resumeHtml = '<div class="card accent" style="text-align:center;">' +
+      '<p class="stage-sub" style="margin-bottom:0.75rem;">There is a dossier in progress on this device, started by ' +
+      esc(resume.name.toUpperCase()) + '.</p>' +
+      '<div class="btn-row">' +
+      '<button class="btn btn-primary" id="resume-btn">Carry on with it</button>' +
+      '<button class="btn btn-ghost" id="restart-btn">Start a new one</button>' +
+      '</div></div>';
+  }
+  stage.innerHTML = resumeHtml +
+    '<div class="card accent" style="text-align:center;">' +
+    '<span style="font-size:3rem; line-height:1; display:block; margin-bottom:0.5rem;" aria-hidden="true">&#128203;</span>' +
+    '<h2 class="stage-title">Somebody has to write this down</h2>' +
+    '<p class="stage-sub">Dinosaurs are back, and nobody has kept a proper record of what any of them are actually like. That is your job today.</p>' +
+    '<p class="stage-sub">Pick a dinosaur, answer ten questions about its life now, and you will end up with a finished file card. Every question can be tapped, typed, or skipped entirely. What you write here helps shape the Base project in September.</p>' +
+    '<div class="name-field"><label for="name-input">Your initials</label>' +
+    '<input type="text" id="name-input" maxlength="20" placeholder="Type initials here"></div>' +
+    '<div class="btn-row"><button class="btn btn-primary" id="go-btn">Choose a dinosaur</button></div>' +
+    '</div>';
+  if (resumeHtml) {
+    document.getElementById('resume-btn').addEventListener('click', function () { state = resume; showStep(); });
+    document.getElementById('restart-btn').addEventListener('click', function () { clearSave(); showStart(); });
+  }
+  try {
+    var profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+    if (profile && profile.initials) { document.getElementById('name-input').value = profile.initials.toUpperCase(); }
+  } catch (e) {}
+  var input = document.getElementById('name-input');
+  document.getElementById('go-btn').addEventListener('click', function () {
+    var n = input.value.trim();
+    if (!n) { input.style.borderColor = '#ef7724'; input.focus(); return; }
+    state = freshState(n);
+    save();
+    showDinoPick();
+  });
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { document.getElementById('go-btn').click(); } });
+}
+
+/* ---------- dinosaur picker ---------- */
+function showDinoPick() {
+  var grid = '';
+  DINOS.forEach(function (d) {
+    grid += '<button class="dino-btn" data-d="' + d.id + '">' +
+      '<span class="dino-emoji" aria-hidden="true">' + d.emoji + '</span>' +
+      '<span class="dino-name">' + esc(d.name) + '</span>' +
+      '<span class="dino-fact">' + esc(d.fact) + '</span>' +
+      '</button>';
+  });
+  stage.innerHTML =
+    '<div class="card accent">' +
+    '<div class="step-head">' +
+    '<p class="eyebrow" style="color:#007291;">Step one</p>' +
+    '<p class="step-q">Which dinosaur is yours?</p>' +
+    '<p class="step-hint">You can change your mind later. Nothing here is permanent.</p>' +
+    '</div>' +
+    '<div class="dino-grid">' + grid + '</div>' +
+    '<div class="btn-row"><button class="btn btn-ghost" id="back-btn">Back</button></div>' +
+    '</div>';
+  cheer.style.display = 'block';
+  document.querySelectorAll('.dino-btn').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var id = b.getAttribute('data-d');
+      if (id === 'own') { showOwnDino(); return; }
+      state.dino = id; state.dinoOwn = ''; state.step = 0; save();
+      showStep();
+    });
+  });
+  document.getElementById('back-btn').addEventListener('click', showStart);
+}
+
+function showOwnDino() {
+  stage.innerHTML =
+    '<div class="card accent">' +
+    '<div class="step-head">' +
+    '<span class="step-emoji" aria-hidden="true">&#10067;</span>' +
+    '<p class="step-q">Invent your own</p>' +
+    '<p class="step-hint">What is it called? Make it up. Nobody is checking it against a textbook.</p>' +
+    '</div>' +
+    '<input type="text" class="own-box" id="own-dino" maxlength="60" placeholder="Name your dinosaur...">' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-primary" id="own-go">That is the one</button>' +
+    '<button class="btn btn-ghost" id="own-back">Back to the list</button>' +
+    '</div></div>';
+  var box = document.getElementById('own-dino');
+  box.focus();
+  document.getElementById('own-go').addEventListener('click', function () {
+    var v = box.value.trim();
+    if (!v) { box.style.borderColor = '#ef7724'; box.focus(); return; }
+    state.dino = 'own'; state.dinoOwn = v; state.step = 0; save();
+    showStep();
+  });
+  box.addEventListener('keydown', function (e) { if (e.key === 'Enter') { document.getElementById('own-go').click(); } });
+  document.getElementById('own-back').addEventListener('click', showDinoPick);
+}
+
+/* ---------- progress ---------- */
+function progressHtml() {
+  var dots = '';
+  for (var i = 0; i < SECTIONS.length; i++) {
+    dots += '<span class="q-dot' + (i < state.step ? ' done' : (i === state.step ? ' now' : '')) + '"></span>';
+  }
+  return '<div class="progress-bar">' +
+    '<span class="step-chip">' + dinoEmoji() + ' ' + esc(dinoLabel()) + ' &middot; ' + (state.step + 1) + ' of ' + SECTIONS.length + '</span>' +
+    '<span class="q-dots">' + dots + '</span>' +
+    '</div>';
+}
+
+/* ---------- a section ---------- */
+function showStep() {
+  if (state.step >= SECTIONS.length) { showDossier(); return; }
+  var S = SECTIONS[state.step];
+  var current = state.fields[S.key] || '';
+  var opts = '';
+  S.opts.forEach(function (o, i) {
+    opts += '<button class="opt-btn' + (current === o ? ' sel' : '') + '" data-o="' + i + '">' + esc(o) + '</button>';
+  });
+  opts += '<button class="opt-btn opt-own" id="own-btn">&#9998; Write my own answer instead</button>';
+  stage.innerHTML = progressHtml() +
+    '<div class="card">' +
+    '<div class="step-head">' +
+    '<span class="step-emoji" aria-hidden="true">' + S.emoji + '</span>' +
+    '<p class="step-q">' + esc(S.q) + '</p>' +
+    '<p class="step-hint">' + esc(S.hint) + '</p>' +
+    '</div>' +
+    '<div class="opt-list">' + opts + '</div>' +
+    '<div class="btn-row">' +
+    (state.step > 0 ? '<button class="btn btn-ghost" id="back-btn">Back</button>' : '') +
+    '<button class="btn btn-ghost" id="skip-btn">Skip this one</button>' +
+    (state.step >= 3 ? '<button class="btn btn-ghost" id="finish-btn">Finish the dossier now</button>' : '') +
+    '</div></div>';
+  cheer.style.display = 'block';
+  document.querySelectorAll('.opt-btn[data-o]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      state.fields[S.key] = S.opts[parseInt(b.getAttribute('data-o'), 10)];
+      save();
+      nextStep();
+    });
+  });
+  document.getElementById('own-btn').addEventListener('click', showOwnAnswer);
+  document.getElementById('skip-btn').addEventListener('click', function () {
+    delete state.fields[S.key]; save(); nextStep();
+  });
+  var back = document.getElementById('back-btn');
+  if (back) { back.addEventListener('click', function () { state.step--; save(); showStep(); }); }
+  var fin = document.getElementById('finish-btn');
+  if (fin) { fin.addEventListener('click', showDossier); }
+}
+
+function showOwnAnswer() {
+  var S = SECTIONS[state.step];
+  stage.innerHTML = progressHtml() +
+    '<div class="card">' +
+    '<div class="step-head">' +
+    '<span class="step-emoji" aria-hidden="true">' + S.emoji + '</span>' +
+    '<p class="step-q">' + esc(S.q) + '</p>' +
+    '<p class="step-hint">In your own words. As long or as short as you like.</p>' +
+    '</div>' +
+    '<textarea class="own-box" id="own-answer" placeholder="Type your answer here..."></textarea>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-primary" id="own-save">Add to dossier</button>' +
+    '<button class="btn btn-ghost" id="own-back">Back to the options</button>' +
+    '</div></div>';
+  var box = document.getElementById('own-answer');
+  var existing = state.fields[S.key];
+  if (existing && S.opts.indexOf(existing) === -1) { box.value = existing; }
+  box.focus();
+  document.getElementById('own-save').addEventListener('click', function () {
+    var v = box.value.trim();
+    if (v) { state.fields[S.key] = v; } else { delete state.fields[S.key]; }
+    save();
+    nextStep();
+  });
+  document.getElementById('own-back').addEventListener('click', showStep);
+}
+
+function nextStep() {
+  state.step++;
+  save();
+  if (state.step >= SECTIONS.length) { showDossier(); }
+  else { showStep(); }
+}
+
+/* ---------- completion + bonus ---------- */
+function markDone() {
+  try {
+    var a = JSON.parse(localStorage.getItem(DONE_KEY) || '[]');
+    if (a.indexOf(DONE_ID) === -1) { a.push(DONE_ID); localStorage.setItem(DONE_KEY, JSON.stringify(a)); }
+  } catch (e) {}
+}
+function grantBonus() {
+  try {
+    var w = JSON.parse(localStorage.getItem(AVATAR_KEY) || 'null') || { worn: {}, seen: [] };
+    if (!Array.isArray(w.unlocked)) { w.unlocked = []; }
+    if (w.unlocked.indexOf(BONUS_ITEM) === -1) {
+      w.unlocked.push(BONUS_ITEM);
+      if (Array.isArray(w.seen)) {
+        var i = w.seen.indexOf(BONUS_ITEM);
+        if (i !== -1) { w.seen.splice(i, 1); }
+      }
+      localStorage.setItem(AVATAR_KEY, JSON.stringify(w));
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
+
+/* ---------- the finished dossier ---------- */
+function showDossier() {
+  markDone();
+  var granted = grantBonus();
+  cheer.style.display = 'none';
+
+  var filled = 0;
+  var fieldsHtml = '';
+  SECTIONS.forEach(function (S) {
+    var v = state.fields[S.key];
+    if (v) { filled++; }
+    fieldsHtml += '<div class="field">' +
+      '<p class="field-label">' + S.emoji + ' ' + esc(S.label) + '</p>' +
+      '<p class="field-value' + (v ? '' : ' empty') + '">' + (v ? esc(v) : 'Left blank, which is allowed') + '</p>' +
+      '</div>';
+  });
+
+  var namedAs = state.fields.name && SECTIONS[8].opts.indexOf(state.fields.name) === -1 ? state.fields.name : '';
+
+  var html =
+    '<div class="dossier">' +
+    '<div class="dossier-top">' +
+    '<p class="dossier-stamp">Base 6 &middot; Dinosaur File &middot; September Project</p>' +
+    '<span class="dossier-hero" aria-hidden="true">' + dinoEmoji() + '</span>' +
+    '<p class="dossier-name">' + esc(namedAs ? namedAs : dinoLabel()) + '</p>' +
+    (namedAs ? '<p class="dossier-by">a ' + esc(dinoLabel()) + '</p>' : '') +
+    '<p class="dossier-by">Filed by ' + esc(state.name.toUpperCase()) + ' &middot; ' + esc(new Date().toLocaleDateString('en-GB')) + '</p>' +
+    '</div>' +
+    '<div class="dossier-body">' + fieldsHtml + '</div>' +
+    '</div>';
+
+  html += '<div class="card accent" style="text-align:center;">' +
+    '<h2 class="stage-title">' + (filled >= 8 ? 'A complete dossier' : (filled >= 4 ? 'A solid dossier' : 'A dossier, started')) + '</h2>' +
+    '<p class="stage-sub">' + filled + ' of ' + SECTIONS.length + ' sections filled in. ' +
+    (filled >= 8 ? 'That is a proper piece of thinking, and Jay will read every line of it.'
+                 : 'However much you did is exactly enough. You can always come back and add more.') + '</p>' +
+    (granted ? '<div class="unlock-note">&#129429; You have unlocked the September Dino for your avatar. Tap your avatar on the Week 7 page to put it on.</div>' : '') +
+    '<div class="btn-row">' +
+    '<button class="btn btn-primary" id="send-btn">Send my dossier to Jay</button>' +
+    '<button class="btn btn-outline" id="edit-btn">Go back and add more</button>' +
+    '<button class="btn btn-outline" id="again-btn">Start a new dossier</button>' +
+    '</div>' +
+    '<p class="report-note">Next door there is a whole wall for the questions you would want answered about all this. Your questions become the project.</p>' +
+    '<div class="btn-row" style="margin-top:0.75rem;">' +
+    '<a class="btn btn-ghost" href="question-wall.html" style="text-decoration:underline; display:inline-block; padding:0.55rem 1rem;">Go to the Question Wall</a>' +
+    '<a class="btn btn-ghost" href="index.html" style="text-decoration:underline; display:inline-block; padding:0.55rem 1rem;">Back to the Welcome Zone</a>' +
+    '</div></div>';
+
+  stage.innerHTML = html;
+  document.getElementById('send-btn').addEventListener('click', sendDossier);
+  document.getElementById('edit-btn').addEventListener('click', function () { state.step = 0; save(); showStep(); });
+  document.getElementById('again-btn').addEventListener('click', function () { clearSave(); showStart(); });
+}
+
+function sendDossier() {
+  var namedAs = state.fields.name && SECTIONS[8].opts.indexOf(state.fields.name) === -1 ? state.fields.name : '';
+  var lines = 'BASE 6 - DINO DOSSIER\n\n';
+  lines += 'Filed by: ' + state.name.toUpperCase() + '\n';
+  lines += 'Date: ' + new Date().toLocaleDateString('en-GB') + '\n';
+  lines += 'Dinosaur: ' + dinoLabel() + (namedAs ? ' (called ' + namedAs + ')' : '') + '\n\n';
+  SECTIONS.forEach(function (S) {
+    var v = state.fields[S.key];
+    lines += S.label.toUpperCase() + ': ' + (v ? v : '(left blank)') + '\n';
+  });
+  lines += '\n-\nSent automatically from Base 6';
+  var subject = 'Base 6 - Dino Dossier - ' + state.name.toUpperCase() + ' - ' + dinoLabel();
+  var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL +
+    '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines);
+  window.open(url, '_blank');
+}
+
+showStart();
+</script>
+
+</body>
+</html>
