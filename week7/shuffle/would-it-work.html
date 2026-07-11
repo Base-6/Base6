@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>Would It Work? &middot; The Welcome Zone &middot; Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: #2e8b57; padding: 2rem 2rem 2.75rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 26px; right: -50px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .eyebrow { font-size: 0.8rem; font-weight: 700; color: #d7ecdf; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .site-header h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .header-sub { font-size: 1rem; color: #d7ecdf; margin-top: 0.4rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 34px; z-index: 2; }
+
+  .main { max-width: 680px; margin: 0 auto; padding: 1.75rem 1.25rem 4rem; }
+
+  .card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .card.accent { border-color: #2e8b57; box-shadow: 0 4px 14px rgba(46,139,87,0.12); }
+
+  .stage-title { font-size: 1.35rem; font-weight: 700; color: #1f6b41; margin-bottom: 0.5rem; line-height: 1.3; }
+  .stage-sub { font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 1.1rem; }
+
+  .btn { font-family: inherit; font-weight: 700; border-radius: 12px; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .btn-primary { font-size: 1rem; padding: 0.8rem 1.6rem; background: #2e8b57; color: #ffffff; border: 2px solid #2e8b57; }
+  .btn-primary:hover { background: #1f6b41; border-color: #1f6b41; }
+  .btn-ghost { font-size: 0.85rem; padding: 0.55rem 1rem; background: none; color: #888; border: none; text-decoration: underline; }
+  .btn-ghost:hover { color: #555; }
+  .btn-outline { font-size: 0.95rem; padding: 0.7rem 1.3rem; background: #ffffff; color: #2e8b57; border: 2px solid #2e8b57; }
+  .btn-outline:hover { background: #e6f3ec; }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; align-items: center; }
+
+  .name-field { margin-bottom: 0.9rem; text-align: left; }
+  .name-field label { display: block; font-size: 0.82rem; font-weight: 700; color: #555; margin-bottom: 0.3rem; }
+  .name-field input { width: 100%; padding: 0.7rem 0.9rem; font-family: inherit; font-size: 1rem; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #ffffff; color: #1a1a1a; outline: none; }
+  .name-field input:focus { border-color: #2e8b57; }
+
+  /* progress */
+  .progress-bar { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; justify-content: center; }
+  .round-chip { display: inline-flex; align-items: center; gap: 0.35rem; background: #e6f3ec; border: 1.5px solid #2e8b57; color: #1f6b41; border-radius: 999px; padding: 0.25rem 0.8rem; font-size: 0.82rem; font-weight: 700; }
+  .q-dots { display: inline-flex; gap: 4px; }
+  .q-dot { width: 9px; height: 9px; border-radius: 50%; background: #e0d8d0; }
+  .q-dot.done { background: #2e8b57; }
+  .q-dot.now { background: #ef7724; }
+
+  /* the scenario card */
+  .scenario { text-align: center; }
+  .scenario-emoji { font-size: 3rem; line-height: 1; display: block; margin-bottom: 0.75rem; }
+  .scenario-text { font-size: 1.2rem; font-weight: 700; color: #333; line-height: 1.45; margin-bottom: 0.5rem; }
+  .scenario-detail { font-size: 0.92rem; color: #666; line-height: 1.55; margin-bottom: 1.25rem; }
+
+  .verdict-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; margin-bottom: 0.9rem; }
+  @media (max-width: 520px) { .verdict-grid { grid-template-columns: 1fr; } }
+  .verdict-btn { font-family: inherit; font-size: 1rem; font-weight: 700; border-radius: 14px; padding: 1.1rem 0.6rem; cursor: pointer; line-height: 1.3; background: #ffffff; border: 2.5px solid var(--vc); color: var(--vc); transition: background 0.15s, color 0.15s, transform 0.12s; }
+  .verdict-btn:hover { background: var(--vc); color: #ffffff; transform: translateY(-2px); }
+  .verdict-emoji { display: block; font-size: 1.5rem; margin-bottom: 0.25rem; }
+
+  /* reason step */
+  .reason-head { text-align: center; margin-bottom: 1rem; }
+  .verdict-pill { display: inline-block; font-size: 0.9rem; font-weight: 700; color: #ffffff; background: var(--vc, #2e8b57); border-radius: 999px; padding: 0.35rem 1rem; margin-bottom: 0.6rem; }
+  .reason-prompt { font-size: 1.05rem; font-weight: 700; color: #333; line-height: 1.4; }
+  .reason-hint { font-size: 0.85rem; color: #888; margin-top: 0.3rem; line-height: 1.5; }
+  .reason-box { width: 100%; min-height: 90px; padding: 0.7rem 0.9rem; font-family: inherit; font-size: 0.95rem; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #ffffff; color: #1a1a1a; outline: none; resize: vertical; line-height: 1.55; margin-bottom: 0.75rem; }
+  .reason-box:focus { border-color: #2e8b57; }
+
+  /* running tally */
+  .tally-strip { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem; }
+  .tally-pill { font-size: 0.78rem; font-weight: 700; border-radius: 999px; padding: 0.25rem 0.7rem; border: 1.5px solid var(--vc); color: var(--vc); background: #ffffff; }
+
+  /* round summary */
+  .summary-emoji { font-size: 2.4rem; display: block; margin-bottom: 0.5rem; }
+  .summary-line { font-size: 1.05rem; font-weight: 700; color: #333; line-height: 1.45; margin-bottom: 0.5rem; }
+  .summary-sub { font-size: 0.9rem; color: #666; line-height: 1.55; margin-bottom: 1.1rem; }
+
+  /* report */
+  .report-hero { text-align: center; margin-bottom: 1.25rem; }
+  .report-badge { font-size: 3rem; display: block; margin-bottom: 0.5rem; }
+  .report-headline { font-size: 1.3rem; font-weight: 700; color: #1f6b41; margin-bottom: 0.35rem; line-height: 1.3; }
+  .report-subline { font-size: 0.92rem; color: #555; line-height: 1.55; }
+  .bars { margin: 1.25rem 0; }
+  .bar-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+  .bar-label { font-size: 0.82rem; font-weight: 700; color: var(--vc); width: 82px; flex-shrink: 0; text-align: right; }
+  .bar-track { flex: 1; height: 18px; background: #f0ede8; border-radius: 999px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--vc); border-radius: 999px; }
+  .bar-num { font-size: 0.82rem; font-weight: 700; color: #888; width: 24px; }
+  .report-section-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #2e8b57; margin: 1.25rem 0 0.6rem; }
+  .idea-item { background: #fef8f4; border-left: 4px solid var(--vc, #2e8b57); border-radius: 8px; padding: 0.7rem 0.9rem; margin-bottom: 0.6rem; }
+  .idea-scenario { font-size: 0.85rem; font-weight: 700; color: #333; margin-bottom: 0.2rem; }
+  .idea-reason { font-size: 0.88rem; color: #555; line-height: 1.55; }
+  .report-note { font-size: 0.88rem; color: #555; line-height: 1.6; margin-top: 0.4rem; }
+  .unlock-note { background: #e6f3ec; border: 1.5px solid #2e8b57; border-radius: 12px; padding: 0.8rem 1rem; font-size: 0.9rem; font-weight: 700; color: #1f6b41; text-align: center; margin-top: 1rem; line-height: 1.5; }
+
+  .cheer { text-align: center; margin-top: 1.75rem; font-size: 1rem; font-weight: 700; color: #2e8b57; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .verdict-btn { transition: none; }
+    .verdict-btn:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Welcome Zone</a>
+  <div class="header-inner">
+    <p class="eyebrow">The Welcome Zone &middot; September sneak peek</p>
+    <h1>Would It Work?</h1>
+    <p class="header-sub">Dinosaurs are back. You are the consultant. Answer honestly.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+  <div id="stage"></div>
+  <p class="cheer" id="cheer" style="display:none;">There are no wrong answers. Only interesting ones.</p>
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+/* ============================================================
+   WOULD IT WORK? The dinosaur consultancy.
+   25 scenarios across 5 themed rounds. Each one: a verdict
+   (yes / no / it depends) and an optional reason. Round summaries
+   in between, then a consultant report and a Gmail export to Jay.
+   Autosaves, skippable everywhere, finish-anytime.
+   Grants the 'dino' bonus cosmetic on the week 7 avatar.
+   ============================================================ */
+
+var TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+var SAVE_KEY = 'base6WouldItWork-week7';
+var DONE_KEY = 'base6Done-week7-shuffle';
+var DONE_ID = 'would-it-work';
+var AVATAR_KEY = 'base6Avatar-week7';
+var BONUS_ITEM = 'dino';
+
+var VERDICTS = [
+  { id: 'yes',    label: 'Yes',         emoji: '\u2705',       color: '#2e8b57' },
+  { id: 'no',     label: 'No',          emoji: '\u274c',       color: '#c0392b' },
+  { id: 'depends', label: 'It depends', emoji: '\ud83e\udd14', color: '#ef7724' }
+];
+function verdictById(id) {
+  for (var i = 0; i < VERDICTS.length; i++) { if (VERDICTS[i].id === id) { return VERDICTS[i]; } }
+  return VERDICTS[0];
+}
+
+/* Reason prompts change with the verdict, so the question always makes sense. */
+var REASON_PROMPTS = {
+  yes: 'Nice. What makes it work?',
+  no: 'Fair. What goes wrong?',
+  depends: 'Good. What does it depend on?'
+};
+
+var ROUNDS = [
+  { title: 'Dinosaurs at work', emoji: '\ud83d\udc77', intro: 'Every dinosaur needs a job. Some of these are better ideas than others.', qs: [
+    { e: '\ud83d\udea6', t: 'A T. rex as a traffic warden', d: 'It cannot write tickets, but nobody is parking on that double yellow twice.' },
+    { e: '\ud83d\udce6', t: 'A pterodactyl postal service', d: 'Parcels delivered by air, no van, no traffic. Landing on your roof is included.' },
+    { e: '\ud83c\udfd7\ufe0f', t: 'A brachiosaurus on a building site', d: 'A crane that eats leaves and never needs a licence. Health and safety may have thoughts.' },
+    { e: '\ud83d\udc36', t: 'A velociraptor as a guide dog', d: 'Extremely intelligent. Extremely fast. Extremely not a dog.' },
+    { e: '\ud83c\udfeb', t: 'A triceratops as a school caretaker', d: 'Unblocks drains with one nudge. Doors are going to be a problem.' }
+  ], summary: 'Employment sorted. Sort of.' },
+
+  { title: 'Dinosaurs at home', emoji: '\ud83c\udfe0', intro: 'Now the awkward bit. What if one lived with you?', qs: [
+    { e: '\ud83d\udc3e', t: 'A compsognathus as a house pet', d: 'Chicken sized, very quick, eats basically anything. Including the sofa.' },
+    { e: '\ud83d\udecf\ufe0f', t: 'A stegosaurus sleeping in your garden', d: 'Free lawn mowing. The fence is now a suggestion.' },
+    { e: '\ud83d\ude97', t: 'A diplodocus in the big Tesco car park', d: 'It just lives there now. Nobody knows how it got in.' },
+    { e: '\ud83e\uddf9', t: 'A dinosaur that tidies your room', d: 'It genuinely wants to help. It has very small arms and no idea where anything goes.' },
+    { e: '\ud83c\udf7d\ufe0f', t: 'Taking a dinosaur to a restaurant', d: 'It behaves impeccably. It orders everything on the menu, twice.' }
+  ], summary: 'Domestic life: complicated.' },
+
+  { title: 'Dinosaurs at school', emoji: '\ud83c\udf92', intro: 'Closer to home now. Imagine one turning up at the Base.', qs: [
+    { e: '\ud83d\udcda', t: 'A dinosaur joining your class', d: 'Same lessons, same timetable, same struggle with fractions.' },
+    { e: '\u26bd', t: 'A dinosaur on the football team', d: 'Excellent in goal. Terrible at penalties.' },
+    { e: '\ud83c\udfad', t: 'A dinosaur in the school play', d: 'It has learned every line. It cannot fit through the stage door.' },
+    { e: '\ud83c\udf5d', t: 'A dinosaur in the dinner queue', d: 'Very patient. Very hungry. The queue is now theoretical.' },
+    { e: '\ud83d\ude8c', t: 'A dinosaur on the school trip', d: 'It walks alongside the coach. Everyone stares. It does not mind.' }
+  ], summary: 'School would never be the same.' },
+
+  { title: 'Dinosaurs and the world', emoji: '\ud83c\udf0d', intro: 'Bigger picture. What happens to everything else?', qs: [
+    { e: '\ud83e\udd81', t: 'Dinosaurs in zoos', d: 'Safe, studied, and behind glass. Is that fair on them?' },
+    { e: '\ud83c\udfde\ufe0f', t: 'Dinosaurs roaming free in the countryside', d: 'No fences. No zoos. Just dinosaurs, out there, living.' },
+    { e: '\ud83d\udc04', t: 'Farming dinosaurs like cows', d: 'For food, for milk, for wool. Whatever a dinosaur produces.' },
+    { e: '\ud83e\uddf3', t: 'Dinosaur tourism', d: 'People fly in from everywhere to see them. The town gets rich. The dinosaurs get stared at.' },
+    { e: '\ud83c\udf33', t: 'Rewilding: bringing them back on purpose', d: 'Scientists could do it. Should they?' }
+  ], summary: 'The world would have to rearrange itself.' },
+
+  { title: 'The hard ones', emoji: '\ud83e\udd2f', intro: 'Last round. These are the questions with no easy answer, which is exactly why they are interesting.', qs: [
+    { e: '\u2696\ufe0f', t: 'Dinosaurs should have the same rights as people', d: 'If they are clever enough to understand us, does that change things?' },
+    { e: '\ud83d\udd12', t: 'A dinosaur could be arrested', d: 'It broke something. Was it a crime, or was it just being a dinosaur?' },
+    { e: '\ud83d\udc65', t: 'Humans and dinosaurs could actually be friends', d: 'Not owners and pets. Friends.' },
+    { e: '\ud83e\uddec', t: 'It was a mistake to bring them back at all', d: 'Everything that has happened since. Worth it, or not?' },
+    { e: '\ud83d\udd2e', t: 'In 100 years, nobody will find dinosaurs strange', d: 'Just another animal. Like a horse, or a pigeon.' }
+  ], summary: 'That is the whole consultancy done.' }
+];
+
+var CLOSERS = {
+  yes: ['Optimist. Noted.', 'Bold. I like it.', 'The consultant approves.', 'Green light.'],
+  no: ['Ruthless. Good.', 'Consultant says no.', 'Straight to the point.', 'Rejected, with reason.'],
+  depends: ['The wisest answer, honestly.', 'Now we are thinking.', 'Detail matters. Good spot.', 'The consultant reserves judgement.']
+};
+function pickLine(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+/* ---------- state ---------- */
+var state = null;
+
+function freshState(name) {
+  return { name: name, r: 0, q: 0, answers: {}, started: new Date().toLocaleDateString('en-GB') };
+}
+function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {} }
+function load() { try { return JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); } catch (e) { return null; } }
+function clearSave() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
+function qid(r, q) { return 'r' + r + 'q' + q; }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+var stage = document.getElementById('stage');
+var cheer = document.getElementById('cheer');
+var totalQs = ROUNDS.reduce(function (t, r) { return t + r.qs.length; }, 0);
+
+/* ---------- start ---------- */
+function showStart() {
+  cheer.style.display = 'none';
+  var resume = load();
+  var resumeHtml = '';
+  if (resume && resume.name && (resume.r > 0 || resume.q > 0)) {
+    resumeHtml = '<div class="card accent" style="text-align:center;">' +
+      '<p class="stage-sub" style="margin-bottom:0.75rem;">' + esc(resume.name.toUpperCase()) +
+      ' has a consultancy in progress on this device, round ' + (resume.r + 1) + ' of ' + ROUNDS.length + '.</p>' +
+      '<div class="btn-row">' +
+      '<button class="btn btn-primary" id="resume-btn">Carry on</button>' +
+      '<button class="btn btn-ghost" id="restart-btn">Start fresh instead</button>' +
+      '</div></div>';
+  }
+  stage.innerHTML = resumeHtml +
+    '<div class="card accent" style="text-align:center;">' +
+    '<span style="font-size:3rem; line-height:1; display:block; margin-bottom:0.5rem;" aria-hidden="true">&#129430;</span>' +
+    '<h2 class="stage-title">Dinosaurs are back. You are the consultant.</h2>' +
+    '<p class="stage-sub">Somebody has to decide what happens now, and it might as well be you. ' + totalQs +
+    ' scenarios, five rounds, and one question each time: would it actually work?</p>' +
+    '<p class="stage-sub">Say yes, no, or it depends. Add a reason if you have one, skip it if you do not. ' +
+    'Whatever you come up with here, Jay will genuinely use when the Base builds the September project.</p>' +
+    '<div class="name-field"><label for="name-input">Your initials</label>' +
+    '<input type="text" id="name-input" maxlength="20" placeholder="Type initials here"></div>' +
+    '<div class="btn-row"><button class="btn btn-primary" id="go-btn">Start the consultancy</button></div>' +
+    '</div>';
+  if (resumeHtml) {
+    document.getElementById('resume-btn').addEventListener('click', function () { state = resume; showScenario(); });
+    document.getElementById('restart-btn').addEventListener('click', function () { clearSave(); showStart(); });
+  }
+  try {
+    var profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+    if (profile && profile.initials) { document.getElementById('name-input').value = profile.initials.toUpperCase(); }
+  } catch (e) {}
+  var input = document.getElementById('name-input');
+  document.getElementById('go-btn').addEventListener('click', function () {
+    var n = input.value.trim();
+    if (!n) { input.style.borderColor = '#ef7724'; input.focus(); return; }
+    state = freshState(n);
+    save();
+    showRoundIntro();
+  });
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { document.getElementById('go-btn').click(); } });
+}
+
+/* ---------- round intro ---------- */
+function showRoundIntro() {
+  var R = ROUNDS[state.r];
+  stage.innerHTML =
+    '<div class="card accent" style="text-align:center;">' +
+    '<span style="font-size:2.4rem; line-height:1; display:block; margin-bottom:0.5rem;" aria-hidden="true">' + R.emoji + '</span>' +
+    '<p class="eyebrow" style="color:#2e8b57;">Round ' + (state.r + 1) + ' of ' + ROUNDS.length + '</p>' +
+    '<h2 class="stage-title">' + esc(R.title) + '</h2>' +
+    '<p class="stage-sub">' + esc(R.intro) + '</p>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-primary" id="round-go">Begin</button>' +
+    (state.r > 0 ? '<button class="btn btn-ghost" id="finish-btn">Finish here and see my report</button>' : '') +
+    '</div></div>';
+  cheer.style.display = 'block';
+  document.getElementById('round-go').addEventListener('click', showScenario);
+  var fin = document.getElementById('finish-btn');
+  if (fin) { fin.addEventListener('click', showReport); }
+}
+
+/* ---------- progress ---------- */
+function progressHtml() {
+  var R = ROUNDS[state.r];
+  var dots = '';
+  for (var i = 0; i < R.qs.length; i++) {
+    dots += '<span class="q-dot' + (i < state.q ? ' done' : (i === state.q ? ' now' : '')) + '"></span>';
+  }
+  return '<div class="progress-bar">' +
+    '<span class="round-chip">' + R.emoji + ' Round ' + (state.r + 1) + ' of ' + ROUNDS.length + ': ' + esc(R.title) + '</span>' +
+    '<span class="q-dots">' + dots + '</span>' +
+    '</div>';
+}
+
+function tallyHtml() {
+  var counts = { yes: 0, no: 0, depends: 0 };
+  for (var k in state.answers) {
+    if (state.answers.hasOwnProperty(k) && counts.hasOwnProperty(state.answers[k].v)) { counts[state.answers[k].v]++; }
+  }
+  if (counts.yes + counts.no + counts.depends === 0) { return ''; }
+  var html = '<div class="tally-strip">';
+  VERDICTS.forEach(function (v) {
+    html += '<span class="tally-pill" style="--vc:' + v.color + ';">' + v.emoji + ' ' + v.label + ': ' + counts[v.id] + '</span>';
+  });
+  return html + '</div>';
+}
+
+/* ---------- scenario ---------- */
+function showScenario() {
+  var R = ROUNDS[state.r];
+  var S = R.qs[state.q];
+  var btns = '';
+  VERDICTS.forEach(function (v) {
+    btns += '<button class="verdict-btn" data-v="' + v.id + '" style="--vc:' + v.color + ';">' +
+      '<span class="verdict-emoji" aria-hidden="true">' + v.emoji + '</span>' + v.label + '</button>';
+  });
+  stage.innerHTML = progressHtml() +
+    '<div class="card scenario">' +
+    '<span class="scenario-emoji" aria-hidden="true">' + S.e + '</span>' +
+    '<p class="scenario-text">' + esc(S.t) + '</p>' +
+    '<p class="scenario-detail">' + esc(S.d) + '</p>' +
+    '<div class="verdict-grid">' + btns + '</div>' +
+    '<button class="btn btn-ghost" id="skip-btn">Skip this one</button>' +
+    tallyHtml() +
+    '</div>';
+  cheer.style.display = 'block';
+  document.querySelectorAll('.verdict-btn').forEach(function (b) {
+    b.addEventListener('click', function () { showReason(b.getAttribute('data-v')); });
+  });
+  document.getElementById('skip-btn').addEventListener('click', nextScenario);
+}
+
+/* ---------- reason ---------- */
+function showReason(vid) {
+  var R = ROUNDS[state.r];
+  var S = R.qs[state.q];
+  var V = verdictById(vid);
+  stage.innerHTML = progressHtml() +
+    '<div class="card">' +
+    '<div class="reason-head">' +
+    '<span class="verdict-pill" style="--vc:' + V.color + ';">' + V.emoji + ' ' + V.label + '</span>' +
+    '<p class="reason-prompt">' + esc(REASON_PROMPTS[vid]) + '</p>' +
+    '<p class="reason-hint">About: ' + esc(S.t) + '. A few words is plenty, and skipping is completely fine.</p>' +
+    '</div>' +
+    '<textarea class="reason-box" id="reason-box" placeholder="Type here if you want to..."></textarea>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-primary" id="save-reason">Next scenario</button>' +
+    '<button class="btn btn-ghost" id="no-reason">No reason, just the verdict</button>' +
+    '</div></div>';
+  var box = document.getElementById('reason-box');
+  box.focus();
+  function commit(withReason) {
+    state.answers[qid(state.r, state.q)] = {
+      v: vid,
+      why: withReason ? box.value.trim() : '',
+      t: S.t,
+      round: R.title
+    };
+    save();
+    nextScenario();
+  }
+  document.getElementById('save-reason').addEventListener('click', function () { commit(true); });
+  document.getElementById('no-reason').addEventListener('click', function () { commit(false); });
+}
+
+function nextScenario() {
+  state.q++;
+  if (state.q >= ROUNDS[state.r].qs.length) { save(); showRoundSummary(); }
+  else { save(); showScenario(); }
+}
+
+/* ---------- round summary ---------- */
+function showRoundSummary() {
+  var R = ROUNDS[state.r];
+  var last = (state.r === ROUNDS.length - 1);
+  var counts = { yes: 0, no: 0, depends: 0 };
+  for (var q = 0; q < R.qs.length; q++) {
+    var a = state.answers[qid(state.r, q)];
+    if (a && counts.hasOwnProperty(a.v)) { counts[a.v]++; }
+  }
+  var answered = counts.yes + counts.no + counts.depends;
+  var line;
+  if (answered === 0) { line = 'You sat that whole round out, which is allowed.'; }
+  else if (counts.yes > counts.no && counts.yes >= counts.depends) { line = 'You said yes to most of that round. You are an optimist and the dinosaurs are lucky to have you.'; }
+  else if (counts.no > counts.yes && counts.no >= counts.depends) { line = 'Mostly no. A cautious consultant is a good consultant.'; }
+  else if (counts.depends >= counts.yes && counts.depends >= counts.no) { line = 'Lots of "it depends". That is the answer of someone who has actually thought about it.'; }
+  else { line = 'A properly mixed round. You are judging each one on its merits.'; }
+  stage.innerHTML =
+    '<div class="card accent" style="text-align:center;">' +
+    '<span class="summary-emoji" aria-hidden="true">' + R.emoji + '</span>' +
+    '<p class="eyebrow" style="color:#2e8b57;">Round ' + (state.r + 1) + ' done</p>' +
+    '<p class="summary-line">' + esc(R.summary) + '</p>' +
+    '<p class="summary-sub">' + esc(line) + '</p>' +
+    tallyHtml() +
+    '<div class="btn-row" style="margin-top:1rem;">' +
+    '<button class="btn btn-primary" id="cont-btn">' + (last ? 'See my consultant report' : 'On to round ' + (state.r + 2)) + '</button>' +
+    (last ? '' : '<button class="btn btn-ghost" id="finish-btn">Finish here instead</button>') +
+    '</div></div>';
+  document.getElementById('cont-btn').addEventListener('click', function () {
+    if (last) { showReport(); }
+    else { state.r++; state.q = 0; save(); showRoundIntro(); }
+  });
+  var fin = document.getElementById('finish-btn');
+  if (fin) { fin.addEventListener('click', showReport); }
+}
+
+/* ---------- report ---------- */
+function buildStats() {
+  var counts = { yes: 0, no: 0, depends: 0 };
+  var withReasons = [];
+  var answered = 0;
+  for (var r = 0; r < ROUNDS.length; r++) {
+    for (var q = 0; q < ROUNDS[r].qs.length; q++) {
+      var a = state.answers[qid(r, q)];
+      if (!a) { continue; }
+      answered++;
+      if (counts.hasOwnProperty(a.v)) { counts[a.v]++; }
+      if (a.why) { withReasons.push(a); }
+    }
+  }
+  return { counts: counts, withReasons: withReasons, answered: answered };
+}
+
+function markDone() {
+  try {
+    var a = JSON.parse(localStorage.getItem(DONE_KEY) || '[]');
+    if (a.indexOf(DONE_ID) === -1) { a.push(DONE_ID); localStorage.setItem(DONE_KEY, JSON.stringify(a)); }
+  } catch (e) {}
+}
+/* grants the September Dino cosmetic on the week 7 avatar */
+function grantBonus() {
+  try {
+    var w = JSON.parse(localStorage.getItem(AVATAR_KEY) || 'null') || { worn: {}, seen: [] };
+    if (!Array.isArray(w.unlocked)) { w.unlocked = []; }
+    if (w.unlocked.indexOf(BONUS_ITEM) === -1) {
+      w.unlocked.push(BONUS_ITEM);
+      if (Array.isArray(w.seen)) {
+        var i = w.seen.indexOf(BONUS_ITEM);
+        if (i !== -1) { w.seen.splice(i, 1); }
+      }
+      localStorage.setItem(AVATAR_KEY, JSON.stringify(w));
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
+
+function titleFor(s) {
+  var c = s.counts;
+  if (s.answered === 0) { return { badge: '\ud83e\udd5a', head: 'A quiet consultancy', sub: 'You did not commit to anything, and that is a legitimate strategy.' }; }
+  if (c.depends >= c.yes && c.depends >= c.no) { return { badge: '\ud83e\udd14', head: 'The Careful Consultant', sub: 'You kept asking what it depends on. That is not fence sitting, that is noticing that the details matter.' }; }
+  if (c.yes > c.no) { return { badge: '\ud83c\udf1f', head: 'The Optimist', sub: 'You would let the dinosaurs have a go at almost anything. The world would be more interesting, and possibly on fire.' }; }
+  if (c.no > c.yes) { return { badge: '\ud83d\udee1\ufe0f', head: 'The Realist', sub: 'You spotted the problems early and said so. Every project needs someone like you, usually about a week too late.' }; }
+  return { badge: '\u2696\ufe0f', head: 'The Balanced Judge', sub: 'Yes, no, and it depends in near equal measure. You judged every scenario on its own terms.' };
+}
+
+function showReport() {
+  var s = buildStats();
+  markDone();
+  var granted = grantBonus();
+  cheer.style.display = 'none';
+  var t = titleFor(s);
+  var max = Math.max(s.counts.yes, s.counts.no, s.counts.depends, 1);
+
+  var html = '<div class="card accent"><div class="report-hero">' +
+    '<span class="report-badge" aria-hidden="true">' + t.badge + '</span>' +
+    '<p class="report-headline">' + esc(state.name.toUpperCase()) + ': ' + esc(t.head) + '</p>' +
+    '<p class="report-subline">' + esc(t.sub) + '</p>' +
+    '</div>';
+
+  html += '<div class="bars">';
+  VERDICTS.forEach(function (v) {
+    var n = s.counts[v.id];
+    html += '<div class="bar-row" style="--vc:' + v.color + ';">' +
+      '<span class="bar-label">' + v.emoji + ' ' + v.label + '</span>' +
+      '<span class="bar-track"><span class="bar-fill" style="width:' + Math.round(n / max * 100) + '%;"></span></span>' +
+      '<span class="bar-num">' + n + '</span>' +
+      '</div>';
+  });
+  html += '</div>';
+  html += '<p class="report-subline" style="text-align:center;">' + s.answered + ' of ' + totalQs + ' scenarios judged.</p>';
+
+  if (s.withReasons.length) {
+    html += '<p class="report-section-label">Your reasoning, which is the good bit</p>';
+    s.withReasons.forEach(function (a) {
+      var V = verdictById(a.v);
+      html += '<div class="idea-item" style="--vc:' + V.color + ';">' +
+        '<p class="idea-scenario">' + V.emoji + ' ' + esc(a.t) + '</p>' +
+        '<p class="idea-reason">' + esc(a.why) + '</p>' +
+        '</div>';
+    });
+    html += '<p class="report-note">These are the bits Jay will actually use. Your thinking here helps shape what the Base builds in September.</p>';
+  } else {
+    html += '<p class="report-note" style="margin-top:1rem;">You went with verdicts only, no reasons. Completely fine. The verdicts still tell us plenty.</p>';
+  }
+
+  if (granted) {
+    html += '<div class="unlock-note">&#129429; You have unlocked the September Dino for your avatar. Tap your avatar on the Week 7 page to put it on.</div>';
+  }
+  html += '</div>';
+
+  html += '<div class="card" style="text-align:center;">' +
+    '<p class="stage-sub" style="margin-bottom:0.75rem;">You can send your report to Jay. It opens an email, and nothing sends until you press send yourself.</p>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-primary" id="send-btn">Send my report to Jay</button>' +
+    '<button class="btn btn-outline" id="again-btn">Start again</button>' +
+    '<a class="btn btn-ghost" href="index.html" style="text-decoration:underline; display:inline-block; padding:0.55rem 1rem;">Back to the Welcome Zone</a>' +
+    '</div>' +
+    '<p class="report-note" style="margin-top:1rem;">Next door there is a whole wall for the questions you would want answered. Your questions become the project.</p>' +
+    '</div>';
+
+  stage.innerHTML = html;
+  document.getElementById('send-btn').addEventListener('click', function () { sendReport(s); });
+  document.getElementById('again-btn').addEventListener('click', function () { clearSave(); showStart(); });
+}
+
+function sendReport(s) {
+  var t = titleFor(s);
+  var lines = 'BASE 6 - WOULD IT WORK? DINOSAUR CONSULTANCY\n\n';
+  lines += 'Consultant: ' + state.name.toUpperCase() + '\n';
+  lines += 'Date: ' + new Date().toLocaleDateString('en-GB') + '\n';
+  lines += 'Verdict style: ' + t.head + '\n';
+  lines += 'Scenarios judged: ' + s.answered + ' of ' + totalQs + '\n';
+  lines += 'Yes: ' + s.counts.yes + ' / No: ' + s.counts.no + ' / It depends: ' + s.counts.depends + '\n\n';
+  lines += 'ALL VERDICTS:\n';
+  for (var r = 0; r < ROUNDS.length; r++) {
+    var any = false;
+    var block = '\n' + ROUNDS[r].title.toUpperCase() + '\n';
+    for (var q = 0; q < ROUNDS[r].qs.length; q++) {
+      var a = state.answers[qid(r, q)];
+      if (!a) { continue; }
+      any = true;
+      block += '- ' + a.t + ': ' + verdictById(a.v).label.toUpperCase() + (a.why ? ' - "' + a.why + '"' : '') + '\n';
+    }
+    if (any) { lines += block; }
+  }
+  lines += '\n-\nSent automatically from Base 6';
+  var subject = 'Base 6 - Would It Work - ' + state.name.toUpperCase();
+  var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL +
+    '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines);
+  /* Gmail compose URLs get unreliable past roughly 8000 characters. If a consultant
+     has been very thorough, send the reasoning only, which is the part worth keeping. */
+  if (url.length > 7500) {
+    var shortLines = 'BASE 6 - WOULD IT WORK? DINOSAUR CONSULTANCY\n\n' +
+      'Consultant: ' + state.name.toUpperCase() + '\n' +
+      'Date: ' + new Date().toLocaleDateString('en-GB') + '\n' +
+      'Verdict style: ' + t.head + '\n' +
+      'Yes: ' + s.counts.yes + ' / No: ' + s.counts.no + ' / It depends: ' + s.counts.depends + '\n\n' +
+      'REASONING (the full verdict list was too long to email, it is on the device):\n';
+    s.withReasons.forEach(function (a) {
+      shortLines += '- ' + a.t + ' [' + verdictById(a.v).label.toUpperCase() + ']: "' + a.why + '"\n';
+    });
+    shortLines += '\n-\nSent automatically from Base 6';
+    url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL +
+      '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(shortLines);
+  }
+  window.open(url, '_blank');
+}
+
+showStart();
+</script>
+
+</body>
+</html>
