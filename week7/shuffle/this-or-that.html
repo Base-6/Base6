@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>This or That &middot; The Welcome Zone &middot; Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: #7b5ea7; padding: 2rem 2rem 2.75rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .eyebrow { font-size: 0.8rem; font-weight: 700; color: #e6ddf2; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .site-header h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .header-sub { font-size: 1rem; color: #e6ddf2; margin-top: 0.4rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 34px; z-index: 2; }
+
+  .main { max-width: 680px; margin: 0 auto; padding: 1.75rem 1.25rem 4rem; }
+
+  .card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .card.accent { border-color: #7b5ea7; box-shadow: 0 4px 14px rgba(123,94,167,0.12); }
+
+  .stage-title { font-size: 1.35rem; font-weight: 700; color: #5c4383; margin-bottom: 0.5rem; line-height: 1.3; }
+  .stage-sub { font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 1.1rem; }
+
+  .btn { font-family: inherit; font-weight: 700; border-radius: 12px; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .btn-primary { font-size: 1rem; padding: 0.8rem 1.6rem; background: #7b5ea7; color: #ffffff; border: 2px solid #7b5ea7; }
+  .btn-primary:hover { background: #5c4383; border-color: #5c4383; }
+  .btn-primary:disabled { background: #ccc; border-color: #ccc; cursor: default; }
+  .btn-ghost { font-size: 0.85rem; padding: 0.55rem 1rem; background: none; color: #888; border: none; text-decoration: underline; }
+  .btn-ghost:hover { color: #555; }
+  .btn-outline { font-size: 0.95rem; padding: 0.7rem 1.3rem; background: #ffffff; color: #7b5ea7; border: 2px solid #7b5ea7; }
+  .btn-outline:hover { background: #efe9f6; }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; align-items: center; }
+
+  /* roster toggles */
+  .roster-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 1rem; }
+  .roster-btn { font-family: inherit; background: #ffffff; border: 2.5px solid #e0d8d0; border-radius: 14px; padding: 0.7rem 1rem; cursor: pointer; text-align: center; min-width: 96px; transition: border-color 0.15s, background 0.15s, transform 0.12s; }
+  .roster-btn:hover { transform: translateY(-2px); }
+  .roster-btn.sel { border-color: var(--pc); background: #ffffff; box-shadow: inset 0 0 0 2px var(--pc); }
+  .roster-ini { font-size: 1.15rem; font-weight: 700; color: var(--pc); display: block; }
+  .roster-label { font-size: 0.72rem; color: #888; display: block; margin-top: 2px; min-height: 0.9em; }
+  .roster-btn .roster-in { display: none; font-size: 0.7rem; font-weight: 700; color: #ffffff; background: var(--pc); border-radius: 999px; padding: 1px 8px; margin-top: 4px; }
+  .roster-btn.sel .roster-in { display: inline-block; }
+
+  /* progress */
+  .progress-bar { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; justify-content: center; }
+  .round-chip { display: inline-flex; align-items: center; gap: 0.35rem; background: #efe9f6; border: 1.5px solid #7b5ea7; color: #5c4383; border-radius: 999px; padding: 0.25rem 0.8rem; font-size: 0.82rem; font-weight: 700; }
+  .q-dots { display: inline-flex; gap: 4px; }
+  .q-dot { width: 9px; height: 9px; border-radius: 50%; background: #e0d8d0; }
+  .q-dot.done { background: #7b5ea7; }
+  .q-dot.now { background: #ef7724; }
+
+  /* voting */
+  .turn-banner { font-size: 1rem; font-weight: 700; color: #ffffff; background: var(--pc, #7b5ea7); border-radius: 999px; padding: 0.45rem 1.2rem; display: inline-block; margin-bottom: 0.6rem; }
+  .queue-line { font-size: 0.8rem; color: #888; margin-bottom: 1rem; }
+  .voted-dots { display: inline-flex; gap: 5px; vertical-align: middle; margin-left: 4px; }
+  .voted-dot { width: 10px; height: 10px; border-radius: 50%; background: #e0d8d0; }
+  .voted-dot.done { background: var(--dc, #7b5ea7); }
+
+  .qtext { font-size: 1.05rem; font-weight: 700; color: #333; margin-bottom: 1.1rem; }
+
+  .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin-bottom: 0.9rem; }
+  @media (max-width: 480px) { .choice-grid { grid-template-columns: 1fr; } }
+  .choice-btn { font-family: inherit; font-size: 1.15rem; font-weight: 700; color: #5c4383; background: #ffffff; border: 2.5px solid #7b5ea7; border-radius: 16px; padding: 1.6rem 1rem; cursor: pointer; line-height: 1.35; transition: background 0.15s, color 0.15s, transform 0.12s; }
+  .choice-btn:hover { background: #7b5ea7; color: #ffffff; transform: translateY(-2px); }
+
+  /* reveal */
+  .reveal { text-align: center; }
+  .reveal-verdict { font-size: 1.35rem; font-weight: 700; margin-bottom: 0.9rem; line-height: 1.3; }
+  .reveal-verdict.unanimous { color: #2e8b57; }
+  .reveal-verdict.majority { color: #5c4383; }
+  .reveal-verdict.tie { color: #0e8a9e; }
+  .tally-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin-bottom: 0.9rem; }
+  @media (max-width: 480px) { .tally-grid { grid-template-columns: 1fr; } }
+  .tally-col { background: #fef8f4; border: 2px solid #e0d8d0; border-radius: 14px; padding: 0.9rem; }
+  .tally-col.winner { border-color: #7b5ea7; background: #f6f1fb; }
+  .tally-opt { font-size: 1rem; font-weight: 700; color: #333; margin-bottom: 0.5rem; }
+  .tally-count { font-size: 0.78rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .tally-inis { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: center; min-height: 26px; }
+  .ini-chip { font-size: 0.78rem; font-weight: 700; color: #ffffff; background: var(--pc, #7b5ea7); border-radius: 999px; padding: 3px 9px; }
+  .reveal-line { font-size: 0.9rem; color: #555; margin-bottom: 1rem; line-height: 1.5; }
+
+  /* interlude */
+  .interlude { text-align: center; background: linear-gradient(135deg, #efe9f6, #fdf6ff); border: 2px solid #7b5ea7; }
+  .interlude-emoji { font-size: 2.4rem; display: block; margin-bottom: 0.5rem; }
+  .interlude-eyebrow { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #7b5ea7; margin-bottom: 0.4rem; }
+  .interlude-q { font-size: 1.15rem; font-weight: 700; color: #333; line-height: 1.45; margin-bottom: 0.5rem; }
+  .interlude-sub { font-size: 0.88rem; color: #666; margin-bottom: 1.1rem; line-height: 1.5; }
+
+  /* report */
+  .report-hero { text-align: center; margin-bottom: 1.25rem; }
+  .match-ring { position: relative; width: 130px; height: 130px; margin: 0 auto 0.75rem; border-radius: 50%;
+    background: conic-gradient(#7b5ea7 calc(var(--pct, 0) * 1%), #efe9f6 0); display: flex; align-items: center; justify-content: center; }
+  .match-ring::before { content: ""; position: absolute; inset: 12px; background: #ffffff; border-radius: 50%; }
+  .match-num { position: relative; font-size: 1.6rem; font-weight: 700; color: #5c4383; }
+  .report-headline { font-size: 1.25rem; font-weight: 700; color: #5c4383; margin-bottom: 0.3rem; }
+  .report-subline { font-size: 0.92rem; color: #555; line-height: 1.55; }
+  .report-section-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #7b5ea7; margin: 1.25rem 0 0.6rem; }
+  .chip-cloud { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+  .cloud-chip { font-size: 0.85rem; font-weight: 700; background: #efe9f6; color: #5c4383; border: 1.5px solid #cbb8e4; border-radius: 999px; padding: 0.3rem 0.85rem; }
+  .cloud-chip.gold { background: #fff3e8; color: #c05a10; border-color: #f3c9a4; }
+  .cloud-chip.differ { background: #e2f3f6; color: #0b6b7c; border-color: #9fd3dd; }
+  .report-note { font-size: 0.88rem; color: #555; line-height: 1.6; margin-top: 0.4rem; }
+
+  .cheer { text-align: center; margin-top: 1.75rem; font-size: 1rem; font-weight: 700; color: #7b5ea7; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .choice-btn, .roster-btn { transition: none; }
+    .choice-btn:hover, .roster-btn:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Welcome Zone</a>
+  <div class="header-inner">
+    <p class="eyebrow">The Welcome Zone &middot; a whole-Base vote</p>
+    <h1>This or That</h1>
+    <p class="header-sub">No right answers. No wrong answers. Just the Base deciding, one question at a time.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+  <div id="stage"></div>
+  <p class="cheer" id="cheer" style="display:none;">Take it at whatever pace suits the room.</p>
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+/* ============================================================
+   THIS OR THAT, the whole-Base voting edition.
+   The device goes round everyone in the room in turn. Votes stay
+   hidden until each question's reveal, when the Base's answer is
+   announced: unanimous, majority or dead heat. 8 rounds x 8
+   questions with chat breaks, sit-out on every turn, results
+   available at any point, and a full voting record emailed to Jay.
+   Progress autosaves so a break or a reload loses nothing.
+   ============================================================ */
+
+var TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+var SAVE_KEY = 'base6ThisOrThat-week7';
+var DONE_KEY = 'base6Done-week7-shuffle';
+var DONE_ID = 'this-or-that';
+
+/* EDIT: the Base roster for shuffle days. Labels show on the setup screen only. */
+var ROSTER = [
+  { ini: 'JR',  label: 'Jay',             color: '#007291' },
+  { ini: 'HB',  label: 'Learning Mentor', color: '#ef7724' },
+  { ini: 'JT',  label: '',                color: '#2e8b57' },
+  { ini: 'LC',  label: '',                color: '#7b5ea7' },
+  { ini: 'LW',  label: '',                color: '#0e8a9e' },
+  { ini: 'EGW', label: '',                color: '#c05a10' },
+  { ini: 'MGD', label: '',                color: '#6b8e23' }
+];
+function playerColor(ini) {
+  for (var i = 0; i < ROSTER.length; i++) { if (ROSTER[i].ini === ini) { return ROSTER[i].color; } }
+  return '#7b5ea7';
+}
+
+var ROUNDS = [
+  { title: 'Places', emoji: '\ud83c\udfde\ufe0f', qs: [
+    ['Quiet places', 'Loud places'],
+    ['Indoors', 'Outdoors'],
+    ['The city', 'The countryside'],
+    ['The beach', 'The forest'],
+    ['Big open spaces', 'Cosy corners'],
+    ['Somewhere busy', 'Somewhere empty'],
+    ['Home', 'Somewhere brand new'],
+    ['Up high', 'Down low']
+  ], chat: 'Go round the room: describe your perfect room. What is in it, and what is definitely NOT in it?' },
+  { title: 'Food', emoji: '\ud83c\udf55', qs: [
+    ['Sweet', 'Savoury'],
+    ['Crunchy', 'Soft'],
+    ['Hot food', 'Cold food'],
+    ['Pizza', 'Chips'],
+    ['Breakfast', 'Dinner'],
+    ['Try something new', 'Stick with a favourite'],
+    ['Cooking', 'Being cooked for'],
+    ['Eating out', 'Eating at home']
+  ], chat: 'What is the best thing anyone here has ever eaten? Make your case, the Base can vote on a winner.' },
+  { title: 'Screens and sounds', emoji: '\ud83c\udfa7', qs: [
+    ['Music loud', 'Music quiet'],
+    ['Headphones', 'Speakers'],
+    ['Films', 'Series'],
+    ['Playing games', 'Watching videos'],
+    ['Subtitles on', 'Subtitles off'],
+    ['One long game', 'Lots of short games'],
+    ['Rewatching favourites', 'Always something new'],
+    ['Background noise', 'Total silence']
+  ], chat: 'What is something you could watch or play over and over without getting bored?' },
+  { title: 'Time and plans', emoji: '\u23f0', qs: [
+    ['Plans', 'Surprises'],
+    ['Early bird', 'Night owl'],
+    ['Fast', 'Slow'],
+    ['A busy day', 'An empty day'],
+    ['Know everything first', 'Find out as you go'],
+    ['One big thing', 'Lots of little things'],
+    ['Being early', 'Being exactly on time'],
+    ['Finish it now', 'Save some for later']
+  ], chat: 'What does a perfect Saturday look like, from waking up to going to sleep?' },
+  { title: 'People and hanging out', emoji: '\ud83d\udcac', qs: [
+    ['A big group', 'One good friend'],
+    ['Talking', 'Doing something side by side'],
+    ['Texting', 'Talking out loud'],
+    ['Meeting new people', 'Knowing everyone already'],
+    ['Centre of things', 'Edge of things'],
+    ['Helping someone', 'Being helped'],
+    ['Inside jokes', 'New jokes'],
+    ['Deep chats', 'Daft chats']
+  ], chat: 'Who makes you laugh the most, and what is their secret?' },
+  { title: 'Weather and seasons', emoji: '\u26c5', qs: [
+    ['Summer', 'Winter'],
+    ['Rain sounds', 'Birdsong'],
+    ['A snow day', 'A beach day'],
+    ['Watching a storm', 'A clear blue sky'],
+    ['Too hot', 'Too cold'],
+    ['Windy', 'Still'],
+    ['Autumn leaves', 'Spring flowers'],
+    ['Sunrise', 'Sunset']
+  ], chat: 'Best weather memory in the room wins. A storm, a heatwave, a snow day, anything.' },
+  { title: 'Imagination', emoji: '\u2728', qs: [
+    ['Fly', 'Be invisible'],
+    ['Visit the past', 'Visit the future'],
+    ['Dragons', 'Robots'],
+    ['Shrink tiny', 'Grow giant'],
+    ['Read minds', 'Talk to animals'],
+    ['Live underwater', 'Live in space'],
+    ['Magic', 'Technology'],
+    ['Be famous', 'Be secretly amazing']
+  ], chat: 'Pick one of the powers from this round. How would it actually ruin your life?' },
+  { title: 'The dinosaur round', emoji: '\ud83e\udd95', qs: [
+    ['A pet dinosaur', 'A robot dinosaur'],
+    ['Herbivore friend', 'Carnivore bodyguard'],
+    ['Dino the size of a cat', 'Dino the size of a house'],
+    ['Ride a pterodactyl', 'Ride a triceratops'],
+    ['Dinos in a zoo', 'Dinos roaming free'],
+    ['T. rex', 'Diplodocus'],
+    ['Discover a new dinosaur', 'Rename an old one'],
+    ['Dinosaurs allowed in school', 'Dinosaurs stay outside']
+  ], chat: 'Last one, round the room: if dinosaurs still existed, what is the FIRST thing you would want to know? Remember your answers, there is a whole wall for them next door.' }
+];
+
+var UNANIMOUS_LINES = [
+  'Unanimous! The Base has spoken.',
+  'Every single vote. That is official Base policy now.',
+  'Total agreement. Someone write this down.',
+  'The whole room, one answer. Beautiful.'
+];
+var MAJORITY_LINES = [
+  'The Base leans this way.',
+  'A clear winner, with some proud independents.',
+  'Majority rules, minority stays brilliant.',
+  'The votes are in and the Base has a favourite.'
+];
+var TIE_LINES = [
+  'Dead heat! The Base is split right down the middle.',
+  'A perfect tie. Democracy is hard.',
+  'Even split. Both answers are officially correct.',
+  'Fifty fifty. The Base contains multitudes.'
+];
+
+/* ---------- state ---------- */
+var state = null;
+
+function freshState(players) {
+  return { players: players, r: 0, q: 0, turn: 0, votes: {},
+           started: new Date().toLocaleDateString('en-GB') };
+}
+function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {} }
+function load() { try { return JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); } catch (e) { return null; } }
+function clearSave() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
+function qid(r, q) { return 'r' + r + 'q' + q; }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function pickLine(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+var stage = document.getElementById('stage');
+var cheer = document.getElementById('cheer');
+
+/* ---------- setup ---------- */
+var selected = [];
+
+function showStart() {
+  cheer.style.display = 'none';
+  var resume = load();
+  var resumeHtml = '';
+  if (resume && resume.players && resume.players.length && (resume.r > 0 || resume.q > 0 || resume.turn > 0)) {
+    resumeHtml = '<div class="card accent" style="text-align:center;">' +
+      '<p class="stage-sub" style="margin-bottom:0.75rem;">There is a vote in progress on this device with ' +
+      esc(resume.players.join(', ')) + ', round ' + (resume.r + 1) + ' of ' + ROUNDS.length + '.</p>' +
+      '<div class="btn-row">' +
+      '<button class="btn btn-primary" id="resume-btn">Carry on</button>' +
+      '<button class="btn btn-ghost" id="restart-btn">Start fresh instead</button>' +
+      '</div></div>';
+  }
+  var rosterHtml = '';
+  ROSTER.forEach(function (p) {
+    rosterHtml += '<button class="roster-btn' + (selected.indexOf(p.ini) !== -1 ? ' sel' : '') + '" data-ini="' + p.ini + '" style="--pc:' + p.color + ';">' +
+      '<span class="roster-ini">' + p.ini + '</span>' +
+      '<span class="roster-label">' + esc(p.label) + '</span>' +
+      '<span class="roster-in">In</span>' +
+      '</button>';
+  });
+  stage.innerHTML = resumeHtml +
+    '<div class="card" style="text-align:center;">' +
+    '<h2 class="stage-title">Who is in the room today?</h2>' +
+    '<p class="stage-sub">Tap everyone who wants in. The device will go round each of you in turn, votes stay secret until the reveal, and joining in is always optional, question by question.</p>' +
+    '<div class="roster-grid" id="roster-grid">' + rosterHtml + '</div>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-outline" id="all-btn">Everyone is in</button>' +
+    '<button class="btn btn-primary" id="go-btn" disabled>Start round 1</button>' +
+    '</div>' +
+    '<p class="stage-sub" style="margin-top:0.75rem; margin-bottom:0;">Eight rounds, eight questions each, chat breaks in between. However far you get is exactly far enough, and the results work at any point.</p>' +
+    '</div>';
+  if (resumeHtml) {
+    document.getElementById('resume-btn').addEventListener('click', function () { state = resume; showQuestion(); });
+    document.getElementById('restart-btn').addEventListener('click', function () { clearSave(); selected = []; showStart(); });
+  }
+  document.querySelectorAll('.roster-btn').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var ini = b.getAttribute('data-ini');
+      var idx = selected.indexOf(ini);
+      if (idx === -1) { selected.push(ini); } else { selected.splice(idx, 1); }
+      b.classList.toggle('sel');
+      updateGoBtn();
+    });
+  });
+  document.getElementById('all-btn').addEventListener('click', function () {
+    selected = ROSTER.map(function (p) { return p.ini; });
+    document.querySelectorAll('.roster-btn').forEach(function (b) { b.classList.add('sel'); });
+    updateGoBtn();
+  });
+  document.getElementById('go-btn').addEventListener('click', function () {
+    /* keep roster order rather than tap order, so the passing order is predictable */
+    var players = ROSTER.map(function (p) { return p.ini; }).filter(function (i) { return selected.indexOf(i) !== -1; });
+    state = freshState(players);
+    save();
+    showRoundIntro();
+  });
+  updateGoBtn();
+}
+
+function updateGoBtn() {
+  var go = document.getElementById('go-btn');
+  if (!go) { return; }
+  go.disabled = selected.length < 2;
+  go.textContent = selected.length < 2 ? 'Pick at least two voters' : 'Start round 1';
+}
+
+/* ---------- round intro ---------- */
+function showRoundIntro() {
+  var R = ROUNDS[state.r];
+  stage.innerHTML =
+    '<div class="card accent" style="text-align:center;">' +
+    '<span style="font-size:2.4rem; line-height:1; display:block; margin-bottom:0.5rem;" aria-hidden="true">' + R.emoji + '</span>' +
+    '<p class="eyebrow" style="color:#7b5ea7;">Round ' + (state.r + 1) + ' of ' + ROUNDS.length + '</p>' +
+    '<h2 class="stage-title">' + esc(R.title) + '</h2>' +
+    '<p class="stage-sub">' + R.qs.length + ' votes to cast. Sitting one out is always fine.</p>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-primary" id="round-go">Let\u0027s vote</button>' +
+    (state.r > 0 ? '<button class="btn btn-ghost" id="finish-btn">Finish here and see the results</button>' : '') +
+    '</div></div>';
+  cheer.style.display = 'block';
+  document.getElementById('round-go').addEventListener('click', showQuestion);
+  var fin = document.getElementById('finish-btn');
+  if (fin) { fin.addEventListener('click', showReport); }
+}
+
+/* ---------- progress ---------- */
+function progressHtml() {
+  var R = ROUNDS[state.r];
+  var dots = '';
+  for (var i = 0; i < R.qs.length; i++) {
+    dots += '<span class="q-dot' + (i < state.q ? ' done' : (i === state.q ? ' now' : '')) + '"></span>';
+  }
+  return '<div class="progress-bar">' +
+    '<span class="round-chip">' + R.emoji + ' Round ' + (state.r + 1) + ' of ' + ROUNDS.length + ': ' + esc(R.title) + '</span>' +
+    '<span class="q-dots">' + dots + '</span>' +
+    '</div>';
+}
+
+/* ---------- voting flow ---------- */
+function showQuestion() {
+  var R = ROUNDS[state.r];
+  var opts = R.qs[state.q];
+  var ini = state.players[state.turn];
+  var color = playerColor(ini);
+  var votedDots = '';
+  for (var i = 0; i < state.players.length; i++) {
+    votedDots += '<span class="voted-dot' + (i < state.turn ? ' done' : '') + '" style="--dc:' + playerColor(state.players[i]) + ';"></span>';
+  }
+  stage.innerHTML = progressHtml() +
+    '<div class="card" style="text-align:center;">' +
+    '<span class="turn-banner" style="--pc:' + color + ';">' + esc(ini) + ', your vote</span>' +
+    '<p class="queue-line">Voted so far: <span class="voted-dots">' + votedDots + '</span> ' + state.turn + ' of ' + state.players.length + '</p>' +
+    '<p class="qtext">Which one, gut feeling?</p>' +
+    '<div class="choice-grid">' +
+    '<button class="choice-btn" id="opt-0">' + esc(opts[0]) + '</button>' +
+    '<button class="choice-btn" id="opt-1">' + esc(opts[1]) + '</button>' +
+    '</div>' +
+    '<button class="btn btn-ghost" id="sit-btn">' + esc(ini) + ' sits this one out</button>' +
+    '</div>';
+  cheer.style.display = 'block';
+  document.getElementById('opt-0').addEventListener('click', function () { castVote(0); });
+  document.getElementById('opt-1').addEventListener('click', function () { castVote(1); });
+  document.getElementById('sit-btn').addEventListener('click', nextTurn);
+}
+
+function castVote(choice) {
+  var id = qid(state.r, state.q);
+  if (!state.votes[id]) { state.votes[id] = {}; }
+  state.votes[id][state.players[state.turn]] = choice;
+  save();
+  nextTurn();
+}
+
+function nextTurn() {
+  state.turn++;
+  save();
+  if (state.turn >= state.players.length) { showReveal(); }
+  else { showQuestion(); }
+}
+
+function showReveal() {
+  var R = ROUNDS[state.r];
+  var opts = R.qs[state.q];
+  var id = qid(state.r, state.q);
+  var v = state.votes[id] || {};
+  var side0 = [], side1 = [];
+  state.players.forEach(function (ini) {
+    if (v[ini] === 0) { side0.push(ini); }
+    else if (v[ini] === 1) { side1.push(ini); }
+  });
+  var total = side0.length + side1.length;
+  var verdictClass, verdictText, line;
+  if (total === 0) {
+    verdictClass = 'tie'; verdictText = 'Everyone sat that one out'; line = 'Fair enough. On to the next.';
+  } else if (side0.length === total || side1.length === total) {
+    if (total === 1) {
+      verdictClass = 'majority';
+      verdictText = 'The Base says: ' + esc(side0.length ? opts[0] : opts[1]);
+      line = 'One vote is still a vote.';
+    } else {
+      verdictClass = 'unanimous';
+      verdictText = '\u2728 Unanimous: ' + esc(side0.length ? opts[0] : opts[1]);
+      line = pickLine(UNANIMOUS_LINES);
+    }
+  } else if (side0.length === side1.length) {
+    verdictClass = 'tie'; verdictText = '\ud83e\udd1d Dead heat'; line = pickLine(TIE_LINES);
+  } else {
+    var winner = side0.length > side1.length ? opts[0] : opts[1];
+    verdictClass = 'majority';
+    verdictText = 'The Base says: ' + esc(winner) + ' (' + Math.max(side0.length, side1.length) + ' to ' + Math.min(side0.length, side1.length) + ')';
+    line = pickLine(MAJORITY_LINES);
+    var solo = (side0.length === 1) ? side0[0] : (side1.length === 1 ? side1[0] : null);
+    if (solo && total >= 3) { line = esc(solo) + ' happily going their own way. Respect.'; }
+  }
+  function chips(arr) {
+    if (!arr.length) { return '<span style="font-size:0.8rem; color:#aaa;">no votes</span>'; }
+    return arr.map(function (ini) { return '<span class="ini-chip" style="--pc:' + playerColor(ini) + ';">' + esc(ini) + '</span>'; }).join('');
+  }
+  var w0 = side0.length > side1.length, w1 = side1.length > side0.length;
+  stage.innerHTML = progressHtml() +
+    '<div class="card reveal">' +
+    '<p class="reveal-verdict ' + verdictClass + '">' + verdictText + '</p>' +
+    '<div class="tally-grid">' +
+    '<div class="tally-col' + (w0 ? ' winner' : '') + '"><p class="tally-opt">' + esc(opts[0]) + '</p><p class="tally-count">' + side0.length + (side0.length === 1 ? ' vote' : ' votes') + '</p><div class="tally-inis">' + chips(side0) + '</div></div>' +
+    '<div class="tally-col' + (w1 ? ' winner' : '') + '"><p class="tally-opt">' + esc(opts[1]) + '</p><p class="tally-count">' + side1.length + (side1.length === 1 ? ' vote' : ' votes') + '</p><div class="tally-inis">' + chips(side1) + '</div></div>' +
+    '</div>' +
+    '<p class="reveal-line">' + line + '</p>' +
+    '<div class="btn-row"><button class="btn btn-primary" id="next-btn">Next question</button></div>' +
+    '</div>';
+  document.getElementById('next-btn').addEventListener('click', nextQuestion);
+}
+
+function nextQuestion() {
+  state.q++;
+  state.turn = 0;
+  if (state.q >= ROUNDS[state.r].qs.length) { save(); showInterlude(); }
+  else { save(); showQuestion(); }
+}
+
+/* ---------- chat break ---------- */
+function showInterlude() {
+  var R = ROUNDS[state.r];
+  var last = (state.r === ROUNDS.length - 1);
+  stage.innerHTML =
+    '<div class="card interlude">' +
+    '<span class="interlude-emoji" aria-hidden="true">&#9749;</span>' +
+    '<p class="interlude-eyebrow">Chat break, if the room fancies it</p>' +
+    '<p class="interlude-q">' + esc(R.chat) + '</p>' +
+    '<p class="interlude-sub">Talk for as long or as short as you like. Or not at all. The button waits.</p>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-primary" id="cont-btn">' + (last ? 'See the final results' : 'On to round ' + (state.r + 2)) + '</button>' +
+    (last ? '' : '<button class="btn btn-ghost" id="finish-btn">Finish here and see the results</button>') +
+    '</div></div>';
+  document.getElementById('cont-btn').addEventListener('click', function () {
+    if (last) { showReport(); }
+    else { state.r++; state.q = 0; state.turn = 0; save(); showRoundIntro(); }
+  });
+  var fin = document.getElementById('finish-btn');
+  if (fin) { fin.addEventListener('click', showReport); }
+}
+
+/* ---------- final report ---------- */
+function buildStats() {
+  var unanimous = [], majorities = [], ties = [], answered = 0;
+  var perPlayer = {};
+  state.players.forEach(function (ini) { perPlayer[ini] = []; });
+  for (var r = 0; r < ROUNDS.length; r++) {
+    for (var q = 0; q < ROUNDS[r].qs.length; q++) {
+      var id = qid(r, q);
+      var v = state.votes[id];
+      if (!v) { continue; }
+      var opts = ROUNDS[r].qs[q];
+      var side0 = [], side1 = [];
+      state.players.forEach(function (ini) {
+        if (v[ini] === 0) { side0.push(ini); perPlayer[ini].push(opts[0]); }
+        else if (v[ini] === 1) { side1.push(ini); perPlayer[ini].push(opts[1]); }
+      });
+      var total = side0.length + side1.length;
+      if (total === 0) { continue; }
+      answered++;
+      if ((side0.length === total || side1.length === total) && total >= 2) {
+        unanimous.push(side0.length ? opts[0] : opts[1]);
+      } else if (side0.length === side1.length) {
+        ties.push(opts[0] + ' / ' + opts[1]);
+      } else {
+        majorities.push(side0.length > side1.length ? opts[0] : opts[1]);
+      }
+    }
+  }
+  return { unanimous: unanimous, majorities: majorities, ties: ties, answered: answered, perPlayer: perPlayer };
+}
+
+function markDone() {
+  try {
+    var a = JSON.parse(localStorage.getItem(DONE_KEY) || '[]');
+    if (a.indexOf(DONE_ID) === -1) { a.push(DONE_ID); localStorage.setItem(DONE_KEY, JSON.stringify(a)); }
+  } catch (e) {}
+}
+
+function showReport() {
+  var s = buildStats();
+  markDone();
+  cheer.style.display = 'none';
+  var pct = s.answered ? Math.round(s.unanimous.length / s.answered * 100) : 0;
+  var headline, subline;
+  if (pct >= 50) { headline = 'One very agreeable Base'; subline = 'You agreed completely on ' + s.unanimous.length + ' of ' + s.answered + ' questions. Suspiciously harmonious.'; }
+  else if (pct >= 25) { headline = 'Plenty in common'; subline = s.unanimous.length + ' unanimous answers out of ' + s.answered + ', with healthy disagreement everywhere else.'; }
+  else if (s.answered > 0) { headline = 'A Base of independent thinkers'; subline = 'Only ' + s.unanimous.length + ' unanimous ' + (s.unanimous.length === 1 ? 'answer' : 'answers') + ' out of ' + s.answered + '. Between you, every option is covered.'; }
+  else { headline = 'A quiet session'; subline = 'No votes recorded this time, and that is completely fine.'; }
+
+  var html = '<div class="card accent"><div class="report-hero">' +
+    '<div class="match-ring" style="--pct:' + pct + ';"><span class="match-num">' + pct + '%</span></div>' +
+    '<p class="report-headline">' + headline + '</p>' +
+    '<p class="report-subline">' + subline + '</p>' +
+    '</div>';
+  if (s.unanimous.length) {
+    html += '<p class="report-section-label">Official Base policy (unanimous)</p><div class="chip-cloud">';
+    s.unanimous.forEach(function (m) { html += '<span class="cloud-chip gold">' + esc(m) + '</span>'; });
+    html += '</div>';
+  }
+  if (s.majorities.length) {
+    html += '<p class="report-section-label">The Base leans towards</p><div class="chip-cloud">';
+    s.majorities.forEach(function (m) { html += '<span class="cloud-chip">' + esc(m) + '</span>'; });
+    html += '</div>';
+  }
+  if (s.ties.length) {
+    html += '<p class="report-section-label">Still undecided (dead heats)</p><div class="chip-cloud">';
+    s.ties.forEach(function (t) { html += '<span class="cloud-chip differ">' + esc(t) + '</span>'; });
+    html += '</div>';
+    html += '<p class="report-note">The Base contains multitudes. These ones stay gloriously unresolved.</p>';
+  }
+  html += '</div>';
+
+  html += '<div class="card" style="text-align:center;">' +
+    '<p class="stage-sub" style="margin-bottom:0.75rem;">If the room agrees, you can send the full voting record to Jay. It opens an email, and nothing sends until someone presses send.</p>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-primary" id="send-btn">Send results to Jay</button>' +
+    '<button class="btn btn-outline" id="again-btn">New vote, new voters</button>' +
+    '<a class="btn btn-ghost" href="index.html" style="text-decoration:underline; display:inline-block; padding:0.55rem 1rem;">Back to the Welcome Zone</a>' +
+    '</div></div>';
+  stage.innerHTML = html;
+  document.getElementById('send-btn').addEventListener('click', function () { sendReport(s); });
+  document.getElementById('again-btn').addEventListener('click', function () { clearSave(); selected = []; showStart(); });
+}
+
+function sendReport(s) {
+  var lines = 'BASE 6 - THIS OR THAT, WHOLE-BASE VOTE\n\n';
+  lines += 'Voters: ' + state.players.join(', ') + '\n';
+  lines += 'Date: ' + new Date().toLocaleDateString('en-GB') + '\n';
+  lines += 'Questions with votes: ' + s.answered + '\n\n';
+  lines += 'UNANIMOUS:\n' + (s.unanimous.length ? s.unanimous.join(', ') : 'none') + '\n\n';
+  lines += 'MAJORITY PICKS:\n' + (s.majorities.length ? s.majorities.join(', ') : 'none') + '\n\n';
+  lines += 'DEAD HEATS:\n' + (s.ties.length ? s.ties.join('; ') : 'none') + '\n\n';
+  lines += 'EACH VOTER\u0027S PICKS:\n';
+  state.players.forEach(function (ini) {
+    var picks = s.perPlayer[ini] || [];
+    lines += ini + ': ' + (picks.length ? picks.join(', ') : 'sat everything out, which is fine') + '\n';
+  });
+  lines += '\n-\nSent automatically from Base 6';
+  var subject = 'Base 6 - This or That vote - ' + state.players.join(' ');
+  var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL +
+    '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines);
+  /* Gmail compose URLs fall over past roughly 8000 characters, so a very full
+     session falls back to the summary without the per-voter breakdown. */
+  if (url.length > 7500) {
+    var shortLines = lines.split('EACH VOTER')[0] +
+      'The per-voter breakdown was too long for an email link. It is on the results screen on the device.' +
+      '\n\n-\nSent automatically from Base 6';
+    url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL +
+      '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(shortLines);
+  }
+  window.open(url, '_blank');
+}
+
+showStart();
+</script>
+
+</body>
+</html>
