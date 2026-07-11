@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>The Welcome Zone &middot; Week 7 &middot; Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  /* -- CURVED BANNER, welcome zone purple -- */
+  .site-header { position: relative; background-color: #7b5ea7; padding: 2.5rem 2rem 3.25rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 30px; right: -50px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .site-header .header-inner { position: relative; z-index: 2; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.85; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .site-logo { display: block; width: 80px; height: 80px; margin: 0 auto 0.9rem; animation: b6-bob 4s ease-in-out infinite; }
+  @keyframes b6-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  .week-label { font-size: 0.85rem; font-weight: 700; color: #e6ddf2; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .site-header h1 { font-size: 2.5rem; font-weight: 700; color: #fef8f4; letter-spacing: 0.02em; line-height: 1.2; }
+  .site-header .header-sub { font-size: 1.1rem; color: #e6ddf2; margin-top: 0.5rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 40px; z-index: 2; }
+
+  .main { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* -- WELCOME CARD for new students -- */
+  .hello-card { background: #ffffff; border: 2px solid #7b5ea7; border-radius: 16px; padding: 1.4rem 1.6rem; margin-bottom: 2.25rem; box-shadow: 0 4px 14px rgba(123,94,167,0.12); }
+  .hello-card h2 { font-size: 1.3rem; color: #5c4383; margin-bottom: 0.5rem; }
+  .hello-card p { font-size: 1rem; line-height: 1.6; color: #333; }
+  .hello-card p + p { margin-top: 0.6rem; }
+
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7b5ea7; margin-bottom: 0.4rem; }
+  .section-sub { font-size: 0.9rem; color: #555; line-height: 1.55; margin-bottom: 1.25rem; }
+  .zone-section { margin-bottom: 2.75rem; }
+
+  /* -- ACTIVITY TILES -- */
+  .tiles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem; }
+  .tile { position: relative; background: #ffffff; border: 2px solid var(--c); border-radius: 16px; padding: 1.5rem 1.5rem 1.25rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 0.45rem; transition: transform 0.18s ease, box-shadow 0.18s ease; overflow: hidden; }
+  .tile::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--c); }
+  .tile:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: 0 10px 26px var(--shadow); }
+  .tile-badge { width: 56px; height: 56px; border-radius: 50%; background: var(--bg); border: 2px solid var(--c); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; line-height: 1; margin-bottom: 0.4rem; }
+  .tile-subject { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c); }
+  .tile-title { font-size: 1.25rem; font-weight: 700; color: var(--c); line-height: 1.3; }
+  .tile-desc { font-size: 0.92rem; color: #444; line-height: 1.55; flex-grow: 1; }
+  .tile-go { margin-top: 0.7rem; font-size: 0.85rem; font-weight: 700; color: var(--c); display: inline-flex; align-items: center; gap: 0.3rem; }
+  .tile-go .arrow { transition: transform 0.18s ease; }
+  .tile:hover .tile-go .arrow { transform: translateX(4px); }
+  .tile-note { display: inline-block; background: var(--bg); border: 1.5px solid var(--c); color: var(--c); font-size: 0.74rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; width: fit-content; }
+  .tile-tick { position: absolute; top: 14px; right: 14px; display: none; width: 26px; height: 26px; border-radius: 50%; background: var(--c); color: #ffffff; font-size: 0.95rem; font-weight: 700; align-items: center; justify-content: center; }
+  .tile.is-done .tile-tick { display: inline-flex; }
+
+  /* -- SEPTEMBER TEASER STRIP -- */
+  .teaser { background: linear-gradient(135deg, #2e6b45, #1c4a2e); border-radius: 16px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; color: #e9f5ec; box-shadow: 0 6px 18px rgba(28,74,46,0.3); display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .teaser-dino { font-size: 2.4rem; line-height: 1; }
+  .teaser-text { flex: 1; min-width: 220px; }
+  .teaser-text h2 { font-size: 1.15rem; color: #ffffff; margin-bottom: 0.3rem; }
+  .teaser-text p { font-size: 0.92rem; line-height: 1.55; color: #d3e8d9; }
+
+  .cheer { text-align: center; margin-top: 2rem; font-size: 1.05rem; font-weight: 700; color: #7b5ea7; }
+
+  a:focus-visible, button:focus-visible { outline: 3px solid #ef7724; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile, .tile-go .arrow { transition: none; }
+    .tile:hover { transform: none; }
+    .site-logo { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="header-back" href="../index.html">&larr; Week 7</a>
+  <div class="header-inner">
+    <img class="site-logo" src="../../logo.png" alt="Base 6 logo, a stylised orange bridge" onerror="this.style.display='none'">
+    <p class="week-label">Week 7 &middot; Shuffle up days</p>
+    <h1>The Welcome Zone</h1>
+    <p class="header-sub">For new faces, familiar faces, and everyone in between.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+
+  <!-- NOTE: no avatar picker on this page on purpose. New students are not in the
+       initials list yet, and their first visit should be completely demand-free.
+       Each activity just asks for initials in its own form instead. -->
+
+  <div class="hello-card">
+    <h2>If you are new here: welcome to Base 6</h2>
+    <p>This is our little corner of the school, and this page is yours to explore. Everything on it is an invitation, not a job. You can do things in any order, stop halfway, or just watch someone else have a go. That all counts.</p>
+    <p>If you have been here a while: these activities are for playing together, so grab a new face and show them how the Base does things. Jay will be around the whole time.</p>
+  </div>
+
+  <div class="zone-section">
+    <p class="section-label">Getting to know each other</p>
+    <p class="section-sub">No right answers, no wrong answers, just answers. Made for the whole room, but a smaller huddle works too.</p>
+    <div class="tiles-grid">
+
+      <!-- EDIT: build this-or-that.html next, then this tile just works -->
+      <a class="tile" data-done-id="this-or-that" style="--c:#7b5ea7; --bg:#efe9f6; --shadow:rgba(123,94,167,0.22);" href="this-or-that.html">
+        <span class="tile-tick">&#10003;</span>
+        <span class="tile-badge">&#128256;</span>
+        <span class="tile-subject">Whole-Base vote &middot; a whole session</span>
+        <span class="tile-title">This or That</span>
+        <span class="tile-desc">The device goes round everyone in the room. Vote in secret, then see the reveal: unanimous, majority or dead heat. Eight rounds, chat breaks in between, and the Base's official answers at the end.</span>
+        <span class="tile-go">Start the vote <span class="arrow">&#8594;</span></span>
+      </a>
+
+    </div>
+  </div>
+
+  <div class="zone-section">
+    <p class="section-label">September sneak peek</p>
+
+    <div class="teaser">
+      <span class="teaser-dino" aria-hidden="true">&#129429;</span>
+      <div class="teaser-text">
+        <h2>Next project's big question: what if dinosaurs still existed?</h2>
+        <p>In September the Base takes on a whole new project, and your ideas this week become part of it. Whatever you think up here, Jay will actually use. No pressure, just imagination.</p>
+      </div>
+    </div>
+
+    <div class="tiles-grid">
+
+      <!-- EDIT: build would-it-work.html, dino-dossier.html and question-wall.html,
+           then these tiles just work. Each activity should mark completion in the
+           base6Done-week7-shuffle key (see the tick script below) and can grant the
+           'dino' bonus cosmetic via base6Avatar-week7 wardrobe.unlocked. -->
+
+      <a class="tile" data-done-id="would-it-work" style="--c:#2e8b57; --bg:#e6f3ec; --shadow:rgba(46,139,87,0.22);" href="would-it-work.html">
+        <span class="tile-tick">&#10003;</span>
+        <span class="tile-badge">&#129430;</span>
+        <span class="tile-subject">Quick-fire rounds &middot; 30 to 45 minutes</span>
+        <span class="tile-title">Would It Work?</span>
+        <span class="tile-note">Unlocks a dino friend</span>
+        <span class="tile-desc">A T. rex traffic warden. A pterodactyl postal service. A diplodocus in the big Tesco. Swipe yes, no or maybe, and tell us why if you fancy.</span>
+        <span class="tile-go">Start swiping <span class="arrow">&#8594;</span></span>
+      </a>
+
+      <a class="tile" data-done-id="dino-dossier" style="--c:#007291; --bg:#e6f5f8; --shadow:rgba(0,114,145,0.22);" href="dino-dossier.html">
+        <span class="tile-tick">&#10003;</span>
+        <span class="tile-badge">&#128203;</span>
+        <span class="tile-subject">Builder &middot; 30 to 45 minutes</span>
+        <span class="tile-title">Dino Dossier</span>
+        <span class="tile-desc">Pick a dinosaur and imagine its modern life. Where would it live? What would it eat now? Would we farm them, fear them or befriend them? Build its file card.</span>
+        <span class="tile-go">Open a dossier <span class="arrow">&#8594;</span></span>
+      </a>
+
+      <a class="tile" data-done-id="question-wall" style="--c:#ef7724; --bg:#fdeee0; --shadow:rgba(239,119,36,0.24);" href="question-wall.html">
+        <span class="tile-tick">&#10003;</span>
+        <span class="tile-badge">&#128173;</span>
+        <span class="tile-subject">No wrong answers &middot; any length</span>
+        <span class="tile-title">The Question Wall</span>
+        <span class="tile-desc">What would YOU want to find out if dinosaurs were still around? Stick your questions on the wall. Questions only, no answers needed. The best projects start here.</span>
+        <span class="tile-go">Add a question <span class="arrow">&#8594;</span></span>
+      </a>
+
+    </div>
+  </div>
+
+  <p class="cheer">However you join in today, it is good to have you in the Base.</p>
+
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+/* Completion ticks: each activity page pushes its id into base6Done-week7-shuffle
+   (an array of ids) when finished, e.g.
+     var k='base6Done-week7-shuffle';
+     try { var a=JSON.parse(localStorage.getItem(k)||'[]');
+           if(a.indexOf('would-it-work')===-1){a.push('would-it-work');
+           localStorage.setItem(k,JSON.stringify(a));} } catch(e){}
+   This hub reads that list and shows a tick on finished tiles. */
+(function () {
+  var done = [];
+  try { done = JSON.parse(localStorage.getItem('base6Done-week7-shuffle') || '[]'); } catch (e) { done = []; }
+  if (!done || !done.length) { return; }
+  document.querySelectorAll('.tile[data-done-id]').forEach(function (tile) {
+    if (done.indexOf(tile.getAttribute('data-done-id')) !== -1) { tile.classList.add('is-done'); }
+  });
+})();
+</script>
+
+</body>
+</html>
