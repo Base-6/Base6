@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/Base6/favicon.ico">
+<title>The Question Wall &middot; The Welcome Zone &middot; Base 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Atkinson Hyperlegible', sans-serif; background-color: #fef8f4; color: #1a1a1a; min-height: 100vh; }
+
+  .site-header { position: relative; background-color: #ef7724; padding: 2rem 2rem 2.75rem; text-align: center; overflow: hidden; }
+  .site-header::before { content: ""; position: absolute; top: -60px; left: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+  .site-header::after { content: ""; position: absolute; bottom: 26px; right: -50px; width: 140px; height: 140px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .header-back { position: absolute; top: 1rem; left: 1.25rem; z-index: 3; color: #fef8f4; font-size: 0.9rem; font-weight: 700; text-decoration: none; opacity: 0.9; }
+  .header-back:hover { opacity: 1; text-decoration: underline; }
+  .header-inner { position: relative; z-index: 2; }
+  .eyebrow { font-size: 0.8rem; font-weight: 700; color: #ffe4cd; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .site-header h1 { font-size: 2.1rem; font-weight: 700; color: #fef8f4; line-height: 1.2; }
+  .header-sub { font-size: 1rem; color: #ffe4cd; margin-top: 0.4rem; }
+  .header-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 34px; z-index: 2; }
+
+  .main { max-width: 860px; margin: 0 auto; padding: 1.75rem 1.25rem 4rem; }
+
+  .card { background: #ffffff; border: 2px solid #e0d8d0; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .card.accent { border-color: #ef7724; box-shadow: 0 4px 14px rgba(239,119,36,0.12); }
+
+  .stage-title { font-size: 1.3rem; font-weight: 700; color: #c05a10; margin-bottom: 0.5rem; line-height: 1.3; }
+  .stage-sub { font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 1rem; }
+  .stage-sub:last-child { margin-bottom: 0; }
+
+  .btn { font-family: inherit; font-weight: 700; border-radius: 12px; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .btn-primary { font-size: 1rem; padding: 0.75rem 1.5rem; background: #ef7724; color: #ffffff; border: 2px solid #ef7724; }
+  .btn-primary:hover { background: #c05a10; border-color: #c05a10; }
+  .btn-primary:disabled { background: #ccc; border-color: #ccc; cursor: default; }
+  .btn-ghost { font-size: 0.85rem; padding: 0.55rem 1rem; background: none; color: #888; border: none; text-decoration: underline; }
+  .btn-ghost:hover { color: #555; }
+  .btn-outline { font-size: 0.9rem; padding: 0.6rem 1.1rem; background: #ffffff; color: #ef7724; border: 2px solid #ef7724; }
+  .btn-outline:hover { background: #fff3e8; }
+  .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; align-items: center; }
+
+  .name-field { margin-bottom: 0.9rem; text-align: left; }
+  .name-field label { display: block; font-size: 0.82rem; font-weight: 700; color: #555; margin-bottom: 0.3rem; }
+  .name-field input { width: 100%; padding: 0.7rem 0.9rem; font-family: inherit; font-size: 1rem; border: 1.5px solid #e0d8d0; border-radius: 10px; background: #ffffff; color: #1a1a1a; outline: none; }
+  .name-field input:focus { border-color: #ef7724; }
+
+  /* the composer */
+  .composer { border-color: #ef7724; }
+  .composer-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+  .composer-who { font-size: 0.8rem; font-weight: 700; color: #888; }
+  .composer-who strong { color: #c05a10; }
+  .q-box { width: 100%; min-height: 84px; padding: 0.8rem 1rem; font-family: inherit; font-size: 1rem; border: 2px solid #e0d8d0; border-radius: 12px; background: #fffdf9; color: #1a1a1a; outline: none; resize: vertical; line-height: 1.55; }
+  .q-box:focus { border-color: #ef7724; }
+  .q-meta { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; margin-top: 0.6rem; flex-wrap: wrap; }
+  .cat-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .cat-btn { font-family: inherit; font-size: 0.78rem; font-weight: 700; color: #888; background: #ffffff; border: 1.5px solid #e0d8d0; border-radius: 999px; padding: 0.28rem 0.7rem; cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s; }
+  .cat-btn:hover { border-color: var(--cc); color: var(--cc); }
+  .cat-btn.sel { border-color: var(--cc); background: var(--cc); color: #ffffff; }
+
+  /* prompt cards */
+  .prompt-strip { background: #fff7f0; border: 1.5px dashed #f3c9a4; border-radius: 12px; padding: 0.9rem 1rem; margin-bottom: 1rem; text-align: center; }
+  .prompt-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #c05a10; margin-bottom: 0.35rem; }
+  .prompt-text { font-size: 0.98rem; color: #444; line-height: 1.5; margin-bottom: 0.6rem; }
+  .prompt-btns { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+  .prompt-mini { font-family: inherit; font-size: 0.8rem; font-weight: 700; color: #c05a10; background: #ffffff; border: 1.5px solid #f3c9a4; border-radius: 999px; padding: 0.3rem 0.8rem; cursor: pointer; }
+  .prompt-mini:hover { background: #fff3e8; }
+
+  /* the wall */
+  .wall-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+  .wall-title { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ef7724; }
+  .wall-count { font-size: 0.85rem; color: #888; font-weight: 700; }
+  .filter-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .filter-btn { font-family: inherit; font-size: 0.78rem; font-weight: 700; color: #888; background: #ffffff; border: 1.5px solid #e0d8d0; border-radius: 999px; padding: 0.28rem 0.75rem; cursor: pointer; }
+  .filter-btn.sel { border-color: #ef7724; background: #fff3e8; color: #c05a10; }
+
+  .wall { column-count: 2; column-gap: 1rem; }
+  @media (max-width: 620px) { .wall { column-count: 1; } }
+  .note { break-inside: avoid; display: inline-block; width: 100%; background: var(--nc, #fff9e6); border: 1.5px solid var(--nb, #f0dfa8); border-radius: 12px; padding: 0.95rem 1rem; margin-bottom: 1rem; box-shadow: 0 3px 10px rgba(0,0,0,0.06); transform: rotate(var(--rot, 0deg)); }
+  .note-q { font-size: 1rem; font-weight: 700; color: #2a2a2a; line-height: 1.5; margin-bottom: 0.6rem; }
+  .note-foot { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .note-by { font-size: 0.75rem; font-weight: 700; color: #8a7a5a; }
+  .note-cat { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #ffffff; background: var(--cc, #888); border-radius: 999px; padding: 2px 8px; }
+  .note-up { font-family: inherit; font-size: 0.78rem; font-weight: 700; color: #8a7a5a; background: rgba(255,255,255,0.7); border: 1.5px solid rgba(0,0,0,0.09); border-radius: 999px; padding: 0.2rem 0.6rem; cursor: pointer; }
+  .note-up:hover { background: #ffffff; }
+  .note-up.mine { border-color: #ef7724; color: #c05a10; background: #fff3e8; }
+
+  .wall-empty { text-align: center; padding: 2rem 1rem; color: #888; font-size: 0.95rem; line-height: 1.6; }
+  .wall-empty .big { font-size: 2.4rem; display: block; margin-bottom: 0.5rem; }
+
+  .toast { position: fixed; left: 50%; bottom: 1.2rem; transform: translateX(-50%); z-index: 1100; background: #c05a10; color: #fef8f4; font-family: inherit; font-size: 0.9rem; font-weight: 700; padding: 0.7rem 1.1rem; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.22); max-width: 90vw; }
+  .status { font-size: 0.85rem; color: #888; text-align: center; padding: 1rem; }
+  .status.err { color: #c0392b; }
+
+  .cheer { text-align: center; margin-top: 1.75rem; font-size: 1rem; font-weight: 700; color: #ef7724; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #007291; outline-offset: 2px; }
+  .header-back:focus-visible { outline: 3px solid #fef8f4; }
+  footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #888; border-top: 1px solid #e0d8d0; }
+
+  @media (prefers-reduced-motion: reduce) { .note { transform: none; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="header-back" href="index.html">&larr; Welcome Zone</a>
+  <div class="header-inner">
+    <p class="eyebrow">The Welcome Zone &middot; September sneak peek</p>
+    <h1>The Question Wall</h1>
+    <p class="header-sub">Questions only. No answers required. Ever.</p>
+  </div>
+  <svg class="header-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,20 C150,40 350,0 600,18 C850,36 1050,4 1200,20 L1200,40 L0,40 Z" fill="#fef8f4"></path>
+  </svg>
+</header>
+
+<main class="main">
+  <div id="stage"></div>
+  <p class="cheer" id="cheer" style="display:none;">The best projects start with someone asking something nobody thought of.</p>
+</main>
+
+<footer>
+  Base 6 &middot; Chilton Bridge School
+</footer>
+
+<script>
+/* ============================================================
+   THE QUESTION WALL
+   Students post questions about the September dinosaur project.
+   The wall is SHARED: everyone in the Base sees everyone else's
+   questions build up across both shuffle days. Questions can be
+   upvoted ("I want to know that too"). No answers anywhere.
+   Jay can export the whole wall to Gmail from the bottom.
+   ============================================================ */
+
+var TEACHER_EMAIL = 'jay.raine@chiltonbridgeschool.co.uk';
+var WALL_KEY = 'wall:dinosaurs:september';   /* shared across everyone */
+var MINE_KEY = 'base6QuestionWall-mine';     /* local: my votes and my ids */
+var DONE_KEY = 'base6Done-week7-shuffle';
+var DONE_ID = 'question-wall';
+var AVATAR_KEY = 'base6Avatar-week7';
+var BONUS_ITEM = 'dino';
+
+var CATS = [
+  { id: 'science',  label: 'Science',  color: '#2e8b57' },
+  { id: 'ethics',   label: 'Right and wrong', color: '#7b5ea7' },
+  { id: 'everyday', label: 'Everyday life',  color: '#007291' },
+  { id: 'wild',     label: 'Wild ideas',     color: '#ef7724' }
+];
+function catById(id) {
+  for (var i = 0; i < CATS.length; i++) { if (CATS[i].id === id) { return CATS[i]; } }
+  return { id: '', label: '', color: '#888' };
+}
+
+/* Sticky note colours, cycled by index so the wall looks like a real one. */
+var NOTE_COLOURS = [
+  { bg: '#fff9e6', br: '#f0dfa8' },
+  { bg: '#e8f6ff', br: '#b6dcf0' },
+  { bg: '#fdeaf1', br: '#f3bfd2' },
+  { bg: '#eaf7ec', br: '#b9dfc0' },
+  { bg: '#f2ecfb', br: '#cdbde9' }
+];
+
+/* Prompt cards: shown one at a time, for anyone stuck. Tapping one drops it
+   into the box as a starting point, which they can then rewrite or wipe. */
+var PROMPTS = [
+  'What would you want to know before you got anywhere near one?',
+  'What is the question nobody has thought to ask yet?',
+  'What would worry you, if this actually happened?',
+  'What would you want to try, just to see what happened?',
+  'What would be unfair about it?',
+  'What would change about your ordinary day?',
+  'What would scientists want to know that ordinary people would not?',
+  'What is something you would only find out by living with one?',
+  'What would the dinosaurs want to ask us?',
+  'What would go wrong first?'
+];
+
+var STARTERS = ['How would...', 'What if...', 'Why would...', 'Who decides...', 'Could we...', 'Should we...'];
+
+/* ---------- state ---------- */
+var me = '';           /* initials */
+var wall = [];         /* the shared list */
+var mine = { votes: [], ids: [] };
+var draftCat = '';
+var filter = 'all';
+var promptIdx = 0;
+var loadFailed = false;
+
+var stage = document.getElementById('stage');
+var cheer = document.getElementById('cheer');
+
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+function loadMine() {
+  try { mine = JSON.parse(localStorage.getItem(MINE_KEY) || 'null') || { votes: [], ids: [] }; }
+  catch (e) { mine = { votes: [], ids: [] }; }
+  if (!Array.isArray(mine.votes)) { mine.votes = []; }
+  if (!Array.isArray(mine.ids)) { mine.ids = []; }
+}
+function saveMine() { try { localStorage.setItem(MINE_KEY, JSON.stringify(mine)); } catch (e) {} }
+
+/* The wall lives in shared storage so the whole Base sees the same wall.
+   If storage is unavailable, the page still works, just for this device. */
+function loadWall(cb) {
+  if (!window.storage || !window.storage.get) { loadFailed = true; wall = []; cb(); return; }
+  window.storage.get(WALL_KEY, true).then(function (res) {
+    try { wall = res && res.value ? JSON.parse(res.value) : []; } catch (e) { wall = []; }
+    if (!Array.isArray(wall)) { wall = []; }
+    cb();
+  }).catch(function () { wall = []; cb(); });
+}
+function saveWall(cb) {
+  if (!window.storage || !window.storage.set) { loadFailed = true; if (cb) { cb(); } return; }
+  window.storage.set(WALL_KEY, JSON.stringify(wall), true).then(function () {
+    if (cb) { cb(); }
+  }).catch(function () { loadFailed = true; if (cb) { cb(); } });
+}
+
+function markDone() {
+  try {
+    var a = JSON.parse(localStorage.getItem(DONE_KEY) || '[]');
+    if (a.indexOf(DONE_ID) === -1) { a.push(DONE_ID); localStorage.setItem(DONE_KEY, JSON.stringify(a)); }
+  } catch (e) {}
+}
+function grantBonus() {
+  try {
+    var w = JSON.parse(localStorage.getItem(AVATAR_KEY) || 'null') || { worn: {}, seen: [] };
+    if (!Array.isArray(w.unlocked)) { w.unlocked = []; }
+    if (w.unlocked.indexOf(BONUS_ITEM) === -1) {
+      w.unlocked.push(BONUS_ITEM);
+      if (Array.isArray(w.seen)) {
+        var i = w.seen.indexOf(BONUS_ITEM);
+        if (i !== -1) { w.seen.splice(i, 1); }
+      }
+      localStorage.setItem(AVATAR_KEY, JSON.stringify(w));
+    }
+  } catch (e) {}
+}
+
+var toastTimer = null;
+function toast(msg) {
+  var t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { if (t.parentNode) { t.parentNode.removeChild(t); } }, 3500);
+}
+
+/* ---------- entry ---------- */
+function showStart() {
+  cheer.style.display = 'none';
+  stage.innerHTML =
+    '<div class="card accent" style="text-align:center;">' +
+    '<span style="font-size:3rem; line-height:1; display:block; margin-bottom:0.5rem;" aria-hidden="true">&#128173;</span>' +
+    '<h2 class="stage-title">What would you want to know?</h2>' +
+    '<p class="stage-sub">If dinosaurs still existed, there would be an awful lot to find out. This wall is for the questions, not the answers. Nobody has to answer anything, today or ever.</p>' +
+    '<p class="stage-sub">Everyone in the Base posts to the same wall, so you will see each other\u0027s questions appear. In September, these become the actual project. That is not a nice thing Jay is saying, it is what will literally happen.</p>' +
+    '<div class="name-field"><label for="name-input">Your initials</label>' +
+    '<input type="text" id="name-input" maxlength="20" placeholder="Type initials here"></div>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-primary" id="go-btn">Go to the wall</button>' +
+    '<button class="btn btn-ghost" id="lurk-btn">Just look, do not post</button>' +
+    '</div></div>';
+  try {
+    var profile = JSON.parse(localStorage.getItem('base6Profile') || 'null');
+    if (profile && profile.initials) { document.getElementById('name-input').value = profile.initials.toUpperCase(); }
+  } catch (e) {}
+  var input = document.getElementById('name-input');
+  document.getElementById('go-btn').addEventListener('click', function () {
+    var n = input.value.trim();
+    if (!n) { input.style.borderColor = '#ef7724'; input.focus(); return; }
+    me = n.toUpperCase();
+    showLoading();
+  });
+  document.getElementById('lurk-btn').addEventListener('click', function () { me = ''; showLoading(); });
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { document.getElementById('go-btn').click(); } });
+}
+
+function showLoading() {
+  stage.innerHTML = '<div class="card"><p class="status">Fetching the wall...</p></div>';
+  loadMine();
+  loadWall(function () { showWall(); });
+}
+
+/* ---------- the wall screen ---------- */
+function showWall() {
+  cheer.style.display = 'block';
+  var html = '';
+
+  if (me) {
+    html += composerHtml();
+  } else {
+    html += '<div class="card" style="text-align:center;">' +
+      '<p class="stage-sub" style="margin-bottom:0.75rem;">You are just looking, which is completely fine. Reading other people\u0027s questions is a real way to join in.</p>' +
+      '<div class="btn-row"><button class="btn btn-outline" id="join-btn">Actually, I want to post one</button></div>' +
+      '</div>';
+  }
+
+  html += '<div class="card">' + wallHtml() + '</div>';
+
+  html += '<div class="card" style="text-align:center;">' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-outline" id="refresh-btn">Refresh the wall</button>' +
+    '<button class="btn btn-outline" id="send-btn">Send the wall to Jay</button>' +
+    '<a class="btn btn-ghost" href="index.html" style="text-decoration:underline; display:inline-block; padding:0.55rem 1rem;">Back to the Welcome Zone</a>' +
+    '</div>' +
+    (loadFailed ? '<p class="status err" style="margin-top:0.75rem;">The shared wall is not reachable right now, so questions are only being kept on this device. Jay can still be sent them.</p>' : '') +
+    '</div>';
+
+  stage.innerHTML = html;
+  wireWall();
+}
+
+function composerHtml() {
+  var cats = '';
+  CATS.forEach(function (c) {
+    cats += '<button class="cat-btn' + (draftCat === c.id ? ' sel' : '') + '" data-c="' + c.id + '" style="--cc:' + c.color + ';">' + esc(c.label) + '</button>';
+  });
+  var starters = '';
+  STARTERS.forEach(function (s) {
+    starters += '<button class="prompt-mini" data-s="' + esc(s) + '">' + esc(s) + '</button>';
+  });
+  return '<div class="card accent composer">' +
+    '<div class="composer-head">' +
+    '<span class="composer-who">Posting as <strong>' + esc(me) + '</strong></span>' +
+    '</div>' +
+    '<div class="prompt-strip">' +
+    '<p class="prompt-label">Stuck? Try this one</p>' +
+    '<p class="prompt-text" id="prompt-text">' + esc(PROMPTS[promptIdx]) + '</p>' +
+    '<div class="prompt-btns">' +
+    '<button class="prompt-mini" id="prompt-next">Give me a different one</button>' +
+    starters +
+    '</div></div>' +
+    '<textarea class="q-box" id="q-box" placeholder="Type your question here. Anything at all."></textarea>' +
+    '<div class="q-meta">' +
+    '<div class="cat-row">' + cats + '</div>' +
+    '<button class="btn btn-primary" id="post-btn">Stick it on the wall</button>' +
+    '</div>' +
+    '<p class="stage-sub" style="margin-top:0.75rem; margin-bottom:0; font-size:0.85rem;">Post as many as you like. There is no limit and no best answer.</p>' +
+    '</div>';
+}
+
+function wallHtml() {
+  var list = wall.slice();
+  if (filter !== 'all') { list = list.filter(function (n) { return n.cat === filter; }); }
+  list.sort(function (a, b) { return (b.up || 0) - (a.up || 0) || (b.ts || 0) - (a.ts || 0); });
+
+  var filters = '<button class="filter-btn' + (filter === 'all' ? ' sel' : '') + '" data-f="all">Everything</button>';
+  CATS.forEach(function (c) {
+    filters += '<button class="filter-btn' + (filter === c.id ? ' sel' : '') + '" data-f="' + c.id + '">' + esc(c.label) + '</button>';
+  });
+
+  var head = '<div class="wall-head">' +
+    '<span class="wall-title">The wall so far</span>' +
+    '<span class="wall-count">' + wall.length + (wall.length === 1 ? ' question' : ' questions') + ' from the Base</span>' +
+    '</div>' + '<div class="filter-row">' + filters + '</div>';
+
+  if (!list.length) {
+    return head + '<div class="wall-empty"><span class="big" aria-hidden="true">&#129429;</span>' +
+      (wall.length ? 'Nothing in that category yet. Try another, or add the first one.'
+                   : 'The wall is completely empty. Somebody has to go first, and it might as well be you.') +
+      '</div>';
+  }
+
+  var notes = '<div class="wall">';
+  list.forEach(function (n, i) {
+    var col = NOTE_COLOURS[i % NOTE_COLOURS.length];
+    var c = catById(n.cat);
+    var rot = ((i % 5) - 2) * 0.35;
+    var voted = mine.votes.indexOf(n.id) !== -1;
+    var isMine = mine.ids.indexOf(n.id) !== -1;
+    notes += '<div class="note" style="--nc:' + col.bg + '; --nb:' + col.br + '; --rot:' + rot + 'deg;">' +
+      '<p class="note-q">' + esc(n.q) + '</p>' +
+      '<div class="note-foot">' +
+      '<span class="note-by">' + esc(n.by || 'someone') + (isMine ? ' (you)' : '') + '</span>' +
+      (n.cat ? '<span class="note-cat" style="--cc:' + c.color + ';">' + esc(c.label) + '</span>' : '') +
+      '<button class="note-up' + (voted ? ' mine' : '') + '" data-id="' + esc(n.id) + '">' +
+      (voted ? '&#10003; me too' : '+ me too') + (n.up ? ' &middot; ' + n.up : '') + '</button>' +
+      '</div></div>';
+  });
+  notes += '</div>';
+  return head + notes;
+}
+
+function wireWall() {
+  var join = document.getElementById('join-btn');
+  if (join) { join.addEventListener('click', showStart); }
+
+  var pn = document.getElementById('prompt-next');
+  if (pn) {
+    pn.addEventListener('click', function () {
+      promptIdx = (promptIdx + 1) % PROMPTS.length;
+      document.getElementById('prompt-text').textContent = PROMPTS[promptIdx];
+    });
+  }
+
+  document.querySelectorAll('.prompt-mini[data-s]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var box = document.getElementById('q-box');
+      if (!box) { return; }
+      if (!box.value.trim()) { box.value = b.getAttribute('data-s') + ' '; }
+      box.focus();
+      box.selectionStart = box.selectionEnd = box.value.length;
+    });
+  });
+
+  document.querySelectorAll('.cat-btn').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var c = b.getAttribute('data-c');
+      draftCat = (draftCat === c) ? '' : c;
+      document.querySelectorAll('.cat-btn').forEach(function (x) { x.classList.remove('sel'); });
+      if (draftCat) { b.classList.add('sel'); }
+    });
+  });
+
+  var post = document.getElementById('post-btn');
+  if (post) { post.addEventListener('click', postQuestion); }
+
+  document.querySelectorAll('.filter-btn').forEach(function (b) {
+    b.addEventListener('click', function () { filter = b.getAttribute('data-f'); showWall(); });
+  });
+
+  document.querySelectorAll('.note-up').forEach(function (b) {
+    b.addEventListener('click', function () { upvote(b.getAttribute('data-id')); });
+  });
+
+  var ref = document.getElementById('refresh-btn');
+  if (ref) { ref.addEventListener('click', function () { showLoading(); }); }
+
+  var send = document.getElementById('send-btn');
+  if (send) { send.addEventListener('click', sendWall); }
+}
+
+function postQuestion() {
+  var box = document.getElementById('q-box');
+  var q = box.value.trim();
+  if (!q) { box.style.borderColor = '#ef7724'; box.focus(); return; }
+  var note = {
+    id: 'q' + Date.now() + Math.floor(Math.random() * 1000),
+    q: q,
+    by: me,
+    cat: draftCat,
+    up: 0,
+    ts: Date.now()
+  };
+  /* reload first so two people posting at once do not overwrite each other */
+  loadWall(function () {
+    wall.push(note);
+    mine.ids.push(note.id);
+    saveMine();
+    draftCat = '';
+    saveWall(function () {
+      markDone();
+      grantBonus();
+      toast('Stuck on the wall. Post another if you like.');
+      showWall();
+    });
+  });
+}
+
+function upvote(id) {
+  var voted = mine.votes.indexOf(id) !== -1;
+  loadWall(function () {
+    for (var i = 0; i < wall.length; i++) {
+      if (wall[i].id === id) {
+        wall[i].up = Math.max(0, (wall[i].up || 0) + (voted ? -1 : 1));
+        break;
+      }
+    }
+    if (voted) { mine.votes.splice(mine.votes.indexOf(id), 1); }
+    else { mine.votes.push(id); }
+    saveMine();
+    saveWall(function () { showWall(); });
+  });
+}
+
+function sendWall() {
+  if (!wall.length) { toast('The wall is empty. Add a question first.'); return; }
+  var list = wall.slice().sort(function (a, b) { return (b.up || 0) - (a.up || 0) || (a.ts || 0) - (b.ts || 0); });
+  var lines = 'BASE 6 - THE QUESTION WALL\n';
+  lines += 'What if dinosaurs still existed? Autumn 1 project questions.\n\n';
+  lines += 'Date: ' + new Date().toLocaleDateString('en-GB') + '\n';
+  lines += 'Questions on the wall: ' + wall.length + '\n\n';
+  CATS.forEach(function (c) {
+    var inCat = list.filter(function (n) { return n.cat === c.id; });
+    if (!inCat.length) { return; }
+    lines += c.label.toUpperCase() + '\n';
+    inCat.forEach(function (n) {
+      lines += '- ' + n.q + ' (' + (n.by || 'someone') + (n.up ? ', +' + n.up + ' me too' : '') + ')\n';
+    });
+    lines += '\n';
+  });
+  var uncat = list.filter(function (n) { return !n.cat; });
+  if (uncat.length) {
+    lines += 'UNCATEGORISED\n';
+    uncat.forEach(function (n) {
+      lines += '- ' + n.q + ' (' + (n.by || 'someone') + (n.up ? ', +' + n.up + ' me too' : '') + ')\n';
+    });
+    lines += '\n';
+  }
+  lines += '-\nSent automatically from Base 6';
+  var subject = 'Base 6 - Question Wall - dinosaurs - ' + wall.length + ' questions';
+  var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL +
+    '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines);
+  if (url.length > 7500) {
+    var top = list.slice(0, 25);
+    var shortLines = 'BASE 6 - THE QUESTION WALL\n\n' +
+      'Date: ' + new Date().toLocaleDateString('en-GB') + '\n' +
+      'Questions on the wall: ' + wall.length + ' (the wall was too long to email in full, here are the top 25 by votes)\n\n';
+    top.forEach(function (n) {
+      shortLines += '- ' + n.q + ' (' + (n.by || 'someone') + (n.up ? ', +' + n.up : '') + ')\n';
+    });
+    shortLines += '\n-\nSent automatically from Base 6';
+    url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + TEACHER_EMAIL +
+      '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(shortLines);
+  }
+  window.open(url, '_blank');
+}
+
+showStart();
+</script>
+
+</body>
+</html>
