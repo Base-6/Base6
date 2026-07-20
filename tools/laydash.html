@@ -351,6 +351,10 @@
       border-color: var(--icing);
       outline: none;
     }
+    .field-error {
+      border-color: #b0343c !important;
+      box-shadow: 0 0 0 3px rgba(176,52,60,0.14);
+    }
 
     button:focus-visible, input:focus-visible {
       outline: 3px solid var(--icing);
@@ -512,6 +516,12 @@
             <span id="receipt-ref"></span>
             <span id="receipt-date"></span>
           </div>
+          <div class="dashed-rule my-4"></div>
+          <div class="space-y-1.5 text-xs">
+            <div><span style="color: var(--cocoa-soft);">Name:</span> <span id="receipt-name" class="font-bold"></span></div>
+            <div><span style="color: var(--cocoa-soft);">Base room:</span> <span id="receipt-base-room" class="font-bold"></span></div>
+            <div><span style="color: var(--cocoa-soft);">School location:</span> <span id="receipt-school-location" class="font-bold"></span></div>
+          </div>
           <div id="receipt-items" class="space-y-2 mt-4"></div>
           <div class="dashed-rule my-4"></div>
           <div id="receipt-totals" class="space-y-1.5"></div>
@@ -548,7 +558,29 @@
       </button>
     </div>
     <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-4"></div>
-    <div class="p-5 space-y-2" style="border-top: 2px dashed var(--cream-deep); background: linear-gradient(to top, rgba(251,220,232,0.25), #fff);">
+    <div class="p-5 space-y-2 overflow-y-auto" style="max-height: 72vh; border-top: 2px dashed var(--cream-deep); background: linear-gradient(to top, rgba(251,220,232,0.25), #fff);">
+      <!-- Delivery details -->
+      <div class="pb-3">
+        <div class="flex items-center gap-2 mb-3">
+          <i data-lucide="map-pin" class="w-4 h-4" style="color: var(--icing-dark);" aria-hidden="true"></i>
+          <p class="text-sm font-bold">Who and where is this for?</p>
+        </div>
+        <div class="space-y-2">
+          <div>
+            <label for="customer-name" class="text-xs font-semibold">Name</label>
+            <input id="customer-name" type="text" autocomplete="name" class="search-input w-full px-3 py-2 rounded-xl text-sm mt-1.5" placeholder="Your name" required>
+          </div>
+          <div>
+            <label for="base-room" class="text-xs font-semibold">Base room</label>
+            <input id="base-room" type="text" autocomplete="organization" class="search-input w-full px-3 py-2 rounded-xl text-sm mt-1.5" placeholder="e.g. Base 6" required>
+          </div>
+          <div>
+            <label for="school-location" class="text-xs font-semibold">Location in the school</label>
+            <input id="school-location" type="text" autocomplete="off" class="search-input w-full px-3 py-2 rounded-xl text-sm mt-1.5" placeholder="e.g. classroom, office or reception" required>
+          </div>
+        </div>
+        <p id="order-details-msg" class="text-xs mt-2" style="color: #b0343c; min-height: 1rem;" role="alert"></p>
+      </div>
       <!-- Promo code -->
       <div class="pb-3">
         <label for="promo-input" class="text-xs font-semibold">Got a code?</label>
@@ -833,11 +865,51 @@
     });
 
     // ---- Ordering --------------------------------------------------------
-    function buildOrderEmailUrl(orderRef, when, t) {
+    function getOrderDetails() {
+      return {
+        name: document.getElementById('customer-name').value.trim(),
+        baseRoom: document.getElementById('base-room').value.trim(),
+        schoolLocation: document.getElementById('school-location').value.trim()
+      };
+    }
+
+    function validateOrderDetails(details) {
+      var fields = [
+        { id: 'customer-name', value: details.name, label: 'name' },
+        { id: 'base-room', value: details.baseRoom, label: 'base room' },
+        { id: 'school-location', value: details.schoolLocation, label: 'location in the school' }
+      ];
+      var firstMissing = null;
+      fields.forEach(function (field) {
+        var input = document.getElementById(field.id);
+        var missing = !field.value;
+        input.classList.toggle('field-error', missing);
+        input.setAttribute('aria-invalid', missing ? 'true' : 'false');
+        if (missing && !firstMissing) firstMissing = field;
+      });
+
+      var msg = document.getElementById('order-details-msg');
+      if (firstMissing) {
+        msg.textContent = 'Please add your name, base room and location in the school.';
+        document.getElementById(firstMissing.id).focus();
+        announce('Please complete your order details');
+        return false;
+      }
+      msg.textContent = '';
+      return true;
+    }
+
+    function buildOrderEmailUrl(orderRef, when, t, details) {
       var lines = [];
       lines.push('Laydash order ' + orderRef);
       lines.push(when);
       lines.push('');
+      lines.push('ORDERED BY');
+      lines.push('Name: ' + details.name);
+      lines.push('Base room: ' + details.baseRoom);
+      lines.push('Location in school: ' + details.schoolLocation);
+      lines.push('');
+      lines.push('ORDER');
       cart.forEach(function (item) {
         lines.push(item.qty + ' x ' + item.name + ' @ ' + money(item.price) + ' = ' + money(item.price * item.qty));
       });
@@ -848,20 +920,24 @@
       lines.push('Service fee (5%): ' + money(t.serviceFee));
       lines.push('Total: ' + money(t.total));
       lines.push('');
-      lines.push('Deliver to: ' + DELIVER_TO);
+      lines.push('Deliver to: ' + details.baseRoom + ' - ' + details.schoolLocation);
+      lines.push('School: ' + DELIVER_TO);
       lines.push('Schedule: ordered Monday, baked Tuesday, delivered Wednesday');
       lines.push('');
       lines.push('Freshly baked in Turdie\'s Kitchen');
       lines.push('All profits are going to charity');
       return 'https://mail.google.com/mail/?view=cm&fs=1' +
         '&to=' + encodeURIComponent(ORDER_RECIPIENTS.join(',')) +
-        '&su=' + encodeURIComponent('Laydash order ' + orderRef) +
+        '&su=' + encodeURIComponent('Laydash order ' + orderRef + ' - ' + details.name + ' - ' + details.baseRoom) +
         '&body=' + encodeURIComponent(lines.join('\n'));
     }
 
-    function renderReceipt(orderRef, when, t) {
+    function renderReceipt(orderRef, when, t, details) {
       document.getElementById('receipt-ref').textContent = orderRef;
       document.getElementById('receipt-date').textContent = when;
+      document.getElementById('receipt-name').textContent = details.name;
+      document.getElementById('receipt-base-room').textContent = details.baseRoom;
+      document.getElementById('receipt-school-location').textContent = details.schoolLocation;
       document.getElementById('receipt-items').innerHTML = cart.map(function (item) {
         return '<div class="flex justify-between"><span style="color: var(--cocoa-mid);">' + item.qty + ' x ' + item.name + '</span><span class="font-bold">' + money(item.price * item.qty) + '</span></div>';
       }).join('');
@@ -880,12 +956,15 @@
         announce('Ordering opens on Monday');
         return;
       }
+      var details = getOrderDetails();
+      if (!validateOrderDetails(details)) return;
+
       var t = getTotals();
       var orderRef = 'LD-' + Math.floor(1000 + Math.random() * 9000);
       var when = new Date().toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
 
-      lastOrderEmailUrl = buildOrderEmailUrl(orderRef, when, t);
-      renderReceipt(orderRef, when, t);
+      lastOrderEmailUrl = buildOrderEmailUrl(orderRef, when, t, details);
+      renderReceipt(orderRef, when, t, details);
 
       toggleCart();
       document.getElementById('main-view').classList.add('hidden');
@@ -902,6 +981,10 @@
       promoApplied = false;
       document.getElementById('promo-input').value = '';
       document.getElementById('promo-msg').textContent = '';
+      document.getElementById('customer-name').value = '';
+      document.getElementById('base-room').value = '';
+      document.getElementById('school-location').value = '';
+      document.getElementById('order-details-msg').textContent = '';
       updateCartUI();
     }
 
@@ -910,6 +993,16 @@
     document.getElementById('promo-apply-btn').addEventListener('click', applyPromo);
     document.getElementById('promo-input').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') applyPromo();
+    });
+
+    ['customer-name', 'base-room', 'school-location'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', function () {
+        this.classList.remove('field-error');
+        this.setAttribute('aria-invalid', 'false');
+        if (getOrderDetails().name && getOrderDetails().baseRoom && getOrderDetails().schoolLocation) {
+          document.getElementById('order-details-msg').textContent = '';
+        }
+      });
     });
 
     document.getElementById('resend-email-btn').addEventListener('click', function () {
