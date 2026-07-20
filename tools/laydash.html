@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laydash</title>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600;1,9..144,700&amp;family=DM+Sans:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+
+    /* ================================================================
+       Local utility styles (replaces the Tailwind CDN so the page has
+       no build step, no external CSS dependency, no console warning).
+       Only the utilities this page actually uses are defined.
+       ================================================================ */
+    *, *::before, *::after { box-sizing: border-box; border: 0 solid; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    img, svg { display: block; max-width: 100%; }
+    button { font: inherit; color: inherit; background: none; cursor: pointer; }
+    input { font: inherit; color: inherit; }
+    h1, h2, h3, p { margin: 0; }
+
+    .relative { position: relative; }
+    .absolute { position: absolute; }
+    .fixed { position: fixed; }
+    .sticky { position: sticky; }
+    .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+    .top-0 { top: 0; }
+    .top-3 { top: 0.75rem; }
+    .right-0 { right: 0; }
+    .right-3 { right: 0.75rem; }
+    .right-6 { right: 1.5rem; }
+    .bottom-6 { bottom: 1.5rem; }
+    .left-3 { left: 0.75rem; }
+    .left-4 { left: 1rem; }
+    .top-1\/2 { top: 50%; }
+    .-translate-y-1\/2 { transform: translateY(-50%); }
+    .z-30 { z-index: 30; }
+    .z-40 { z-index: 40; }
+    .z-50 { z-index: 50; }
+
+    .flex { display: flex; }
+    .grid { display: grid; }
+    .hidden { display: none !important; }
+    .flex-1 { flex: 1 1 0%; }
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .items-baseline { align-items: baseline; }
+    .justify-between { justify-content: space-between; }
+    .justify-center { justify-content: center; }
+    .gap-1\.5 { gap: 0.375rem; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-2\.5 { gap: 0.625rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+    .gap-5 { gap: 1.25rem; }
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    @media (min-width: 640px) { .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (min-width: 1024px) { .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+    .space-y-1\.5 > * + * { margin-top: 0.375rem; }
+    .space-y-2 > * + * { margin-top: 0.5rem; }
+    .space-y-4 > * + * { margin-top: 1rem; }
+
+    .w-4 { width: 1rem; } .h-4 { height: 1rem; }
+    .w-5 { width: 1.25rem; } .h-5 { height: 1.25rem; }
+    .w-7 { width: 1.75rem; } .h-7 { height: 1.75rem; }
+    .w-8 { width: 2rem; } .h-8 { height: 2rem; }
+    .w-9 { width: 2.25rem; } .h-9 { height: 2.25rem; }
+    .w-10 { width: 2.5rem; } .h-10 { height: 2.5rem; }
+    .w-12 { width: 3rem; } .h-12 { height: 3rem; }
+    .w-16 { width: 4rem; } .h-16 { height: 4rem; }
+    .w-24 { width: 6rem; } .h-24 { height: 6rem; }
+    .h-44 { height: 11rem; }
+    .w-full { width: 100%; }
+    .h-full { height: 100%; }
+    .min-w-0 { min-width: 0; }
+    .min-h-screen { min-height: 100vh; }
+    .max-w-sm { max-width: 24rem; }
+    .max-w-4xl { max-width: 56rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+
+    .p-2 { padding: 0.5rem; }
+    .p-3 { padding: 0.75rem; }
+    .p-4 { padding: 1rem; }
+    .p-5 { padding: 1.25rem; }
+    .p-6 { padding: 1.5rem; }
+    .p-7 { padding: 1.75rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .px-8 { padding-left: 2rem; padding-right: 2rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .py-2\.5 { padding-top: 0.625rem; padding-bottom: 0.625rem; }
+    .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    .py-3\.5 { padding-top: 0.875rem; padding-bottom: 0.875rem; }
+    .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+    .py-14 { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+    .pt-1 { padding-top: 0.25rem; }
+    .pt-3 { padding-top: 0.75rem; }
+    .pt-16 { padding-top: 4rem; }
+    .pb-3 { padding-bottom: 0.75rem; }
+    .pb-4 { padding-bottom: 1rem; }
+    .pb-6 { padding-bottom: 1.5rem; }
+    .pb-14 { padding-bottom: 3.5rem; }
+    .pl-11 { padding-left: 2.75rem; }
+    .pr-4 { padding-right: 1rem; }
+
+    .mt-1 { margin-top: 0.25rem; }
+    .mt-1\.5 { margin-top: 0.375rem; }
+    .mt-3 { margin-top: 0.75rem; }
+    .mt-4 { margin-top: 1rem; }
+    .mt-5 { margin-top: 1.25rem; }
+    .mt-7 { margin-top: 1.75rem; }
+    .mt-8 { margin-top: 2rem; }
+    .mb-3 { margin-bottom: 0.75rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .mb-5 { margin-bottom: 1.25rem; }
+    .mb-8 { margin-bottom: 2rem; }
+    .ml-1\.5 { margin-left: 0.375rem; }
+    .my-4 { margin-top: 1rem; margin-bottom: 1rem; }
+
+    .text-xs { font-size: 0.75rem; line-height: 1rem; }
+    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+    .text-base { font-size: 1rem; line-height: 1.5rem; }
+    .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+    .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+    .font-medium { font-weight: 500; }
+    .font-semibold { font-weight: 600; }
+    .font-bold { font-weight: 700; }
+    .italic { font-style: italic; }
+    .uppercase { text-transform: uppercase; }
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+    .tracking-widest { letter-spacing: 0.1em; }
+    .leading-relaxed { line-height: 1.625; }
+    .whitespace-nowrap { white-space: nowrap; }
+
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-3xl { border-radius: 1.5rem; }
+    .rounded-full { border-radius: 9999px; }
+    .rounded-t-2xl { border-top-left-radius: 1rem; border-top-right-radius: 1rem; }
+
+    .bg-white { background-color: #fff; }
+    .bg-white\/90 { background-color: rgba(255,255,255,0.9); }
+    .bg-black\/50 { background-color: rgba(0,0,0,0.5); }
+    .hover\:bg-white\/10:hover { background-color: rgba(255,255,255,0.1); }
+    .img-shade { background: linear-gradient(to top, rgba(0,0,0,0.15), transparent); }
+
+    .backdrop-blur { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .backdrop-blur-sm { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+
+    .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1); }
+    .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+
+    .overflow-hidden { overflow: hidden; }
+    .overflow-x-auto { overflow-x: auto; }
+    .overflow-y-auto { overflow-y: auto; }
+    .object-cover { object-fit: cover; }
+    .transition { transition: all 0.15s ease; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    :root {
+      --cocoa-dark: #2a1509;
+      --cocoa: #45250f;
+      --cocoa-mid: #6b3a17;
+      --cocoa-soft: #8a5a33;
+      --cream: #fdf5ea;
+      --cream-deep: #f4e4cd;
+      --icing: #d94476;
+      --icing-dark: #b82f5e;
+      --icing-soft: #fbdce8;
+      --caramel: #d9973f;
+      --pistachio: #4c7040;
+      --pistachio-soft: #e7f0e2;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--cocoa);
+      background: linear-gradient(var(--cream), var(--cream-deep));
+    }
+    .brand-font { font-family: 'Fraunces', serif; }
+    .mono { font-family: 'Space Mono', monospace; }
+    .num { font-variant-numeric: tabular-nums; }
+
+    /* ---- Signature: chocolate header bar with a simple drip edge ---- */
+    .app-header { background: var(--cocoa-dark); }
+
+    .drip-edge {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      height: 48px;
+      pointer-events: none;
+      display: block;
+    }
+
+    .droplet { animation: dropFall 7s ease-in infinite; }
+    .droplet-2 { animation-delay: 3.5s; }
+    @keyframes dropFall {
+      0% { transform: translateY(0); opacity: 0; }
+      12% { opacity: 1; }
+      70% { opacity: 1; }
+      100% { transform: translateY(14px); opacity: 0; }
+    }
+
+    .content-wrapper { position: relative; z-index: 10; }
+
+    /* ---- Buttons ---- */
+    .btn-icing {
+      background: linear-gradient(135deg, var(--icing), var(--icing-dark));
+      color: #fff;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 3px 12px rgba(217,68,118,0.3);
+    }
+    .btn-icing:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(217,68,118,0.4); }
+    .btn-icing:active { transform: scale(0.97); }
+
+    .btn-quiet {
+      background: #fff;
+      border: 1.5px solid var(--cream-deep);
+      color: var(--cocoa-mid);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-quiet:hover { border-color: var(--icing); background: var(--icing-soft); }
+
+    .btn-disabled {
+      background: var(--cream-deep);
+      color: var(--cocoa-soft);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .btn-disabled:hover { transform: none; box-shadow: none; }
+
+    .sched-step { border-radius: 0.75rem; padding: 0.25rem 0.5rem; }
+    .step-today { background: rgba(251,220,232,0.55); }
+
+    /* ---- Category chips ---- */
+    .chip {
+      border: 1.5px solid var(--cream-deep);
+      background: #fff;
+      color: var(--cocoa-mid);
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+    }
+    .chip:hover { border-color: var(--cocoa-soft); }
+    .chip-active {
+      background: var(--cocoa);
+      color: var(--cream);
+      border-color: var(--cocoa);
+      box-shadow: 0 3px 10px rgba(42,21,9,0.25);
+    }
+
+    /* ---- Cards ---- */
+    .product-card {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 14px rgba(42,21,9,0.06);
+    }
+    .product-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(42,21,9,0.12);
+    }
+    .product-card img { transition: transform 0.4s ease; }
+    .product-card:hover img { transform: scale(1.05); }
+
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .tag-vegan { background: var(--pistachio-soft); color: var(--pistachio); }
+    .tag-gf { background: #fdeeda; color: #a06a1f; }
+
+    .add-btn { transition: transform 0.2s; }
+    .add-btn:hover { transform: scale(1.12); }
+    .add-btn:active { transform: scale(0.95); }
+
+    /* ---- Promo ticket ---- */
+    .promo-panel { background: var(--cocoa-dark); }
+    .ticket {
+      border: 2px dashed rgba(253,245,234,0.5);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .ticket:hover { border-color: var(--icing-soft); background: rgba(217,68,118,0.18); }
+
+    /* ---- Cart FAB ---- */
+    .cart-fab-glow {
+      box-shadow: 0 4px 20px rgba(217,68,118,0.4);
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .cart-fab-glow:hover { box-shadow: 0 6px 28px rgba(217,68,118,0.5); transform: scale(1.02); }
+    .fab-pulse { animation: fabPulse 0.45s ease-out; }
+    @keyframes fabPulse {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.12); }
+      100% { transform: scale(1); }
+    }
+
+    /* ---- Drawer ---- */
+    .cart-drawer { transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+    .cart-drawer.open { transform: translateX(0); }
+    .overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+
+    /* ---- Receipt (till style) ---- */
+    .receipt-paper {
+      background: #fff;
+      box-shadow: 0 8px 30px rgba(42,21,9,0.12);
+    }
+    .receipt-zigzag {
+      height: 12px;
+      background:
+        linear-gradient(-45deg, transparent 8px, #fff 0) bottom left,
+        linear-gradient(45deg, transparent 8px, #fff 0) bottom left;
+      background-size: 16px 16px;
+      background-repeat: repeat-x;
+      filter: drop-shadow(0 6px 8px rgba(42,21,9,0.08));
+    }
+    .dashed-rule { border-top: 2px dashed var(--cream-deep); }
+
+    .fade-in { animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .search-input { border: 1.5px solid var(--cream-deep); }
+    .search-input:focus {
+      box-shadow: 0 0 0 3px rgba(217,68,118,0.18);
+      border-color: var(--icing);
+      outline: none;
+    }
+
+    button:focus-visible, input:focus-visible {
+      outline: 3px solid var(--icing);
+      outline-offset: 2px;
+    }
+
+    /* Calm mode for anyone with reduced motion switched on */
+    @media (prefers-reduced-motion: reduce) {
+      .droplet, .fade-in, .fab-pulse { animation: none !important; opacity: 1; }
+      .product-card, .product-card img, .add-btn, .cart-fab-glow, .btn-icing, .btn-quiet, .chip { transition: none !important; }
+      .product-card:hover, .product-card:hover img, .add-btn:hover, .add-btn:active,
+      .cart-fab-glow:hover, .btn-icing:hover, .btn-icing:active { transform: none; }
+      .cart-drawer, .overlay { transition: none; }
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+
+  <!-- Screen reader announcements (add to cart, code applied, etc.) -->
+  <div id="sr-status" class="sr-only" role="status" aria-live="polite"></div>
+
+  <div class="content-wrapper">
+    <header class="app-header sticky top-0 z-30 px-4 pt-3 pb-4">
+      <!-- Simple drip edge hanging from the header -->
+      <svg class="drip-edge" viewBox="0 0 1200 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="0" y="0" width="1200" height="12" fill="#2a1509"></rect>
+        <path d="M90,0 C81,0 81,16 84,24 C87,32 88,36 90,36 C92,36 93,32 96,24 C99,16 99,0 90,0 Z" fill="#2a1509"></path>
+        <path d="M230,0 C220,0 220,20 223,34 C226,46 228,52 230,52 C232,52 234,46 237,34 C240,20 240,0 230,0 Z" fill="#2a1509"></path>
+        <path d="M420,0 C412,0 412,14 415,20 C417,26 418,29 420,29 C422,29 423,26 425,20 C428,14 428,0 420,0 Z" fill="#2a1509"></path>
+        <path d="M560,0 C551,0 551,18 554,28 C557,38 558,43 560,43 C562,43 563,38 566,28 C569,18 569,0 560,0 Z" fill="#2a1509"></path>
+        <path d="M760,0 C752,0 752,15 755,23 C757,30 758,34 760,34 C762,34 763,30 765,23 C768,15 768,0 760,0 Z" fill="#2a1509"></path>
+        <path d="M900,0 C890,0 890,21 893,36 C896,48 898,54 900,54 C902,54 904,48 907,36 C910,21 910,0 900,0 Z" fill="#2a1509"></path>
+        <path d="M1060,0 C1052,0 1052,14 1055,21 C1057,27 1058,30 1060,30 C1062,30 1063,27 1065,21 C1068,14 1068,0 1060,0 Z" fill="#2a1509"></path>
+        <path d="M1170,0 C1161,0 1161,17 1164,26 C1167,35 1168,40 1170,40 C1172,40 1173,35 1176,26 C1179,17 1179,0 1170,0 Z" fill="#2a1509"></path>
+        <circle class="droplet" cx="230" cy="60" r="3.5" fill="#2a1509"></circle>
+        <circle class="droplet droplet-2" cx="900" cy="62" r="3.5" fill="#2a1509"></circle>
+      </svg>
+      <div class="max-w-4xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background: rgba(253,245,234,0.14);" aria-hidden="true">
+            <i data-lucide="map-pin" class="w-4 h-4" style="color: var(--icing-soft);"></i>
+          </div>
+          <div>
+            <p class="text-xs" style="color: rgba(253,245,234,0.65);">Deliver to</p>
+            <p class="text-sm font-semibold" style="color: var(--cream);">Chilton Bridge Base Rooms</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2.5">
+          <svg class="w-10 h-10" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M10 22 C10 12 18 7 24 7 C30 7 38 12 38 22 L38 24 L10 24 Z" fill="#d94476"></path>
+            <path d="M12 22 C12 14 18 10 24 10 C30 10 36 14 36 22" fill="none" stroke="#fdf5ea" stroke-width="2" opacity="0.45"></path>
+            <circle cx="24" cy="8" r="3" fill="#d9973f"></circle>
+            <path d="M12 26 L36 26 L32 42 L16 42 Z" fill="#fdf5ea"></path>
+            <path d="M17 26 L19 42 M24 26 L24 42 M31 26 L29 42" stroke="#e8d3b4" stroke-width="2" fill="none"></path>
+          </svg>
+          <span class="brand-font italic text-3xl font-bold" style="color: var(--cream);">Laydash<span style="color: var(--icing);">.</span></span>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-view" class="max-w-4xl mx-auto px-4 pt-16 pb-6">
+      <!-- Search -->
+      <div class="relative mb-5">
+        <label for="search-input" class="sr-only">Search desserts</label>
+        <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style="color: var(--cocoa-soft);" aria-hidden="true"></i>
+        <input id="search-input" type="text" class="search-input w-full pl-11 pr-4 py-3 rounded-2xl bg-white text-sm transition" placeholder="Search desserts...">
+      </div>
+
+      <!-- Categories -->
+      <div id="categories" class="flex gap-2.5 overflow-x-auto pb-3 mb-5" role="group" aria-label="Dessert categories">
+        <button class="chip chip-active whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold" data-cat="all" aria-pressed="true">All</button>
+        <button class="chip whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold" data-cat="cupcakes" aria-pressed="false">&#129473; Cupcakes</button>
+        <button class="chip whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold" data-cat="brownies" aria-pressed="false">&#127851; Brownies</button>
+        <button class="chip whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold" data-cat="bars" aria-pressed="false">&#129390; Bars &amp; Flapjacks</button>
+        <button class="chip whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold" data-cat="cakes" aria-pressed="false">&#127874; Cakes</button>
+      </div>
+
+      <!-- Weekly schedule -->
+      <div class="rounded-2xl bg-white p-4 mb-5 flex flex-wrap items-center justify-center gap-3 text-sm" style="box-shadow: 0 2px 14px rgba(42,21,9,0.06);" aria-label="How ordering works each week">
+        <div id="sched-mon" class="sched-step flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background: var(--icing-soft);" aria-hidden="true"><i data-lucide="calendar-check" class="w-4 h-4" style="color: var(--icing-dark);"></i></div>
+          <div><p class="font-bold">Monday</p><p class="text-xs" style="color: var(--cocoa-soft);">Orders are placed</p></div>
+        </div>
+        <i data-lucide="chevron-right" class="w-4 h-4" style="color: var(--cream-deep);" aria-hidden="true"></i>
+        <div id="sched-tue" class="sched-step flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background: #fdeeda;" aria-hidden="true"><i data-lucide="chef-hat" class="w-4 h-4" style="color: var(--caramel);"></i></div>
+          <div><p class="font-bold">Tuesday</p><p class="text-xs" style="color: var(--cocoa-soft);">Cakes are baked</p></div>
+        </div>
+        <i data-lucide="chevron-right" class="w-4 h-4" style="color: var(--cream-deep);" aria-hidden="true"></i>
+        <div id="sched-wed" class="sched-step flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background: var(--pistachio-soft);" aria-hidden="true"><i data-lucide="truck" class="w-4 h-4" style="color: var(--pistachio);"></i></div>
+          <div><p class="font-bold">Wednesday</p><p class="text-xs" style="color: var(--cocoa-soft);">Treats are delivered</p></div>
+        </div>
+      </div>
+
+      <!-- Promo ticket -->
+      <div class="promo-panel relative rounded-3xl overflow-hidden mb-8" style="box-shadow: 0 8px 32px rgba(42,21,9,0.18);">
+        <svg class="absolute inset-0 w-full h-full" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="sprinkles" width="90" height="70" patternUnits="userSpaceOnUse">
+              <rect x="10" y="12" width="12" height="4" rx="2" fill="#d94476" transform="rotate(24 16 14)"></rect>
+              <rect x="55" y="8" width="12" height="4" rx="2" fill="#d9973f" transform="rotate(-30 61 10)"></rect>
+              <rect x="30" y="42" width="12" height="4" rx="2" fill="#fdf5ea" transform="rotate(12 36 44)"></rect>
+              <rect x="70" y="50" width="12" height="4" rx="2" fill="#d94476" transform="rotate(-18 76 52)"></rect>
+              <circle cx="48" cy="26" r="2.5" fill="#d9973f"></circle>
+              <circle cx="14" cy="58" r="2.5" fill="#fdf5ea"></circle>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#sprinkles)" opacity="0.22"></rect>
+        </svg>
+        <div class="relative flex flex-wrap items-center justify-between gap-4 p-7">
+          <div>
+            <p class="brand-font font-bold" style="color: var(--cream); font-size: 24px;">5% off your first order</p>
+            <p class="mt-1.5 text-sm" style="color: rgba(253,245,234,0.7);">Tap the ticket and the code goes straight into your cart.</p>
+          </div>
+          <button id="promo-ticket" class="ticket mono rounded-2xl px-6 py-3 text-lg font-bold tracking-widest" style="color: var(--cream);" aria-label="Use code SWEET5, adds the code to your cart">SWEET5</button>
+        </div>
+      </div>
+
+      <div class="flex items-baseline justify-between gap-3 mb-5">
+        <h2 class="brand-font font-bold" style="font-size: 26px;">Our Desserts</h2>
+        <div class="text-right">
+          <p class="text-xs" style="color: var(--cocoa-soft);">Freshly baked in Turdie's Kitchen</p>
+          <p class="text-xs font-semibold mt-1" style="color: var(--icing-dark);">&hearts; All profits are going to charity</p>
+        </div>
+      </div>
+
+      <!-- Product grid rendered from the products array below (single source of truth) -->
+      <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+      <!-- Empty search state -->
+      <div id="empty-state" class="hidden text-center py-14 fade-in">
+        <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style="background: var(--icing-soft);" aria-hidden="true">
+          <i data-lucide="search-x" class="w-8 h-8" style="color: var(--icing);"></i>
+        </div>
+        <p class="font-semibold">No desserts found</p>
+        <p class="text-sm mt-1.5" style="color: var(--cocoa-soft);">Try a different word, or pick another category.</p>
+        <button id="clear-search-btn" class="btn-quiet mt-5 px-6 py-2.5 rounded-full text-sm font-semibold">Show everything</button>
+      </div>
+    </main>
+
+    <!-- Confirmation -->
+    <div id="confirm-view" class="hidden max-w-4xl mx-auto px-4 pt-16 pb-14 text-center fade-in">
+      <div class="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg" style="background: linear-gradient(135deg, var(--icing-soft), #f7c3d8);" aria-hidden="true">
+        <i data-lucide="check" class="w-12 h-12" style="color: var(--icing-dark);"></i>
+      </div>
+      <h2 class="brand-font mb-3 font-bold" style="font-size: 26px;">Order confirmed! &#127881;</h2>
+      <p style="color: var(--cocoa-soft); font-size: 15px;">Your order is in. Cakes are baked on Tuesday and delivered on Wednesday.</p>
+
+      <!-- Till receipt -->
+      <div class="max-w-sm mx-auto mt-8">
+        <div class="receipt-paper rounded-t-2xl p-6 text-left text-sm mono num">
+          <p class="brand-font text-center text-xl font-bold" style="font-style: italic;">Laydash<span style="color: var(--icing);">.</span></p>
+          <p class="text-center text-xs mt-1" style="color: var(--cocoa-soft);">Chilton Bridge Base Rooms</p>
+          <p class="text-center text-xs mt-1" style="color: var(--cocoa-soft);">Freshly baked in Turdie's Kitchen</p>
+          <div class="dashed-rule my-4"></div>
+          <div class="flex justify-between text-xs" style="color: var(--cocoa-soft);">
+            <span id="receipt-ref"></span>
+            <span id="receipt-date"></span>
+          </div>
+          <div id="receipt-items" class="space-y-2 mt-4"></div>
+          <div class="dashed-rule my-4"></div>
+          <div id="receipt-totals" class="space-y-1.5"></div>
+          <div class="dashed-rule my-4"></div>
+          <p class="text-center text-xs" style="color: var(--cocoa-soft);">Thank you for ordering with Laydash</p>
+          <p class="text-center text-xs font-bold mt-1" style="color: var(--icing-dark);">All profits are going to charity</p>
+        </div>
+        <div class="receipt-zigzag"></div>
+      </div>
+
+      <p class="text-xs mt-7 max-w-sm mx-auto" style="color: var(--cocoa-soft);">A copy of the order opens as an email to Jay. If it did not appear, the button below opens it again.</p>
+      <div class="flex flex-wrap justify-center gap-3 mt-4">
+        <button id="resend-email-btn" class="btn-quiet px-6 py-3 rounded-full font-semibold flex items-center gap-2">
+          <i data-lucide="mail" class="w-4 h-4" aria-hidden="true"></i> Open order email
+        </button>
+        <button id="new-order-btn" class="btn-icing px-8 py-3 rounded-full font-semibold">Order again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart FAB -->
+  <button id="cart-fab" class="btn-icing cart-fab-glow hidden fixed bottom-6 right-6 z-40 px-6 py-3.5 rounded-full flex items-center gap-2.5 font-semibold" aria-label="Open your order">
+    <i data-lucide="shopping-bag" class="w-5 h-5" aria-hidden="true"></i>
+    <span id="cart-count" class="num">0</span> items &middot; &pound;<span id="cart-total" class="num">0.00</span>
+  </button>
+
+  <!-- Cart overlay and drawer -->
+  <div id="cart-overlay" class="overlay fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" onclick="toggleCart()"></div>
+  <aside id="cart-drawer" class="cart-drawer fixed top-0 right-0 z-50 h-full w-full max-w-sm bg-white shadow-2xl flex flex-col" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+    <div class="app-header flex items-center justify-between p-5">
+      <h3 id="cart-title" class="brand-font font-bold text-xl" style="color: var(--cream);">Your Order</h3>
+      <button id="cart-close-btn" onclick="toggleCart()" class="p-2 rounded-full transition hover:bg-white/10" aria-label="Close your order">
+        <i data-lucide="x" class="w-5 h-5" style="color: var(--cream);" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-4"></div>
+    <div class="p-5 space-y-2" style="border-top: 2px dashed var(--cream-deep); background: linear-gradient(to top, rgba(251,220,232,0.25), #fff);">
+      <!-- Promo code -->
+      <div class="pb-3">
+        <label for="promo-input" class="text-xs font-semibold">Got a code?</label>
+        <div class="flex gap-2 mt-1.5">
+          <input id="promo-input" type="text" autocomplete="off" autocapitalize="characters" class="search-input mono flex-1 min-w-0 px-3 py-2 rounded-xl text-sm uppercase" placeholder="e.g. SWEET5">
+          <button id="promo-apply-btn" class="btn-quiet px-4 py-2 rounded-xl text-sm font-semibold">Apply</button>
+        </div>
+        <p id="promo-msg" class="text-xs mt-1.5 h-4" role="status"></p>
+      </div>
+      <div class="flex justify-between text-sm num"><span style="color: var(--cocoa-soft);">Subtotal</span><span id="subtotal" class="font-medium">&pound;0.00</span></div>
+      <div id="discount-row" class="hidden flex justify-between text-sm num" style="color: var(--pistachio);"><span>Discount (SWEET5)</span><span id="discount">&minus;&pound;0.00</span></div>
+      <div class="flex justify-between text-sm num" style="color: var(--cocoa-soft);"><span>Delivery fee</span><span>&pound;2.99</span></div>
+      <div class="flex justify-between text-sm num" style="color: var(--cocoa-soft);"><span>Service fee (5%)</span><span id="service-fee">&pound;0.00</span></div>
+      <div class="flex justify-between font-bold text-lg pt-3 num" style="border-top: 2px dashed var(--cream-deep);"><span>Total</span><span id="total">&pound;0.00</span></div>
+      <p id="order-day-note" class="text-xs text-center mt-3" style="color: var(--cocoa-soft);">Orders are placed on Monday. Cakes are baked on Tuesday and delivered on Wednesday.</p>
+      <button id="place-order-btn" onclick="placeOrder()" class="btn-icing w-full py-3.5 rounded-2xl font-semibold mt-2">Place Order</button>
+    </div>
+  </aside>
+
+  <script>
+    // ---- Config ----------------------------------------------------------
+    var GBP = '\u00A3';
+    var DELIVERY_FEE = 2.99;
+    var SERVICE_RATE = 0.05;
+    var PROMO_CODE = 'SWEET5';
+    var PROMO_RATE = 0.05;
+    var DELIVER_TO = 'Chilton Bridge Base Rooms';
+    // Orders open as a prefilled email to both of these addresses.
+    // Note: these are visible in the page source, so keep this file off any public repo.
+    var ORDER_RECIPIENTS = [
+      'jay.raine@chiltonbridgeschool.co.uk',
+      'layden.collins@chiltonbridgeschool.co.uk'
+    ];
+
+    // ---- Products (single source of truth for cards AND cart) -----------
+    var products = [
+      { id: 'p1', name: 'Vanilla Cupcake', cat: 'cupcakes', price: 3.50, rating: '4.8', tags: [],
+        desc: 'Fluffy vanilla sponge with buttercream',
+        img: 'https://images.pexels.com/photos/853006/pexels-photo-853006.jpeg?auto=compress&cs=tinysrgb&w=800',
+        alt: 'Pink frosted cupcakes in paper cases' },
+      { id: 'p2', name: 'Vegan Brownies', cat: 'brownies', price: 4.25, rating: '4.7', tags: ['vegan'],
+        desc: 'Fudgy plant-based chocolate brownies',
+        img: 'https://images.pexels.com/photos/2067396/pexels-photo-2067396.jpeg?auto=compress&cs=tinysrgb&w=800',
+        alt: 'Stack of chocolate brownies drizzled with syrup' },
+      { id: 'p3', name: 'Gluten Free Brownies', cat: 'brownies', price: 4.50, rating: '4.6', tags: ['gf'],
+        desc: 'Rich and fudgy, naturally gluten free',
+        img: 'https://images.pexels.com/photos/3026804/pexels-photo-3026804.jpeg?auto=compress&cs=tinysrgb&w=800',
+        alt: 'Chocolate brownies stacked on a plate with fresh raspberries' },
+      { id: 'p4', name: 'Golden Syrup Flapjacks', cat: 'bars', price: 3.25, rating: '4.5', tags: [],
+        desc: 'Chewy oat bars with golden syrup',
+        img: 'https://images.pexels.com/photos/8258763/pexels-photo-8258763.jpeg?auto=compress&cs=tinysrgb&w=800',
+        alt: 'Stack of golden oat and caramel bars' },
+      // Photo note: swap this image for a real Malteser cake shot when you have one.
+      { id: 'p5', name: 'Malteser Cake Slice', cat: 'cakes', price: 5.99, rating: '4.9', tags: [],
+        desc: 'Rich chocolate sponge with Malteser topping',
+        img: 'https://images.pexels.com/photos/4110003/pexels-photo-4110003.jpeg?auto=compress&cs=tinysrgb&w=800',
+        alt: 'Slice of rich chocolate layer cake' },
+      { id: 'p6', name: 'Rocky Road', cat: 'bars', price: 3.99, rating: '4.7', tags: [],
+        desc: 'Chocolate, marshmallow and biscuit chunks',
+        img: 'https://images.pexels.com/photos/4435689/pexels-photo-4435689.jpeg?auto=compress&cs=tinysrgb&w=800',
+        alt: 'Chocolate dessert squares topped with nuts and coconut' },
+      { id: 'p7', name: 'Rock Cakes', cat: 'cakes', price: 2.99, rating: '4.4', tags: [],
+        desc: 'Traditional fruited rock cakes',
+        img: 'https://images.pexels.com/photos/30512698/pexels-photo-30512698.jpeg?auto=compress&cs=tinysrgb&w=800',
+        alt: 'Freshly baked fruited rock cakes' }
+    ];
+
+    var TAG_HTML = {
+      vegan: '<span class="tag tag-vegan">Vegan</span>',
+      gf: '<span class="tag tag-gf">Gluten free</span>'
+    };
+
+    // Shown behind each photo, and shown instead of it if the photo fails
+    // to load (e.g. if the school network filters the image host).
+    var CAT_EMOJI = {
+      cupcakes: '\uD83E\uDDC1',
+      brownies: '\uD83C\uDF6B',
+      bars: '\uD83E\uDD6E',
+      cakes: '\uD83C\uDF82'
+    };
+
+    // ---- State -----------------------------------------------------------
+    var cart = [];
+    var activeCategory = 'all';
+    var promoApplied = false;
+    var lastOrderEmailUrl = '';
+
+    // ---- Helpers ---------------------------------------------------------
+    function money(n) { return GBP + n.toFixed(2); }
+
+    function announce(msg) {
+      var el = document.getElementById('sr-status');
+      el.textContent = '';
+      window.setTimeout(function () { el.textContent = msg; }, 50);
+    }
+
+    function getTotals() {
+      var subtotal = cart.reduce(function (s, i) { return s + i.price * i.qty; }, 0);
+      var discount = promoApplied ? subtotal * PROMO_RATE : 0;
+      var afterDiscount = subtotal - discount;
+      var serviceFee = afterDiscount * SERVICE_RATE;
+      var total = afterDiscount + DELIVERY_FEE + serviceFee;
+      return { subtotal: subtotal, discount: discount, serviceFee: serviceFee, total: total };
+    }
+
+    // ---- Product grid ----------------------------------------------------
+    function renderGrid() {
+      var grid = document.getElementById('product-grid');
+      grid.innerHTML = products.map(function (p) {
+        var tags = (p.tags || []).map(function (t) { return TAG_HTML[t] || ''; }).join(' ');
+        return '' +
+        '<div class="product-card fade-in" data-product="' + p.id + '">' +
+          '<div class="relative overflow-hidden h-44" style="background: linear-gradient(135deg, var(--cream-deep), var(--icing-soft));">' +
+            '<span class="absolute inset-0 flex items-center justify-center" style="font-size: 52px;" aria-hidden="true">' + (CAT_EMOJI[p.cat] || '') + '</span>' +
+            '<img class="absolute inset-0 w-full h-full object-cover" loading="lazy" src="' + p.img + '" alt="' + p.alt + '" onerror="this.remove()">' +
+            '<div class="img-shade absolute inset-0"></div>' +
+            '<span class="absolute top-3 right-3 text-xs bg-white/90 backdrop-blur px-2 py-1 rounded-full font-semibold shadow-sm num" style="color: var(--cocoa-mid);" aria-label="Rated ' + p.rating + ' out of 5">\u2B50 ' + p.rating + '</span>' +
+            (tags ? '<span class="absolute top-3 left-3 flex gap-1.5">' + tags + '</span>' : '') +
+          '</div>' +
+          '<div class="p-4">' +
+            '<h3 class="font-semibold text-sm">' + p.name + '</h3>' +
+            '<p class="text-xs mt-1 leading-relaxed" style="color: var(--cocoa-soft);">' + p.desc + '</p>' +
+            '<div class="flex justify-between items-center mt-3 pt-3" style="border-top: 1.5px solid var(--cream);">' +
+              '<div><span class="font-bold num">' + money(p.price) + '</span><span class="text-xs ml-1.5" style="color: var(--cocoa-soft);">Delivered Wed</span></div>' +
+              '<button onclick="addToCart(\'' + p.id + '\')" class="add-btn btn-icing w-9 h-9 rounded-full flex items-center justify-center" aria-label="Add ' + p.name + ' to order"><i data-lucide="plus" class="w-4 h-4" aria-hidden="true"></i></button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function filterProducts(search, cat) {
+      var s = (search || '').toLowerCase();
+      var visible = 0;
+      document.querySelectorAll('[data-product]').forEach(function (card) {
+        var p = products.find(function (x) { return x.id === card.dataset.product; });
+        var matchCat = cat === 'all' || p.cat === cat;
+        var matchSearch = p.name.toLowerCase().indexOf(s) !== -1 || p.desc.toLowerCase().indexOf(s) !== -1;
+        var show = matchCat && matchSearch;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      document.getElementById('empty-state').classList.toggle('hidden', visible > 0);
+    }
+
+    // ---- Cart ------------------------------------------------------------
+    function addToCart(id) {
+      var product = products.find(function (p) { return p.id === id; });
+      var existing = cart.find(function (c) { return c.id === id; });
+      if (existing) existing.qty++;
+      else cart.push({ id: id, name: product.name, price: product.price, qty: 1 });
+      updateCartUI();
+      announce(product.name + ' added to your order');
+      var fab = document.getElementById('cart-fab');
+      fab.classList.remove('fab-pulse');
+      void fab.offsetWidth; // restart animation
+      fab.classList.add('fab-pulse');
+    }
+
+    function changeQty(id, delta) {
+      var item = cart.find(function (c) { return c.id === id; });
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) cart = cart.filter(function (c) { return c.id !== id; });
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      var count = cart.reduce(function (s, i) { return s + i.qty; }, 0);
+      var t = getTotals();
+      var fab = document.getElementById('cart-fab');
+      fab.classList.toggle('hidden', count === 0);
+      document.getElementById('cart-count').textContent = count;
+      document.getElementById('cart-total').textContent = (t.subtotal - t.discount).toFixed(2);
+      document.getElementById('subtotal').textContent = money(t.subtotal);
+      document.getElementById('discount-row').classList.toggle('hidden', !promoApplied);
+      document.getElementById('discount').textContent = '\u2212' + money(t.discount);
+      document.getElementById('service-fee').textContent = money(t.serviceFee);
+      document.getElementById('total').textContent = money(cart.length ? t.total : 0);
+      document.getElementById('cart-items').innerHTML = cart.length === 0
+        ? '<p class="text-center py-8" style="color: var(--cocoa-soft);">Your cart is empty</p>'
+        : cart.map(function (item) {
+            return '' +
+            '<div class="flex justify-between items-center rounded-xl p-3" style="background: rgba(251,220,232,0.3);">' +
+              '<div>' +
+                '<p class="font-medium text-sm">' + item.name + '</p>' +
+                '<p class="text-xs num" style="color: var(--cocoa-soft);">' + money(item.price) + ' each</p>' +
+              '</div>' +
+              '<div class="flex items-center gap-2">' +
+                '<button onclick="changeQty(\'' + item.id + '\',-1)" class="btn-quiet w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold" aria-label="Remove one ' + item.name + '">\u2212</button>' +
+                '<span class="text-sm font-semibold w-5 text-center num" aria-label="' + item.qty + ' of ' + item.name + '">' + item.qty + '</span>' +
+                '<button onclick="changeQty(\'' + item.id + '\',1)" class="btn-quiet w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold" aria-label="Add one more ' + item.name + '">+</button>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+    }
+
+    // ---- Promo code ------------------------------------------------------
+    function applyPromo() {
+      var input = document.getElementById('promo-input');
+      var msg = document.getElementById('promo-msg');
+      var code = input.value.trim().toUpperCase();
+      if (!code) return;
+      if (code === PROMO_CODE) {
+        promoApplied = true;
+        msg.textContent = 'Code applied: 5% off your desserts';
+        msg.style.color = 'var(--pistachio)';
+        announce('Discount code applied');
+      } else {
+        promoApplied = false;
+        msg.textContent = 'That code was not recognised';
+        msg.style.color = '#b0343c';
+        announce('That code was not recognised');
+      }
+      updateCartUI();
+    }
+
+    // The ticket in the banner drops the code straight into the cart field
+    document.getElementById('promo-ticket').addEventListener('click', function () {
+      document.getElementById('promo-input').value = PROMO_CODE;
+      if (cart.length > 0) {
+        applyPromo();
+        if (!document.getElementById('cart-drawer').classList.contains('open')) toggleCart();
+      } else {
+        announce('Code SWEET5 is ready in your cart for when you add a dessert');
+      }
+      this.textContent = 'SWEET5 \u2713';
+      var btn = this;
+      window.setTimeout(function () { btn.textContent = 'SWEET5'; }, 2000);
+    });
+
+    // ---- Order day (Mondays only) ----------------------------------------
+    var DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    function isOrderDay() { return new Date().getDay() === 1; }
+
+    function updateOrderAvailability() {
+      var btn = document.getElementById('place-order-btn');
+      var note = document.getElementById('order-day-note');
+      if (isOrderDay()) {
+        btn.disabled = false;
+        btn.classList.add('btn-icing');
+        btn.classList.remove('btn-disabled');
+        btn.textContent = 'Place Order';
+        note.textContent = 'Orders close today. Cakes are baked on Tuesday and delivered on Wednesday.';
+      } else {
+        btn.disabled = true;
+        btn.classList.remove('btn-icing');
+        btn.classList.add('btn-disabled');
+        btn.textContent = 'Ordering opens on Monday';
+        note.textContent = 'It is ' + DAY_NAMES[new Date().getDay()] + ' today. You can fill your cart now and place the order on Monday.';
+      }
+      // Highlight today on the schedule strip (Mon to Wed only)
+      var stepIds = { 1: 'sched-mon', 2: 'sched-tue', 3: 'sched-wed' };
+      ['sched-mon', 'sched-tue', 'sched-wed'].forEach(function (id) {
+        document.getElementById(id).classList.remove('step-today');
+      });
+      var todayStep = stepIds[new Date().getDay()];
+      if (todayStep) document.getElementById(todayStep).classList.add('step-today');
+    }
+
+    // ---- Cart drawer -----------------------------------------------------
+    function toggleCart() {
+      var drawer = document.getElementById('cart-drawer');
+      var opening = !drawer.classList.contains('open');
+      if (opening) updateOrderAvailability();
+      drawer.classList.toggle('open');
+      document.getElementById('cart-overlay').classList.toggle('open');
+      if (opening) {
+        document.getElementById('cart-close-btn').focus();
+      } else {
+        var fab = document.getElementById('cart-fab');
+        if (!fab.classList.contains('hidden')) fab.focus();
+      }
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && document.getElementById('cart-drawer').classList.contains('open')) {
+        toggleCart();
+      }
+    });
+
+    // ---- Ordering --------------------------------------------------------
+    function buildOrderEmailUrl(orderRef, when, t) {
+      var lines = [];
+      lines.push('Laydash order ' + orderRef);
+      lines.push(when);
+      lines.push('');
+      cart.forEach(function (item) {
+        lines.push(item.qty + ' x ' + item.name + ' @ ' + money(item.price) + ' = ' + money(item.price * item.qty));
+      });
+      lines.push('');
+      lines.push('Subtotal: ' + money(t.subtotal));
+      if (promoApplied) lines.push('Discount (SWEET5): -' + money(t.discount));
+      lines.push('Delivery fee: ' + money(DELIVERY_FEE));
+      lines.push('Service fee (5%): ' + money(t.serviceFee));
+      lines.push('Total: ' + money(t.total));
+      lines.push('');
+      lines.push('Deliver to: ' + DELIVER_TO);
+      lines.push('Schedule: ordered Monday, baked Tuesday, delivered Wednesday');
+      lines.push('');
+      lines.push('Freshly baked in Turdie\'s Kitchen');
+      lines.push('All profits are going to charity');
+      return 'https://mail.google.com/mail/?view=cm&fs=1' +
+        '&to=' + encodeURIComponent(ORDER_RECIPIENTS.join(',')) +
+        '&su=' + encodeURIComponent('Laydash order ' + orderRef) +
+        '&body=' + encodeURIComponent(lines.join('\n'));
+    }
+
+    function renderReceipt(orderRef, when, t) {
+      document.getElementById('receipt-ref').textContent = orderRef;
+      document.getElementById('receipt-date').textContent = when;
+      document.getElementById('receipt-items').innerHTML = cart.map(function (item) {
+        return '<div class="flex justify-between"><span style="color: var(--cocoa-mid);">' + item.qty + ' x ' + item.name + '</span><span class="font-bold">' + money(item.price * item.qty) + '</span></div>';
+      }).join('');
+      var rows = [];
+      rows.push('<div class="flex justify-between" style="color: var(--cocoa-soft);"><span>Subtotal</span><span>' + money(t.subtotal) + '</span></div>');
+      if (promoApplied) rows.push('<div class="flex justify-between" style="color: var(--pistachio);"><span>SWEET5</span><span>\u2212' + money(t.discount) + '</span></div>');
+      rows.push('<div class="flex justify-between" style="color: var(--cocoa-soft);"><span>Delivery</span><span>' + money(DELIVERY_FEE) + '</span></div>');
+      rows.push('<div class="flex justify-between" style="color: var(--cocoa-soft);"><span>Service 5%</span><span>' + money(t.serviceFee) + '</span></div>');
+      rows.push('<div class="flex justify-between font-bold text-base pt-1"><span>TOTAL</span><span>' + money(t.total) + '</span></div>');
+      document.getElementById('receipt-totals').innerHTML = rows.join('');
+    }
+
+    function placeOrder() {
+      if (cart.length === 0) return;
+      if (!isOrderDay()) {
+        announce('Ordering opens on Monday');
+        return;
+      }
+      var t = getTotals();
+      var orderRef = 'LD-' + Math.floor(1000 + Math.random() * 9000);
+      var when = new Date().toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
+
+      lastOrderEmailUrl = buildOrderEmailUrl(orderRef, when, t);
+      renderReceipt(orderRef, when, t);
+
+      toggleCart();
+      document.getElementById('main-view').classList.add('hidden');
+      document.getElementById('confirm-view').classList.remove('hidden');
+      document.getElementById('cart-fab').classList.add('hidden');
+      announce('Order confirmed');
+
+      // Open the prefilled Gmail compose in a new tab (inside the click, so
+      // popup blockers normally allow it). The button on the confirmation
+      // screen reopens it if this gets blocked.
+      window.open(lastOrderEmailUrl, '_blank');
+
+      cart = [];
+      promoApplied = false;
+      document.getElementById('promo-input').value = '';
+      document.getElementById('promo-msg').textContent = '';
+      updateCartUI();
+    }
+
+    // ---- Wiring ----------------------------------------------------------
+    document.getElementById('cart-fab').addEventListener('click', toggleCart);
+    document.getElementById('promo-apply-btn').addEventListener('click', applyPromo);
+    document.getElementById('promo-input').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') applyPromo();
+    });
+
+    document.getElementById('resend-email-btn').addEventListener('click', function () {
+      if (lastOrderEmailUrl) window.open(lastOrderEmailUrl, '_blank');
+    });
+
+    document.getElementById('new-order-btn').addEventListener('click', function () {
+      document.getElementById('confirm-view').classList.add('hidden');
+      document.getElementById('main-view').classList.remove('hidden');
+    });
+
+    document.getElementById('clear-search-btn').addEventListener('click', function () {
+      document.getElementById('search-input').value = '';
+      filterProducts('', activeCategory);
+    });
+
+    document.getElementById('search-input').addEventListener('input', function (e) {
+      filterProducts(e.target.value, activeCategory);
+    });
+
+    document.getElementById('categories').addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-cat]');
+      if (!btn) return;
+      activeCategory = btn.dataset.cat;
+      document.querySelectorAll('[data-cat]').forEach(function (b) {
+        b.classList.remove('chip-active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('chip-active');
+      btn.setAttribute('aria-pressed', 'true');
+      filterProducts(document.getElementById('search-input').value, activeCategory);
+    });
+
+    renderGrid();
+    filterProducts('', 'all');
+    updateOrderAvailability();
+    lucide.createIcons();
+  </script>
+</body>
+</html>
